@@ -17,7 +17,7 @@
 #ifndef MMAP_H_
 #define MMAP_H_
 #include "../../init/multiboot.h"
-#include "../../define.h"
+#include <struct.h>
 #include <stdint.h>
 namespace kernel {
 	struct mmap_field_t{

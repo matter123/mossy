@@ -16,45 +16,43 @@
 
 #include "idt.h"
 #include <stdint.h>
-#include <stdbool.h>
+#include <struct.h>
+namespace x86 {
+	struct IDTdesc {
+		uint16_t offset_low;
+		uint16_t selector;
+		uint8_t  zero;
+		int      type:4;
+		int      S:1;
+		int      DPL:2;
+		bool     present:1;
+		uint16_t offset_high;
+	}PACKED;
+	IDTdesc IDT[256];
 
-struct IDTdesc {
-	uint16_t offset_low;
-	uint16_t selector;
-	uint8_t  zero;
-	int      type:4;
-	int      S:1;
-	int      DPL:2;
-	bool     present:1;
-	uint16_t offset_high;
-}PACKED;
-struct IDTdesc IDT[256];
+	void install_idt(void *handler, int number, int type, int min_ring) {
+		IDT[number].zero=0;
+		IDT[number].S=0;
+		IDT[number].DPL=min_ring;
+		IDT[number].type=type;
+		IDT[number].present=true;
+		IDT[number].selector=0x08;//offset into GDT, 0x08 for kernel
+		IDT[number].offset_low=((uint32_t)handler)&0xFFFF;
+		IDT[number].offset_high=(((uint32_t)handler)>>16)&0xFFFF;
+	}
 
-//FIXME only interrupts no traps or task gates
-void install_idt(void *handler, int number, int type, int min_ring) {
-	IDT[number].zero=0;
-	IDT[number].S=0;
-	IDT[number].DPL=min_ring;
-	IDT[number].type=type;
-	IDT[number].present=true;
-	IDT[number].selector=0x08;//offset into GDT, 0x08 for kernel
-	IDT[number].offset_low=((uint32_t)handler)&0xFFFF;
-	IDT[number].offset_high=(((uint32_t)handler)>>16)&0xFFFF;
-
-
+	struct LIDT {
+		uint16_t len;
+		void *base;
+	}PACKED;
 }
+x86::LIDT idtp;
+namespace x86 {
+	extern "C" void IDT_flush();
 
-struct LIDT {
-	uint16_t len;
-	void *base;
-}PACKED;
-
-struct LIDT idtp;
-
-extern "C" void IDT_flush();
-
-void enable_idt() {
-	idtp.len=(256*8)-1;
-	idtp.base=&IDT;
-	IDT_flush();
+	void enable_idt() {
+		idtp.len=(256*8)-1;
+		idtp.base=&IDT;
+		IDT_flush();
+	}
 }

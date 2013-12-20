@@ -30,25 +30,25 @@ namespace std {
 		ios_base(int base);
 		void combine(ios_base b);
 	};
-	class console_color {
+	class ConsoleColor {
 	private:
 		uint8_t backcolor;
 		uint8_t color;
 	public:
 		uint16_t getColor();
-		console_color(int foreground, int background);
-		console_color();
+		ConsoleColor(int foreground, int background);
+		ConsoleColor();
 	};
 
 	class ostream {
 	private:
 		ios_base b;
-		console_color c;
+		ConsoleColor c;
 		uint16_t *mon=(uint16_t *)0xC00B8000;
 		int px,py;
 	public:
 		ostream();
-		ostream(console_color c);
+		ostream(ConsoleColor c);
 		ostream& printc(char c);
 		ostream& cls();
 		ostream& print(const char* s);
@@ -58,7 +58,7 @@ namespace std {
 		ostream& operator<<(long l);
 		ostream& operator<<(unsigned long ul);
 		ostream& operator<<(ios_base b);
-		ostream& operator<<(console_color c);
+		ostream& operator<<(ConsoleColor c);
 	};
 
 	extern ostream cout;
@@ -68,7 +68,7 @@ namespace std {
 	extern ios_base oct;
 	extern ios_base bin;
 
-	extern console_color color_def;
+	extern ConsoleColor ColorDef;
 
 	extern const char * endl;
 }

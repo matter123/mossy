@@ -46,7 +46,7 @@ namespace kernel {
 		x86::init_exceptions();
 		x86::init_pic();
 		x86::install_pic_idt();
-		enable_idt();
+		x86::enable_idt();
 		x86::init_pit(x86::PIT_FREQ_10MS);
 		//asm("sti");
 	}

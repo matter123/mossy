@@ -17,13 +17,12 @@
 
 #ifndef __IDT_H
 #define __IDT_H
-#include "../../define.h"
 
 #define IDT_TYPE_INTRPT 0x0E
 #define IDT_TYPE_TRAP   0x0F
 #define IDT_TYPE_TASK   0x05
-void install_idt(void *handler, int number, int type, int min_ring);
-
-void enable_idt();
-
+namespace x86 {
+	void install_idt(void *handler, int number, int type, int min_ring);
+	void enable_idt();
+}
 #endif

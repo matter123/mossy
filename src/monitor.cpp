@@ -34,15 +34,15 @@ namespace std {
 		showbase=s;
 		uppercase=u;
 	}
-	console_color::console_color(int foreground, int background) {
+	ConsoleColor::ConsoleColor(int foreground, int background) {
 		color=foreground;
 		backcolor=background;
 	}
-	console_color::console_color() {
+	ConsoleColor::ConsoleColor() {
 		color=0xF;
 		backcolor=0x0;
 	}
-	uint16_t console_color::getColor() {
+	uint16_t ConsoleColor::getColor() {
 		return ((backcolor&0xF)<<4)|(color&0xF);
 	}
 	void ios_base::combine(ios_base b) {
@@ -77,10 +77,10 @@ namespace std {
 	ostream::ostream(){
 		px=0;
 		py=0;
-		c=console_color(0xF,0x0);
+		c=ConsoleColor(0xF,0x0);
 	}
 
-	ostream::ostream(console_color color){
+	ostream::ostream(ConsoleColor color){
 		px=0;
 		py=0;
 		c=color;
@@ -135,7 +135,7 @@ namespace std {
 		b.combine(base);
 		return *this;
 	}
-	ostream& ostream::operator<<(console_color color) {
+	ostream& ostream::operator<<(ConsoleColor color) {
 		c=color;
 		return *this;
 	}
@@ -150,7 +150,7 @@ namespace std {
 		}
 		return *this;
 	}
-	console_color def(0xF,0x0);
+	ConsoleColor def(0xF,0x0);
 
 	ostream cout(def);
 
