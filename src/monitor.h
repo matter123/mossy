@@ -40,29 +40,29 @@ namespace std {
 		ConsoleColor();
 	};
 
-	class ostream {
+	class nm_ostream {
 	private:
 		ios_base b;
 		ConsoleColor c;
 		uint16_t *mon=(uint16_t *)0xC00B8000;
 		int px,py;
 	public:
-		ostream();
-		ostream(ConsoleColor c);
-		ostream& printc(char c);
-		ostream& cls();
-		ostream& print(const char* s);
-		ostream& operator<<(bool b);
-		ostream& operator<<(const char *s);
-		ostream& operator<<(int i);
-		ostream& operator<<(unsigned u);
-		ostream& operator<<(long l);
-		ostream& operator<<(unsigned long ul);
-		ostream& operator<<(ios_base b);
-		ostream& operator<<(ConsoleColor c);
+		nm_ostream();
+		nm_ostream(ConsoleColor c);
+		nm_ostream& printc(char c);
+		nm_ostream& cls();
+		nm_ostream& print(const char* s);
+		nm_ostream& operator<<(bool b);
+		nm_ostream& operator<<(const char *s);
+		nm_ostream& operator<<(int i);
+		nm_ostream& operator<<(unsigned u);
+		nm_ostream& operator<<(long l);
+		nm_ostream& operator<<(unsigned long ul);
+		nm_ostream& operator<<(ios_base b);
+		nm_ostream& operator<<(ConsoleColor c);
 	};
 
-	extern ostream cout;
+	extern nm_ostream cout;
 
 	extern ios_base hex;
 	extern ios_base dec;

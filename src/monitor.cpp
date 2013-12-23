@@ -51,12 +51,12 @@ namespace std {
 		if(b.uppercase>0)this->uppercase=b.uppercase;
 	}
 
-	ostream & ostream::print(const char *s) {
+	nm_ostream & nm_ostream::print(const char *s) {
 		while(*s)printc(*(s++));
 		return *this;
 	}
 
-	ostream & ostream::printc(char let) {
+	nm_ostream & nm_ostream::printc(char let) {
 		if(let=='\n') {
 			px=0;
 			py++;
@@ -74,19 +74,19 @@ namespace std {
 		return *this;
 	}
 
-	ostream::ostream(){
+	nm_ostream::nm_ostream(){
 		px=0;
 		py=0;
 		c=ConsoleColor(0xF,0x0);
 	}
 
-	ostream::ostream(ConsoleColor color){
+	nm_ostream::nm_ostream(ConsoleColor color){
 		px=0;
 		py=0;
 		c=color;
 	}
 
-	ostream &ostream::operator <<(bool b1) {
+	nm_ostream &nm_ostream::operator <<(bool b1) {
 		if(b.uppercase) {
 			print((b1?"True":"False"));
 		}else {
@@ -94,11 +94,11 @@ namespace std {
 		}
 		return *this;
 	}
-	ostream &ostream::operator <<(const char *s) {
+	nm_ostream &nm_ostream::operator <<(const char *s) {
 		print(s);
 		return *this;
 	}
-	ostream &ostream::operator <<(int i) {
+	nm_ostream &nm_ostream::operator <<(int i) {
 		char buf[50];
 		if(b.showbase) {
 			if(b.base==16)print("0x");
@@ -108,7 +108,7 @@ namespace std {
 		print(numtostr(i,buf,b.base,b.uppercase));
 		return *this;
 	}
-	ostream &ostream::operator <<(unsigned int u) {
+	nm_ostream &nm_ostream::operator <<(unsigned int u) {
 		char buf[50];
 		if(b.showbase) {
 			if(b.base==16)print("0x");
@@ -118,7 +118,7 @@ namespace std {
 		print(numtostr(u,buf,b.base,b.uppercase));
 		return *this;
 	}
-	ostream &ostream::operator <<(long l) {
+	nm_ostream &nm_ostream::operator <<(long l) {
 		char buf[50];
 		if(b.showbase) {
 			if(b.base==16)print("0x");
@@ -128,7 +128,7 @@ namespace std {
 		print(numtostr(l,buf,b.base,b.uppercase));
 		return *this;
 	}
-	ostream &ostream::operator <<(unsigned long ul) {
+	nm_ostream &nm_ostream::operator <<(unsigned long ul) {
 		char buf[50];
 		if(b.showbase) {
 			if(b.base==16)print("0x");
@@ -139,16 +139,16 @@ namespace std {
 		return *this;
 	}
 
-	ostream &ostream::operator <<(ios_base base) {
+	nm_ostream &nm_ostream::operator <<(ios_base base) {
 		b.combine(base);
 		return *this;
 	}
-	ostream& ostream::operator<<(ConsoleColor color) {
+	nm_ostream& nm_ostream::operator<<(ConsoleColor color) {
 		c=color;
 		return *this;
 	}
 
-	ostream & ostream::cls() {
+	nm_ostream & nm_ostream::cls() {
 		px=0;
 		py=0;
 		for(int x=0;x<80;x++) {
@@ -160,7 +160,7 @@ namespace std {
 	}
 	ConsoleColor def(0xF,0x0);
 
-	ostream cout(def);
+	nm_ostream cout(def);
 
 	ios_base dec;
 	ios_base hex(16,2,2);

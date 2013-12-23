@@ -16,15 +16,15 @@
 //implementation of all xtoa functions ie itoa, ltoa, ...
 #include <cstdlib>
 namespace std{
-	static c_string chars =   "ZYXWVUTSRQPONMLKJIHGFEDCBA9876543210123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-	static c_string chars_low="zyxwvutsrqponmlkjihgfedcba9876543210123456789abcdefghijklmnopqrstuvwxyz";
+	static c_cstring chars =   "ZYXWVUTSRQPONMLKJIHGFEDCBA9876543210123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	static c_cstring chars_low="zyxwvutsrqponmlkjihgfedcba9876543210123456789abcdefghijklmnopqrstuvwxyz";
 
 	template<class T>
-	string numtostr(T value,string str,int base,bool uppercase) {
-		string rc;
-		string ptr;
-		string low;
-		c_string lets=chars;
+	cstring numtostr(T value,cstring str,int base,bool uppercase) {
+		cstring rc;
+		cstring ptr;
+		cstring low;
+		c_cstring lets=chars;
 		if(!uppercase)lets=chars_low;
 		// Check for supported base.
 		if ( base < 2 || base > 36 ) {

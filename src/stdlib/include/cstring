@@ -18,10 +18,11 @@
 #define	STRING_H
 #include <cstdlib>
 namespace std {
-	string strcat(string s1,c_string s2);
-	string strcpy(string s1,c_string s2);
-	int    strlen(string s1);
-	bool   strcmp(c_string s1,c_string s2);
+	cstring strcat(cstring s1,c_cstring s2);
+	cstring strcpy(cstring s1,c_cstring s2);
+	int    strlen(c_cstring s1);
+	bool   strcmp(c_cstring s1,c_cstring s2);
 }
+#include "../strclass.hpp"
 #endif
 

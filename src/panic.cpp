@@ -24,9 +24,9 @@ namespace kernel {
 	void panic(uint32_t code) {
 		
 	}
-	void panic(std::c_string msg) {
+	void panic(std::c_cstring msg) {
 	}
-	void panic(std::c_string file,uint32_t line) {
+	void panic(std::c_cstring file,uint32_t line) {
 		
 	}
 }

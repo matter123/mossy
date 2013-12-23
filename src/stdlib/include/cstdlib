@@ -17,7 +17,7 @@
 #ifndef STDLIB_H
 #define STDLIB_H
 namespace std {
-	typedef char * string;
-	typedef const char * c_string;
+	typedef char * cstring;
+	typedef const char * c_cstring;
 }
 #endif
