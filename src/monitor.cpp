@@ -86,6 +86,14 @@ namespace std {
 		c=color;
 	}
 
+	ostream &ostream::operator <<(bool b1) {
+		if(b.uppercase) {
+			print((b1?"True":"False"));
+		}else {
+			print((b1?"true":"false"));
+		}
+		return *this;
+	}
 	ostream &ostream::operator <<(const char *s) {
 		print(s);
 		return *this;

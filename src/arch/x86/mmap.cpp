@@ -26,6 +26,7 @@ namespace kernel {
 		char buf[80]="Apple ";
 		std::cout<<std::strcat(buf,"Pie.\n");
 		std::cout<<std::strcpy(buf,"Cherry.\n");
+		std::cout<<std::strcmp("Apple Pie","Apple Pie");
 		std::cout<<mboot->mem_high<<std::endl;
 		mmap_field_t *mmap=(mmap_field_t *)(mboot->mmap_ptr+0xC0000000);
 		std::cout<<mmap->type<<std::endl<<std::bin<<1024;
