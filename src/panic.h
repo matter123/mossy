@@ -16,9 +16,12 @@
 
 #ifndef PANIC_H
 #define PANIC_H
-
-
-
-
-
+#include <stdint.h>
+#include <stdlib.h>
+namespace kernel {
+	void panic();
+	void panic(uint32_t code);
+	void panic(std::c_string msg);
+	void panic(std::c_string file,uint32_t line);
+}
 #endif

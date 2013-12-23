@@ -15,40 +15,41 @@
  */
 //implementation of all xtoa functions ie itoa, ltoa, ...
 #include <stdlib.h>
+namespace std{
+	static c_string chars =   "ZYXWVUTSRQPONMLKJIHGFEDCBA9876543210123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	static c_string chars_low="zyxwvutsrqponmlkjihgfedcba9876543210123456789abcdefghijklmnopqrstuvwxyz";
 
-static c_string chars =   "ZYXWVUTSRQPONMLKJIHGFEDCBA9876543210123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-static c_string chars_low="zyxwvutsrqponmlkjihgfedcba9876543210123456789abcdefghijklmnopqrstuvwxyz";
-
-template<class T>
-string numtostr(T value,string str,int base,bool uppercase) {
-	string rc;
-	string ptr;
-	string low;
-	c_string lets=chars;
-	if(!uppercase)lets=chars_low;
-	// Check for supported base.
-	if ( base < 2 || base > 36 ) {
-		*str = '\0';
-		return str;
+	template<class T>
+	string numtostr(T value,string str,int base,bool uppercase) {
+		string rc;
+		string ptr;
+		string low;
+		c_string lets=chars;
+		if(!uppercase)lets=chars_low;
+		// Check for supported base.
+		if ( base < 2 || base > 36 ) {
+			*str = '\0';
+			return str;
+		}
+		rc = ptr = str;
+		// Set '-' for negative decimals.
+		if ( value < 0 && base == 10 ) {
+			*ptr++ = '-';
+		}
+		low = ptr;
+		// The actual conversion.
+		do {
+			//using memory to save cpu speed by mirroring array
+			*ptr++ = lets[35 + value % base];
+			value /= base;
+		} while ( value );
+		*ptr-- = '\0';
+		//reverse modulus trick
+		while ( low < ptr ) {
+			char tmp = *low;
+			*low++ = *ptr;
+			*ptr-- = tmp;
+		}
+		return rc;
 	}
-	rc = ptr = str;
-	// Set '-' for negative decimals.
-	if ( value < 0 && base == 10 ) {
-		*ptr++ = '-';
-	}
-	low = ptr;
-	// The actual conversion.
-	do {
-		//using memory to save cpu speed by mirroring array
-		*ptr++ = lets[35 + value % base];
-		value /= base;
-	} while ( value );
-	*ptr-- = '\0';
-	//reverse modulus trick
-	while ( low < ptr ) {
-		char tmp = *low;
-		*low++ = *ptr;
-		*ptr-- = tmp;
-	}
-	return rc;
 }

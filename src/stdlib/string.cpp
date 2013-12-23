@@ -14,8 +14,26 @@
    limitations under the License.
  */
 
-#ifndef STRUT_H
-#define STRUT_H
-#define PACKED __attribute((packed))
-#define FULL __attribute((packed))
-#endif
+#include <string.h>
+
+namespace std {
+	string strcat(string s1,c_string s2) {
+		while(*(s1++));
+		while(*(s2))*(s1++)=*(s2++);
+		*(s1)='\0';
+		return s1;
+	}
+	string strcpy(string s1,c_string s2) {
+		while(*(s2))*(s1++)=*(s2++);
+		*(s1)='\0';
+		return s1;
+	}
+	int    strlen(string s1) {
+		int i=0;
+		while(*(s1++))i++;
+		return i;
+	}
+	bool   strcmp(c_string s1,c_string s2) {
+		return false;
+	}
+}

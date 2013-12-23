@@ -1,0 +1,11 @@
+Cleaning workspace
+find . -name '*.o' -delete
+assembling help files
+$HOME/opt/cross/bin/i586-elf-as ./gc/crti.asm -o ./gc/crti.o
+$HOME/opt/cross/bin/i586-elf-as ./gc/crtn.asm -o ./gc/crtn.o
+Compiling src/panic.cpp
+src/panic.cpp:17:20: fatal error: string.h: No such file or directory
+ #include <string.h>
+                    ^
+compilation terminated.
+gmake: *** [src/panic.o] Error 1

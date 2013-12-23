@@ -14,8 +14,14 @@
    limitations under the License.
  */
 
-#ifndef STRUT_H
-#define STRUT_H
-#define PACKED __attribute((packed))
-#define FULL __attribute((packed))
+#ifndef STRING_H
+#define	STRING_H
+#include <stdlib.h>
+namespace std {
+	string strcat(string s1,c_string s2);
+	string strcpy(string s1,c_string s2);
+	int    strlen(string s1);
+	bool   strcmp(c_string s1,c_string s2);
+}
 #endif
+

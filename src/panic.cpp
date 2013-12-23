@@ -14,8 +14,19 @@
    limitations under the License.
  */
 
-#ifndef STRUT_H
-#define STRUT_H
-#define PACKED __attribute((packed))
-#define FULL __attribute((packed))
-#endif
+#include "panic.h"
+#include <string.h>
+
+namespace kernel {
+	void panic() {
+		panic("Unknown Error Has Occurred\nAbandon All Hope");
+	}
+	void panic(uint32_t code) {
+		
+	}
+	void panic(std::c_string msg) {
+	}
+	void panic(std::c_string file,uint32_t line) {
+		
+	}
+}
