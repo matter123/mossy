@@ -15,7 +15,7 @@
  */
 
 #include "panic.h"
-#include <string.h>
+#include <cstring>
 
 namespace kernel {
 	void panic() {

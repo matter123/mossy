@@ -14,19 +14,22 @@
    limitations under the License.
  */
 
-#include <string.h>
+#include <cstring>
 
 namespace std {
 	string strcat(string s1,c_string s2) {
-		while(*(s1++));
-		while(*(s2))*(s1++)=*(s2++);
-		*(s1)='\0';
-		return s1;
+		string s=s1;
+		if(*(s1)) {
+			while(*(++s1));
+		}
+		while ( (*s1++ = *s2++) );
+		return s;
 	}
 	string strcpy(string s1,c_string s2) {
+		string s=s1;
 		while(*(s2))*(s1++)=*(s2++);
 		*(s1)='\0';
-		return s1;
+		return s;
 	}
 	int    strlen(string s1) {
 		int i=0;
@@ -34,6 +37,9 @@ namespace std {
 		return i;
 	}
 	bool   strcmp(c_string s1,c_string s2) {
-		return false;
+		while (*s1 && *s1 == *s2 ) {
+			++s1;++s2;
+		}
+		return *(s1) == *(s2);
 	}
 }

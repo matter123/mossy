@@ -16,13 +16,16 @@
 
 #include "mmap.h"
 #include "../../monitor.h"
-
+#include <cstring>
 
 namespace kernel {
 	void parse_mboot_mmap(multiboot_t *mboot) {
 		std::cout<<std::bin<<"flags:"<<mboot->flags<<" meminfo valid:"<<((mboot->flags&(1<<6))?"yes":"no")<<std::endl;
 		std::cout<<std::hex<<"mem info start:"<<mboot->mmap_ptr<<std::endl;
 		std::cout<<std::dec<<"mem info len  :"<<mboot->mmap_length<<std::endl;
+		char buf[80]="Apple ";
+		std::cout<<std::strcat(buf,"Pie.\n");
+		std::cout<<std::strcpy(buf,"Cherry.\n");
 		std::cout<<mboot->mem_high<<std::endl;
 		mmap_field_t *mmap=(mmap_field_t *)(mboot->mmap_ptr+0xC0000000);
 		std::cout<<mmap->type<<std::endl<<std::bin<<1024;

@@ -16,7 +16,7 @@
 
 #ifndef STRING_H
 #define	STRING_H
-#include <stdlib.h>
+#include <cstdlib>
 namespace std {
 	string strcat(string s1,c_string s2);
 	string strcpy(string s1,c_string s2);
