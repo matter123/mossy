@@ -91,6 +91,7 @@ namespace x86 {
 		uint32_t code;
 		asm volatile("mov %%cr2, %0":"=r"(code));
 		std::cout<<std::hex<<"exception"<<s.ext<<" "<<s.eip<<std::endl;
+		asm("cli\nhlt");
 	}
 
 	extern "C" void resv_except_handler() {

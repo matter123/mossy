@@ -92,6 +92,18 @@ namespace std {
 				}
 				return *this;
 			}
+			c_cstring cstr() {
+				buf[len]='\0';
+				return buf;
+			}
+			nm_string& operator= (const char* s) {
+				int strl=std::strlen(s);
+				if(strl<SIZE) {
+					strcpy(buf,s);
+					len=strl;
+				}
+				return *this;
+			}
 	};
 }
 #endif

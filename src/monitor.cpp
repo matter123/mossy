@@ -63,7 +63,7 @@ namespace std {
 			return *this;
 		}
 		if(let=='\t') {
-			px=(px+4)&(~3);
+			px=(px+32)&(~31);
 			return *this;
 		}
 		mon[py*80+px++]=let|this->c.getColor()<<8;
@@ -84,15 +84,6 @@ namespace std {
 		px=0;
 		py=0;
 		c=color;
-	}
-
-	nm_ostream &nm_ostream::operator <<(bool b1) {
-		if(b.uppercase) {
-			print((b1?"True":"False"));
-		}else {
-			print((b1?"true":"false"));
-		}
-		return *this;
 	}
 	nm_ostream &nm_ostream::operator <<(const char *s) {
 		print(s);
@@ -138,7 +129,6 @@ namespace std {
 		print(numtostr(ul,buf,b.base,b.uppercase));
 		return *this;
 	}
-
 	nm_ostream &nm_ostream::operator <<(ios_base base) {
 		b.combine(base);
 		return *this;

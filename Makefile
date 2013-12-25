@@ -19,6 +19,7 @@ build: clean globalc $(COBJECTS) $(CPPOBJECTS) $(SOBJECTS) link
 
 test: mkiso runem
 
+
 WFLAGSON=-Wall -Wextra -Werror=return-type -Wshadow -Wframe-larger-than=16384 -Wdeprecated -Wredundant-decls -pedantic
 WFLAGSOFF=-Wno-sequence-point -Wno-packed-bitfield-compat -Wno-unused-parameter
 DFLAGS= -DCPU=586

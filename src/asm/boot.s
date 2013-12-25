@@ -45,6 +45,7 @@ start:
 [extern _init]
 higherhalf:
 	mov esp, sys_stack
+	mov ebp, sys_stack
 	add ebx, 0xC0000000 ;move to higher half
 	push ebx
 	call _init

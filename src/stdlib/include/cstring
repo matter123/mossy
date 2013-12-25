@@ -17,11 +17,18 @@
 #ifndef STRING_H
 #define	STRING_H
 #include <cstdlib>
+#include <stddef.h>
+#include <stdint.h>
+#include <stddef.h>
 namespace std {
 	cstring strcat(cstring s1,c_cstring s2);
 	cstring strcpy(cstring s1,c_cstring s2);
 	int    strlen(c_cstring s1);
 	bool   strcmp(c_cstring s1,c_cstring s2);
+	void  *memmove(void *dest,const void *src,size_t num);
+	void  *memset(void *addr,uint8_t value,size_t bytes);
+	void  *memset16(uint16_t *addr,uint16_t value,size_t ops);
+	void  *memset32(uint32_t *addr,uint32_t value,size_t ops);
 }
 #include "../strclass.hpp"
 #endif

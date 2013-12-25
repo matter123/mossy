@@ -23,10 +23,12 @@ namespace kernel {
 	struct mmap_field_t{
 		uint32_t size;
 		uint64_t start;
-		uint64_t len;
+		uint64_t end;
 		uint32_t type;
 	}PACKED;
-
+	multiboot_t *fix_tables(multiboot_t *mboot);
 	void parse_mboot_mmap(multiboot_t *mboot);
+	bool is_valid_mem(void *addr);
+	void *get_next_aligned();
 }
 #endif

@@ -16,17 +16,29 @@
 
 #include "panic.h"
 #include <cstring>
+#include <conv.hpp>
+#include "monitor.h"
 
 namespace kernel {
 	void panic() {
-		panic("Unknown Error Has Occurred\nAbandon All Hope");
+		panic("Unknown Error\nAbandon All Hope");
 	}
 	void panic(uint32_t code) {
-		
+		std::nm_string<25> msg("Errorcode:0x");
+		char buf[9];
+		msg+=std::numtostr(code,buf,16,true);
+		panic(msg.cstr());
 	}
 	void panic(std::c_cstring msg) {
+		std::cout<<std::endl<<"PANIC: An Unrecoverable Error Has Occurred";
+		std::cout<<std::endl<<msg;
+		asm("cli\nhlt");
 	}
 	void panic(std::c_cstring file,uint32_t line) {
-		
+		std::nm_string<100> msg("In File:");
+		(msg+=file)+=" On Line:";
+		char buf[9];
+		msg+=std::numtostr(line,buf,10,true);
+		panic(msg.cstr());
 	}
 }

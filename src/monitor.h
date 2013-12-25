@@ -52,7 +52,6 @@ namespace std {
 		nm_ostream& printc(char c);
 		nm_ostream& cls();
 		nm_ostream& print(const char* s);
-		nm_ostream& operator<<(bool b);
 		nm_ostream& operator<<(const char *s);
 		nm_ostream& operator<<(int i);
 		nm_ostream& operator<<(unsigned u);

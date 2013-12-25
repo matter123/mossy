@@ -21,12 +21,11 @@
 #include "arch/x86/pic.h"
 #include "arch/x86/pit.h"
 #include "arch/x86/mmap.h"
+#include "arch/x86/paging.h"
 #include "monitor.h"
 #include "hhalf.h"
 #include <conv.hpp>
 
-extern "C" uint32_t k_end;
-extern "C" uint32_t k_start;
 namespace kernel {
 	void init_system(multiboot_t *mboot);
 	extern "C"
@@ -36,12 +35,13 @@ namespace kernel {
 		while(1);
 	}
 	void init_system(multiboot_t *mboot) {
-		//GDT basic paging
+		//GDT, basic paging
 		init_higher_half();
 
-		//parse the memory map
+		mboot=fix_tables(mboot);
 		parse_mboot_mmap(mboot);
 
+		x86::paging::init_paging();
 		//IDT setup
 		x86::init_exceptions();
 		x86::init_pic();

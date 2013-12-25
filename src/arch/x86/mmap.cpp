@@ -17,18 +17,79 @@
 #include "mmap.h"
 #include "../../monitor.h"
 #include <cstring>
+#include "../../panic.h"
+#include "../../hhalf.h"
 
+
+extern "C" uint32_t k_end;
+extern "C" uint32_t k_start;
 namespace kernel {
+	uint32_t k_data_end;
+	mmap_field_t *mmap;
+	int mmap_count;
+
+	void *fix(void *ptr);
+
+	multiboot_t *fix_tables(multiboot_t *mboot) {
+		mboot=(multiboot_t *)fix(mboot);
+		mboot=(multiboot_t *)std::memmove(&k_end,mboot,sizeof(multiboot_t));
+		uint8_t *pos=(uint8_t *)&k_end+sizeof(multiboot_t);
+		mboot->mods_ptr=std::memmove(pos,fix(mboot->mods_ptr),16*mboot->mods_count);
+		pos+=16*mboot->mods_count;
+		mboot->mmap_ptr=std::memmove(pos,fix(mboot->mmap_ptr),mboot->mmap_length);
+		pos+=mboot->mmap_length;
+		mboot->drives_ptr=std::memmove(pos,fix(mboot->drives_ptr),mboot->drives_length);
+		pos+=mboot->drives_length;
+		mboot->cmdline_ptr=std::memmove(pos,fix(mboot->cmdline_ptr),std::strlen((std::c_cstring)mboot->cmdline_ptr));
+		pos+=std::strlen((std::c_cstring)mboot->cmdline_ptr);
+		mboot->vbe_control_info_ptr=std::memmove(pos,fix(mboot->vbe_control_info_ptr),512);
+		pos+=512;
+		mboot->vbe_mode_info_ptr=std::memmove(pos,fix(mboot->vbe_mode_info_ptr),256);
+		pos+=256;
+		k_data_end=(uint32_t)pos+0x1000;
+		return mboot;
+	}
+
 	void parse_mboot_mmap(multiboot_t *mboot) {
-		std::cout<<std::bin<<"flags:"<<mboot->flags<<" meminfo valid:"<<((mboot->flags&(1<<6))?"yes":"no")<<std::endl;
-		std::cout<<std::hex<<"mem info start:"<<mboot->mmap_ptr<<std::endl;
-		std::cout<<std::dec<<"mem info len  :"<<mboot->mmap_length<<std::endl;
-		char buf[80]="Apple ";
-		std::cout<<std::strcat(buf,"Pie.\n");
-		std::cout<<std::strcpy(buf,"Cherry.\n");
-		std::cout<<std::strcmp("Apple Pie","Apple Pie");
-		std::cout<<mboot->mem_high<<std::endl;
-		mmap_field_t *mmap=(mmap_field_t *)(mboot->mmap_ptr+0xC0000000);
-		std::cout<<mmap->type<<std::endl<<std::bin<<1024;
+		mmap=(mmap_field_t *)mboot->mmap_ptr;
+		mmap_count=mboot->mmap_length/sizeof(mmap_field_t);
+
+		//fix memory maps
+		for(int i=0;i<mmap_count;i++) {
+			//at boot end is really length, this corrects it
+			mmap[i].end=mmap[i].start+mmap[i].end;
+
+			//make sure there page aligned
+			//this slides them towards the inside
+			mmap[i].end&=0xFFFFF000;
+			if(mmap[i].start&0xFFF) {
+				mmap[i].start=(mmap[i].start&0xFFFFF000)+0x1000;
+			}
+			if(mmap[i].type!=1)mmap[i].type=0;
+		}
+	}
+
+	bool is_valid_mem(void *addr) {
+		uint32_t addri=(uint32_t)addr;
+		addri&=0xFFFFF000;
+		bool valid=false;
+		for(int i=0;i<mmap_count;i++) {
+			if(addri>=mmap[i].start&&addri<mmap[i].end) {
+				if(mmap[i].type) valid=true;
+				else return false;
+			}
+		}
+		return valid;
+	}
+
+	void *fix(void *ptr) {
+		if((uintptr_t)ptr<HIGH_HALF_BASE_ADDR)ptr=(void *)(((uintptr_t)ptr)+HIGH_HALF_BASE_ADDR);
+		return ptr;
+	}
+
+	void * get_next_aligned() {
+		k_data_end&=0xFFFFF000;
+		k_data_end+=0x1000;
+		return (void *)k_data_end;
 	}
 }
