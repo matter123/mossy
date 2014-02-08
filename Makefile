@@ -6,8 +6,8 @@ SSOURCES=$(shell find -name *.s)
 SOBJECTS=$(patsubst %.s, %.o, $(SSOURCES))
 
 CC=$$HOME/opt/cross/bin/i586-elf-gcc
-CPP=$$HOME/opt/cross/bin/i586-elf-g++
-LD=$$HOME/opt/cross/bin/i586-elf-g++
+CPP=$$HOME/opt/cross/bin/i586-elf-gcc
+LD=$$HOME/opt/cross/bin/i586-elf-gcc
 AS=$$HOME/opt/cross/bin/i586-elf-as
 
 CRTBEGIN_OBJ:=$(shell $(CC) $(CFLAGS) -print-file-name=crtbegin.o)
@@ -15,14 +15,14 @@ CRTEND_OBJ:=$(shell $(CC) $(CFLAGS) -print-file-name=crtend.o)
 
 all: build test
 
-build: clean globalc $(COBJECTS) $(CPPOBJECTS) $(SOBJECTS) link
+build: clean check globalc $(COBJECTS) $(CPPOBJECTS) $(SOBJECTS) link
 
 test: mkiso runem
 
 
 WFLAGSON=-Wall -Wextra -Werror=return-type -Wshadow -Wframe-larger-than=16384 -Wdeprecated -Wredundant-decls -pedantic
-WFLAGSOFF=-Wno-sequence-point -Wno-packed-bitfield-compat -Wno-unused-parameter
-DFLAGS= -DCPU=586
+WFLAGSOFF=-Wno-sequence-point -Wno-unused-parameter
+DFLAGS=-DCPU=586
 CFLAGS=-Isrc/stdlib/include -ffreestanding -O2 -std=c99 $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF)
 CPPFLAGS=-Isrc/stdlib/include -ffreestanding -O2 -std=c++11 $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF)
 LDFLAGS=-Tlink.ld -ffreestanding -O2 -nostdlib
@@ -34,7 +34,7 @@ clean:
 	@rm -f kernel
 
 check:
-	@tools/doccheck.py kernel ..
+	tools/doccheck.py kernel src
 link:
 	@echo Linking
 	$(LD) $(LDFLAGS) -o kernel ./gc/crti.o $(CRTBEGIN_OBJ) $(SOBJECTS) $(COBJECTS) $(CPPOBJECTS) $(CRTEND_OBJ) ./gc/crtn.o

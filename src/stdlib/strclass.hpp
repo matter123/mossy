@@ -36,13 +36,13 @@ namespace std {
 			void clear() {
 				len=0;
 			}
-			char& operator[] (size_t pos) {
+			const char& operator[] (size_t pos) {
 				if(pos<len) {
 					return buf[pos];
 				}
 				return '\0';
 			}
-			char& at (size_t pos) {
+			const char& at (size_t pos) {
 				if(pos<len) {
 					return buf[pos];
 				}

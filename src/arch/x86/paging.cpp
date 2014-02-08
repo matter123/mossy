@@ -24,18 +24,19 @@
 namespace x86 {
 	namespace paging {
 		page_dir *k_page_dir;
-		uint8_t *phys=(uint8_t*)0x100000;
+		uint8_t *phys=(uint8_t*)0x000000;
 		bool paging_active=false;
 
 		void * begin_alloc_a() {
-			void *alloc=kernel::get_next_aligned();
+			void *alloc=(void *)0;
 			return std::memset(alloc,0,0x1000);
 		}
 
 		void init_paging() {
 			k_page_dir=(page_dir *)begin_alloc_a();
-			uint8_t *virt=(uint8_t *)0xC0100000;
-			for(int i=0;i<0x400;i++) {
+			//map 3 megabytes starteding at the start of bottom of memory
+			uint8_t *virt=(uint8_t *)0xC0000000;
+			for(int i=0;i<0x300;i++) {
 				map_virt(k_page_dir,virt,&begin_alloc_a);
 				virt+=0x1000;
 			}

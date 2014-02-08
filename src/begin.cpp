@@ -14,7 +14,6 @@
    limitations under the License.
 */
 
-#include <stdint.h>
 #include "init/multiboot.h"
 #include "arch/x86/idt.h"
 #include "arch/x86/exceptions.h"
@@ -31,7 +30,8 @@ namespace kernel {
 	extern "C"
 	void init_exec(multiboot_t *mboot) {
 		init_system(mboot);
-		//std::cout.cls()<<std::hex<<"kernel start="<<(uint32_t)&k_start<<std::endl<<"kernel end = "<<(uint32_t)&k_end<<std::endl;
+		std::cout <<"hello setup kernel";
+		//asm("int $32");
 		while(1);
 	}
 	void init_system(multiboot_t *mboot) {
@@ -48,6 +48,6 @@ namespace kernel {
 		x86::install_pic_idt();
 		x86::enable_idt();
 		x86::init_pit(x86::PIT_FREQ_10MS);
-		//asm("sti");
+		asm("sti");
 	}
 }

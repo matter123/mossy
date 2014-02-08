@@ -34,6 +34,12 @@ namespace std {
 		showbase=s;
 		uppercase=u;
 	}
+	ios_base::ios_base(int b,int u,int s,int d) {
+		base=b;
+		showbase=s;
+		uppercase=u;
+		min_digits=d;
+	}
 	ConsoleColor::ConsoleColor(int foreground, int background) {
 		color=foreground;
 		backcolor=background;
@@ -49,6 +55,7 @@ namespace std {
 		if(b.base>0)this->base=b.base;
 		if(b.showbase>0)this->showbase=b.showbase;
 		if(b.uppercase>0)this->uppercase=b.uppercase;
+		this->min_digits=b.min_digits;
 	}
 
 	nm_ostream & nm_ostream::print(const char *s) {
@@ -96,7 +103,7 @@ namespace std {
 			if(b.base==8)print("0");
 			if(b.base==2)print("0b");
 		}
-		print(numtostr(i,buf,b.base,b.uppercase));
+		print(numtostr(i,buf,b.base,b.uppercase,b.min_digits));
 		return *this;
 	}
 	nm_ostream &nm_ostream::operator <<(unsigned int u) {
@@ -106,7 +113,7 @@ namespace std {
 			if(b.base==8)print("0");
 			if(b.base==2)print("0b");
 		}
-		print(numtostr(u,buf,b.base,b.uppercase));
+		print(numtostr(u,buf,b.base,b.uppercase,b.min_digits));
 		return *this;
 	}
 	nm_ostream &nm_ostream::operator <<(long l) {
@@ -116,7 +123,7 @@ namespace std {
 			if(b.base==8)print("0");
 			if(b.base==2)print("0b");
 		}
-		print(numtostr(l,buf,b.base,b.uppercase));
+		print(numtostr(l,buf,b.base,b.uppercase,b.min_digits));
 		return *this;
 	}
 	nm_ostream &nm_ostream::operator <<(unsigned long ul) {
@@ -126,7 +133,7 @@ namespace std {
 			if(b.base==8)print("0");
 			if(b.base==2)print("0b");
 		}
-		print(numtostr(ul,buf,b.base,b.uppercase));
+		print(numtostr(ul,buf,b.base,b.uppercase,b.min_digits));
 		return *this;
 	}
 	nm_ostream &nm_ostream::operator <<(ios_base base) {

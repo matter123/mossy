@@ -27,6 +27,12 @@ SECTIONS
 	{
 		*(COMMON*)
 		*(.bss*)
+		k_end = .;
 	}
-	k_end = .;
+	.kdata ALIGN (4096) : AT(ADDR(.kdata) - 0xC0000000)
+	{
+		*(.kdata)
+		. += 131072;
+		k_data_end = .;
+	}
 }

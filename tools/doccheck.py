@@ -30,7 +30,7 @@ def combine(path1, path2):
 def help():
 	print "doccheck, version 1.0 copyright Matthew Fosdick 2013"
 	print "doccheck <resource> [root dir]"
-	print "checks the documentation for matching files to each .c .h and .s file"
+	print "checks the documentation for matching files to each .h and .s file"
 	print "<resource> is the folder to check in docs in doc/<resource> and files in <resource>"
 	print "if [root dir] is specfied treat [root dir] as working directory"
 
@@ -53,22 +53,24 @@ working=os.getcwd()
 if argc==3:
 	working=path.abspath(argv[2])
 
-r=combine(working, argv[1])
 doc=combine(combine(working,"doc"),argv[1])
-
+print working,doc
 hd=0
 t=0
 
-for root, dirs, files in os.walk(r):
+for root, dirs, files in os.walk(working):
 	for file in files:
 		if file.endswith(".h") or file.endswith(".s"):
 			t+=1
-			f = path.normpath(path.relpath(root,r)+"/"+file)
+			f = path.normpath(path.relpath(root,working)+"/"+file)
 			if check(f):
 				print "warning missing documentation for "+f
 			else:
 				hd+=1
 
 #for fun
-percent=hd/float(t)*100
-print str(round(percent,1))+"% of files have documentation"
+if t > 0:
+	percent=hd/float(t)*100
+	print str(round(percent,1))+"% of files have documentation"
+else:
+	print "no files found"

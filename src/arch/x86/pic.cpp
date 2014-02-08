@@ -47,7 +47,7 @@ namespace x86 {
 #define PIC_M_OFSET  0x20
 #define PIC_S_OFSET  0x28
 
-#define PIC_DEF_MSK  0x00
+#define PIC_DEF_MSK  0xFF
 
 #define PIC_CMD_EOI  0x20
 #define PIC_CMD_INIT 0x11
@@ -110,6 +110,7 @@ namespace x86 {
 	}
 	pic_handle_t functions[16];
 	extern "C" void pic_handle(stack_t s) {
+		//std::cout<<s.pic<<std::endl;
 		if(s.pic>7) {
 			outb(PIC_S_CMD,PIC_CMD_EOI);
 		}

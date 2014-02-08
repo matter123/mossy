@@ -52,6 +52,6 @@ namespace x86 {
 	}
 
 	void handleTick(stack_t s) {
-		std::cout<<"tick happened"<<std::endl;
+		//std::cout<<"tick happened"<<std::endl;
 	}
 }

@@ -20,7 +20,7 @@ namespace std{
 	static c_cstring chars_low="zyxwvutsrqponmlkjihgfedcba9876543210123456789abcdefghijklmnopqrstuvwxyz";
 
 	template<class T>
-	cstring numtostr(T value,cstring str,int base,bool uppercase) {
+	cstring numtostr(T value,cstring str,int base,bool uppercase,int min_digits = 0) {
 		cstring rc;
 		cstring ptr;
 		cstring low;
@@ -43,8 +43,13 @@ namespace std{
 			*ptr++ = lets[35 + value % base];
 			value /= base;
 		} while ( value );
+		if(min_digits) {
+			min_digits-=(ptr-rc);
+			if(min_digits>0)
+			while(min_digits--)*ptr++='0';
+		}
 		*ptr-- = '\0';
-		//reverse modulus trick
+		//reverse the string
 		while ( low < ptr ) {
 			char tmp = *low;
 			*low++ = *ptr;

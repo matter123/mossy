@@ -21,12 +21,15 @@ namespace std {
 	class ios_base {
 	public:
 		uint8_t base;
+		uint8_t min_digits;
 		//showbase and uppercase are tri-state bools 0=undef 1=false 2=true
 		//if the tri-states are at 0 at time of evaluation treat as false
 		uint8_t showbase;
 		uint8_t uppercase;
+
 		ios_base();
 		ios_base(int base,int uppercase,int showbase);
+		ios_base(int base,int uppercase,int showbase,int min_digits);
 		ios_base(int base);
 		void combine(ios_base b);
 	};
