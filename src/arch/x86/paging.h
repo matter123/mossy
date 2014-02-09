@@ -60,9 +60,8 @@ namespace x86 {
 			};
 		}PACKED;
 
-		void init_paging();
-		void map_virt(page_dir * d,void *virt,void *(*alloc_a)());
-		void map_addr(page_dir * d,void *phys,void *virt,void *(*alloc_a)());
+		bool paging_enabled();
+		void enable_paging();
 	}
 }
 

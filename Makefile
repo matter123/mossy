@@ -1,6 +1,6 @@
-CSOURCES=$(shell find -name *.c)
+CSOURCES=$(shell find -name *.c -not -path "./crt")
 COBJECTS=$(patsubst %.c, %.o, $(CSOURCES))
-CPPSOURCES=$(shell find -name *.cpp)
+CPPSOURCES=$(shell find -name *.cpp -not -path "./crt")
 CPPOBJECTS=$(patsubst %.cpp, %.o, $(CPPSOURCES))
 SSOURCES=$(shell find -name *.s)
 SOBJECTS=$(patsubst %.s, %.o, $(SSOURCES))
@@ -24,7 +24,7 @@ WFLAGSON=-Wall -Wextra -Werror=return-type -Wshadow -Wframe-larger-than=16384 -W
 WFLAGSOFF=-Wno-sequence-point -Wno-unused-parameter
 DFLAGS=-DCPU=586
 CFLAGS=-Isrc/stdlib/include -ffreestanding -O2 -std=c99 $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF)
-CPPFLAGS=-Isrc/stdlib/include -ffreestanding -O2 -std=c++11 $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF)
+CPPFLAGS=-Isrc/stdlib/include -ffreestanding -fno-rtti -fno-exceptions -O2 -std=c++11 $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF)
 LDFLAGS=-Tlink.ld -ffreestanding -O2 -nostdlib
 ASFLAGS=-felf
 

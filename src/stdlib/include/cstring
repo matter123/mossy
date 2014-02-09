@@ -30,6 +30,5 @@ namespace std {
 	void  *memset16(uint16_t *addr,uint16_t value,size_t ops);
 	void  *memset32(uint32_t *addr,uint32_t value,size_t ops);
 }
-#include "../strclass.hpp"
 #endif
 

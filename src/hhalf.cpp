@@ -14,10 +14,10 @@ struct gdt_entry {
 	uint8_t granularity;
 	uint8_t base_high;
 } __attribute__((packed));
- 
+
 struct gdt_ptr {
 	uint16_t limit;
-	uint32_t base;
+	uintptr_t base;
 } __attribute__((packed));
 
 struct gdt_entry gdt[5];
@@ -27,10 +27,10 @@ void gdt_set_gate(int num, uint32_t base, uint32_t limit, uint8_t access, uint8_
 	gdt[num].base_low = (base & 0xFFFF);
 	gdt[num].base_middle = (base >> 16) & 0xFF;
 	gdt[num].base_high = (base >> 24) & 0xFF;
- 
+
 	gdt[num].limit_low = (limit & 0xFFFF);
 	gdt[num].granularity = ((limit >> 16) & 0x0F);
- 
+
 	gdt[num].granularity |= (gran & 0xF0);
 	gdt[num].access = access;
 }
@@ -42,9 +42,9 @@ void init_higher_half() {
 	//only maps first 4mb
 	//if the kernel becomes bigger than that,
 	// we have a serious problem
-	uint32_t pagedir, pagetable=0;
-	pagedir=(uint32_t)pagedira;
-	pagetable=(uint32_t)pagetablea;
+	uintptr_t pagedir, pagetable=0;
+	pagedir=(uintptr_t)pagedira;
+	pagetable=(uintptr_t)pagetablea;
 	pagedir-=HIGH_HALF_BASE_ADDR;
 	pagetable-=HIGH_HALF_BASE_ADDR;
 	for(int i=0;i<1024;i++) {
@@ -64,8 +64,8 @@ void init_higher_half() {
 			"mov %%eax, %%cr4"::);
 	//disables funky gdt
 	gp.limit = (sizeof(struct gdt_entry) * 5) - 1;
-	gp.base = (unsigned int)&gdt;
- 
+	gp.base = (uintptr_t)&gdt;
+
 	gdt_set_gate(0, 0, 0, 0, 0); // Null segment
 	gdt_set_gate(1, 0, 0xFFFFFFFF, 0x9A, 0xCF); // Code segment
 	gdt_set_gate(2, 0, 0xFFFFFFFF, 0x92, 0xCF); // Data segment

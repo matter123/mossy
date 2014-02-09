@@ -40,8 +40,8 @@ namespace kernel {
 	void *fix(void *ptr);
 
 	multiboot_t *fix_tables(multiboot_t *mboot) {
-		mboot=(multiboot_t *)fix(mboot);
-		mboot=(multiboot_t *)std::memmove(&k_end,mboot,sizeof(multiboot_t));
+		mboot=reinterpret_cast<multiboot_t *>(fix(mboot));
+		mboot=reinterpret_cast<multiboot_t *>(std::memmove(&k_end,mboot,sizeof(multiboot_t)));
 		uint8_t *pos=(uint8_t *)&k_end+sizeof(multiboot_t);
 		mboot->mods_ptr=std::memmove(pos,fix(mboot->mods_ptr),16*mboot->mods_count);
 		pos+=16*mboot->mods_count;
@@ -61,13 +61,13 @@ namespace kernel {
 	}
 
 	void parse_mboot_mmap(multiboot_t *mboot) {
-		mmap=(mmap_field_t *)mboot->mmap_ptr;
+		mmap=reinterpret_cast<mmap_field_t *>(mboot->mmap_ptr);
 		mmap_count=mboot->mmap_length/sizeof(mmap_field_t);
 
 		//fix memory maps
 		for(int i=0;i<mmap_count;i++) {
 			//at boot end is really length, this corrects it
-			mmap[i].end=mmap[i].start+mmap[i].end-1;
+			mmap[i].end=mmap[i].start+(mmap[i].end-1);
 			//e820 has 2 and 3 swapped this fixes it
 			if(mmap[i].type==2)mmap[i].type=3;
 			else if(mmap[i].type==3)mmap[i].type=2;
@@ -84,14 +84,14 @@ namespace kernel {
 		int entrycount=0;
 		for(int i=0;i<mmap_count;i++) {
 			//check if bit is not set
-			if(~(mmap[i].type&(1<<3)))entrycount++;
+			if((~(mmap[i].type&(1<<3)))&&mmap[i].start<mmap[i].end)entrycount++;
 		}
-		mmap_field_t *mmap_p=(mmap_field_t *)workspce_alloc(sizeof(mmap_field_t)*entrycount);
+		mmap_field_t *mmap_p=reinterpret_cast<mmap_field_t *>(workspce_alloc(sizeof(mmap_field_t)*entrycount));
 		int mmap_counter=0;
 		while(mmap_counter<entrycount) {
 			for(int i=0;i<mmap_count;i++) {
 				//check if bit is not set
-				if(~(mmap[i].type&(1<<3))) {
+				if((~(mmap[i].type&(1<<3)))&&mmap[i].start<mmap[i].end) {
 					std::memmove(&mmap_p[mmap_counter++],&mmap[i],sizeof(mmap_field_t));
 				}
 			}
@@ -99,10 +99,21 @@ namespace kernel {
 		mmap=mmap_p;
 		mmap_count=entrycount;
 	}
+	void add_kernel() {
+		mmap_field_t *temp=reinterpret_cast<mmap_field_t *>(workspce_alloc(sizeof(mmap_field_t)*(mmap_count+1)));
+		for(int i=0;i<mmap_count;i++) {
+			std::memmove(&temp[i],&mmap[i],sizeof(mmap_field_t));
+		}
+		temp[mmap_count].start=((uint64_t)&k_start)-HIGH_HALF_BASE_ADDR;
+		temp[mmap_count].end=((uint64_t)&k_data_end)-HIGH_HALF_BASE_ADDR;
+		temp[mmap_count].type=6;
+		mmap_count++;
+		mmap=temp;
+	}
 
 	void sort() {
 		//bubble sort, I'm lazy
-		mmap_field_t *temp=(mmap_field_t *)workspce_alloc(sizeof(mmap_field_t));
+		mmap_field_t *temp=reinterpret_cast<mmap_field_t *>(workspce_alloc(sizeof(mmap_field_t)));
 		int passes;
 		do {
 			passes=0;
@@ -117,9 +128,9 @@ namespace kernel {
 			}
 		}while(passes>0);
 	}
-	void merge() {
+	void split() {
 		//ill fix pointer later
-		mmap_field_t *temp=(mmap_field_t *)workspce_alloc(sizeof(mmap_field_t));
+		mmap_field_t *temp=reinterpret_cast<mmap_field_t *>(workspce_alloc(sizeof(mmap_field_t)));
 		int entrycount=0;
 		for(int i=1;i<mmap_count;i++) {
 			if(entrycount==0)std::memmove(&temp[entrycount++],&mmap[i-1],sizeof(mmap_field_t));
@@ -155,8 +166,8 @@ namespace kernel {
 
 			//case 3
 			if(temp[entrycount-1].type>=mmap[i].type) continue;
-			uint64_t tend=temp[entrycount-1].end;
-			temp[entrycount-1].end=mmap[i].start+1;
+			uint32_t tend=temp[entrycount-1].end;
+			temp[entrycount-1].end=mmap[i].start-1;
 			if(temp[entrycount-1].start==temp[entrycount-1].end) {
 				std::memmove(&temp[entrycount-1],&mmap[i],sizeof(mmap_field_t));
 				continue;
@@ -173,7 +184,7 @@ namespace kernel {
 		workspace_alloc_ptr=(void *)((uintptr_t)(workspace_alloc_ptr)+(entrycount-1)*sizeof(mmap_field_t));
 	}
 	void fill() {
-		mmap_field_t *temp=(mmap_field_t *)workspce_alloc(sizeof(mmap_field_t));
+		mmap_field_t *temp=reinterpret_cast<mmap_field_t *>(workspce_alloc(sizeof(mmap_field_t)));
 		int entrycount=0;
 		for(int i=1;i<mmap_count;i++) {
 			if(entrycount==0)std::memmove(&temp[entrycount++],&mmap[i-1],sizeof(mmap_field_t));
@@ -202,7 +213,7 @@ namespace kernel {
 		workspace_alloc_ptr=(void *)((uintptr_t)(workspace_alloc_ptr)+(entrycount-1)*sizeof(mmap_field_t));
 	}
 	void align() {
-		mmap_field_t *temp=(mmap_field_t *)workspce_alloc(sizeof(mmap_field_t)*mmap_count);
+		mmap_field_t *temp=reinterpret_cast<mmap_field_t *>(workspce_alloc(sizeof(mmap_field_t)*mmap_count));
 		for(int i=1;i<mmap_count;i++) {
 			if(i==1)std::memmove(&temp[0],&mmap[0],sizeof(mmap_field_t));
 			if((temp[i-1].end&0xFFF)==0xFFF) {
@@ -223,14 +234,24 @@ namespace kernel {
 		}
 		mmap=temp;
 	}
+	void reset_wa() {
+		workspace_alloc_ptr=(void *)k_start_data_end;
+		mmap_field_t *temp=reinterpret_cast<mmap_field_t *>(workspce_alloc(sizeof(mmap_field_t)*mmap_count));
+		std::memmove(temp,mmap,sizeof(mmap_field_t)*mmap_count);
+		mmap=temp;
+	}
 	void init_page_frame_alloc() {
 		remove_invalid();
+		add_kernel();
 		sort();
-		merge();
+		split();
 		fill();
 		align();
+		remove_invalid();
+		reset_wa();
+		std::ios_base hex32(16,2,2,8);
 		for (int i=0;i<mmap_count;i++) {
-			std::cout<<std::dec<<i<<". "<<hex32<<(uint32_t)mmap[i].start<<" "<<(uint32_t)mmap[i].end<<" "<<(mmap[i].type&0x7)<<std::endl;
+			std::cout<<i<<". "<<hex32<<(uint32_t)mmap[i].start<<" "<<(uint32_t)mmap[i].end<<" "<<std::dec<<(mmap[i].type&0x7)<<std::endl;
 		}
 	}
 	bool is_valid_mem(void *addr) {

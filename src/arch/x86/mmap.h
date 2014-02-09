@@ -22,8 +22,10 @@
 namespace kernel {
 	struct mmap_field_t{
 		uint32_t size;
-		uint64_t start;
-		uint64_t end;
+		uint32_t start;
+		uint32_t starth;
+		uint32_t end;
+		uint32_t endh;
 		/*bits 32-3 are a bit-field
 		the type is 32 bits because of e820 memory map spacing
 		bits 2-0 create a number from 0-7 for basic ram type
@@ -32,8 +34,8 @@ namespace kernel {
 		2 reclaimable
 		3 reserved
 		4 save on hibernate
-		5 kernel ram
-		6 unknown(reserved)
+		5 bad ram
+		6 kernel ram
 		7 unusable ram
 		bit 3 - invalid entry
 		bit 4-32 - undefined
@@ -43,6 +45,7 @@ namespace kernel {
 	multiboot_t *fix_tables(multiboot_t *mboot);
 	void parse_mboot_mmap(multiboot_t *mboot);
 	void init_page_frame_alloc();
+	extern void *workspace_alloc_ptr;
 	bool is_valid_mem(void *addr);
 }
 #endif
