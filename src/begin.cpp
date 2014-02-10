@@ -41,7 +41,7 @@ namespace kernel {
 		mboot=fix_tables(mboot);
 		parse_mboot_mmap(mboot);
 
-		x86::paging::init_paging();
+		//x86::paging::init_paging();
 		//IDT setup
 		x86::init_exceptions();
 		x86::init_pic();

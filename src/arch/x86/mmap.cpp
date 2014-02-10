@@ -30,8 +30,6 @@ extern "C" uint32_t k_data_end; /*end of working space, PFA and paging
 								  needs to be up by then so we don't run out
 								  of room*/
 namespace kernel {
-
-
 	uint32_t k_start_data_end;
 	mmap_field_t *mmap;
 	int mmap_count;

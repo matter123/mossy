@@ -4,6 +4,7 @@
 
 uint32_t pagedira[1024] __attribute__ ((aligned (4096)));
 uint32_t pagetablea[1024] __attribute__ ((aligned (4096)));
+uint32_t pagetablean[1024] __attribute__ ((aligned (4096)));
 
 
 struct gdt_entry {
@@ -72,4 +73,19 @@ void init_higher_half() {
 	gdt_set_gate(3, 0, 0xFFFFFFFF, 0xFA, 0xCF); // (User) Code segment
 	gdt_set_gate(4, 0, 0xFFFFFFFF, 0xF2, 0xCF); // (User) Data segment
 	gdt_flush();
+}
+
+
+void *em_page_max() {
+	return reinterpret_cast<void*>(HIGH_HALF_BASE_ADDR+4*1024*1024);
+}
+void em_page(void *virt,void * phys) {
+	uintptr_t pagetablen=(uintptr_t)pagetablean;
+	pagetablen-=HIGH_HALF_BASE_ADDR;
+	uintptr_t v=reinterpret_cast<uintptr_t>(virt);
+	uintptr_t v1=v<<10;
+	v1=v1>>22;
+	pagetablean[v1]=(reinterpret_cast<uintptr_t>(phys))|0x3;
+	pagedira[v>>22]=pagetablen|0x3;
+	asm volatile("invlpg (%0)" ::"r" (virt) : "memory");
 }

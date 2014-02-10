@@ -14,8 +14,8 @@
    limitations under the License.
  */
 
-#ifndef MMAP_H_
-#define MMAP_H_
+#ifndef MMAP_H
+#define MMAP_H
 #include "../../init/multiboot.h"
 #include <struct.h>
 #include <stdint.h>

@@ -19,9 +19,9 @@
 #include <stdint.h>
 #include <cstdlib>
 namespace kernel {
-	void panic();
-	void panic(uint32_t code);
-	void panic(std::c_cstring msg);
-	void panic(std::c_cstring file,uint32_t line);
+	void panic()__attribute__((noreturn));
+	void panic(uint32_t code)__attribute__((noreturn));
+	void panic(std::c_cstring msg)__attribute__((noreturn));
+	void panic(std::c_cstring file,uint32_t line)__attribute__((noreturn));
 }
 #endif

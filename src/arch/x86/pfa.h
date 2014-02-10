@@ -13,6 +13,8 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
+#ifndef PFA_H
+#define PFA_H
 namespace kernel {
 	namespace paging {
 		void init_pfa();
@@ -23,3 +25,4 @@ namespace kernel {
 		void **get_frames(size_t count);
 	}
 }
+#endif

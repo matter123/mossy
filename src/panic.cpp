@@ -30,6 +30,7 @@ namespace kernel {
 		std::cout<<std::endl<<"PANIC: An Unrecoverable Error Has Occurred";
 		std::cout<<std::endl<<msg;
 		asm("cli\nhlt");
+		while(1);//will never execute
 	}
 	void panic(std::c_cstring file,uint32_t line) {
 		panic(" ");

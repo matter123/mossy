@@ -13,24 +13,34 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-namespace kernel {
+
+#include <stdint.h>
+#include <stddef.h>
+#include "mmap.h"
+#include "../../hhalf.h"
+#include "paging.h"
+#include "../../panic.h"
+
+
+namespace x86 {
 	namespace paging {
 		uintptr_t *stack;
-		ssize_t top;
-		size_t max;
+		int top;
+		int max;
 		void init_pfa() {
-			stack=reinterpret_cast<uintptr_t *>(workspace_alloc_ptr);
+			stack=static_cast<uintptr_t *>(kernel::workspace_alloc_ptr);
 			top=0;
-			max=(static_cast<uintptr_t>(em_page_max())-static_cast<uintptr_t>(workspace_alloc_ptr))/sizeof(uintptr_t);
+			max=(reinterpret_cast<uintptr_t>(em_page_max())-reinterpret_cast<uintptr_t>(kernel::workspace_alloc_ptr))/sizeof(uintptr_t);
 		}
 		void *get_frame() {
 			if(top<0) {
-				return static_cast<void *>stack[top--]
+				return reinterpret_cast<void *>(stack[top--]);
 			}
 			kernel::panic("cannot fill request, not enough free frames");
+			return reinterpret_cast<void *>(0xFFFFFFFF); //0 is normally a legal page
 		}
 		void free_frame(void * frame) {
-			stack[top++]=static_cast<uintptr_t>(frame);
+			stack[top++]=reinterpret_cast<uintptr_t>(frame);
 			if(top>max) {
 				//request more room
 				if(paging_enabled()) {
@@ -43,20 +53,22 @@ namespace kernel {
 				}
 			}
 		}
-		void free_frames(void * frames,size_t count) {
-			uintptr_t f=static_cast<uintptr_t>(frames);
-			for(size_t s=0;s<count;s++) {
-				top_frame(static_cast<void *>(f));
+		void free_frames(void * frames,int count) {
+			uintptr_t f=reinterpret_cast<uintptr_t>(frames);
+			for(int s=0;s<count;s++) {
+				free_frame(reinterpret_cast<void *>(f));
 				f+=0x1000;
 			}
 		}
-		void *get_frames_adj(size_t frames) {
+		void *get_frames_adj(int frames) {
 			if(frames>top)kernel::panic("cannot fill request, not enough free frames");
 			kernel::panic("cannot fill request, adjacent frames not implemented");
+			return reinterpret_cast<void *>(0xFFFFFFFF);
 		}
-		void **get_frames(size_t frames) {
+		void **get_frames(int frames) {
 			if(frames>top)kernel::panic("cannot fill request, not enough free frames");
 			kernel::panic("cannot fill request, multiple frames not implemented,requires a heap");
+			return reinterpret_cast<void **>(0xFFFFFFFF);
 		}
 	}
 }
