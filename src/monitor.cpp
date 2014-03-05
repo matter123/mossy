@@ -70,7 +70,7 @@ namespace std {
 			return *this;
 		}
 		if(let=='\t') {
-			px=(px+32)&(~31);
+			px=(px+4)&(~3);
 			return *this;
 		}
 		mon[py*80+px++]=let|this->c.getColor()<<8;

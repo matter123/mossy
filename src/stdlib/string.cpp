@@ -14,7 +14,7 @@
    limitations under the License.
  */
 
-#include <cstring>
+#include <string.h>
 #include <stdint.h>
 namespace std {
 	cstring strcat(cstring s1,c_cstring s2) {

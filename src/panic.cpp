@@ -15,7 +15,7 @@
  */
 
 #include "panic.h"
-#include <cstring>
+#include <string.h>
 #include <conv.hpp>
 #include "monitor.h"
 

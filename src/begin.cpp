@@ -24,14 +24,26 @@
 #include "monitor.h"
 #include "hhalf.h"
 #include <conv.hpp>
+#include <debug.h>
 
 namespace kernel {
 	void init_system(multiboot_t *mboot);
+	void B(int x);
+	void A(int x) {
+		if(x==0)std::strace(30);
+		if(--x%2)A(x);
+		B(x);
+	}
+	void B(int x) {
+		if(x==0)std::strace(30);
+		if(--x%2)A(x);
+		B(x);
+	}
 	extern "C"
 	void init_exec(multiboot_t *mboot) {
 		init_system(mboot);
 		std::cout <<"hello setup kernel";
-		//asm("int $32");
+		A(15);
 		while(1);
 	}
 	void init_system(multiboot_t *mboot) {

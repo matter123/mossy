@@ -22,9 +22,10 @@ test: mkiso runem
 
 WFLAGSON=-Wall -Wextra -Werror=return-type -Wshadow -Wframe-larger-than=16384 -Wdeprecated -Wredundant-decls -pedantic
 WFLAGSOFF=-Wno-sequence-point -Wno-unused-parameter
+FFLAGS=-fno-omit-frame-pointer -ffreestanding -fno-rtti -fno-exceptions -fno-stack-protector
 DFLAGS=-DCPU=586
-CFLAGS=-Isrc/stdlib/include -ffreestanding -O2 -std=c99 $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF)
-CPPFLAGS=-Isrc/stdlib/include -ffreestanding -fno-rtti -fno-exceptions -O2 -std=c++11 $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF)
+CFLAGS=-Isrc/stdlib/include -O2 -std=c99 $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS)
+CPPFLAGS=-Isrc/stdlib/include -O2 -std=c++11 $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS)
 LDFLAGS=-Tlink.ld -ffreestanding -O2 -nostdlib
 ASFLAGS=-felf
 

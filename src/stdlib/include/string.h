@@ -16,7 +16,7 @@
 
 #ifndef STRING_H
 #define	STRING_H
-#include <cstdlib>
+#include <stdlib.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <stddef.h>

@@ -17,7 +17,7 @@
 #include "paging.h"
 #include "pfa.h"
 #include <stdint.h>
-#include "cstring"
+#include <string.h>
 #include "../../monitor.h"
 #include "../../panic.h"
 
@@ -89,6 +89,7 @@ namespace x86 {
 		uintptr_t zero_phys_ptr;
 		uintptr_t pdt_phys;
 		rec_page_manager pm(rec_start,1023);
+		rec_page_manager opm(old_rec,1022);
 		bool pe=false;
 		bool paging_enabled() {
 			return pe;
@@ -96,9 +97,7 @@ namespace x86 {
 		void enable_paging() {
 			pdt_phys=reinterpret_cast<uintptr_t>(get_frame());
 			//map current page dir to rec_start
-			*(reinterpret_cast<uintptr_t *>(rec_start-0x1004))=pdt_phys|0x3;
-			inv_page(rec_start-0x1004);
-			inv_page(0xFFFFF000);
+			opm.map_phys(reinterpret_cast<void *>(0xFFFFF000),reinterpret_cast<void *>(pdt_phys),page_config{false,false,true,true});
 			std::memmove(reinterpret_cast<void *>(0xFFFFF000),reinterpret_cast<void *>(rec_start-0x2000),sizeof(page_dir));
 			asm volatile ("mov %0, %%eax\n"
 				"mov %%eax, %%cr3\n"

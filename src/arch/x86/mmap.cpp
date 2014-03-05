@@ -18,7 +18,7 @@
 #include <stdint.h>
 #include "mmap.h"
 #include "../../monitor.h"
-#include <cstring>
+#include <string.h>
 #include "../../panic.h"
 #include "../../hhalf.h"
 #include <math.hpp>

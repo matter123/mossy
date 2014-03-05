@@ -14,7 +14,7 @@
    limitations under the License.
  */
 //implementation of all xtoa functions ie itoa, ltoa, ...
-#include <cstdlib>
+#include <stdlib.h>
 namespace std{
 	static c_cstring chars =   "ZYXWVUTSRQPONMLKJIHGFEDCBA9876543210123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	static c_cstring chars_low="zyxwvutsrqponmlkjihgfedcba9876543210123456789abcdefghijklmnopqrstuvwxyz";
