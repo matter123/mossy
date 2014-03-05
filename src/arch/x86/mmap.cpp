@@ -14,6 +14,7 @@
    limitations under the License.
  */
 
+#include <stddef.h>
 #include <stdint.h>
 #include "mmap.h"
 #include "../../monitor.h"
@@ -21,14 +22,15 @@
 #include "../../panic.h"
 #include "../../hhalf.h"
 #include <math.hpp>
+#include "pfa.h"
 
 #define K128 131072
 
 extern "C" uint32_t k_end;//we have 128kb after this reserved
 extern "C" uint32_t k_start;
 extern "C" uint32_t k_data_end; /*end of working space, PFA and paging
-								  needs to be up by then so we don't run out
-								  of room*/
+                                  needs to be up by then so we don't run out
+                                  of room*/
 namespace kernel {
 	uint32_t k_start_data_end;
 	mmap_field_t *mmap;
@@ -63,7 +65,7 @@ namespace kernel {
 		mmap_count=mboot->mmap_length/sizeof(mmap_field_t);
 
 		//fix memory maps
-		for(int i=0;i<mmap_count;i++) {
+		for(int i=0; i<mmap_count; i++) {
 			//at boot end is really length, this corrects it
 			mmap[i].end=mmap[i].start+(mmap[i].end-1);
 			//e820 has 2 and 3 swapped this fixes it
@@ -80,14 +82,14 @@ namespace kernel {
 	}
 	void remove_invalid() {
 		int entrycount=0;
-		for(int i=0;i<mmap_count;i++) {
+		for(int i=0; i<mmap_count; i++) {
 			//check if bit is not set
 			if((~(mmap[i].type&(1<<3)))&&mmap[i].start<mmap[i].end)entrycount++;
 		}
 		mmap_field_t *mmap_p=reinterpret_cast<mmap_field_t *>(workspce_alloc(sizeof(mmap_field_t)*entrycount));
 		int mmap_counter=0;
 		while(mmap_counter<entrycount) {
-			for(int i=0;i<mmap_count;i++) {
+			for(int i=0; i<mmap_count; i++) {
 				//check if bit is not set
 				if((~(mmap[i].type&(1<<3)))&&mmap[i].start<mmap[i].end) {
 					std::memmove(&mmap_p[mmap_counter++],&mmap[i],sizeof(mmap_field_t));
@@ -99,7 +101,7 @@ namespace kernel {
 	}
 	void add_kernel() {
 		mmap_field_t *temp=reinterpret_cast<mmap_field_t *>(workspce_alloc(sizeof(mmap_field_t)*(mmap_count+1)));
-		for(int i=0;i<mmap_count;i++) {
+		for(int i=0; i<mmap_count; i++) {
 			std::memmove(&temp[i],&mmap[i],sizeof(mmap_field_t));
 		}
 		temp[mmap_count].start=((uint64_t)&k_start)-HIGH_HALF_BASE_ADDR;
@@ -115,7 +117,7 @@ namespace kernel {
 		int passes;
 		do {
 			passes=0;
-			for(int i=0;i<mmap_count-1;i++) {
+			for(int i=0; i<mmap_count-1; i++) {
 				if(mmap[i].start>mmap[i+1].start) {
 					//swap
 					passes++;
@@ -124,13 +126,13 @@ namespace kernel {
 					std::memmove(&mmap[i+1],&temp,sizeof(mmap_field_t));
 				}
 			}
-		}while(passes>0);
+		} while(passes>0);
 	}
 	void split() {
 		//ill fix pointer later
 		mmap_field_t *temp=reinterpret_cast<mmap_field_t *>(workspce_alloc(sizeof(mmap_field_t)));
 		int entrycount=0;
-		for(int i=1;i<mmap_count;i++) {
+		for(int i=1; i<mmap_count; i++) {
 			if(entrycount==0)std::memmove(&temp[entrycount++],&mmap[i-1],sizeof(mmap_field_t));
 			//there are 3 cases
 			//1. no overlap
@@ -184,7 +186,7 @@ namespace kernel {
 	void fill() {
 		mmap_field_t *temp=reinterpret_cast<mmap_field_t *>(workspce_alloc(sizeof(mmap_field_t)));
 		int entrycount=0;
-		for(int i=1;i<mmap_count;i++) {
+		for(int i=1; i<mmap_count; i++) {
 			if(entrycount==0)std::memmove(&temp[entrycount++],&mmap[i-1],sizeof(mmap_field_t));
 			if(mmap[i].start-temp[entrycount-1].end>3) {
 				entrycount++;
@@ -193,11 +195,11 @@ namespace kernel {
 				temp[entrycount-1].type=7;
 				std::memmove(&temp[entrycount++],&mmap[i],sizeof(mmap_field_t));
 				continue;
-			}else if(mmap[i].start-temp[entrycount-1].end>1) {
+			} else if(mmap[i].start-temp[entrycount-1].end>1) {
 				//most restrictive gets it
 				if(temp[entrycount-1].type>mmap[i].type) {
 					temp[entrycount-1].end=mmap[i].start-1;
-				}else {
+				} else {
 					mmap[i].start=temp[entrycount-1].end+1;
 				}
 				std::memmove(&temp[entrycount++],&mmap[i],sizeof(mmap_field_t));
@@ -212,7 +214,7 @@ namespace kernel {
 	}
 	void align() {
 		mmap_field_t *temp=reinterpret_cast<mmap_field_t *>(workspce_alloc(sizeof(mmap_field_t)*mmap_count));
-		for(int i=1;i<mmap_count;i++) {
+		for(int i=1; i<mmap_count; i++) {
 			if(i==1)std::memmove(&temp[0],&mmap[0],sizeof(mmap_field_t));
 			if((temp[i-1].end&0xFFF)==0xFFF) {
 				std::memmove(&temp[i],&mmap[i],sizeof(mmap_field_t));
@@ -247,16 +249,22 @@ namespace kernel {
 		align();
 		remove_invalid();
 		reset_wa();
+		x86::paging::init_pfa();
 		std::ios_base hex32(16,2,2,8);
-		for (int i=0;i<mmap_count;i++) {
+		for(int i=0; i<mmap_count; i++) {
 			std::cout<<i<<". "<<hex32<<(uint32_t)mmap[i].start<<" "<<(uint32_t)mmap[i].end<<" "<<std::dec<<(mmap[i].type&0x7)<<std::endl;
+			if((mmap[i].type&0x7)==1) {
+				size_t pages=(mmap[i].end-mmap[i].start)/0x1000;
+				pages+=1;
+				x86::paging::free_frames(reinterpret_cast<void *>(mmap[i].start),(int)pages);
+			}
 		}
 	}
 	bool is_valid_mem(void *addr) {
 		uint32_t addri=(uint32_t)addr;
 		addri&=0xFFFFF000;
 		bool valid=false;
-		for(int i=0;i<mmap_count;i++) {
+		for(int i=0; i<mmap_count; i++) {
 			if(addri>=mmap[i].start&&addri<mmap[i].end) {
 				if(mmap[i].type) valid=true;
 				else return false;

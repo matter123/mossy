@@ -14,8 +14,8 @@
    limitations under the License.
  */
 
-#include <stdint.h>
 #include <stddef.h>
+#include <stdint.h>
 #include "mmap.h"
 #include "../../hhalf.h"
 #include "paging.h"
@@ -25,15 +25,15 @@
 namespace x86 {
 	namespace paging {
 		uintptr_t *stack;
-		int top;
-		int max;
+		unsigned int top;
+		unsigned int max;
 		void init_pfa() {
 			stack=static_cast<uintptr_t *>(kernel::workspace_alloc_ptr);
-			top=0;
+			top=1;
 			max=(reinterpret_cast<uintptr_t>(em_page_max())-reinterpret_cast<uintptr_t>(kernel::workspace_alloc_ptr))/sizeof(uintptr_t);
 		}
 		void *get_frame() {
-			if(top<0) {
+			if(top>0) {
 				return reinterpret_cast<void *>(stack[top--]);
 			}
 			kernel::panic("cannot fill request, not enough free frames");
@@ -41,34 +41,36 @@ namespace x86 {
 		}
 		void free_frame(void * frame) {
 			stack[top++]=reinterpret_cast<uintptr_t>(frame);
-			if(top>max) {
+			if(top>=max) {
 				//request more room
+				//std::cout<<"I need more room";
 				if(paging_enabled()) {
-					map_virt(&stack[top]);
+					//map_virt(&stack[top]);
 					max+=4096/sizeof(uintptr_t);
 				}else {
-					em_page(&stack[top],frame);
+					em_page(&stack[--top],frame);
 					top--;
 					max+=4096/sizeof(uintptr_t);
 				}
 			}
 		}
-		void free_frames(void * frames,int count) {
+		void free_frames(void * frames,size_t count) {
 			uintptr_t f=reinterpret_cast<uintptr_t>(frames);
-			for(int s=0;s<count;s++) {
+			for(size_t s=0;s<count;s++) {
 				free_frame(reinterpret_cast<void *>(f));
 				f+=0x1000;
 			}
 		}
-		void *get_frames_adj(int frames) {
-			if(frames>top)kernel::panic("cannot fill request, not enough free frames");
+		void *get_frames_adj(size_t count) {
+			if(count>top)kernel::panic("cannot fill request, not enough free frames");
 			kernel::panic("cannot fill request, adjacent frames not implemented");
-			return reinterpret_cast<void *>(0xFFFFFFFF);
 		}
-		void **get_frames(int frames) {
-			if(frames>top)kernel::panic("cannot fill request, not enough free frames");
-			kernel::panic("cannot fill request, multiple frames not implemented,requires a heap");
-			return reinterpret_cast<void **>(0xFFFFFFFF);
+		void  get_frames(size_t count,void *array) {
+			uintptr_t arr=reinterpret_cast<uintptr_t>(array);
+			if(count>top)kernel::panic("cannot fill request, not enough free frames");
+			for(size_t s=0;s<count;s++) {
+				*(reinterpret_cast<uintptr_t *>(arr+=sizeof(uintptr_t)))=stack[top--];
+			}
 		}
 	}
 }

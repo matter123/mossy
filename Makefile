@@ -30,11 +30,11 @@ ASFLAGS=-felf
 
 clean:
 	@echo Cleaning workspace
-	find . -name '*.o' -delete
+	@find . -name '*.o' -delete
 	@rm -f kernel
 
 check:
-	tools/doccheck.py kernel src
+	@tools/doccheck.py kernel src
 link:
 	@echo Linking
 	$(LD) $(LDFLAGS) -o kernel ./gc/crti.o $(CRTBEGIN_OBJ) $(SOBJECTS) $(COBJECTS) $(CPPOBJECTS) $(CRTEND_OBJ) ./gc/crtn.o

@@ -32,6 +32,7 @@ clock: sync=none, time0=local, rtc_sync=0
 log: log.txt
 logprefix: %t%e%d
 debug: action=ignore
+magic_break: enabled=1
 info: action=report
 error: action=report
 panic: action=ask

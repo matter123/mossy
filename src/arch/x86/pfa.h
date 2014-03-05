@@ -13,16 +13,18 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
+#include <stddef.h>
+#include <stdint.h>
 #ifndef PFA_H
 #define PFA_H
-namespace kernel {
+namespace x86 {
 	namespace paging {
-		void init_pfa();
+		void  init_pfa();
 		void *get_frame();
-		void free_frame(void * frame);
-		void free_frames(void * frames,size_t count);
+		void  free_frame(void *frame);
+		void  free_frames(void *frames,size_t count);
 		void *get_frames_adj(size_t count);
-		void **get_frames(size_t count);
+		void  get_frames(size_t count,void *array);
 	}
 }
 #endif

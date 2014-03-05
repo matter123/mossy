@@ -5,7 +5,7 @@
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
 
-	 http://www.apache.org/licenses/LICENSE-2.0
+     http://www.apache.org/licenses/LICENSE-2.0
 
    Unless required by applicable law or agreed to in writing, software
    distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,11 +16,12 @@
 
 #ifndef MMAP_H
 #define MMAP_H
+#include <stddef.h>
+#include <stdint.h>
 #include "../../init/multiboot.h"
 #include <struct.h>
-#include <stdint.h>
 namespace kernel {
-	struct mmap_field_t{
+	struct mmap_field_t {
 		uint32_t size;
 		uint32_t start;
 		uint32_t starth;
@@ -41,7 +42,7 @@ namespace kernel {
 		bit 4-32 - undefined
 		*/
 		uint32_t type;
-	}PACKED;
+	} PACKED;
 	multiboot_t *fix_tables(multiboot_t *mboot);
 	void parse_mboot_mmap(multiboot_t *mboot);
 	void init_page_frame_alloc();

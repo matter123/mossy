@@ -37,16 +37,15 @@ namespace kernel {
 	void init_system(multiboot_t *mboot) {
 		//GDT, basic paging
 		init_higher_half();
-
-		mboot=fix_tables(mboot);
-		parse_mboot_mmap(mboot);
-
-		//x86::paging::init_paging();
-		//IDT setup
 		x86::init_exceptions();
 		x86::init_pic();
 		x86::install_pic_idt();
 		x86::enable_idt();
+		mboot=fix_tables(mboot);
+		parse_mboot_mmap(mboot);
+
+		x86::paging::enable_paging();
+		//IDT setup
 		x86::init_pit(x86::PIT_FREQ_10MS);
 		asm("sti");
 	}

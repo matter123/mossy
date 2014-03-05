@@ -55,6 +55,7 @@ void init_higher_half() {
 	pagedira[0]=pagetable|0x3;
 	//768
 	pagedira[HIGH_HALF_BASE_ADDR>>22]=pagetable|0x3;
+	pagedira[1022]=pagedir|0x3;//set up recursive paging 4mb below normal
 	asm volatile ("mov %0, %%eax\n"
 			"mov %%eax, %%cr3\n"
 			"mov %%cr0, %%eax\n"

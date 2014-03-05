@@ -17,8 +17,15 @@
 #ifndef PAGING_H
 #define PAGING_H
 #include <struct.h>
+#include "stdint.h"
 namespace x86 {
 	namespace paging {
+		struct page_config {
+			bool global;
+			bool all;
+			bool read_write;
+			bool present;
+		}FULL;
 		struct page_dir_e {
 			int addr :20;
 			int unused :4;
@@ -62,6 +69,7 @@ namespace x86 {
 
 		bool paging_enabled();
 		void enable_paging();
+		void handle_pf(uint32_t exc_code);
 	}
 }
 

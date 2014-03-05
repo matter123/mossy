@@ -17,6 +17,7 @@
 #include "exceptions.h"
 #include "idt.h"
 #include "../../monitor.h"
+#include "paging.h"
 
 extern void * exception0;
 extern void * exception1;
@@ -89,6 +90,10 @@ namespace x86 {
 	extern "C" void except_handler(exc_stack_t s) {
 		//print("exception");
 		uint32_t code;
+		if(s.ext==14) {
+			x86::paging::handle_pf(s.err);
+			return;
+		}
 		asm volatile("mov %%cr2, %0":"=r"(code));
 		std::cout<<std::hex<<"exception"<<s.ext<<" "<<s.eip<<std::endl;
 		asm("cli\nhlt");
