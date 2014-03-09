@@ -45,6 +45,7 @@ namespace kernel {
 	} PACKED;
 	multiboot_t *fix_tables(multiboot_t *mboot);
 	void parse_mboot_mmap(multiboot_t *mboot);
+	void set_workspace_begin(void *begin);
 	void init_page_frame_alloc();
 	extern void *workspace_alloc_ptr;
 	bool is_valid_mem(void *addr);

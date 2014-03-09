@@ -13,21 +13,22 @@
 ;  limitations under the License.
 
 [BITS 32]
-[section .text]
-[global start]
+[section .mboot]
 
 MULTIBOOT_PAGE_ALIGN	equ 1<<0
 MULTIBOOT_MEMORY_INFO	equ 1<<1
 MULTIBOOT_HEADER_MAGIC	equ 0x1BADB002
 MULTIBOOT_HEADER_FLAGS	equ MULTIBOOT_PAGE_ALIGN | MULTIBOOT_MEMORY_INFO
 MULTIBOOT_CHECKSUM	equ -(MULTIBOOT_HEADER_MAGIC + MULTIBOOT_HEADER_FLAGS)
- 
+
 ALIGN 4
 multiboot_header:
 	dd MULTIBOOT_HEADER_MAGIC
 	dd MULTIBOOT_HEADER_FLAGS
 	dd MULTIBOOT_CHECKSUM
 
+[section .text]
+[global start]
 ;entry point
 start:
 	cli
@@ -52,7 +53,7 @@ higherhalf:
 	call init_exec
 
 	jmp $
- 
+
 [GLOBAL gdt_flush]
 [EXTERN gp]
 gdt_flush:
@@ -64,10 +65,10 @@ gdt_flush:
 	mov gs, ax
 	mov ss, ax
 	jmp 0x08:flush2
- 
+
 flush2:
 	ret
- 
+
 [SECTION .setup]
  trickgdt:
 	dw gdt_end - gdt - 1
@@ -77,8 +78,8 @@ flush2:
 	db 0xFF, 0xFF, 0, 0, 0, 10011010b, 11001111b, 0x40
 	db 0xFF, 0xFF, 0, 0, 0, 10010010b, 11001111b, 0x40
 gdt_end:
- 
+
 [SECTION .bss]
- 
+
 resb 0x4000
 sys_stack:

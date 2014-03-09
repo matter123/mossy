@@ -13,8 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-#ifndef MATH_H
-#define MATH_H
+#pragma once
 namespace std {
 	template<class T>
 		inline T min(T a,T b) {
@@ -26,4 +25,3 @@ namespace std {
 		return (a<b?a:b);
 	}
 }
-#endif

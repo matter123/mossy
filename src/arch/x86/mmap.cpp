@@ -55,11 +55,13 @@ namespace kernel {
 		pos+=512;
 		mboot->vbe_mode_info_ptr=std::memmove(pos,fix(mboot->vbe_mode_info_ptr),256);
 		pos+=256;
-		k_start_data_end=(uint32_t)pos;
-		workspace_alloc_ptr=(void *)k_start_data_end;
+		set_workspace_begin(reinterpret_cast<void *>(pos));
 		return mboot;
 	}
-
+	void set_workspace_begin(void *begin) {
+		k_start_data_end=reinterpret_cast<uint32_t>(begin);
+		workspace_alloc_ptr=begin;
+	}
 	void parse_mboot_mmap(multiboot_t *mboot) {
 		mmap=reinterpret_cast<mmap_field_t *>(mboot->mmap_ptr);
 		mmap_count=mboot->mmap_length/sizeof(mmap_field_t);
@@ -249,6 +251,7 @@ namespace kernel {
 		align();
 		remove_invalid();
 		reset_wa();
+
 		x86::paging::init_pfa();
 		std::ios_base hex32(16,2,2,8);
 		for(int i=0; i<mmap_count; i++) {

@@ -16,7 +16,8 @@
 
 #include <debug.h>
 #include <conv.hpp>
-
+#include "../init/symtable.h"
+#include "../monitor.h"
 namespace std {
 	debug_level dl=dl_warning;
 
@@ -54,14 +55,14 @@ namespace std {
 		debug(dl_error,s);
 	}
 
-	void cls(cstring s) {
+	void cls() {
 		std::memset16(reinterpret_cast<uint16_t *>(0xC00B8000),' '|0xF,80*25);
 	}
 
 	void strace(uint32_t depth) {
 		uint32_t *ebp=&depth-2;
 		debug(dl_critical,"Stack trace:    \n");
-		for(uint32_t frame=0;frame<depth;++frame) {
+		for(uint32_t frame=0; frame<depth; ++frame) {
 			uint32_t eip=ebp[1];
 			if(eip==0) {
 				//bottem of stack
@@ -70,20 +71,33 @@ namespace std {
 			ebp=reinterpret_cast<uint32_t *>(ebp[0]);
 			char bufa[9];
 			char *buf=bufa;
-			buf=numtostr(eip,buf,16,true,8);
-			debug(dl_critical,"  0x");
-			debug(dl_critical,buf);
-			debug(dl_critical,"    \n");
+			if(debug::symbol_count()==0) {
+				buf=numtostr(eip,buf,16,true,8);
+				debug(dl_critical,"  0x");
+				debug(dl_critical,buf);
+				debug(dl_critical,"    \n");
+			}else {
+				uint32_t off;
+				char *str=debug::get_symbol(eip,off);
+				//std::cout<<str<<std::endl;
+
+				buf=numtostr(off,buf,16,true);
+				debug(dl_critical,"  ");
+				debug(dl_critical,str);
+				debug(dl_critical,"+");
+				debug(dl_critical,buf);
+				debug(dl_critical,"    \n");
+			}
 		}
-		hlt:
+hlt:
 		debug(dl_critical,"end trace.      \n");
-		asm volatile ("cli\nhlt");
+		asm volatile("cli\nhlt");
 		while(1);//no reach
 	}
 
 	void assert(bool condition) {
 		if(!condition) {
-			asm volatile ("cli\nhlt");
+			asm volatile("cli\nhlt");
 		}
 		while(1);//no reach
 	}

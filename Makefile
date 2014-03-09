@@ -21,7 +21,7 @@ test: mkiso runem
 
 
 WFLAGSON=-Wall -Wextra -Werror=return-type -Wshadow -Wframe-larger-than=16384 -Wdeprecated -Wredundant-decls -pedantic
-WFLAGSOFF=-Wno-sequence-point -Wno-unused-parameter
+WFLAGSOFF=-Wno-sequence-point -Wno-unused-parameter -Wno-sign-compare
 FFLAGS=-fno-omit-frame-pointer -ffreestanding -fno-rtti -fno-exceptions -fno-stack-protector
 DFLAGS=-DCPU=586
 CFLAGS=-Isrc/stdlib/include -O2 -std=c99 $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS)
@@ -54,7 +54,9 @@ link:
 
 mkiso:
 	#@tools/packrd.py
+	#@tools/symexport.py kernel
 	@cp -f kernel iso/kernel
+	@cp -f kernel.sym iso/kernel.sym
 	#@cp -f initrd.rd iso/initrd.rd
 	@grub2-mkrescue -o bootable.iso iso -- -zisofs level=6
 

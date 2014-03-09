@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Matthew Fosdick
+ * Copyright 2014 Matthew Fosdick
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -13,10 +13,12 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-
 #pragma once
-#include <stddef.h>
-namespace std {
-	typedef char * cstring;
-	typedef const char * c_cstring;
+#include <stdint.h>
+namespace debug {
+	bool load_symbols();
+
+	int symbol_count();
+
+	char* get_symbol(uintptr_t instruction,uint32_t &off);
 }

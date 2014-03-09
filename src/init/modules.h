@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Matthew Fosdick
+ * Copyright 2014 Matthew Fosdick
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -13,10 +13,20 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-
 #pragma once
-#include <stddef.h>
-namespace std {
-	typedef char * cstring;
-	typedef const char * c_cstring;
+#include <stdint.h>
+#include "multiboot.h"
+#include <struct.h>
+
+namespace kernel {
+	struct mboot_module_t {
+		uintptr_t mod_start;
+		uintptr_t mod_size;
+		char * string;
+		uint32_t resv;
+	}FULL;
+	void load_modules(multiboot_t *mboot);
+	int get_module_count();
+	mboot_module_t *get_module(int index);
+	uint32_t get_magic(int index);
 }

@@ -14,6 +14,7 @@ SECTIONS
 	k_start = .;
 	.text : AT(ADDR(.text) - 0xC0000000)
 	{
+		*(.mboot)
 		*(.text)
 	}
 

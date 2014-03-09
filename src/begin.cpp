@@ -25,6 +25,8 @@
 #include "hhalf.h"
 #include <conv.hpp>
 #include <debug.h>
+#include "init/modules.h"
+#include "init/symtable.h"
 
 namespace kernel {
 	void init_system(multiboot_t *mboot);
@@ -41,6 +43,7 @@ namespace kernel {
 	}
 	extern "C"
 	void init_exec(multiboot_t *mboot) {
+		std::hex=std::dec;
 		init_system(mboot);
 		std::cout <<"hello setup kernel";
 		A(15);
@@ -54,6 +57,12 @@ namespace kernel {
 		x86::install_pic_idt();
 		x86::enable_idt();
 		mboot=fix_tables(mboot);
+		load_modules(mboot);
+		if(debug::load_symbols()) {
+			std::cout<<debug::symbol_count()<<" symbols loaded."<<std::endl;
+		}else {
+			std::cout<<"symbol table not found"<<std::endl;
+		}
 		parse_mboot_mmap(mboot);
 
 		x86::paging::enable_paging();

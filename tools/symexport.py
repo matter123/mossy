@@ -27,6 +27,9 @@ def help():
 def writeU32(output,num):
 	output.write(struct.pack("I",num))
 
+def writeU8(output,num):
+	output.write(struct.pack("B",num))
+
 
 #I like C, going to ignore PEP 8
 symmatch=re.compile("c[0123456789abcdef]{7} [g|l] *[F|0]? *.text"); #remove the c and replace 7 with 8 if you want to catch all symbols
@@ -55,9 +58,10 @@ writeU32(export,count);
 for l in strlist:
 	writeU32(export,0x00E67126) #00ENTRY, yay bad hexspeek
 	writeU32(export,int(l[0:7],16))
-	demangle=subprocess.Popen(["c++filt","-p",l.split('.text')[1].strip().split(' ')[1]], stdout=subprocess.PIPE).communicate()[0].strip()
-	writeU32(export,len(demangle))
+	demangle=subprocess.Popen(["c++filt","-p",l.split('.text')[1].strip().split(' ')[1]], stdout=subprocess.PIPE).communicate()[0].strip()[0:39]
 	export.write(demangle)
+	for x in range(len(demangle),40):
+		writeU8(export,0);
 writeU32(export,0xFFFFFFFF)
 subprocess.Popen(["strip",argv[1]], stdout=subprocess.PIPE)
 print str(count) + " symbols exported and stripped"
