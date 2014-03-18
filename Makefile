@@ -5,10 +5,10 @@ CPPOBJECTS=$(patsubst %.cpp, %.o, $(CPPSOURCES))
 SSOURCES=$(shell find -name *.s)
 SOBJECTS=$(patsubst %.s, %.o, $(SSOURCES))
 
-CC=$$HOME/opt/cross/bin/i586-elf-gcc
-CPP=$$HOME/opt/cross/bin/i586-elf-gcc
-LD=$$HOME/opt/cross/bin/i586-elf-gcc
-AS=$$HOME/opt/cross/bin/i586-elf-as
+64CC=$$HOME/opt/cross/bin/x86_64-elf-gcc
+64CPP=$$HOME/opt/cross/bin/x86_64-elf-gcc
+64LD=$$HOME/opt/cross/bin/x86_64-elf-gcc
+64AS=$$HOME/opt/cross/bin/x86_64-elf-as
 
 CRTBEGIN_OBJ:=$(shell $(CC) $(CFLAGS) -print-file-name=crtbegin.o)
 CRTEND_OBJ:=$(shell $(CC) $(CFLAGS) -print-file-name=crtend.o)
@@ -23,10 +23,11 @@ test: mkiso runem
 WFLAGSON=-Wall -Wextra -Werror=return-type -Wshadow -Wframe-larger-than=16384 -Wdeprecated -Wredundant-decls -pedantic
 WFLAGSOFF=-Wno-sequence-point -Wno-unused-parameter -Wno-sign-compare
 FFLAGS=-fno-omit-frame-pointer -ffreestanding -fno-rtti -fno-exceptions -fno-stack-protector
-DFLAGS=-DCPU=586
-CFLAGS=-Isrc/stdlib/include -O2 -std=c99 $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS)
-CPPFLAGS=-Isrc/stdlib/include -O2 -std=c++11 $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS)
-LDFLAGS=-Tlink.ld -ffreestanding -O2 -nostdlib
+DFLAGS=-DARCH=x64
+MFLAGS=-mcmodel=large -mno-red-zone -mno-mxx -mno-sse -mno-sse2 -mno-sse3 -mno-3dnow
+CFLAGS=-Isrc/stdlib/include -O2 -std=c99 $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS) $(MFLAGS)
+CPPFLAGS=-Isrc/stdlib/include -O2 -std=c++11 $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS) $(MFLAGS)
+LDFLAGS=-Tlink64.ld -ffreestanding -O2 -nostdlib
 ASFLAGS=-felf
 
 clean:
