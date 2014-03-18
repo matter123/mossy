@@ -14,12 +14,12 @@
  limitations under the License.
  */
 #pragma once
-#if ARCH = x64
+#if ARCH == x64
 #define X64
 #ifndef asm
 typedef uint64_t uintReg_t;
 #endif
-#elif ARCH = x86
+#elif ARCH == x86
 #define X86
 #ifndef asm
 typedef uint32_t uintReg_t;

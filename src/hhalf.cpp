@@ -1,7 +1,7 @@
 #include "hhalf.h"
 #include <stdint.h>
-
-
+#include "arch/arch.h"
+#ifdef X86
 uint32_t pagedira[1024] __attribute__ ((aligned (4096)));
 uint32_t pagetablea[1024] __attribute__ ((aligned (4096)));
 uint32_t pagetablean[1024] __attribute__ ((aligned (4096)));
@@ -90,3 +90,4 @@ void em_page(void *virt,void * phys) {
 	pagedira[v>>22]=pagetablen|0x3;
 	asm volatile("invlpg (%0)" ::"r" (virt) : "memory");
 }
+#endif

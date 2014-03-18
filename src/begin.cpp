@@ -27,6 +27,7 @@
 #include <debug.h>
 #include "init/modules.h"
 #include "init/symtable.h"
+#include "arch/arch.h"
 
 namespace kernel {
 	void init_system(multiboot_t *mboot);
@@ -43,10 +44,12 @@ namespace kernel {
 	}
 	extern "C"
 	void init_exec(multiboot_t *mboot) {
+		#ifdef X86
 		std::hex=std::dec;
 		init_system(mboot);
 		std::cout <<"hello setup kernel";
 		A(15);
+		#endif
 		while(1);
 	}
 	void init_system(multiboot_t *mboot) {
