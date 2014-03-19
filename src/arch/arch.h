@@ -16,10 +16,12 @@
 #pragma once
 #if ARCH == x64
 #define X64
+#define UINTREG_MAX UINT64_MAX
 #ifndef asm
 typedef uint64_t uintReg_t;
 #endif
 #elif ARCH == x86
+#define UINTREG_MAX UINT64_MAX
 #define X86
 #ifndef asm
 typedef uint32_t uintReg_t;

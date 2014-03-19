@@ -30,15 +30,16 @@ namespace x86 {
 	}PACKED;
 	IDTdesc IDT[256];
 
-	void install_idt(void *handler, int number, int type, int min_ring) {
+	void install_idt(void *handlerv, int number, int type, int min_ring) {
+		uintptr_t handler=reinterpret_cast<uintptr_t>(handlerv);
 		IDT[number].zero=0;
 		IDT[number].S=0;
 		IDT[number].DPL=min_ring;
 		IDT[number].type=type;
 		IDT[number].present=true;
 		IDT[number].selector=0x08;//offset into GDT, 0x08 for kernel
-		IDT[number].offset_low=((uint32_t)handler)&0xFFFF;
-		IDT[number].offset_high=(((uint32_t)handler)>>16)&0xFFFF;
+		IDT[number].offset_low=static_cast<uint16_t>(handler&0xFFFF);
+		IDT[number].offset_high=static_cast<uint16_t>((handler>>16)&0xFFFF);
 	}
 
 	struct LIDT {

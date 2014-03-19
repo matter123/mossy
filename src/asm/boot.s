@@ -12,6 +12,7 @@
 ;  See the License for the specific language governing permissions and
 ;  limitations under the License.
 #define asm
+#include "../arch/arch.h"
 #ifdef X86
 [BITS 32]
 [section .mboot]
@@ -84,6 +85,9 @@ gdt_end:
 resb 0x4000
 sys_stack:
 #endif
+
+
+
 #ifdef X64
 [BITS 32]
 [SECTION .mboot]
@@ -94,8 +98,9 @@ ALIGN 8
 mboothead:
 DD 0xE8525D6
 DD 0
+DD mboot_end-mboothead
 ;header length is missing from grub
-DD -(0xE8525D6)
+DD -(0xE8525D6 + (mboot_end - mboothead))
 
 ;A.OUT KLUDGE
 DW 2,0
@@ -114,6 +119,7 @@ DD 0
 ;END OF TAGS
 DW 0,0
 DD 8
+mboot_end:
 
 [SECTION .boot]
 [GLOBAL start]
@@ -139,32 +145,37 @@ start:
 	call setup_paging_long_mode
 	mov eax, gdtr2 ;setups lower half gdt
 	lgdt [eax]
-	jmp 0x08:gdt2ready
+	jmp 0x08:.gdt2ready
 
 [BITS 64]
-[EXTERN init_exec]
-[EXTERN _init]
-.gdt2ready
+;[EXTERN init_exec]
+;[EXTERN _init]
+.gdt2ready:
 	mov ax, 0x10
 	mov ds, ax
 	mov es, ax
 	mov fs, ax
 	mov gs, ax
 	mov ss, ax
-	mov esp, stack + 0xFFFFFFFF80000000
-	mov ebp, esp
-	mov rax, gdtr3 ;setups higher half gdt
+	mov qword rsp, stack + 0xFFFFFFFF80000000
+	mov rbp, rsp
+	mov qword rax, gdtr3 ;setups higher half gdt
 	lgdt [rax]
 	add rbx, 0xFFFFFFFF80000000
+	mov rax, 'L O N G'
+	mov [0x0B8000], rax
+	jmp $
+	;call _init
 	mov rdi, rbx ;AMD64 System V ABI says to pass first argument in rdi
 	;add a call to _init here later
-	call init_exec
+	;call init_exec
 
 	jmp $
 
 [EXTERN pml4]
 [EXTERN pdpt]
 [EXTERN pd]
+[BITS 32]
 setup_paging_long_mode:
 	mov eax, pdpt
 	or eax, 1
@@ -183,7 +194,8 @@ setup_paging_long_mode:
 	mov dword [pd + 0x18], 0x600083
 
 	;install pml4 and enable PAE
-	mov cr3, pml4
+	mov eax, pml4
+	mov cr3, eax
 	mov eax, cr4
 	or eax, 1 << 5
 	mov cr4, eax
@@ -216,5 +228,5 @@ gdtr2:
 	DD 0
 gdtr3:
 	DW 23
-	DD tmp_gdt + 24 + 0xFFFFFFFF80000000
+	DQ tmp_gdt + 24 + 0xFFFFFFFF80000000
 #endif

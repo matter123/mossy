@@ -94,7 +94,7 @@ namespace x86 {
 			x86::paging::handle_pf(s.err);
 			return;
 		}
-		asm volatile("mov %%cr2, %0":"=r"(code));
+		//asm volatile("mov %%cr2, %0":"=r"(code));
 		std::cout<<std::hex<<"exception"<<s.ext<<" "<<s.eip<<std::endl;
 		asm("cli\nhlt");
 	}

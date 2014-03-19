@@ -20,7 +20,9 @@
 #include <string.h>
 #include "../../monitor.h"
 #include "../../panic.h"
+#include "../arch.h"
 
+#ifdef X86
 namespace x86 {
 	namespace paging {
 		void inv_page(uintptr_t virt) {
@@ -113,3 +115,4 @@ namespace x86 {
 		}
 	}
 }
+#endif

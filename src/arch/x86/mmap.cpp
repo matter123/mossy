@@ -26,13 +26,13 @@
 
 #define K128 131072
 
-extern "C" uint32_t k_end;//we have 128kb after this reserved
-extern "C" uint32_t k_start;
-extern "C" uint32_t k_data_end; /*end of working space, PFA and paging
+extern "C" uintptr_t k_end;//we have 128kb after this reserved
+extern "C" uintptr_t k_start;
+extern "C" uintptr_t k_data_end; /*end of working space, PFA and paging
                                   needs to be up by then so we don't run out
                                   of room*/
 namespace kernel {
-	uint32_t k_start_data_end;
+	uintptr_t k_start_data_end;
 	mmap_field_t *mmap;
 	int mmap_count;
 	void *workspace_alloc_ptr;
@@ -59,7 +59,7 @@ namespace kernel {
 		return mboot;
 	}
 	void set_workspace_begin(void *begin) {
-		k_start_data_end=reinterpret_cast<uint32_t>(begin);
+		k_start_data_end=reinterpret_cast<uintptr_t>(begin);
 		workspace_alloc_ptr=begin;
 	}
 	void parse_mboot_mmap(multiboot_t *mboot) {
@@ -264,7 +264,7 @@ namespace kernel {
 		}
 	}
 	bool is_valid_mem(void *addr) {
-		uint32_t addri=(uint32_t)addr;
+		uintptr_t addri=(uintptr_t)addr;
 		addri&=0xFFFFF000;
 		bool valid=false;
 		for(int i=0; i<mmap_count; i++) {

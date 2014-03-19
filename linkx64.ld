@@ -1,3 +1,4 @@
+OUTPUT_FORMAT("elf64-x86-64")
 ENTRY(start)
 
 VIRT_BASE = 0xFFFFFFFF80000000;
@@ -48,14 +49,21 @@ SECTIONS
 	{
 		*(COMMON)
 		*(.bss)
+		k_end = .;
 		*(.gnu.linkonce.b*)
 	}
 
 	bss_end = . - VIRT_BASE;
 
+	.kdata ALIGN (0x1000) : AT(ADDR(.kdata) - VIRT_BASE)
+	{
+		*(.kdata)
+		. += 131072;
+		k_data_end = .;
+	}
+
 	/DISCARD/ :
 	{
 		*(.comment)
-		*(.eh_frame)
 	}
 }

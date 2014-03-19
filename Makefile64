@@ -17,7 +17,7 @@ CRTEND_OBJ:=$(shell $(CC) $(CFLAGS) -print-file-name=crtend.o)
 
 all: build test
 
-build: clean check globalc $(COBJECTS) $(CPPOBJECTS) $(SOBJECTS) link
+build: clean check globalc $(COBJECTS)  $(SOBJECTS) link
 
 test: mkiso runem
 
@@ -29,8 +29,8 @@ DFLAGS=-DARCH=x64
 MFLAGS=-mcmodel=large -mno-red-zone -mno-mmx -mno-sse -mno-sse2 -mno-sse3 -mno-3dnow
 CFLAGS=-Isrc/stdlib/include -O2 -std=c99 $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS) $(MFLAGS)
 CPPFLAGS=-Isrc/stdlib/include -O2 -std=c++11 $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS) $(MFLAGS)
-LDFLAGS=-Tlink64.ld -ffreestanding -O2 -nostdlib
-ASFLAGS=-felf
+LDFLAGS=-Tlinkx64.ld -ffreestanding -O2 -nostdlib -lgcc $(FFLAGS)
+ASFLAGS=-felf64
 
 clean:
 	@echo Cleaning workspace
@@ -41,11 +41,13 @@ check:
 	@tools/doccheck.py kernel src
 link:
 	@echo Linking
-	$(LD) $(LDFLAGS) -o kernel ./gc/crti.o $(CRTBEGIN_OBJ) $(SOBJECTS) $(COBJECTS) $(CPPOBJECTS) $(CRTEND_OBJ) ./gc/crtn.o
+	@$(LD) $(LDFLAGS) -o kernel ./gc/crti.o $(SOBJECTS) $(COBJECTS) ./gc/crtn.o
 
 .s.o:
-	@echo Assembling $<
-	@nasm $(ASFLAGS) $< -o $@
+	@echo Assembling $(patsubst %.o, %.s, $@)
+	@cpp -E -P $(DFLAGS) -o temp.s $(patsubst %.o, %.s, $@)
+	@nasm $(ASFLAGS) temp.s -o $@
+	@rm temp.s
 
 .c.o:
 	@echo Compiling $<
@@ -64,9 +66,9 @@ mkiso:
 	@grub2-mkrescue -o bootable.iso iso -- -zisofs level=6
 
 runem:
-	@cd .&& bash scripts/run_emulator `pwd` &
+	@cd .&& bash scripts/run_emulator64 `pwd` &
 
 globalc:
 	@echo assembling help files
-	#$(AS) ./gc/crti.asm -o ./gc/crti.o
-	#$(AS) ./gc/crtn.asm -o ./gc/crtn.o
+	$(AS) ./gc/crtix64.asm -o ./gc/crti.o
+	$(AS) ./gc/crtnx64.asm -o ./gc/crtn.o
