@@ -28,33 +28,45 @@ SECTIONS
 	.text ALIGN(0x1000) : AT(ADDR(.text) - VIRT_BASE)
 	{
 		*(.text)
-		*(.gnu.linkonce.t*)
 	}
 
 	.data ALIGN(0x1000) : AT(ADDR(.data) - VIRT_BASE)
 	{
 		*(.data)
-		*(.gnu.linkonce.d*)
 	}
 
 	.rodata ALIGN(0x1000) : AT(ADDR(.rodata) - VIRT_BASE)
 	{
 		*(.rodata*)
-		*(.gnu.linkonce.r*)
 	}
 
 	load_end = . - VIRT_BASE;
 
 	.bss ALIGN(0x1000) : AT(ADDR(.bss) - VIRT_BASE)
 	{
+		k_end = .;
 		*(COMMON)
 		*(.bss)
-		k_end = .;
-		*(.gnu.linkonce.b*)
 	}
 
 	bss_end = . - VIRT_BASE;
 
+	.jcr ALIGN(0x1000) : AT(ADDR(.jcr) - VIRT_BASE)
+	{
+		*(.jcr)
+	}
+	.ctors ALIGN(0x1000) : AT(ADDR(.ctors) - VIRT_BASE)
+	{
+		*(.ctors)
+	}
+	.dtors ALIGN(0x1000) : AT(ADDR(.dtors) - VIRT_BASE)
+	{
+		*(.dtors)
+	}
+	.eh_frame ALIGN(0x1000) : AT(ADDR(.eh_frame) - VIRT_BASE)
+	{
+		*(.eh_frame)
+	}
 	.kdata ALIGN (0x1000) : AT(ADDR(.kdata) - VIRT_BASE)
 	{
 		*(.kdata)

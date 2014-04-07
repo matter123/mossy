@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Matthew Fosdick
+ * Copyright 2013 Matthew Fosdick
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -13,18 +13,11 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-#include <stddef.h>
-#include <stdint.h>
-#ifndef PFA_H
-#define PFA_H
-namespace x86 {
-	namespace paging {
-		void  init_pfa();
-		void *get_frame();
-		void  free_frame(void *frame);
-		void  free_frames(void *frames,size_t count);
-		void *get_frames_adj(size_t count);
-		void  get_frames(size_t count,void *array);
-	}
+#pragma once
+namespace hal{
+
+	//called before init_vendor()
+	void init_arch(muliboot_t *mboot);
+
+	void init_vendor(muliboot_t *mboot)
 }
-#endif
