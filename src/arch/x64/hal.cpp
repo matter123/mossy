@@ -13,18 +13,34 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-#pragma once
+#include "../arch.h"
+#ifdef X64
 #include <stdint.h>
-#if ARCH == x64
-#define X64
-#define UINTREG_MAX UINT64_MAX
-#ifndef asm
-typedef uint64_t uintReg_t;
-#endif
-#elif ARCH == x86
-#define UINTREG_MAX UINT64_MAX
-#define X86
-#ifndef asm
-typedef uint32_t uintReg_t;
-#endif
+#include "../../init/multiboot.h"
+#include "idt.h"
+namespace hal {
+	void init_arch(kernel::multiboot_t *mboot) {
+		//an okay gdt is already setup
+		//so IDT
+		x64::init_idt();
+	}
+	uintptr_t get_page_offset_addr() {
+		return static_cast<uintptr_t>(0xFFFFFFFF80000000);
+	}
+
+	void enable_interrupts(){
+		asm volatile("sti");
+	}
+
+	void disable_interrupts() {
+		asm volatile("cli");
+	}
+
+	void halt(bool inter) {
+		if(inter)disable_interrupts();
+		while(1) {
+			asm("hlt");
+		}
+	}
+}
 #endif

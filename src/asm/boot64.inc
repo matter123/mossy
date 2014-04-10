@@ -25,6 +25,7 @@ multiboot_header:
 	dd	MULTIBOOT_HEADER_MAGIC
 	dd	MULTIBOOT_HEADER_FLAGS
 	dd  MULTIBOOT_CHECKSUM
+
 	null_gdt:
 	dq 0
 	code_64_gdt:
@@ -61,6 +62,8 @@ resb 0x1000
 pd:
 resb 0x1000
 pt:
+resb 0x1000
+pt_1:
 resb 0x1000
 low_bss_end:
 
@@ -124,15 +127,15 @@ start:
 	bts eax, 5
 	mov cr4, eax
 
-	xor eax, eax
 	mov edi, pt
 	xor ecx, ecx
+	mov edx, 512
 
 	;id map 2mb, in this setup first 12 bits of KERNEL_LMA and KERNEL_VMA need to be zero
 	;KERNEL_VMA must also be the offest from KERNEL_LMA
 
 	.id_map:
-		cmp ecx, 512
+		cmp ecx, edx
 		je .cont
 		mov eax, ecx
 		mov edx, 0x1000
@@ -142,11 +145,26 @@ start:
 		inc ecx
 		jmp .id_map
 	.cont:
-
+	cmp edi, pt
+	jne .cont_1
+	;skip 2mb then map the next 2 megabytes
+	mov edi, pt_1
+	mov ecx, 1024
+	mov edx, 1024+512
+	jmp .id_map
+	.cont_1:
 	mov eax, pt
 	or eax,3
 	mov [pd],eax
 	mov [pd + (((KERNEL_VMA>>21)&511)*8)],eax
+	;assuming that the previous calculation doesn't exceed 509
+	;so final memory map will look like(assuming an offset of KERNEL_VMA)
+	;0-2mb kernel space
+	;4-6mb page space
+	;2mb hole will eventually crash a too big kernel, so if RIP is between 2mb and 4mb thats why
+	;no silent overwrite of free page stack that can cause hard to detect bugs
+	mov eax, pt_1
+	mov [pd + (((KERNEL_VMA>>21)&511)*8)+16],eax
 
 	mov eax, pd
 	or eax,3

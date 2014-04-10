@@ -23,7 +23,7 @@ WFLAGSON=-Wall -Wextra -Werror=return-type -Wshadow -Wframe-larger-than=16384 -W
 WFLAGSOFF=-Wno-sequence-point -Wno-unused-parameter -Wno-sign-compare
 FFLAGS=-fno-omit-frame-pointer -ffreestanding -fno-rtti -fno-exceptions -fno-stack-protector
 DFLAGS=-DARCH=x64 -DVENDOR=IBM
-MFLAGS=-mcmodel=large -mno-red-zone -mno-sse3 -mno-3dnow
+MFLAGS=-mcmodel=kernel -mno-red-zone -mno-sse3 -mno-3dnow
 CFLAGS=-Isrc/stdlib/include -O2 -std=c99 $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS) $(MFLAGS)
 CPPFLAGS=-Isrc/stdlib/include -O2 -std=c++11 $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS) $(MFLAGS)
 LDFLAGS=-Tlinkx64.ld -ffreestanding -O2 -nostdlib -lgcc $(FFLAGS)
