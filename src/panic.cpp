@@ -17,7 +17,7 @@
 #include "panic.h"
 #include <string.h>
 #include <conv.hpp>
-#include "monitor.h"
+#include <hal/console.h>
 
 namespace kernel {
 	void panic() {
@@ -27,8 +27,8 @@ namespace kernel {
 		panic("");
 	}
 	void panic(std::c_cstring msg) {
-		std::cout<<std::endl<<"PANIC: An Unrecoverable Error Has Occurred";
-		std::cout<<std::endl<<msg;
+		hal::cout<<hal::endl<<"PANIC: An Unrecoverable Error Has Occurred";
+		hal::cout<<hal::endl<<msg;
 		asm("cli\nhlt");
 		while(1);//will never execute
 	}

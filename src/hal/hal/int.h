@@ -38,6 +38,7 @@ namespace hal {
 		uint16_t len;
 	}FULL;
 
+	void a();
 	idt_range reserve_range(uint16_t count, uint16_t min_count, bool aligned);
 
 	bool release_range(idt_range range);

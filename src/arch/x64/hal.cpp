@@ -22,7 +22,7 @@ namespace hal {
 	void init_arch(kernel::multiboot_t *mboot) {
 		//an okay gdt is already setup
 		//so IDT
-		x64::init_idt();
+		init_idt();
 	}
 	uintptr_t get_page_offset_addr() {
 		return static_cast<uintptr_t>(0xFFFFFFFF80000000);

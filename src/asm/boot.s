@@ -14,9 +14,9 @@
 #define asm
 #include "../arch/arch.h"
 #ifdef X86
-%include "boot86.inc"
+%include "src/asm/boot86.inc"
 #endif
 
 #ifdef X64
-%include "boot64.inc"
+%include "src/asm/boot64.inc"
 #endif

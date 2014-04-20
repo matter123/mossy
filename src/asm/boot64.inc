@@ -72,23 +72,23 @@ LB_LEN equ (low_bss_end-low_bss_start)/4
 [SECTION .low_text exec]
 no_mboot:
 	mov eax, 0xB8000
-	mov dword [eax], `N\xFO\xF`
+	mov dword [eax], `N\x0FO\xF`
 	add eax, 4
-	mov dword [eax], ` \xFM\xF`
+	mov dword [eax], ` \x0FM\xF`
 	add eax, 4
-	mov dword [eax], `B\xFO\xF`
+	mov dword [eax], `B\x0FO\xF`
 	add eax, 4
-	mov dword [eax], `O\xFT\xF`
+	mov dword [eax], `O\x0FT\xF`
 	add eax, 4
 no_64:
 	mov eax, 0xB8000
-	mov dword [eax], `N\xFO\xF`
+	mov dword [eax], `N\x0FO\x0F`
 	add eax, 4
-	mov dword [eax], ` \xF6\xF`
+	mov dword [eax], ` \x0F6\x0F`
 	add eax, 4
-	mov dword [eax], `4\xFB\xF`
+	mov dword [eax], `4\x0FB\x0F`
 	add eax, 4
-	mov dword [eax], `I\xFT\xF`
+	mov dword [eax], `I\x0FT\x0F`
 	add eax, 4
 [GLOBAL start]
 start:
@@ -97,19 +97,18 @@ start:
 	jne no_mboot
 
 	;check cpu supports AMD64
+	mov esi, ebx
 	mov eax,0x80000001
 	cpuid
+	mov ebx, esi
 	bt edx,29
 	jnc no_64
-
-	;setup lower half stack
 
 	;clear low bss
 	mov edi, low_bss_start
 	mov ecx, LB_LEN
 	mov eax, 0
 	rep stosd
-
 	;use custom_temp gdt
 	lgdt [gdtr_32]
 	jmp 0x18:.cont_1
@@ -129,13 +128,12 @@ start:
 
 	mov edi, pt
 	xor ecx, ecx
-	mov edx, 512
+	mov esi, 512
 
 	;id map 2mb, in this setup first 12 bits of KERNEL_LMA and KERNEL_VMA need to be zero
 	;KERNEL_VMA must also be the offest from KERNEL_LMA
-
 	.id_map:
-		cmp ecx, edx
+		cmp ecx, esi
 		je .cont
 		mov eax, ecx
 		mov edx, 0x1000
@@ -145,14 +143,21 @@ start:
 		inc ecx
 		jmp .id_map
 	.cont:
-	cmp edi, pt
-	jne .cont_1
 	;skip 2mb then map the next 2 megabytes
 	mov edi, pt_1
-	mov ecx, 1024
-	mov edx, 1024+512
-	jmp .id_map
-	.cont_1:
+	mov ecx, 0
+	mov esi, 512
+	.id_map_1:
+		cmp ecx, esi
+		je .cont_2
+		mov eax, ecx
+		mov edx, 0x1000
+		mul edx
+		or eax,3
+		mov dword [edi+ecx*8],eax
+		inc ecx
+		jmp .id_map_1
+	.cont_2:
 	mov eax, pt
 	or eax,3
 	mov [pd],eax
@@ -200,18 +205,7 @@ start:
 	mov rax, qword GDTR_64
 	lgdt [rax]
 	;dont need to reload the *s registers since the GDTR_64 points to the same structure
-	mov rdi, 0xB8000
-	mov rax, [qword fillstr]
-	mov rcx, 500
-	.reloop:
-		cmp rcx, 0
-		je .cont
-		mov [rdi], rax
-		add rdi, 8
-		sub rcx,1
-		jmp .reloop
 
-	.cont:
 	;setup stack
 	mov rax, qword stack_start
 	mov rsp, rax
@@ -242,7 +236,7 @@ start:
 	.call_ctor:
 		cmp qword [r12], 0
 		je .cont
-		call r12
+		call [r12]
 		add r12, 8
 		jmp .call_ctor
 	.cont:
@@ -250,7 +244,7 @@ start:
 	add rax, KERNEL_VMA
 	mov rdi, rax
 	call init_exec
-	cli ;incase kernel renables it
+	cli ;in case kernel renables it
 	mov rdi, 0xB8000
 	mov r13, qword shutd_1
 	mov rax, [r13]
@@ -269,10 +263,16 @@ start:
 	.cont_1:
 	hlt
 
+	[GLOBAL lidt]
+	lidt:
+	lidt [rdi]
+	ret
+
 	[SECTION .data]
 	fillstr: db 'Y',0xF,'A',0xF,'Y',0xF,'!',0xF
 	shutd_1: db 'S',0xF,'H',0xF,'U',0xF,'T',0xF
 	shutd_2: db 'D',0xF,'O',0xF,'W',0xF,'N',0xF
+	ldtr: dq 0
 	[SECTION .bss]
 	resb 0x4000
 	stack_start:

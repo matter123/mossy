@@ -25,6 +25,7 @@ namespace std {
 	cstring strcpy(cstring s1,c_cstring s2);
 	int    strlen(c_cstring s1);
 	bool   strcmp(c_cstring s1,c_cstring s2);
+	void  *memcpy(void *dest,const void *src,size_t n);
 	void  *memmove(void *dest,const void *src,size_t num);
 	void  *memset(void *addr,uint8_t value,size_t bytes);
 	void  *memset16(uint16_t *addr,uint16_t value,size_t ops);

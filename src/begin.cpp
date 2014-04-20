@@ -16,13 +16,16 @@
 
 #include "init/multiboot.h"
 #include "arch/arch.h"
-#include "hal/hal.h"
+#include <hal/hal.h>
+#include <hal/console.h>
 
 namespace kernel {
 	extern "C"
 	void init_exec(multiboot_t *mboot) {
 		hal::init_arch(mboot);
 		hal::init_vendor(mboot);
+		hal::cls();
+		hal::cout<<"the HAL says \"hello\""<<hal::endl;
 		while(1);
 	}
 }

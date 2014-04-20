@@ -26,18 +26,15 @@ namespace std{
 		cstring low;
 		c_cstring lets=chars;
 		if(!uppercase)lets=chars_low;
-		// Check for supported base.
 		if ( base < 2 || base > 36 ) {
 			*str = '\0';
 			return str;
 		}
-		rc = ptr = str;
-		// Set '-' for negative decimals.
-		if ( value < 0 && base == 10 ) {
+		rc=ptr=str;
+		if (base==10&&(value<0)) {
 			*ptr++ = '-';
 		}
 		low = ptr;
-		// The actual conversion.
 		do {
 			//using memory to save cpu speed by mirroring array
 			*ptr++ = lets[35 + value % base];
@@ -48,7 +45,7 @@ namespace std{
 			if(min_digits>0)
 			while(min_digits--)*ptr++='0';
 		}
-		*ptr-- = '\0';
+		*ptr--='\0';
 		//reverse the string
 		while ( low < ptr ) {
 			char tmp = *low;
