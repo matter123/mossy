@@ -42,5 +42,40 @@ namespace hal {
 			asm("hlt");
 		}
 	}
+	void get_reg_count() {
+		return 14;
+	}
+	uintreg_t get_reg(cpu_state *s, uint reg) {
+		switch(reg) {
+			case 0x0:
+				return s->rax;
+			case 0x1:
+				return s->rbx;
+			case 0x2:
+				return s->rcx;
+			case 0x3:
+				return s->rdx;
+			case 0x4:
+				return s->rdi;
+			case 0x5:
+				return s->rsi;
+			case 0x6:
+				return s->r8;
+			case 0x7:
+				return s->r9;
+			case 0x8:
+				return s->r10;
+			case 0x9:
+				return s->r11;
+			case 0xA:
+				return s->r12;
+			case 0xB:
+				return s->r13;
+			case 0xC:
+				return s->r14;
+			case 0xD:
+				return s->r15;
+		}
+	}
 }
 #endif

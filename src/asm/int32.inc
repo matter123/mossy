@@ -25,29 +25,30 @@ IDT_flush:
 %macro E_NOERRCODE 1
 	[GLOBAL exception%1]
 	exception%1:
-		push byte 0
-		push byte %1
+		push dword 0
+		push dword %1
 		jmp execpt_common_stub
 %endmacro
 
 %macro E_ERRCODE 1
 	[GLOBAL exception%1]
 	exception%1:
-		push byte %1
+		push dword %1
 		jmp execpt_common_stub
 %endmacro
 
 %macro E_RESV 1
 	[GLOBAL exception%1]
 	exception%1:
-		push byte %1
+		push dword %1
 		jmp resv_common_stub
 %endmacro
 
 %macro PIC 1
 	[GLOBAL pic%1]
 	pic%1:
-		push byte %1
+		push dword 0 ;keep a same stack frame for both exceptions and pic
+		push dword %1
 		jmp pic_common_stub
 %endmacro
 
@@ -121,6 +122,6 @@ pic_common_stub:
 	pushad
 	call pic_handle
 	popad
-	add esp,4
+	add esp,8
 	iret
 #endif

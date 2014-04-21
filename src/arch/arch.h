@@ -24,15 +24,27 @@
 typedef uint64_t uintreg_t;
 struct cpu_state{
 	uintreg_t r15, r14, r13, r12, r11, r10, r9, r8;
-	uintreg_t rdi, rsi, rdx, rcx, rbx, rax, rbp, ds, fs, gs;
-	uintreg_t int_num, code;
-	uintreg_t cs, rip, ss, rsp;
+	uintreg_t rdi, rsi, rdx, rcx, rbx, rax, rbp, fs, gs;
+	uintreg_t mnemonic, int_num, code;
+	uintreg_t rip, cs, rflags, rsp, ss;
 };
 #endif
 #elif ARCH == x86
-#define UINTREG_MAX UINT64_MAX
+#define UINTREG_MAX UINT32_MAX
 #define X86
 #ifndef asm
 typedef uint32_t uintreg_t;
+struct cpu_state{
+	uintreg_t edi, esi, edx, ecx, ebx, eax, ebp, ds, es, fs, gs;
+	uintreg_t mnemonic, int_num, code;
+	uintreg_t eip, cs, eflags, esp, ss;
+};
 #endif
+#endif
+#ifndef asn
+void get_reg_count();
+uintreg_t get_reg(cpu_state *s, uint reg);
+void set_reg(cpu_state *s, uint reg, uintreg_t value);
+uintreg_t get_stack_pointer(cpu_state *s,bool userspace);
+void set_stack_pointer(cpu_state *s,bool userspace,uintreg_t value);
 #endif
