@@ -65,5 +65,5 @@ mkiso:
 	@grub2-mkrescue -o bootable.iso iso -- -zisofs level=6
 
 runem:
-	#@~/bochs/bochs -f bochs.rc -q
-	@cd .&& bash scripts/run_emulator64 `pwd` &
+	@~/bochs/bochs -f bochs.rc -q
+	#@cd .&& bash scripts/run_emulator64 `pwd` &

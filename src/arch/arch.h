@@ -14,13 +14,18 @@
  limitations under the License.
  */
 #pragma once
-#ifndef asm
-#include <stdint.h>
-#endif
 #if ARCH == x64
 #define X64
 #define UINTREG_MAX UINT64_MAX
+#elif ARCH == x86
+#define UINTREG_MAX UINT32_MAX
+#define X86
+#endif
+
 #ifndef asm
+#include <stdint.h>
+#if ARCH == x64
+#define X64
 typedef uint64_t uintreg_t;
 struct cpu_state{
 	uintreg_t r15, r14, r13, r12, r11, r10, r9, r8;
@@ -28,11 +33,9 @@ struct cpu_state{
 	uintreg_t mnemonic, int_num, code;
 	uintreg_t rip, cs, rflags, rsp, ss;
 };
-#endif
 #elif ARCH == x86
 #define UINTREG_MAX UINT32_MAX
 #define X86
-#ifndef asm
 typedef uint32_t uintreg_t;
 struct cpu_state{
 	uintreg_t edi, esi, edx, ecx, ebx, eax, ebp, ds, es, fs, gs;
@@ -40,11 +43,9 @@ struct cpu_state{
 	uintreg_t eip, cs, eflags, esp, ss;
 };
 #endif
-#endif
-#ifndef asn
-void get_reg_count();
-uintreg_t get_reg(cpu_state *s, uint reg);
-void set_reg(cpu_state *s, uint reg, uintreg_t value);
+uint8_t get_reg_count();
+uintreg_t get_reg(cpu_state *s, uint8_t reg);
+void set_reg(cpu_state *s, uint8_t reg, uintreg_t value);
 uintreg_t get_stack_pointer(cpu_state *s,bool userspace);
 void set_stack_pointer(cpu_state *s,bool userspace,uintreg_t value);
 #endif

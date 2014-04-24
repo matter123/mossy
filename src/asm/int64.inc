@@ -56,7 +56,16 @@ pop qword gs
 [global exc%1]
 exc%1:
 	push qword %1
-	push qword %2
+	push qword %1
+	push qword rax
+	mov rax, %2
+	push qword rax
+	mov rax, [rsp+8]
+	push qword rax
+	mov rax, [rsp+8]
+	mov [rsp+16], rax
+	pop qword rax
+	add rsp, 8
 	jmp exc_stub
 %endmacro
 
@@ -65,48 +74,57 @@ exc%1:
 exc%1:
 	push qword 0
 	push qword %1
-	push qword %2
+	push qword rax
+	mov rax, %2
+	push qword rax
+	mov rax, [rsp+8]
+	push qword rax
+	mov rax, [rsp+8]
+	mov [rsp+16], rax
+	pop qword rax
+	add rsp, 8
 	jmp exc_stub
 %endmacro
 
-EXCEPT_NC 0  e00
-EXCEPT_NC 1  e01
-EXCEPT_NC 2  e02
-EXCEPT_NC 3  e03
-EXCEPT_NC 4  e04
-EXCEPT_NC 5  e05
-EXCEPT_NC 6  e06
-EXCEPT_NC 7  e07
-EXCEPT_C  8  e08
-EXCEPT_NC 9  e09
-EXCEPT_C  10 e0A
-EXCEPT_C  11 e0B
-EXCEPT_C  12 e0C
-EXCEPT_C  13 e0D
-EXCEPT_C  14 e0E
-EXCEPT_NC 15 e0F
-EXCEPT_NC 16 e10
-EXCEPT_NC 17 e11
-EXCEPT_NC 18 e12
-EXCEPT_NC 19 e13
-EXCEPT_NC 20 e14
-EXCEPT_NC 21 e15
-EXCEPT_NC 22 e16
-EXCEPT_NC 23 e17
-EXCEPT_NC 24 e18
-EXCEPT_NC 25 e19
-EXCEPT_NC 26 e1A
-EXCEPT_NC 27 e1B
-EXCEPT_NC 28 e1C
-EXCEPT_NC 29 e1D
-EXCEPT_NC 30 e1E
-EXCEPT_NC 31 e1F
+EXCEPT_NC 0,  e00
+EXCEPT_NC 1,  e01
+EXCEPT_NC 2,  e02
+EXCEPT_NC 3,  e03
+EXCEPT_NC 4,  e04
+EXCEPT_NC 5,  e05
+EXCEPT_NC 6,  e06
+EXCEPT_NC 7,  e07
+EXCEPT_C  8,  e08
+EXCEPT_NC 9,  e09
+EXCEPT_C  10, e0A
+EXCEPT_C  11, e0B
+EXCEPT_C  12, e0C
+EXCEPT_C  13, e0D
+EXCEPT_C  14, e0E
+EXCEPT_NC 15, e0F
+EXCEPT_NC 16, e10
+EXCEPT_NC 17, e11
+EXCEPT_NC 18, e12
+EXCEPT_NC 19, e13
+EXCEPT_NC 20, e14
+EXCEPT_NC 21, e15
+EXCEPT_NC 22, e16
+EXCEPT_NC 23, e17
+EXCEPT_NC 24, e18
+EXCEPT_NC 25, e19
+EXCEPT_NC 26, e1A
+EXCEPT_NC 27, e1B
+EXCEPT_NC 28, e1C
+EXCEPT_NC 29, e1D
+EXCEPT_NC 30, e1E
+EXCEPT_NC 31, e1F
 
-[EXTERN call_handle]
+[EXTERN _ZN3hal11call_handleEP9cpu_state]
 exc_stub:
 	push_x64
 	xchg bx, bx
-	call call_handle
+	mov rdi, rsp
+	call _ZN3hal11call_handleEP9cpu_state
 	pop_x64
 	add rsp, 24
 	iretq
