@@ -26,7 +26,12 @@ namespace kernel {
 		hal::init_vendor(mboot);
 		hal::cls();
 		hal::cout<<"the HAL says \"hello\""<<hal::endl;
-		asm("int $3");
-		while(1);
+		int a=5;
+		int b=1;
+		int c=b/5;
+		int d=a/c;
+		if(d==0) {
+			while(1);
+		}
 	}
 }

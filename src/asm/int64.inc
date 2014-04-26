@@ -13,59 +13,66 @@
 ;  limitations under the License.
 [SECTION .text]
 %macro push_x64 0
-push qword gs
-push qword fs
-push qword rbp
-push qword rax
-push qword rbx
-push qword rcx
-push qword rdx
-push qword rsi
-push qword rdi
-push qword r8
-push qword r9
-push qword r10
-push qword r11
-push qword r12
-push qword r13
-push qword r14
-push qword r15
+push  gs
+push  fs
+push  rbp
+push  rax
+push  rbx
+push  rcx
+push  rdx
+push  rsi
+push  rdi
+push  r8
+push  r9
+push  r10
+push  r11
+push  r12
+push  r13
+push  r14
+push  r15
+mov rax, cr0
+push  rax
+mov rax, cr2
+push  rax
+mov rax, cr3
+push  rax
+mov rax, cr4
+push  rax
+
 %endmacro
 
 %macro pop_x64 0
-pop qword r15
-pop qword r14
-pop qword r13
-pop qword r12
-pop qword r11
-pop qword r10
-pop qword r9
-pop qword r8
-pop qword rdi
-pop qword rsi
-pop qword rdx
-pop qword rcx
-pop qword rbx
-pop qword rax
-pop qword rbp
-pop qword fs
-pop qword gs
+add rsp, 32
+pop  r15
+pop  r14
+pop  r13
+pop  r12
+pop  r11
+pop  r10
+pop  r9
+pop  r8
+pop  rdi
+pop  rsi
+pop  rdx
+pop  rcx
+pop  rbx
+pop  rax
+pop  rbp
+pop  fs
+pop  gs
 %endmacro
 
 %macro EXCEPT_C 2
 [global exc%1]
 exc%1:
 	push qword %1
-	push qword %1
-	push qword rax
+	push qword 0
+	%ifdef DEBUG
+	push rax
 	mov rax, %2
-	push qword rax
-	mov rax, [rsp+8]
-	push qword rax
-	mov rax, [rsp+8]
-	mov [rsp+16], rax
-	pop qword rax
-	add rsp, 8
+	mov [rsp+8], rax
+	pop rax
+	%endif
 	jmp exc_stub
 %endmacro
 
@@ -74,15 +81,13 @@ exc%1:
 exc%1:
 	push qword 0
 	push qword %1
-	push qword rax
+	push qword 0
+	%ifdef DEBUG
+	push rax
 	mov rax, %2
-	push qword rax
-	mov rax, [rsp+8]
-	push qword rax
-	mov rax, [rsp+8]
-	mov [rsp+16], rax
-	pop qword rax
-	add rsp, 8
+	mov [rsp+8], rax
+	pop rax
+	%endif
 	jmp exc_stub
 %endmacro
 
@@ -122,8 +127,10 @@ EXCEPT_NC 31, e1F
 [EXTERN _ZN3hal11call_handleEP9cpu_state]
 exc_stub:
 	push_x64
-	xchg bx, bx
 	mov rdi, rsp
+	mov ax, 0x10
+	mov fs, ax
+	mov gs, ax
 	call _ZN3hal11call_handleEP9cpu_state
 	pop_x64
 	add rsp, 24
@@ -163,4 +170,3 @@ e1C: db "#RSV1C",0x0
 e1D: db "#RSV1D",0x0
 e1E: db "#SX",0x0
 e1F: db "#RSV1F",0x0
-

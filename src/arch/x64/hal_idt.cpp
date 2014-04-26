@@ -20,6 +20,7 @@
 #include <struct.h>
 #include <string.h>
 #include <hal/int.h>
+#include <hal/hal.h>
 #include <hal/console.h>
 namespace x64 {
 	struct idt_entry {
@@ -159,7 +160,8 @@ namespace hal {
 		asm volatile("hlt");
 	}
 	void call_handle(cpu_state *state) {
-		cout<<endl<<hex<<get_reg(state,0)<<" "<<(char *)(state->mnemonic);
+		dump_regs(state);
+		halt(true);
 	}
 }
 #endif
