@@ -14,18 +14,20 @@
     limitations under the License.
 */
 #pragma once
-#if ARCH == x64
+#define _x64 1
+#define _x32 2
+#define _arm 3
+#if ARCH == _x64
 #define X64
 #define UINTREG_MAX UINT64_MAX
-#elif ARCH == x86
+#elif ARCH == _x86
 #define UINTREG_MAX UINT32_MAX
 #define X86
 #endif
 
 #ifndef asm
 #include <stdint.h>
-#if ARCH == x64
-#define X64
+#ifdef  X64
 typedef uint64_t uintreg_t;
 struct cpu_state {
 	uintreg_t cr4, cr3, cr2, cr0;
@@ -34,7 +36,7 @@ struct cpu_state {
 	uintreg_t mnemonic, int_num, code;
 	uintreg_t rip, cs, rflags, rsp, ss;
 };
-#elif ARCH == x86
+#elif defined X86
 #define UINTREG_MAX UINT32_MAX
 #define X86
 typedef uint32_t uintreg_t;
@@ -56,4 +58,9 @@ uintreg_t get_creg(cpu_state *s, uint8_t creg);
 void set_reg(cpu_state *s, uint8_t reg, uintreg_t value);
 uintreg_t get_stack_pointer(cpu_state *s,bool userspace);
 void set_stack_pointer(cpu_state *s,bool userspace,uintreg_t value);
+#endif
+#ifndef UNDEF_ARCH
+#undef _x64
+#undef _x86
+#undef _arm
 #endif
