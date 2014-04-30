@@ -16,8 +16,8 @@
 
 #include <debug.h>
 #include <conv.hpp>
-#include "../init/symtable.h"
-#include "../monitor.h"
+#include <hal/console.h>
+#pragma message ("32 BIT ONLY")
 namespace std {
 	debug_level dl=dl_warning;
 
@@ -58,7 +58,7 @@ namespace std {
 	void cls() {
 		std::memset16(reinterpret_cast<uint16_t *>(0xC00B8000),' '|0xF,80*25);
 	}
-
+	/*
 	void strace(uint32_t depth) {
 		uint32_t *ebp=&depth-2;
 		debug(dl_critical,"Stack trace:    \n");
@@ -93,7 +93,7 @@ hlt:
 		debug(dl_critical,"end trace.      \n");
 		asm volatile("cli\nhlt");
 		while(1);//no reach
-	}
+	}*/
 
 	void assert(bool condition) {
 		if(!condition) {

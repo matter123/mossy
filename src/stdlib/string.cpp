@@ -42,7 +42,7 @@ namespace std {
 		}
 		return *(s1) == *(s2);
 	}
-	void  *memmove(void *dest,const void *src,size_t n) {
+	void *memmove(void *dest,const void *src,size_t n) {
 		int delta=0;
 		uint32_t from=0;
 		uint32_t to=0;
@@ -60,6 +60,16 @@ namespace std {
 			*(((uint8_t*)dest) + offset) = *(((uint8_t*)src) + offset);
 		return dest;
 	}
+
+	void *memcpy(void *dest,const void *src,size_t n) {
+		uint8_t *s1=reinterpret_cast<uint8_t *>(dest);
+		const uint8_t *s2=(uint8_t *)src;
+    	while ( n-- ) {
+        	*s1++ = *s2++;
+    	}
+    	return dest;
+	}
+
 	void *memset(void *addr,uint8_t c,size_t size) {
 		uint8_t *addr8=(uint8_t *)addr;
 		for(unsigned int i=0;i<size;i++) {

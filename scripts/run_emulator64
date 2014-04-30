@@ -1,0 +1,7 @@
+#!/bin/bash
+cd ..
+qemu-system-x86_64 -vga cirrus -name MOSSY -cpu phenom -m 8  -serial vc -soundhw pcspk -cdrom $1/bootable.iso &
+sleep 1
+wmctrl -a "QEMU (MOSSY)"
+wmctrl -r "QEMU (MOSSY)" -b toggle,maximized_vert,maximized_horz
+

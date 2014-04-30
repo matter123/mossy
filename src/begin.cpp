@@ -1,73 +1,37 @@
 /*
- * Copyright 2013 Matthew Fosdick
+    Copyright 2013 Matthew Fosdick
 
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
 
      http://www.apache.org/licenses/LICENSE-2.0
 
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
 */
 
 #include "init/multiboot.h"
-#include "arch/x86/idt.h"
-#include "arch/x86/exceptions.h"
-#include "arch/x86/pic.h"
-#include "arch/x86/pit.h"
-#include "arch/x86/mmap.h"
-#include "arch/x86/paging.h"
-#include "monitor.h"
-#include "hhalf.h"
-#include <conv.hpp>
-#include <debug.h>
-#include "init/modules.h"
-#include "init/symtable.h"
+#include "arch/arch.h"
+#include <hal/hal.h>
+#include <hal/console.h>
 
 namespace kernel {
-	void init_system(multiboot_t *mboot);
-	void B(int x);
-	void A(int x) {
-		if(x==0)std::strace(30);
-		if(--x%2)A(x);
-		B(x);
-	}
-	void B(int x) {
-		if(x==0)std::strace(30);
-		if(--x%2)A(x);
-		B(x);
-	}
 	extern "C"
 	void init_exec(multiboot_t *mboot) {
-		std::hex=std::dec;
-		init_system(mboot);
-		std::cout <<"hello setup kernel";
-		A(15);
-		while(1);
-	}
-	void init_system(multiboot_t *mboot) {
-		//GDT, basic paging
-		init_higher_half();
-		x86::init_exceptions();
-		x86::init_pic();
-		x86::install_pic_idt();
-		x86::enable_idt();
-		mboot=fix_tables(mboot);
-		load_modules(mboot);
-		if(debug::load_symbols()) {
-			std::cout<<debug::symbol_count()<<" symbols loaded."<<std::endl;
-		}else {
-			std::cout<<"symbol table not found"<<std::endl;
+		hal::init_arch(mboot);
+		hal::init_vendor(mboot);
+		hal::cls();
+		hal::cout<<"the HAL says \"hello\""<<hal::endl;
+		int a=5;
+		int b=1;
+		int c=b/5;
+		int d=a/c;
+		if(d==0) {
+			while(1);
 		}
-		parse_mboot_mmap(mboot);
-
-		x86::paging::enable_paging();
-		//IDT setup
-		x86::init_pit(x86::PIT_FREQ_10MS);
-		asm("sti");
 	}
 }

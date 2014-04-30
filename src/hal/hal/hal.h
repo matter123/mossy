@@ -13,23 +13,21 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-
-#ifndef STRING_H
-#define	STRING_H
-#include <stdlib.h>
-#include <stddef.h>
+#pragma once
 #include <stdint.h>
-#include <stddef.h>
-namespace std {
-	cstring strcat(cstring s1,c_cstring s2);
-	cstring strcpy(cstring s1,c_cstring s2);
-	int    strlen(c_cstring s1);
-	bool   strcmp(c_cstring s1,c_cstring s2);
-	void  *memcpy(void *dest,const void *src,size_t n);
-	void  *memmove(void *dest,const void *src,size_t num);
-	void  *memset(void *addr,uint8_t value,size_t bytes);
-	void  *memset16(uint16_t *addr,uint16_t value,size_t ops);
-	void  *memset32(uint32_t *addr,uint32_t value,size_t ops);
-}
-#endif
+#include "../init/multiboot.h"
+namespace hal{
 
+	//called before init_vendor()
+	void init_arch(kernel::multiboot_t *mboot);
+
+	void init_vendor(kernel::multiboot_t *mboot);
+
+	uintptr_t get_page_offset_addr();
+
+	void enable_interrupts();
+
+	void disable_interrupts();
+
+	void halt(bool inter);
+}

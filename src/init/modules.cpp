@@ -17,12 +17,12 @@
 #include "../hhalf.h"
 #include <stdint.h>
 #include "multiboot.h"
-#include "../arch/x86/mmap.h"
+//#include "../arch/x86/mmap.h"
 #include "modules.h"
 #include <string.h>
 
 namespace kernel {
-
+	/*
 	void *fix(uintptr_t ptr) {
 		if(ptr<HIGH_HALF_BASE_ADDR)ptr+=HIGH_HALF_BASE_ADDR;
 		return reinterpret_cast<void *>(ptr);
@@ -55,4 +55,5 @@ namespace kernel {
 	uint32_t get_magic(int index) {
 		return *(reinterpret_cast<uint32_t *>(map[index].mod_start));
 	}
+	*/
 }

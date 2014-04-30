@@ -1,5 +1,4 @@
-/*
- * Copyright 2013 Matthew Fosdick
+ /* Copyright 2013 Matthew Fosdick
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -13,26 +12,3 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-
-#include "panic.h"
-#include <string.h>
-#include <conv.hpp>
-#include <hal/console.h>
-
-namespace kernel {
-	void panic() {
-		panic("Unknown Error\nAbandon All Hope");
-	}
-	void panic(uint32_t code) {
-		panic("");
-	}
-	void panic(std::c_cstring msg) {
-		hal::cout<<hal::endl<<"PANIC: An Unrecoverable Error Has Occurred";
-		hal::cout<<hal::endl<<msg;
-		asm("cli\nhlt");
-		while(1);//will never execute
-	}
-	void panic(std::c_cstring file,uint32_t line) {
-		panic(" ");
-	}
-}

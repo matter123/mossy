@@ -11,12 +11,16 @@
 ;  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 ;  See the License for the specific language governing permissions and
 ;  limitations under the License.
+#ifdef DEBUG
+#undef DEBUG
+%define DEBUG
+#endif
 #define asm
 #include "../arch/arch.h"
 #ifdef X86
-%include "src/asm/boot86.inc"
+%include "src/asm/int86.inc"
 #endif
 
 #ifdef X64
-%include "src/asm/boot64.inc"
+%include "src/asm/int64.inc"
 #endif
