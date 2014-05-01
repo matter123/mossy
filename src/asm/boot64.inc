@@ -16,7 +16,7 @@
 KERNEL_VMA equ 0xFFFFFFFF80000000 ;cant do assembler time magic on a scaler value, so keep this updated
 MULTIBOOT_HEADER_MAGIC	equ 0xE85250D6
 MULTIBOOT_HEADER_ARCH	equ 0
-MULTIBOOT_HEADER_LENGTH	equ (multiboot_header-multiboot_header_end)
+MULTIBOOT_HEADER_LENGTH	equ (multiboot_header_end-multiboot_header)
 MULTIBOOT_CHECKSUM	equ 0xFFFFFFFF-(MULTIBOOT_HEADER_MAGIC + MULTIBOOT_HEADER_LENGTH)
 
 ALIGN 8
@@ -25,11 +25,6 @@ multiboot_header:
 	dd	MULTIBOOT_HEADER_ARCH
 	dd  MULTIBOOT_HEADER_LENGTH
 	dd  MULTIBOOT_CHECKSUM+1
-ALIGN 8
-	dw 4
-	dw 0
-	dd 12
-	dd 3
 ALIGN 8
 	dw 6
 	dw 0
