@@ -14,7 +14,7 @@
     limitations under the License.
 */
 #include <arch.h>
-#ifdef X64
+#ifdef X86
 #include <stdint.h>
 #include <stddef.h>
 #include <struct.h>
@@ -22,19 +22,16 @@
 #include <hal/int.h>
 #include <hal/hal.h>
 #include <hal/console.h>
-namespace x64 {
+namespace x86 {
 	struct idt_entry {
 		uint16_t offset_low;
 		uint16_t code_segment;
-		uint IST:3;
-		uint resv:5;
+		uint8_t resv;
 		uint type:4;
 		uint zero:1;
 		uint DPL:2;
 		bool present:1;
 		uint16_t offset_med;
-		uint32_t offset_high;
-		uint32_t resv_1;
 	} PACKED;
 
 	struct IDT {
@@ -47,7 +44,7 @@ namespace x64 {
 	} PACKED;
 }
 
-extern "C" void lidt(x64::IDTR *idtr);
+extern "C" void lidt(x86::IDTR *idtr);
 
 extern "C" void *exc0; extern "C" void *exc1; extern "C" void *exc2; extern "C" void *exc3;
 extern "C" void *exc4; extern "C" void *exc5; extern "C" void *exc6; extern "C" void *exc7;
@@ -59,8 +56,8 @@ extern "C" void *exc24; extern "C" void *exc25; extern "C" void *exc26; extern "
 extern "C" void *exc28; extern "C" void *exc29; extern "C" void *exc30; extern "C" void *exc31;
 
 namespace hal {
-	x64::IDTR idtr;
-	x64::IDT idt;
+	x86::IDTR idtr;
+	x86::IDT idt;
 	uint8_t used[32];
 	uint8_t resv[32];
 #define IS_SET(a,i) ((a[i/8]&(1<<i%8))==(1<<i%8))
@@ -122,7 +119,7 @@ namespace hal {
 		if(int_num>256||IS_SET(used,int_num)) {
 			return;
 		}
-		x64::idt_entry ent=idt.entries[int_num];
+		x86::idt_entry ent=idt.entries[int_num];
 		ent.DPL=(user?3:0);
 		switch(type) {
 			case NON_REENTRANT:
@@ -135,12 +132,10 @@ namespace hal {
 				break;
 		}
 		ent.present=true;
-		ent.IST=0;//don't really know what this does but AMD manual says zero is safe
-		ent.code_segment=0x8;//see boot64.inc for this magic number
+		ent.code_segment=0x8;//see hhalf.cpp for this magic number
 
 		ent.offset_low=static_cast<uint16_t>(addr&0xFFFF);
 		ent.offset_med=static_cast<uint16_t>((addr>>16)&0xFFFF);
-		ent.offset_high=static_cast<uint32_t>(addr>>32);
 		idt.entries[int_num]=ent;
 		SET(used,int_num);
 	}

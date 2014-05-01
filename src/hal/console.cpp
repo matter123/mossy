@@ -16,7 +16,7 @@
 #include <hal/console.h>
 #include <conv.hpp>
 #include <limits.h>
-#include "../arch/arch.h"
+#include <arch.h>
 namespace hal {
 	void ostream::print(const char *s) {
 		while(*s) {

@@ -14,10 +14,6 @@
     limitations under the License.
 */
 #pragma once
-#include <arch.h>
-#ifdef X64
-#include <stdint.h>
-namespace hal {
-	void init_idt();
-}
+#ifdef IBM
+#include <hal/timer.h>
 #endif

@@ -15,7 +15,7 @@
 */
 
 #include "init/multiboot.h"
-#include "arch/arch.h"
+#include <arch.h>
 #include <hal/hal.h>
 #include <hal/console.h>
 
@@ -26,12 +26,13 @@ namespace kernel {
 		hal::init_vendor(mboot);
 		hal::cls();
 		hal::cout<<"the HAL says \"hello\""<<hal::endl;
-		int a=5;
-		int b=1;
-		int c=b/5;
-		int d=a/c;
-		if(d==0) {
-			while(1);
-		}
+		asm volatile(
+		    " movl $0, %eax \
+			\nmovl $1, %ebx \
+			\nmovl $2, %ecx \
+			\nmovl $3, %edx \
+			\nmovl $4, %esi \
+			\nmovl $5, %edi \
+			\nint $3");
 	}
 }

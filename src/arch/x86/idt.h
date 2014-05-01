@@ -15,7 +15,7 @@
 */
 #pragma once
 #include <arch.h>
-#ifdef X64
+#ifdef X86
 #include <stdint.h>
 namespace hal {
 	void init_idt();

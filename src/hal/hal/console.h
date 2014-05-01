@@ -15,7 +15,7 @@
 */
 #pragma once
 #include <stdint.h>
-#include "../../arch/arch.h"
+#include <arch.h>
 namespace hal {
 	class ios_base {
 		public:

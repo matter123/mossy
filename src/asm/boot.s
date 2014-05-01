@@ -12,7 +12,8 @@
 ;  See the License for the specific language governing permissions and
 ;  limitations under the License.
 #define asm
-#include "../arch/arch.h"
+#include <arch.h>
+
 #ifdef X86
 %include "src/asm/boot86.inc"
 #endif

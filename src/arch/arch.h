@@ -15,7 +15,7 @@
 */
 #pragma once
 #define _x64 1
-#define _x32 2
+#define _x86 2
 #define _arm 3
 #if ARCH == _x64
 #define X64
@@ -27,7 +27,7 @@
 
 #ifndef asm
 #include <stdint.h>
-#ifdef  X64
+#ifdef X64
 typedef uint64_t uintreg_t;
 struct cpu_state {
 	uintreg_t cr4, cr3, cr2, cr0;
@@ -37,8 +37,6 @@ struct cpu_state {
 	uintreg_t rip, cs, rflags, rsp, ss;
 };
 #elif defined X86
-#define UINTREG_MAX UINT32_MAX
-#define X86
 typedef uint32_t uintreg_t;
 struct cpu_state {
 	uintreg_t cr4, cr3, cr2, cr0;
@@ -58,9 +56,12 @@ uintreg_t get_creg(cpu_state *s, uint8_t creg);
 void set_reg(cpu_state *s, uint8_t reg, uintreg_t value);
 uintreg_t get_stack_pointer(cpu_state *s,bool userspace);
 void set_stack_pointer(cpu_state *s,bool userspace,uintreg_t value);
+typedef unsigned int uint;
 #endif
+
 #ifndef UNDEF_ARCH
 #undef _x64
 #undef _x86
 #undef _arm
 #endif
+

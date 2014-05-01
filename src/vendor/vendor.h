@@ -14,10 +14,25 @@
     limitations under the License.
 */
 #pragma once
-#include <arch.h>
-#ifdef X64
-#include <stdint.h>
-namespace hal {
-	void init_idt();
-}
+#define _IBM 1
+//example setup
+#define _a 0
+#if VENDOR == _IBM
+#define IBM
+#elif VENDOR == _a
+#define a
 #endif
+
+#ifndef asm
+#include <stdint.h>
+#ifdef IBM
+
+#elif defined a
+
+#endif
+#endif
+
+#ifndef UNDEF_VENDOR
+#undef _IBM
+#endif
+

@@ -13,11 +13,11 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 */
-#pragma once
-#include <arch.h>
-#ifdef X64
-#include <stdint.h>
+#include <vendor.h>
+#ifdef IBM
+#include "../../init/multiboot.h"
 namespace hal {
-	void init_idt();
+	void init_vendor(kernel::multiboot_t *mboot) {
+	}
 }
 #endif

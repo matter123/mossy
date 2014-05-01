@@ -14,10 +14,11 @@
     limitations under the License.
 */
 #pragma once
+#ifdef IBM
+#include <hal/int.h>
 #include <arch.h>
-#ifdef X64
-#include <stdint.h>
-namespace hal {
-	void init_idt();
-}
+
+void init_pic();
+
+void use_irq(int num, void (*func)(cpu_state *),bool handle_eoi);
 #endif

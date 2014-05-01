@@ -1,0 +1,289 @@
+/*
+Copyright 2013 Matthew Fosdick
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+#define asm
+#include "../arch/arch.h"
+#ifdef X64
+.code32
+.section .MBOOT "a" @progbits
+.equ       KERNEL_VMA, 0xFFFFFFFF80000000 /*cant do assembler time magic on a scaler value, so keep this updated
+.equ       MULTIBOOT_PAGE_ALIGN,   1<<0
+.equ       MULTIBOOT_MEMORY_INFO,  1<<1
+.equ       MULTIBOOT_HEADER_MAGIC, 0x1BADB002
+.equ       MULTIBOOT_HEADER_FLAGS, MULTIBOOT_PAGE_ALIGN | MULTIBOOT_MEMORY_INFO"
+.equ       MULTIBOOT_CHECKSUM ,    -(MULTIBOOT_HEADER_MAGIC + MULTIBOOT_HEADER_FLAGS)"
+
+.align 4
+multiboot_header:
+.double      MULTIBOOT_HEADER_MAGIC"
+.double      MULTIBOOT_HEADER_FLAGS"
+.double  MULTIBOOT_CHECKSUM"
+
+	null_gdt:
+	.quad 0
+	code_64_gdt:
+	.long 0
+	.byte 0x0,0b10011010
+	.byte 0b00100000,0x00
+	data_gdt:
+	.word 0xFFFF,0x0000
+	.byte 0x00,0b10010010
+	.byte 0b11001111,0x00
+	code_32_gdt:
+	.word 0xFFFF,0x0000
+	.byte 0x00,0b10011010
+	.byte 0b11001111,0x00
+	gdt_end:
+.align 8
+	gdtr_64_low:
+	.word gdt_end-null_gdt-1"
+	.quad null_gdt+KERNEL_VMA"
+
+.equ GDTR_64, gdtr_64_low+KERNEL_VMA
+
+.align 4
+	gdtr_32:
+	.word gdt_end-null_gdt-1"
+	.double null_gdt"
+
+.section .low_bss, "aw"
+.align 4096
+low_bss_start:
+pml4:
+.skip $0x1000
+pdpt:
+.skip $0x1000
+pd:
+.skip $0x1000
+pt:
+.skip $0x1000
+pt_1:
+.skip $0x1000
+low_bss_end:
+
+.equ   LB_LEN, (low_bss_end-low_bss_start)/4
+
+.section .low_text, "ax"
+no_mboot:
+	movl $0xB8000,%eax
+	movl "N\x0FO\x0F", (%eax) /*NO*/
+	addl $4,%eax
+	movl " \x0FM\x0F", (%eax) /* M*/
+	addl $4,%eax
+	movl "B\x0FO\x0F", (%eax) /*BO*/
+	addl $4,%eax
+	movl "O\x0FT\x0F", (%eax) /*OT*/
+	.loop: jmp .loop
+no_64:
+	movl $0xB8000,%eax
+	movl "N\x0FO\x0F", (%eax) /*NO*/
+	addl $4,%eax
+	movl "\x200F360F", (%eax) /* 6*/
+	addl $4,%eax
+	movl "4\x0FB\x0F", (%eax) /*4B*/
+	addl $4,%eax
+	movl "I\x0FT\x0F", (%eax) /*IT*/
+	addl $4,%eax
+.global start
+start:
+	cli
+	cmpl $0x2BADB002,%eax
+	jne no_mboot
+
+	/*check cpu supports AMD64*/
+	movl %ebx,%esi
+	movl $0x80000001,%eax
+	cpuid
+	movl %esi,%ebx
+	btl $29,%edx
+	jnc no_64
+
+	/*clear low bss*/
+	movl $low_bss_start, %edi
+	movl $LB_LEN, %ecx
+	movl $0,%eax
+	rep
+	stosl
+	/*use custom_temp gdt*/
+	lgdt (gdtr_32)
+	jmp 0x18:.cont_1
+
+	start.cont_1:
+	movw $0x10,%ax
+	movw %ax,%ds
+	movw %ax,%es
+	movw %ax,%fs
+	movw %ax,%gs
+	movw %ax,%ss
+
+	/*enable PAE
+	movl $cr4, %eax
+	btsl $5,%eax
+	movl %eax, $cr4
+
+	movl $pt, %edi
+	xorl %ecx,%ecx
+	movl $512,%esi
+
+	/*id map 2mb, in this setup first 12 bits of KERNEL_LMA and KERNEL_VMA need to be zero
+	  KERNEL_VMA must also be the offest from KERNEL_LMA*/
+	start.id_map:
+		cmpl %esi,%ecx
+		je start.cont
+		movl %ecx,%eax
+		movl $0x1000,%edx
+		mull %edx
+		orl $3,%eax
+		movl %eax, %edi(,%ecx,8)
+		movl %eax
+		incl %ecx
+		jmp start.id_map
+	start.cont:
+	/*skip 2mb then map the next 2 megabytes*/
+	movl $pt_1, %edi
+	movl $0,%ecx
+	movl $512,%esi
+	start.id_map_1:
+		cmpl %esi,%ecx
+		je start.cont_2
+		movl %ecx,%eax
+		movl $0x1000,%edx
+		mull %edx
+		addl $0x400000,%eax
+		orl $3,%eax
+		movl %eax, %edi(,%ecx,8)
+		incl %ecx
+		jmp start.id_map_1
+	start.cont_2:
+	movl pt, %eax
+	orl $3,%eax
+	movl %eax, pd(,1)
+	movl %eax, pd(,((KERNEL_VMA>>21)&511),8)
+	/*assuming that the previous calculation doesn't exceed 509
+	  so final memory map will look like(assuming an offset of KERNEL_VMA)
+	  0-2mb kernel space
+	  4-6mb page space
+	  2mb hole will eventually crash a too big kernel, so if RIP is between 2mb and 4mb thats why
+	  no silent overwrite of free page stack that can cause hard to detect bugs*/
+	movl pt_1, %eax
+	orl $3,%eax
+	movl %eax, 16(pd,((KERNEL_VMA>>21)&511),8)
+
+	movl pd, %eax
+	orl $3,%eax
+	movl %eax, pdpt(,1)
+	movl %eax, pdpt(,((KERNEL_VMA>>30)&511),8)
+
+	movl pdpt, %eax
+	orl $3,%eax
+	movl %eax, pml4(,1)
+	movl %eax, pml4(,((KERNEL_VMA>>39)&511),8)
+	movl pml4, %eax
+	movl %eax, %cr3
+	xorl %eax,%eax
+
+	/*enable long mode*/
+	movl $0xC0000080,%ecx /*EFER*/
+	rdmsr
+	btsl $8,%eax /* Long Mode Enabled*/
+	wrmsr
+	movl %cr0, %eax
+	btsl $31,%eax
+	movl %eax, %cr0
+	jmp 0x8:.low_high_conv
+
+.code64
+start.low_high_conv:
+		movl bootstrap_comp, %rax
+		jmp %rax
+
+.text
+bootstrap_comp:
+	movq GDTR_64, %rax
+	lgdt %rax(,1)
+	/*dont need to reload the *s registers since the GDTR_64 points to the same structure*/
+
+	/*setup stack*/
+	movq stack_start, %rax
+	movq %rax, %rsp
+	movq %rsp, %rbp
+
+	/*turn on FPU*/
+	movq %cr0, %rax
+	andw $0xFFFD,%ax
+	orw $0x10,%ax
+	movq %rax, %cr0
+	fninit
+
+	/*turn on SSE / SEE2*/
+	movq %cr0, %rax
+	andw $0xFFFB,%ax
+	orw $0x2,%ax
+	movq %rax, %cr0
+	movq %cr4, %rax
+	orw ax, $600
+	movq %rax, %cr4
+	jmp load_kernel
+
+
+load_kernel:
+	movq __CTOR_LIST__, %r12
+
+	load_kernel.call_ctor:
+		cmpll $0,%r12
+		je load_kernel.cont
+		call *(%r12)
+		addq $8, %r12
+		jmp load_kernel.call_ctor
+
+	load_kernel.cont:
+	movq %rbx, %rax
+	addq KERNEL_VMA, %rax
+	movq %rax, %rdi
+	call init_exec
+	cli /*in case kernel renables it*/
+
+	movq $0xB8000, %rdi
+	movq shutd_1, %r13
+	movq (%r13), %rax
+	movq shutd_2, %r13
+	movq (%r13), %rbx
+	movq $250, %rcx
+	load_kernel.reloop:
+		cmpq %rcx, $0
+		je load_kernel.cont_1
+		mov %rax (%rdi)
+		mov %rbx 8(%rdi)
+		addq $16, %rdi
+		sub %rcx
+		jmp load_kernel.reloop
+
+	load_kernel.cont_1:
+	hlt
+
+.global lidt
+lidt:
+	lidt (%rdi)
+	ret
+
+.data
+fillstr: .byte 'Y',0xF,'A',0xF,'Y',0xF,'!',0xF"
+shutd_1: .byte 'S',0xF,'H',0xF,'U',0xF,'T',0xF"
+shutd_2: .byte 'D',0xF,'O',0xF,'W',0xF,'N',0xF"
+
+.section .bss
+.skip $0x4000
+stack_start:
+#endif

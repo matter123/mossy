@@ -13,21 +13,20 @@ AS=$$HOME/opt/cross/bin/x86_64-elf-as
 #CPP=clang
 
 
-all: build test
+all: build runem
 
-build: clean check $(COBJECTS) $(CPPOBJECTS) $(SOBJECTS) link
-
-test: mkiso runem
+build: clean check $(COBJECTS) $(CPPOBJECTS) $(SOBJECTS) link mkiso
 
 
 WFLAGSON=-Wall -Wextra -Werror=return-type -Wshadow -Wframe-larger-than=16384 -Wdeprecated -Wredundant-decls -pedantic
 WFLAGSOFF=-Wno-sequence-point -Wno-unused-parameter -Wno-sign-compare
 FFLAGS=-fno-omit-frame-pointer -ffreestanding -fno-rtti -fno-exceptions -fno-stack-protector
-DFLAGS=-DARCH=x64 -DVENDOR=IBM -DDEBUG
+DFLAGS=-DARCH=_x64 -DVENDOR=_IBM -DDEBUG
 MFLAGS=-mcmodel=kernel -mno-red-zone -mno-sse3 -mno-3dnow
-CFLAGS=-Isrc/stdlib/include -O2 -std=c99 $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS) $(MFLAGS)
-CPPFLAGS=-Isrc/stdlib/include -Isrc/hal -O2 -std=c++11 $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS) $(MFLAGS)
-LDFLAGS=-Tlinkx64.ld -z max-page-size=0x1000 -ffreestanding -O2 -nostdlib -lgcc $(FFLAGS)
+IFLAGS=-Isrc/stdlib/include -Isrc/hal -Isrc/arch -Isrc/vendor
+CFLAGS=-O2 -std=c99 $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS) $(MFLAGS) $(IFLAGS)
+CPPFLAGS=-O2 -std=c++11 $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS) $(MFLAGS) $(IFLAGS)
+LDFLAGS=-Tlinkx64.ld -z max-page-size=0x1000 -ffreestanding -O2 -nostdlib $(FFLAGS)
 ASFLAGS=-felf64
 
 
@@ -37,14 +36,14 @@ clean:
 	@rm -f kernel
 
 check:
-	@tools/doccheck.py kernel src
+	#@tools/doccheck.py kernel src
 link:
 	@echo Linking
-	@$(LD) $(LDFLAGS) -o kernel $(SOBJECTS) $(COBJECTS) $(CPPOBJECTS)
+	@$(LD) $(LDFLAGS) -o kernel $(SOBJECTS) $(COBJECTS) $(CPPOBJECTS) -lgcc
 
 .s.o:
 	@echo Assembling $(patsubst %.o, %.s, $@)
-	@cpp -E -P $(DFLAGS) -o $(patsubst %.o, %.cpps, $@) $(patsubst %.o, %.s, $@)
+	@cpp $(CPPFLAGS) -E -P -o $(patsubst %.o, %.cpps, $@) $(patsubst %.o, %.s, $@)
 	@nasm $(ASFLAGS) $(patsubst %.o, %.cpps, $@) -o $@
 	@rm $(patsubst %.o, %.cpps, $@)
 
@@ -58,11 +57,10 @@ link:
 
 mkiso:
 	#@tools/packrd.py
-	#@tools/symexport.py kernel
-	@cp -f kernel iso/kernel
-	@cp -f kernel.sym iso/kernel.sym
+	#@tools/symexport.py 64BIT kernel
+	@cp -f kernel iso/kernel64
+	@cp -f kernel.sym iso/kernel64.sym
 	#@cp -f initrd.rd iso/initrd.rd
-	@grub2-mkrescue -o bootable.iso iso -- -zisofs level=6
 
 runem:
 	@~/bochs-2.6.2/bochs -f bochs.rc -q

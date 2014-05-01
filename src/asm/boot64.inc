@@ -14,17 +14,30 @@
 [BITS 32]
 [SECTION .MBOOT]
 KERNEL_VMA equ 0xFFFFFFFF80000000 ;cant do assembler time magic on a scaler value, so keep this updated
-MULTIBOOT_PAGE_ALIGN	equ 1<<0
-MULTIBOOT_MEMORY_INFO	equ 1<<1
-MULTIBOOT_HEADER_MAGIC	equ 0x1BADB002
-MULTIBOOT_HEADER_FLAGS	equ MULTIBOOT_PAGE_ALIGN | MULTIBOOT_MEMORY_INFO
-MULTIBOOT_CHECKSUM	equ -(MULTIBOOT_HEADER_MAGIC + MULTIBOOT_HEADER_FLAGS)
+MULTIBOOT_HEADER_MAGIC	equ 0xE85250D6
+MULTIBOOT_HEADER_ARCH	equ 0
+MULTIBOOT_HEADER_LENGTH	equ (multiboot_header-multiboot_header_end)
+MULTIBOOT_CHECKSUM	equ 0xFFFFFFFF-(MULTIBOOT_HEADER_MAGIC + MULTIBOOT_HEADER_LENGTH)
 
-ALIGN 4
+ALIGN 8
 multiboot_header:
 	dd	MULTIBOOT_HEADER_MAGIC
-	dd	MULTIBOOT_HEADER_FLAGS
-	dd  MULTIBOOT_CHECKSUM
+	dd	MULTIBOOT_HEADER_ARCH
+	dd  MULTIBOOT_HEADER_LENGTH
+	dd  MULTIBOOT_CHECKSUM+1
+ALIGN 8
+	dw 4
+	dw 0
+	dd 12
+	dd 3
+ALIGN 8
+	dw 6
+	dw 0
+	dd 12
+ALIGN 8
+	dd 0
+	dd 8
+multiboot_header_end:
 
 	null_gdt:
 	dq 0
@@ -79,7 +92,7 @@ no_mboot:
 	mov dword [eax], `B\x0FO\xF`
 	add eax, 4
 	mov dword [eax], `O\x0FT\xF`
-	add eax, 4
+	hlt
 no_64:
 	mov eax, 0xB8000
 	mov dword [eax], `N\x0FO\x0F`
@@ -89,11 +102,11 @@ no_64:
 	mov dword [eax], `4\x0FB\x0F`
 	add eax, 4
 	mov dword [eax], `I\x0FT\x0F`
-	add eax, 4
+	hlt
 [GLOBAL start]
 start:
 	cli
-	cmp eax, 0x2BADB002
+	cmp eax, 0x36D76289
 	jne no_mboot
 
 	;check cpu supports AMD64

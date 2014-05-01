@@ -13,8 +13,8 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 */
-#include "../arch.h"
-#if VENDOR == IBM
+#include <vendor.h>
+#ifdef IBM
 #include <hal/console.h>
 #include <string.h>
 #include <hal/hal.h>

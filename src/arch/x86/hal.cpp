@@ -14,18 +14,21 @@
     limitations under the License.
 */
 #include <arch.h>
-#ifdef X64
+#ifdef X86
 #include <stdint.h>
 #include "../../init/multiboot.h"
-#include <x64/idt.h>
+#include <x86/idt.h>
+#include <x86/hhalf.h>
 namespace hal {
 	void init_arch(kernel::multiboot_t *mboot) {
-		//an okay gdt is already setup
-		//so IDT
+		//the 32 bit kernel boots in higher half with a gdt trick
+		//this setups up paging and a proper gdt
+		init_higher_half();
+		//once we have a stable gdt and higheer half page setup we do the rest of system startup
 		init_idt();
 	}
 	uintptr_t get_page_offset_addr() {
-		return static_cast<uintptr_t>(0xFFFFFFFF80000000);
+		return static_cast<uintptr_t>(HIGH_HALF_BASE_ADDR);
 	}
 
 	void enable_interrupts() {
@@ -46,41 +49,25 @@ namespace hal {
 	}
 }
 uint8_t get_reg_count() {
-	return 14;
+	return 6;//eax, ebx, ecx, edx, esi, edi
 }
 uint8_t get_creg_count() {
-	return 5;
+	return 5; //cr0 ,cr1(0), cr2, cr3, cr4
 }
 uintreg_t get_reg(cpu_state *s, uint8_t reg) {
 	switch(reg) {
 		case 0x0:
-			return s->rax;
+			return s->eax;
 		case 0x1:
-			return s->rbx;
+			return s->ebx;
 		case 0x2:
-			return s->rcx;
+			return s->ecx;
 		case 0x3:
-			return s->rdx;
+			return s->edx;
 		case 0x4:
-			return s->rsi;
+			return s->esi;
 		case 0x5:
-			return s->rdi;
-		case 0x6:
-			return s->r8;
-		case 0x7:
-			return s->r9;
-		case 0x8:
-			return s->r10;
-		case 0x9:
-			return s->r11;
-		case 0xA:
-			return s->r12;
-		case 0xB:
-			return s->r13;
-		case 0xC:
-			return s->r14;
-		case 0xD:
-			return s->r15;
+			return s->edi;
 		default:
 			return 0;
 	}

@@ -1,10 +1,10 @@
 #include "hhalf.h"
 #include <stdint.h>
-#include "arch/arch.h"
+#include <arch.h>
 #ifdef X86
-uint32_t pagedira[1024] __attribute__ ((aligned (4096)));
-uint32_t pagetablea[1024] __attribute__ ((aligned (4096)));
-uint32_t pagetablean[1024] __attribute__ ((aligned (4096)));
+uint32_t pagedira[1024] __attribute__((aligned(4096)));
+uint32_t pagetablea[1024] __attribute__((aligned(4096)));
+uint32_t pagetablean[1024] __attribute__((aligned(4096)));
 
 
 struct gdt_entry {
@@ -48,7 +48,7 @@ void init_higher_half() {
 	pagetable=(uintptr_t)pagetablea;
 	pagedir-=HIGH_HALF_BASE_ADDR;
 	pagetable-=HIGH_HALF_BASE_ADDR;
-	for(int i=0;i<1024;i++) {
+	for(int i=0; i<1024; i++) {
 		pagedira[i]=0;
 		pagetablea[i]=(i*0x1000)|0x3;
 	}
@@ -56,14 +56,14 @@ void init_higher_half() {
 	//768
 	pagedira[HIGH_HALF_BASE_ADDR>>22]=pagetable|0x3;
 	pagedira[1022]=pagedir|0x3;//set up recursive paging 4mb below normal
-	asm volatile ("mov %0, %%eax\n"
-			"mov %%eax, %%cr3\n"
-			"mov %%cr0, %%eax\n"
-			"orl $0x80000000, %%eax\n"
-			"mov %%eax, %%cr0\n" :: "m" (pagedir));
+	asm volatile("mov %0, %%eax\n"
+	             "mov %%eax, %%cr3\n"
+	             "mov %%cr0, %%eax\n"
+	             "orl $0x80000000, %%eax\n"
+	             "mov %%eax, %%cr0\n" :: "m"(pagedir));
 	asm volatile("mov %%cr4, %%eax\n"
-			"orl $0x80, %%eax\n"
-			"mov %%eax, %%cr4"::);
+	             "orl $0x80, %%eax\n"
+	             "mov %%eax, %%cr4"::);
 	//disables funky gdt
 	gp.limit = (sizeof(struct gdt_entry) * 5) - 1;
 	gp.base = (uintptr_t)&gdt;
@@ -78,9 +78,9 @@ void init_higher_half() {
 
 
 void *em_page_max() {
-	return reinterpret_cast<void*>(HIGH_HALF_BASE_ADDR+4*1024*1024);
+	return reinterpret_cast<void *>(HIGH_HALF_BASE_ADDR+4*1024*1024);
 }
-void em_page(void *virt,void * phys) {
+void em_page(void *virt,void *phys) {
 	uintptr_t pagetablen=(uintptr_t)pagetablean;
 	pagetablen-=HIGH_HALF_BASE_ADDR;
 	uintptr_t v=reinterpret_cast<uintptr_t>(virt);
@@ -88,6 +88,6 @@ void em_page(void *virt,void * phys) {
 	v1=v1>>22;
 	pagetablean[v1]=(reinterpret_cast<uintptr_t>(phys))|0x3;
 	pagedira[v>>22]=pagetablen|0x3;
-	asm volatile("invlpg (%0)" ::"r" (virt) : "memory");
+	asm volatile("invlpg (%0)" ::"r"(virt) : "memory");
 }
 #endif
