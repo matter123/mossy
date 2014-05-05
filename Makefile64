@@ -33,13 +33,13 @@ ASFLAGS=-felf64
 clean:
 	@echo Cleaning workspace
 	@find . -name '*.o' -delete
-	@rm -f kernel
+	@rm -f kernel64
 
 check:
 	#@tools/doccheck.py kernel src
 link:
 	@echo Linking
-	@$(LD) $(LDFLAGS) -o kernel $(SOBJECTS) $(COBJECTS) $(CPPOBJECTS) -lgcc
+	@$(LD) $(LDFLAGS) -o kernel64 $(SOBJECTS) $(COBJECTS) $(CPPOBJECTS) -lgcc
 
 .s.o:
 	@echo Assembling $(patsubst %.o, %.s, $@)
@@ -57,9 +57,9 @@ link:
 
 mkiso:
 	#@tools/packrd.py
-	#@tools/symexport.py 64BIT kernel
-	@cp -f kernel iso/kernel64
-	@cp -f kernel.sym iso/kernel64.sym
+	@tools/symexport.py 64BIT kernel64
+	@cp -f kernel64 iso/kernel64
+	@cp -f kernel64.sym iso/kernel64.sym
 	#@cp -f initrd.rd iso/initrd.rd
 
 runem:

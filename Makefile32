@@ -34,13 +34,13 @@ ASFLAGS=-felf
 clean:
 	@echo Cleaning workspace
 	@find . -name '*.o' -delete
-	@rm -f kernel
+	@rm -f kernel32
 
 check:
 	#@tools/doccheck.py kernel src
 link:
 	@echo Linking
-	@$(LD) $(LDFLAGS) -o kernel ./gc/crti.o $(CRTBEGIN_OBJ) $(SOBJECTS) $(COBJECTS) $(CPPOBJECTS) $(CRTEND_OBJ) ./gc/crtn.o -lgcc
+	@$(LD) $(LDFLAGS) -o kernel32 ./gc/crti.o $(CRTBEGIN_OBJ) $(SOBJECTS) $(COBJECTS) $(CPPOBJECTS) $(CRTEND_OBJ) ./gc/crtn.o -lgcc
 
 .s.o:
 	@echo Assembling $(patsubst %.o, %.s, $@)
@@ -58,9 +58,9 @@ link:
 
 mkiso:
 	#@tools/packrd.py
-	#@tools/symexport.py kernel
-	@cp -f kernel iso/kernel
-	@cp -f kernel.sym iso/kernel.sym
+	@tools/symexport.py kernel32
+	@cp -f kernel32 iso/kernel
+	@cp -f kernel32.sym iso/kernel.sym
 	#@cp -f initrd.rd iso/initrd.rd
 
 runem:
