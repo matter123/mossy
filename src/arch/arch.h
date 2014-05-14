@@ -19,10 +19,12 @@
 #define _arm 3
 #if ARCH == _x64
 #define X64
+#define X86_64
 #define UINTREG_MAX UINT64_MAX
 #elif ARCH == _x86
-#define UINTREG_MAX UINT32_MAX
 #define X86
+#define X86_64
+#define UINTREG_MAX UINT32_MAX
 #endif
 
 #ifndef asm

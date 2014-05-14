@@ -18,6 +18,7 @@
 #include <arch.h>
 #include <hal/hal.h>
 #include <hal/console.h>
+#include <x86_64/cpuid.h>
 
 namespace kernel {
 	extern "C"
@@ -26,6 +27,7 @@ namespace kernel {
 		hal::init_vendor(mboot);
 		hal::cls();
 		hal::cout<<"the HAL says \"hello\""<<hal::endl;
+		hal::cout<<(((1<<29)&cpuid(0x80000001,3))==(1<<29))<<hal::endl;
 		asm volatile(
 		    " movl $0, %eax \
 			\nmovl $1, %ebx \

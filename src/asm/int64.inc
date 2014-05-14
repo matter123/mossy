@@ -135,8 +135,6 @@ exc_stub:
 	pop_x64
 	add rsp, 24
 	iretq
-
-
 [SECTION .rodata]
 e00: db "#DE",0x0
 e01: db "#DB",0x0
