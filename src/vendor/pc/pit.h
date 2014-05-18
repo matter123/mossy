@@ -13,11 +13,7 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 */
-#include <vendor.h>
-#ifdef IBM
-#include "../../init/multiboot.h"
-namespace hal {
-	void init_vendor(kernel::multiboot_t *mboot) {
-	}
-}
+#pragma once
+#ifdef PC
+#include <hal/timer.h>
 #endif

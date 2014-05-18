@@ -14,6 +14,11 @@
     limitations under the License.
 */
 #pragma once
-#ifdef IBM
-#include <hal/timer.h>
+#include <vendor.h>
+#ifdef PC
+#include <hal/int.h>
+namespace pc {
+	bool init_pic();
+	void use_irq(int num, void (*func)(cpu_state *),bool handle_eoi);
+}
 #endif

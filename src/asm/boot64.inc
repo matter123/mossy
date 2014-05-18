@@ -13,11 +13,13 @@
 ;  limitations under the License.
 [BITS 32]
 [SECTION .MBOOT]
-KERNEL_VMA equ 0xFFFFFFFF80000000 ;cant do assembler time magic on a scaler value, so keep this updated
+KERNEL_VMA equ 0xFFFFFFFF80000000 ;cant do assembler time magic on a scaler
+								  ;value, so keep this updated
 MULTIBOOT_HEADER_MAGIC	equ 0xE85250D6
 MULTIBOOT_HEADER_ARCH	equ 0
 MULTIBOOT_HEADER_LENGTH	equ (multiboot_header_end-multiboot_header)
-MULTIBOOT_CHECKSUM	equ 0xFFFFFFFF-(MULTIBOOT_HEADER_MAGIC + MULTIBOOT_HEADER_LENGTH)
+MULTIBOOT_CHECKSUM	equ 0xFFFFFFFF-(MULTIBOOT_HEADER_MAGIC + \
+	MULTIBOOT_HEADER_LENGTH)
 
 ALIGN 8
 multiboot_header:
@@ -26,11 +28,21 @@ multiboot_header:
 	dd  MULTIBOOT_HEADER_LENGTH
 	dd  MULTIBOOT_CHECKSUM+1
 ALIGN 8
-	dw 6
-	dw 0
-	dd 12
-ALIGN 8
+	dw 1,0
+	dd 28
+	dd 1
+	dd 3
+	dd 6
+	dd 7
+	dd 8
+
 	dd 0
+
+	dw 6,0
+	dd 12
+	dd 0
+ALIGN 8
+	dw 0,0
 	dd 8
 multiboot_header_end:
 

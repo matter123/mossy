@@ -14,9 +14,10 @@
     limitations under the License.
 */
 #pragma once
-#ifdef X86_64
+#include <vendor.h>
+#ifdef PC
 #include <stdint.h>
-extern "C" const uint32_t cpuid(uint32_t eax, int retreg);
+extern "C" uint32_t cpuid(uint32_t eax, int retreg) __attribute__((const));
 
 static inline void wrmsr(uint32_t msr_id, uint64_t msr_value) {
 	asm volatile("wrmsr" : : "c"(msr_id), "A"(msr_value));

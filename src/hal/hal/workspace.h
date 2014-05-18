@@ -5,7 +5,7 @@
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+     http://www.apache.org/licenses/LICENSE-2.0
 
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,12 +13,13 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 */
+
 #pragma once
-#ifdef IBM
-#include <hal/int.h>
-#include <arch.h>
+#include <stdint.h>
+#include <stddef.h>
 
-void init_pic();
+namespace hal {
+	void *w_malloc(size_t s);
 
-void use_irq(int num, void (*func)(cpu_state *),bool handle_eoi);
-#endif
+	void  wksp_begin(void *begin);
+}

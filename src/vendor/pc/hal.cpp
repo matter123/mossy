@@ -13,26 +13,14 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 */
-#pragma once
-#define _PC 1
-//example setup
-#define _a 0
-#if VENDOR == _PC
-#define PC
-#elif VENDOR == _a
-#define a
-#endif
-
-#ifndef asm
-#include <stdint.h>
+#include <vendor.h>
 #ifdef PC
-
-#elif defined a
-
+#include <hal/multiboot.h>
+#include <hal/console.h>
+#include "pic.h"
+namespace hal {
+	void init_vendor() {
+		print_boot_msg("Init PIC",pc::init_pic(),true);
+	}
+}
 #endif
-#endif
-
-#ifndef DEF_VENDOR
-#undef _PC
-#endif
-

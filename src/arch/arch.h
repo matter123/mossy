@@ -61,7 +61,7 @@ void set_stack_pointer(cpu_state *s,bool userspace,uintreg_t value);
 typedef unsigned int uint;
 #endif
 
-#ifndef UNDEF_ARCH
+#ifndef DEF_ARCH
 #undef _x64
 #undef _x86
 #undef _arm

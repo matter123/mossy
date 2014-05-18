@@ -14,7 +14,7 @@
     limitations under the License.
 */
 #include <vendor.h>
-#ifdef IBM
+#ifdef PC
 #include <hal/console.h>
 #include <string.h>
 #include <hal/hal.h>

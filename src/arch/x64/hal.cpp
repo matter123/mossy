@@ -16,13 +16,14 @@
 #include <arch.h>
 #ifdef X64
 #include <stdint.h>
-#include "../../init/multiboot.h"
+#include <hal/multiboot.h>
 #include <x64/idt.h>
+#include <hal/console.h>
 namespace hal {
-	void init_arch(kernel::multiboot_t *mboot) {
+	void init_arch() {
 		//an okay gdt is already setup
 		//so IDT
-		init_idt();
+		print_boot_msg("Init IDT",init_idt(),true);
 	}
 	uintptr_t get_page_offset_addr() {
 		return static_cast<uintptr_t>(0xFFFFFFFF80000000);

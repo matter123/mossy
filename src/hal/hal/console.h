@@ -71,6 +71,7 @@ namespace hal {
 	int get_x();
 	int get_y();
 	void dump_regs(cpu_state *s);
+	void print_boot_msg(const char *msg,bool ok, bool halt);
 	extern ostream cout;
 
 	extern ios_base hex;

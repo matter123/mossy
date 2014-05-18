@@ -18,6 +18,6 @@
 #ifdef X64
 #include <stdint.h>
 namespace hal {
-	void init_idt();
+	bool init_idt();
 }
 #endif

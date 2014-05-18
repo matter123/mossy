@@ -16,7 +16,7 @@
 #include <hal/console.h>
 #include <conv.hpp>
 #include <limits.h>
-#include <arch.h>
+#include <hal/hal.h>
 namespace hal {
 	void ostream::print(const char *s) {
 		while(*s) {
@@ -193,6 +193,27 @@ namespace hal {
 	}
 	void scroll() {
 		scroll(1);
+	}
+	void print_boot_msg(const char *msg,bool ok, bool hlt) {
+		if(get_x()!=0) {
+			cout<<endl;
+		}
+		cout<<msg;
+		while(width()-6>get_x()) {
+			cout<<".";
+		}
+		cout<<" [";
+		if(ok) {
+			ConsoleColor gr(0xA,0x0);
+			cout<<gr<<"OK"<<ColorDef;
+		} else {
+			ConsoleColor r(0x4,0x0);
+			cout<<r<<"NO"<<ColorDef;
+		}
+		cout<<"]"<<endl;
+		if(!ok&&hlt) {
+			halt(true);
+		}
 	}
 	void dump_regs(cpu_state *s) {
 		cout<<endl;

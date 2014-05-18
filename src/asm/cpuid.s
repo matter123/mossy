@@ -56,15 +56,14 @@ cpuid:
 	je .ret_rbx
 	cmp qword rsi, 2 ;ecx
 	je .ret_rcx
-	mov rax, rdx ;edx
+	mov eax, edx ;edx
 	jmp .ret
 	.ret_rbx:
-		mov rax, rbx
+		mov eax, ebx
 		jmp .ret
 	.ret_rcx:
-		mov rax, rcx
+		mov eax, ecx
 	.ret:
-		and qword rax, 0xFFFFFFFF ;cpuid is limited to 32 bit return, this removes excess junk in the regs
 		pop rbx
 		pop rbp
 		ret

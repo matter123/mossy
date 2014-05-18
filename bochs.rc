@@ -38,7 +38,7 @@ keyboard: type=mf, serial_delay=250, paste_delay=100000, user_shortcut=none
 mouse: type=ps2, enabled=0, toggle=ctrl+mbutton
 parport1: enabled=1, file=none
 parport2: enabled=0
-com1: enabled=1, mode=null, dev=none
+com1: enabled=0, mode=null, dev=none
 com2: enabled=0
 com3: enabled=0
 com4: enabled=0

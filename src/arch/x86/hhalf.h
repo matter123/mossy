@@ -23,6 +23,6 @@
 void init_higher_half();
 
 void *em_page_max();
-void em_page(void *virt,void * phys);
+void em_page(void *virt,void *phys);
 
 #endif

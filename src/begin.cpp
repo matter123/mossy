@@ -14,20 +14,24 @@
     limitations under the License.
 */
 
-#include "init/multiboot.h"
+#include <hal/multiboot.h>
 #include <arch.h>
 #include <hal/hal.h>
 #include <hal/console.h>
-#include <x86_64/cpuid.h>
+#include <pc/cpu_stuff.h>
 
 namespace kernel {
 	extern "C"
-	void init_exec(multiboot_t *mboot) {
-		hal::init_arch(mboot);
-		hal::init_vendor(mboot);
-		hal::cls();
+	void init_exec(hal::multiboot_header *mboot) {
+		hal::cout<<hal::address<<reinterpret_cast<uintptr_t>(mboot)<<hal::endl;
+		//hal::init_mboot(mboot);
+		hal::cout<<hal::address<<reinterpret_cast<uintptr_t>(hal::get_header());
+		hal::init_arch();
+		hal::init_vendor();
+		//hal::cls();
 		hal::cout<<"the HAL says \"hello\""<<hal::endl;
 		hal::cout<<(((1<<29)&cpuid(0x80000001,3))==(1<<29))<<hal::endl;
+		hal::halt(true);
 		asm volatile(
 		    " movl $0, %eax \
 			\nmovl $1, %ebx \

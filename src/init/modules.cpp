@@ -15,7 +15,7 @@
 */
 
 #include <stdint.h>
-#include "multiboot.h"
+#include <hal/multiboot.h>
 //#include "../arch/x86/mmap.h"
 #include "modules.h"
 #include <string.h>

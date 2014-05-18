@@ -16,16 +16,19 @@
 #include <arch.h>
 #ifdef X86
 #include <stdint.h>
-#include "../../init/multiboot.h"
+#include <hal/multiboot.h>
 #include <x86/idt.h>
 #include <x86/hhalf.h>
+#include <hal/console.h>
+
 namespace hal {
-	void init_arch(kernel::multiboot_t *mboot) {
+	void init_arch() {
 		//the 32 bit kernel boots in higher half with a gdt trick
 		//this setups up paging and a proper gdt
+		print_boot_msg("Init Higher Half kernel",true,false);
 		init_higher_half();
 		//once we have a stable gdt and higheer half page setup we do the rest of system startup
-		init_idt();
+		print_boot_msg("Init IDT",init_idt(),true);
 	}
 	uintptr_t get_page_offset_addr() {
 		return static_cast<uintptr_t>(HIGH_HALF_BASE_ADDR);
