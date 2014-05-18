@@ -1,32 +1,33 @@
-CSOURCES=$(shell find -name *.c -not -path "./crt")
-COBJECTS=$(patsubst %.c, %.o, $(CSOURCES))
-CPPSOURCES=$(shell find -name *.cpp -not -path "./crt")
-CPPOBJECTS=$(patsubst %.cpp, %.o, $(CPPSOURCES))
-SSOURCES=$(shell find -name *.s)
-SOBJECTS=$(patsubst %.s, %.o, $(SSOURCES))
+CSOURCES:=$(shell find src -name *.c)
+COBJECTS:=$(patsubst %.c, %.o, $(CSOURCES))
+CPPSOURCES:=$(shell find src -name *.cpp)
+CPPOBJECTS:=$(patsubst %.cpp, %.o, $(CPPSOURCES))
+SSOURCES:=$(shell find src -name *.s)
+SOBJECTS:=$(patsubst %.s, %.o, $(SSOURCES))
 
-
-CC=$$HOME/opt/cross/bin/x86_64-elf-gcc
-CPP=$$HOME/opt/cross/bin/x86_64-elf-gcc
-LD=$$HOME/opt/cross/bin/x86_64-elf-gcc
-AS=$$HOME/opt/cross/bin/x86_64-elf-as
+export
+ARCH:=64
+CC:=$(shell echo $$HOME)/opt/cross/bin/x86_64-elf-gcc
+CPP:=$(shell echo $$HOME)/opt/cross/bin/x86_64-elf-gcc
+LD:=$(shell echo $$HOME)/opt/cross/bin/x86_64-elf-gcc
+AS:=$(shell echo $$HOME)/opt/cross/bin/x86_64-elf-as
+AR:=$(shell echo $$HOME)/opt/cross/bin/x86_64-elf-ar
 #CPP=clang
-
 
 all: build runem
 
-build: clean check $(COBJECTS) $(CPPOBJECTS) $(SOBJECTS) link mkiso
+build: clean check $(COBJECTS) $(CPPOBJECTS) $(SOBJECTS) build_libs link mkiso
 
 
-WFLAGSON=-Wall -Wextra -Werror=return-type -Wshadow -Wframe-larger-than=16384 -Wdeprecated -Wredundant-decls -pedantic
+WFLAGSON=-Wall -Wextra -Werror=return-type -Wshadow -Wframe-larger-than=16384 -Wdeprecated -Wredundant-decls
 WFLAGSOFF=-Wno-sequence-point -Wno-unused-parameter -Wno-sign-compare
 FFLAGS=-fno-omit-frame-pointer -ffreestanding -fno-rtti -fno-exceptions -fno-stack-protector
-DFLAGS=-DARCH=_x64 -DVENDOR=_IBM -DDEBUG
+DFLAGS=-DARCH=_x64 -DVENDOR=_PC -DDEBUG
 MFLAGS=-mcmodel=kernel -mno-red-zone -mno-sse3 -mno-3dnow
 IFLAGS=-Isrc/stdlib/include -Isrc/hal -Isrc/arch -Isrc/vendor
 CFLAGS=-O2 -std=c99 $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS) $(MFLAGS) $(IFLAGS)
 CPPFLAGS=-O2 -std=c++11 $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS) $(MFLAGS) $(IFLAGS)
-LDFLAGS=-Tlinkx64.ld -z max-page-size=0x1000 -ffreestanding -O2 -nostdlib $(FFLAGS)
+LDFLAGS=-static -Tlinkx64.ld -z max-page-size=0x1000 -ffreestanding -O2 -nostdlib $(FFLAGS) -Llibs
 ASFLAGS=-felf64
 
 
@@ -65,3 +66,6 @@ mkiso:
 runem:
 	@~/bochs-2.6.2/bochs -f bochs.rc -q
 	#@cd .&& bash scripts/run_emulator64 `pwd` &
+
+build_libs:
+	#cd libs/hal && $(MAKE)
