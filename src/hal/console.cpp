@@ -17,8 +17,12 @@
 #include <conv.hpp>
 #include <limits.h>
 #include <hal/hal.h>
+#include <stdlib.h>
 namespace hal {
 	void ostream::print(const char *s) {
+		if(s==NULL) {
+			return print("--NULL POINTER--");
+		}
 		while(*s) {
 			printc(this->c,*s++);
 		}
@@ -176,11 +180,12 @@ namespace hal {
 		print(std::numtostr(ull,buf,b.base,b.uppercase,b.min_digits));
 		return *this;
 	}
-	ostream &ostream::operator<<(void *p) {
+	ostream &ostream::operator<<(const void *p) {
 		char buf[50];
 #define S_UP sizeof(void *)
 		print("0x");
-		print(std::numtostr(reinterpret_cast<uintptr_t>(p),buf,16,true,((S_UP*CHAR_BIT)+(4-(S_UP*CHAR_BIT)%4))/4));
+		print(std::numtostr(reinterpret_cast<uintptr_t>(p),buf,16,true,
+		                    ((S_UP*CHAR_BIT)+(4-(S_UP*CHAR_BIT)%4))/4));
 		return *this;
 	}
 	ostream &ostream::operator<<(ios_base base) {

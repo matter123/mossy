@@ -4,3 +4,13 @@
 .project
 .settings/
 *.iso
+kernel32
+kernel64
+kernel32.sym
+kernel64.sym
+kernelARM
+kernelARM.sym
+*.o.32
+*.o.64
+*.o.ARM
+*.a

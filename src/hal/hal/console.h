@@ -58,7 +58,7 @@ namespace hal {
 			ostream &operator<<(unsigned long ul);
 			ostream &operator<<(long long ll);
 			ostream &operator<<(unsigned long long ull);
-			ostream &operator<<(void *p);
+			ostream &operator<<(const void *p);
 			ostream &operator<<(ios_base b);
 			ostream &operator<<(ConsoleColor c);
 	};

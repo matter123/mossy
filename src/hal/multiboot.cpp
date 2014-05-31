@@ -23,7 +23,7 @@ namespace hal {
 
 	void init_mboot(multiboot_header *mboot) {
 		head=reinterpret_cast<multiboot_header *>(w_malloc(mboot->size));
-		std::memmove((void *)head,(void *)mboot,mboot->size);;
+		memmove((void *)head,(void *)mboot,mboot->size);;
 		void *temp_ptr=reinterpret_cast<void *>(head)+sizeof(multiboot_header);
 		while(true) {
 			multiboot_tag *tag=reinterpret_cast<multiboot_tag *>(temp_ptr);
@@ -51,8 +51,8 @@ namespace hal {
 				multiboot_module *module=reinterpret_cast<multiboot_module *>
 				                         (get_tag(i));
 				void *start=w_malloc(module->mod_end-module->mod_start);
-				std::memmove(start,reinterpret_cast<void *>(module->mod_start),
-				             module->mod_end-module->mod_start);
+				memmove(start,reinterpret_cast<void *>(module->mod_start),
+				        module->mod_end-module->mod_start);
 				module->mod_start=reinterpret_cast<uintptr_t>(start);
 			}
 		}

@@ -45,17 +45,20 @@ namespace hal {
 	const char *endl="\n";
 
 	void scroll(int lines) {
+		scroll((uint)lines);
+	}
+	void scroll(uint lines) {
 		if(y<lines) {
 			cls();
 			return;
 		}
 		for(int i=0; i<=(80-lines); i++) {
-			std::memcpy(
+			memcpy(
 			    reinterpret_cast<void *>(mon+160*(i-1)),
 			    reinterpret_cast<void *>(mon+160*i),
 			    160);
 		}
-		std::memset32(
+		memset32(
 		    reinterpret_cast<uint32_t *>(mon+160*(80-lines)),
 		    0,
 		    40*(80-lines));
@@ -63,7 +66,7 @@ namespace hal {
 	}
 
 	void cls() {
-		std::memset32(
+		memset32(
 		    reinterpret_cast<uint32_t *>(mon),
 		    0,
 		    1000); //2000 16 bit chars

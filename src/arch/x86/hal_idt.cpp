@@ -59,7 +59,7 @@ namespace hal {
 #define SET(a,i) do {a[i/8]|=(1<<i%8);}while(0)
 #define UN_SET(a,i) do {a[i/8]&=~(1<<i%8);}while(0)
 	bool init_idt() {
-		std::memset(static_cast<void *>(&idt),0,sizeof(idt));
+		memset(static_cast<void *>(&idt),0,sizeof(idt));
 		idtr.base=&idt;
 		idtr.limit=static_cast<uint16_t>(sizeof(idt));
 		lidt(&idtr);

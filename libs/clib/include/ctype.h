@@ -14,25 +14,24 @@
     limitations under the License.
 */
 
-#include "panic.h"
-#include <string.h>
-#include <conv.hpp>
-#include <hal/console.h>
+#pragma once
+#ifdef __cplusplus
+extern "C"
+#endif
+{
+int isalnum(int c);
+int isalpha(int c);
+int isblank(int c);
+int iscntrl(int c);
+int isdigit(int c);
+int isgraph(int c);
+int islower(int c);
+int isprint(int c);
+int ispunct(int c);
+int isspace(int c);
+int isupper(int c);
+int isxdigit(int c);
 
-namespace kernel {
-	void panic() {
-		panic("Unknown Error\nAbandon All Hope");
-	}
-	void panic(uint32_t code) {
-		panic("");
-	}
-	void panic(const char *msg) {
-		hal::cout<<hal::endl<<"PANIC: An Unrecoverable Error Has Occurred";
-		hal::cout<<hal::endl<<msg;
-		asm("cli\nhlt");
-		while(1);//will never execute
-	}
-	void panic(const char *file,uint32_t line) {
-		panic(" ");
-	}
+int tolower(int c);
+int toupper(int c);
 }
