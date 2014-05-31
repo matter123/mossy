@@ -13,33 +13,51 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 */
+#include <hal/hal.h>
 #include <hal/multiboot.h>
 #include <hal/workspace.h>
 #include <string.h>
+#include <hal/console.h>
 namespace hal {
 	multiboot_header *head;
 	multiboot_tag **tags;
 	int tag_count;
 
 	void init_mboot(multiboot_header *mboot) {
-		head=reinterpret_cast<multiboot_header *>(w_malloc(mboot->size));
-		memmove((void *)head,(void *)mboot,mboot->size);;
+		head=reinterpret_cast<multiboot_header *>(w_malloc(mboot->size,8));
+		cout<<(void *)head<<" "<<(void *)mboot<<hal::endl;
+		if(!head) {
+			print_boot_msg("Init Multiboot",false,true);
+		}
+		memcpy((void *)head,(void *)mboot,mboot->size);
+		if(head->size!=mboot->size) {
+			print_boot_msg("Init Multiboot",false,true);
+		}
 		void *temp_ptr=reinterpret_cast<void *>(head)+sizeof(multiboot_header);
 		while(true) {
 			multiboot_tag *tag=reinterpret_cast<multiboot_tag *>(temp_ptr);
-			if(tag->type!=0) {
+			if(tag->type==0&&tag->size==8) {
+				break;
+			} else {
 				tag_count++;
 				temp_ptr+=tag->size;
-			} else {
-				break;
+				if((uintptr_t)temp_ptr%8) {
+					temp_ptr=(void *)(((uintptr_t)temp_ptr&~0x7)+8);
+				}
 			}
 		}
 		void *temp2_ptr=w_malloc(sizeof(multiboot_tag *)*tag_count);
+		if(!temp2_ptr) {
+			print_boot_msg("Init Multiboot",false,true);
+		}
 		tags=reinterpret_cast<multiboot_tag **>(temp2_ptr);
 		temp_ptr=reinterpret_cast<void *>(head)+sizeof(multiboot_header);
 		for(int i=0; i<tag_count; i++) {
 			tags[i]=reinterpret_cast<multiboot_tag *>(temp_ptr);
 			temp_ptr+=tags[i]->size;
+			if((uintptr_t)temp_ptr%8) {
+				temp_ptr=(void *)(((uintptr_t)temp_ptr&~0x7)+8);
+			}
 		}
 		//total size of all modules should be less than ~70% of workspace area
 		for(int i=0; i<tag_count; i++) {
@@ -51,11 +69,15 @@ namespace hal {
 				multiboot_module *module=reinterpret_cast<multiboot_module *>
 				                         (get_tag(i));
 				void *start=w_malloc(module->mod_end-module->mod_start);
+				if(!start) {
+					print_boot_msg("Init Multiboot",false,true);
+				}
 				memmove(start,reinterpret_cast<void *>(module->mod_start),
 				        module->mod_end-module->mod_start);
 				module->mod_start=reinterpret_cast<uintptr_t>(start);
 			}
 		}
+		print_boot_msg("Init Multiboot",true,false);
 	}
 
 	int get_tag_count() {

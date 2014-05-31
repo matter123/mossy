@@ -25,6 +25,9 @@ namespace hal {
 		//so IDT
 		print_boot_msg("Init IDT",init_idt(),true);
 	}
+	void magic_break() {
+		asm volatile("xchg %bx, %bx");
+	}
 	uintptr_t get_page_offset_addr() {
 		return static_cast<uintptr_t>(0xFFFFFFFF80000000);
 	}

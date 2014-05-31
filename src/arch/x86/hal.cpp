@@ -30,6 +30,9 @@ namespace hal {
 		//once we have a stable gdt and higheer half page setup we do the rest of system startup
 		print_boot_msg("Init IDT",init_idt(),true);
 	}
+	void magic_break() {
+		asm volatile("xchg %bx, %bx");
+	}
 	uintptr_t get_page_offset_addr() {
 		return static_cast<uintptr_t>(HIGH_HALF_BASE_ADDR);
 	}

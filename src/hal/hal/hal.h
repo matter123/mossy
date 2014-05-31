@@ -30,4 +30,6 @@ namespace hal {
 	void disable_interrupts();
 
 	void halt(bool no_int);
+
+	void magic_break();
 }

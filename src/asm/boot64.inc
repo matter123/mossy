@@ -173,7 +173,7 @@ start:
 		mov eax, ecx
 		mov edx, 0x1000
 		mul edx
-		add eax, 0x400000
+		add eax, 0x200000
 		or eax,3
 		mov dword [edi+ecx*8],eax
 		inc ecx
@@ -183,15 +183,9 @@ start:
 	or eax,3
 	mov [pd],eax
 	mov [pd + (((KERNEL_VMA>>21)&511)*8)],eax
-	;assuming that the previous calculation doesn't exceed 509
-	;so final memory map will look like(assuming an offset of KERNEL_VMA)
-	;0-2mb kernel space
-	;4-6mb page space
-	;2mb hole will eventually crash a too big kernel, so if RIP is between 2mb and 4mb thats why
-	;no silent overwrite of free page stack that can cause hard to detect bugs
 	mov eax, pt_1
 	or eax, 3
-	mov [pd + (((KERNEL_VMA>>21)&511)*8)+16],eax
+	mov [pd + (((KERNEL_VMA>>21)&511)*8)+8],eax
 
 	mov eax, pd
 	or eax,3

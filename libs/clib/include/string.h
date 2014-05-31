@@ -39,13 +39,13 @@ char *strpbrk(const char *str1, const char *str2); //WORKS
 char *strrchr(char *str1, int value); //WORKS
 size_t strspn(const char *str1, const char *str2); //WORKS
 char *strstr(char *str1, const char *str2); //WORKS
-char *strtok(char *str, const char *delim);
+char *strtok(char *str, const char *delim); //WORKS
 
-void *memset(void *ptr,int value,size_t num);
-void *memset16(uint16_t *ptr,uint16_t value,size_t num);
-void *memset32(uint32_t *ptr,uint32_t value,size_t num);
-void *memset64(uint64_t *ptr,uint64_t value,size_t num);
-size_t strlen(const char *str);
+void *memset(void *ptr,int value,size_t num); //WORKS
+void *memset16(uint16_t *ptr,uint16_t value,size_t num); //WORKS
+void *memset32(uint32_t *ptr,uint32_t value,size_t num); //WORKS
+void *memset64(uint64_t *ptr,uint64_t value,size_t num); //WORKS
+size_t strlen(const char *str); //WORKS
 #ifdef __cplusplus
 }
 #endif

@@ -21,5 +21,7 @@
 namespace hal {
 	void *w_malloc(size_t s);
 
+	void *w_malloc(size_t s, size_t alignment);
+
 	void  wksp_begin(void *begin);
 }

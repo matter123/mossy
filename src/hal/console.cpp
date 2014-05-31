@@ -185,7 +185,7 @@ namespace hal {
 #define S_UP sizeof(void *)
 		print("0x");
 		print(std::numtostr(reinterpret_cast<uintptr_t>(p),buf,16,true,
-		                    ((S_UP*CHAR_BIT)+(4-(S_UP*CHAR_BIT)%4))/4));
+		                    (S_UP==8?16:8)));
 		return *this;
 	}
 	ostream &ostream::operator<<(ios_base base) {

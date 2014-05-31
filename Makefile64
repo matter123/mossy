@@ -60,9 +60,9 @@ link:
 
 mkiso:
 	#@tools/packrd.py
-	@tools/symexport.py 64BIT kernel$(ARCH)
+	#@tools/symexport.py 64BIT kernel$(ARCH)
 	@cp -f kernel$(ARCH) iso/kernel$(ARCH)
-	@cp -f kernel$(ARCH).sym iso/kernel$ARCH).sym
+	@cp -f kernel$(ARCH).sym iso/kernel$(ARCH).sym
 	#@cp -f initrd.rd iso/initrd.rd
 
 runem:
