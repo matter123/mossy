@@ -27,7 +27,7 @@ namespace hal {
 		//this setups up paging and a proper gdt
 		print_boot_msg("Init Higher Half kernel",true,false);
 		init_higher_half();
-		//once we have a stable gdt and higheer half page setup we do the rest of system startup
+		//once we have a stable gdt and higher half page setup we do the rest of system startup
 		print_boot_msg("Init IDT",init_idt(),true);
 	}
 	void magic_break() {

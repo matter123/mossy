@@ -16,13 +16,13 @@
 #include <hal/hal.h>
 #include <hal/multiboot.h>
 #include <hal/workspace.h>
+#include <hal/mmap.h>
 #include <string.h>
 #include <hal/console.h>
 namespace hal {
 	multiboot_header *head;
 	multiboot_tag **tags;
 	int tag_count;
-
 	void init_mboot(multiboot_header *mboot) {
 		head=reinterpret_cast<multiboot_header *>(w_malloc(mboot->size,8));
 		cout<<(void *)head<<" "<<(void *)mboot<<hal::endl;
@@ -78,6 +78,7 @@ namespace hal {
 			}
 		}
 		print_boot_msg("Init Multiboot",true,false);
+		print_boot_msg("Init MMAP",init_mem(),true);
 	}
 
 	int get_tag_count() {

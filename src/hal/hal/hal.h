@@ -23,6 +23,10 @@ namespace hal {
 
 	void init_vendor();
 
+	void add_special_mem_arch();
+
+	void add_special_mem_vendor();
+
 	uintptr_t get_page_offset_addr();
 
 	void enable_interrupts();

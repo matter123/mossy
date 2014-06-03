@@ -14,7 +14,7 @@
     limitations under the License.
 */
 #pragma once
-#include "../arch/arch.h"
+#include <arch.h>
 #include <struct.h>
 namespace hal {
 	uint16_t get_max_interrupt();
