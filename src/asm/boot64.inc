@@ -113,6 +113,31 @@ no_64:
 [GLOBAL start]
 start:
 	cli
+	;mask PIC
+	out 0x21, 0xFF
+	out 0xA1, 0xFF
+	;acknowledge any impending Interrupts
+	out 0x20, 0x20
+	out 0xA0, 0x20
+	;;wait a bit
+	mov ecx, 0x5000
+	.wait_loop:
+	cmp ecx, 0
+	je .cont_wait
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	dec ecx
+	jmp .wait_loop
+	.cont_wait:
+	;and finally acknowledge any the came
+	out 0x20, 0x20
+	out 0xA0, 0x20
+	;PIC is finally clean
+
 	cmp eax, 0x36D76289
 	jne no_mboot
 
