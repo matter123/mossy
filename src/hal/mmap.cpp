@@ -37,16 +37,23 @@ namespace hal {
 		if(!mmap_tag) {
 			return false;
 		}
+		hal::cout<<(void *)mmap_tag<<hal::endl;
 		tag_count=(mmap_tag->head.size-sizeof(mmap_tag))/(mmap_tag->entry_size);
 		regionsi=reinterpret_cast<mem_region_init *>(
 		             w_malloc(sizeof(mem_region_init)*tag_count),16);
 		for(size_t s=0; s<tag_count; s++) {
-			multiboot_mmap_ent *ent=reinterpret_cast<multiboot_mmap_ent *>
-			                        (((void *)mmap_tag)+sizeof(multiboot_mmap)+
-			                         (s*sizeof(multiboot_mmap_ent)));
+			void *tptr=reinterpret_cast<void *>(mmap_tag);
+			tptr+=sizeof(multiboot_mmap);
+			tptr+=(s*mmap_tag->entry_size);
+			multiboot_mmap_ent *ent
+			    =reinterpret_cast<multiboot_mmap_ent *>(tptr);
 			regionsi[s].start=ent->addr;
 			regionsi[s].end=regionsi[s].start+ent->len;
 			regionsi[s].type=types[ent->type];
+		}
+		for(size_t s=0; s<tag_count; s++) {
+			hal::cout<<hal::dec<<"R "<<s<<": "<<hal::address<<regionsi[s].start
+			         <<" "<<regionsi[s].end<<" "<<hal::endl;
 		}
 		return true;
 	}

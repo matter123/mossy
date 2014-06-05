@@ -19,8 +19,8 @@
 namespace hal {
 	class mem_type {
 		private:
-			uint32_t resv_1;
-			uint16_t resv_2;
+			uint32_t resv_1=0;
+			uint16_t resv_2=0;
 			uint resv_n:7;
 		public:
 			bool avil:1;

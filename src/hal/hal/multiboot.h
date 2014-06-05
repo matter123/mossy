@@ -78,8 +78,8 @@ namespace hal {
 	} PACKED;
 	struct multiboot_mmap {
 		multiboot_tag head;
-		uintptr_t entry_size;
-		uintptr_t entry_version;
+		uint32_t entry_size;
+		uint32_t entry_version;
 		multiboot_mmap_ent entries[];
 	} PACKED;
 	struct multiboot_ci_0 {
