@@ -52,11 +52,14 @@ multiboot_header_end:
 start:
 	cli
 	;mask PIC
-	out 0x21, 0xFF
-	out 0xA1, 0xFF
+	mov edx, eax
+	mov al, 0xFF
+	out 0x21, al
+	out 0xA1, al
 	;acknowledge any impending Interrupts
-	out 0x20, 0x20
-	out 0xA0, 0x20
+	mov al, 0x20
+	out 0x20, al
+	out 0xA0, al
 	;;wait a bit
 	mov ecx, 0x5000
 	.wait_loop:
@@ -72,8 +75,8 @@ start:
 	jmp .wait_loop
 	.cont_wait:
 	;and finally acknowledge any the came
-	out 0x20, 0x20
-	out 0xA0, 0x20
+	out 0x21, al
+	out 0xA1, al
 	;PIC is finally clean
 
 	lgdt [trickgdt]
