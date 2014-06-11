@@ -24,8 +24,8 @@
 namespace kernel {
 	extern "C"
 	void init_exec(hal::multiboot_header *mboot) {
-		hal::init_arch();
 		hal::init_mboot(mboot);
+		hal::init_arch();
 		hal::init_vendor();
 		//hal::cls();
 		hal::cout<<"the HAL says \"hello\""<<hal::endl;

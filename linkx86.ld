@@ -1,17 +1,25 @@
 OUTPUT_FORMAT("elf32-i386")
 ENTRY(start)
-
+KERNEL_LMA = 0x100000;
+KERNEL_VMA = 0xC0000000;
 SECTIONS
 {
-	. = 0x100000;
-
-	.setup :
+	. = KERNEL_LMA;
+	.low_text ALIGN (4096) :
 	{
 		*(.mboot)
-		*(.setup)
+		*(.low_text)
 	}
+	.low_data ALIGN (4096) :
+	{
+		*(.low_data)
+	}
+	.low_bss ALIGN (4096) :
+	{
+		*(.low_bss)
+	}
+	. += KERNEL_VMA;
 
-	. += 0xC0000000;
 	k_start = .;
 	.text : AT(ADDR(.text) - 0xC0000000)
 	{

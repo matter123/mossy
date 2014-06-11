@@ -27,6 +27,7 @@ namespace hal {
 	static mem_region_init *regionsi;
 	void init_type();
 	bool init_mem() {
+		init_type();
 		multiboot_mmap *mmap_tag=NULL;
 		for(size_t s=0; s<get_tag_count(); s++) {
 			if(get_tag(s)->type==6) {
@@ -37,10 +38,9 @@ namespace hal {
 		if(!mmap_tag) {
 			return false;
 		}
-		hal::cout<<(void *)mmap_tag<<hal::endl;
 		tag_count=(mmap_tag->head.size-sizeof(mmap_tag))/(mmap_tag->entry_size);
 		regionsi=reinterpret_cast<mem_region_init *>(
-		             w_malloc(sizeof(mem_region_init)*tag_count),16);
+		             w_malloc(sizeof(mem_region_init)*tag_count,16));
 		for(size_t s=0; s<tag_count; s++) {
 			void *tptr=reinterpret_cast<void *>(mmap_tag);
 			tptr+=sizeof(multiboot_mmap);
@@ -50,18 +50,20 @@ namespace hal {
 			regionsi[s].start=ent->addr;
 			regionsi[s].end=regionsi[s].start+ent->len;
 			regionsi[s].type=types[ent->type];
+
 		}
 		for(size_t s=0; s<tag_count; s++) {
 			hal::cout<<hal::dec<<"R "<<s<<": "<<hal::address<<regionsi[s].start
-			         <<" "<<regionsi[s].end<<" "<<hal::endl;
+			         <<" "<<regionsi[s].end<<"\t"<<
+			         regionsi[s].type.to_u64()<<hal::endl;
 		}
 		return true;
 	}
 
 	void init_type() {
-		types[0].resv_mem=true;
-
 		types[1].avil=true;
+
+		types[2].resv_mem=true;
 
 		types[3].avil=true;
 		types[3].firmware=true;

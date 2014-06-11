@@ -19,10 +19,24 @@
 #include <hal/mmap.h>
 
 namespace hal {
-	bool mem_type::operator==(const mem_type &other) {
-		return *(reinterpret_cast<const uint64_t *>(this))==*(reinterpret_cast<const uint64_t *>(&other));
+	bool mem_type::operator==(const mem_type &other) const {
+		return (this->to_u64())==(other.to_u64());
 	}
-	bool mem_type::is_more_restrictive(mem_type other) {
+	uint64_t mem_type::to_u64() const {
+		uint64_t res=0;
+		res|=(this->save_on_hib<<0);
+		res|=(this->pci_mmap<<1);
+		res|=(this->no_exist<<2);
+		res|=(this->dma<<3);
+		res|=(this->videobuffer<<4);
+		res|=(this->firmware<<5);
+		res|=(this->bootinfo<<6);
+		res|=(this->kernel<<7);
+		res|=(this->resv_mem<<8);
+		res|=(this->avil<<9);
+		return res;
+	}
+	bool mem_type::is_more_restrictive(mem_type other) const {
 		if(*this==other) {
 			return false;
 		}
@@ -59,20 +73,20 @@ namespace hal {
 		return false;
 	}
 
-	bool mem_type::can_adjust_start() {
+	bool mem_type::can_adjust_start() const {
 		if(this->videobuffer|this->pci_mmap|this->dma) {
 			return false;
 		}
 		return true;
 	}
 
-	bool mem_type::can_grow() {
-		if(this->no_exist|this->resv_mem|this->kernel) {
+	bool mem_type::can_grow() const {
+		if(this->no_exist||this->resv_mem||this->kernel) {
 			return true;
 		}
 		return false;
 	}
-	bool mem_type::can_shrink() {
+	bool mem_type::can_shrink() const {
 		if(this->avil) {
 			return true;
 		}

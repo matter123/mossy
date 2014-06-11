@@ -25,7 +25,6 @@ namespace hal {
 	int tag_count;
 	void init_mboot(multiboot_header *mboot) {
 		head=reinterpret_cast<multiboot_header *>(w_malloc(mboot->size,8));
-		cout<<(void *)head<<" "<<(void *)mboot<<hal::endl;
 		if(!head) {
 			print_boot_msg("Init Multiboot",false,true);
 		}

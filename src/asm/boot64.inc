@@ -192,9 +192,9 @@ start:
 		inc ecx
 		jmp .id_map
 	.cont:
-	;skip 2mb then map the next 2 megabytes
+
 	mov edi, pt_1
-	mov ecx, 0
+	xor ecx, ecx
 	mov esi, 512
 	.id_map_1:
 		cmp ecx, esi

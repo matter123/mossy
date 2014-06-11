@@ -3,10 +3,10 @@
 
 CSOURCES:=$(shell find . -name "*.c")
 COBJECTS:=$(patsubst %.c, %.o, $(CSOURCES))
-CPPSOURCES:=$(shell find . -name "*.cpp")
-CPPOBJECTS:=$(patsubst %.cpp, %.o, $(CPPSOURCES))
+CXXSOURCES:=$(shell find . -name "*.cpp")
+CXXOBJECTS:=$(patsubst %.cpp, %.o, $(CPPSOURCES))
 
-build: $(COBJECTS) $(CPPOBJECTS) mklib
+build: $(COBJECTS) $(CXXOBJECTS) mklib
 
 .c.o:
 	@echo Compiling $<
@@ -15,7 +15,7 @@ build: $(COBJECTS) $(CPPOBJECTS) mklib
 
 .cpp.o:
 	@echo Compiling $<
-	@cd ../.. && $(CPP) $(CPPFLAGS) -fno-tree-loop-distribute-patterns \
+	@cd ../.. && $(CXX) $(CXXFLAGS) -fno-tree-loop-distribute-patterns \
 	-pedantic -o libs/clib/$@.$(ARCH) -c libs/clib/$<
 
 mklib:

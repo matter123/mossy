@@ -14,6 +14,8 @@
 
 [BITS 32]
 [section .mboot]
+KERNEL_VMA equ 0xC0000000 ;cant do assembler time magic on a scaler
+						  ;value, so keep this updated
 
 MULTIBOOT_HEADER_MAGIC	equ 0xE85250D6
 MULTIBOOT_HEADER_ARCH	equ 0
@@ -46,13 +48,26 @@ ALIGN 8
 	dd 8
 multiboot_header_end:
 
-[section .text]
+LB_LEN equ (low_bss_end-low_bss_start)/4
+
+[section .low_text exec]
+no_mboot:
+	mov eax, 0xB8000
+	mov dword [eax], `N\x0FO\xF`
+	add eax, 4
+	mov dword [eax], ` \x0FM\xF`
+	add eax, 4
+	mov dword [eax], `B\x0FO\xF`
+	add eax, 4
+	mov dword [eax], `O\x0FT\xF`
+	hlt
 [global start]
 ;entry point
 start:
 	cli
+	cmp eax, 0x36D76289
+	jne no_mboot
 	;mask PIC
-	mov edx, eax
 	mov al, 0xFF
 	out 0x21, al
 	out 0xA1, al
@@ -60,7 +75,7 @@ start:
 	mov al, 0x20
 	out 0x20, al
 	out 0xA0, al
-	;;wait a bit
+	;wait a bit
 	mov ecx, 0x5000
 	.wait_loop:
 	cmp ecx, 0
@@ -79,16 +94,54 @@ start:
 	out 0xA1, al
 	;PIC is finally clean
 
-	lgdt [trickgdt]
-	mov cx, 0x10
-	mov ds, cx
-	mov es, cx
-	mov fs, cx
-	mov gs, cx
-	mov ss, cx
+	lgdt [gdtp]
+	jmp 0x08:flush
 
-	jmp 0x08:higherhalf
+flush:
+	;clean up segment selectors
+	mov ax, 0x10
+	mov ds, ax
+	mov es, ax
+	mov fs, ax
+	mov gs, ax
+	mov ss, ax
 
+	mov edi, low_bss_start
+	mov ecx, LB_LEN
+	mov eax, 0
+	rep stosd
+
+	mov edi, pt
+	xor ecx, ecx
+	mov esi, 1024
+
+	;id map 4mb, in this setup first 12 bits of KERNEL_LMA and KERNEL_VMA need to be zero
+	;KERNEL_VMA must also be the offest from KERNEL_LMA
+	.id_map:
+		cmp ecx, esi
+		je .cont
+		mov eax, ecx
+		mov edx, 0x1000
+		mul edx
+		or eax,3
+		mov dword [edi+ecx*4],eax
+		inc ecx
+		jmp .id_map
+	.cont:
+	mov eax, pt
+	or eax,3
+	mov [pd],eax
+	mov [pd + ((KERNEL_VMA>>22)*4)],eax
+
+	mov eax, pd
+	mov cr3, eax
+	mov eax, cr0
+	bts eax, 31
+	mov cr0, eax
+
+	jmp higherhalf
+
+[section .text]
 [EXTERN init_exec]
 [EXTERN _init]
 higherhalf:
@@ -101,36 +154,40 @@ higherhalf:
 
 	jmp $
 
-[GLOBAL gdt_flush]
-[EXTERN gp]
-gdt_flush:
-	lgdt [gp]
-	mov ax, 0x10
-	mov ds, ax
-	mov es, ax
-	mov fs, ax
-	mov gs, ax
-	mov ss, ax
-	jmp 0x08:flush2
-
-flush2:
-	ret
-
 [GLOBAL lidt]
 	lidt:
 	mov eax, [esp+4]
 	lidt [eax]
 	ret
 
-[SECTION .setup]
- trickgdt:
+[SECTION .low_data alloc noexec write align=4096]
+gdtp:
 	dw gdt_end - gdt - 1
 	dd gdt
- gdt:
+gdt:
+	;NULL
 	dd 0, 0
-	db 0xFF, 0xFF, 0, 0, 0, 10011010b, 11001111b, 0x40
-	db 0xFF, 0xFF, 0, 0, 0, 10010010b, 11001111b, 0x40
+	;0 DPL CODE
+	dw 0xFFFF, 0x0000
+	db 0x00, 10011010b, 11001111b, 0x00
+	;0 DPL DATA
+	dw 0xFFFF, 0x0000
+	db 0x00, 10010010b, 11001111b, 0x00
+	;3 DPL CODE
+	dw 0xFFFF, 0x0000
+	db 0x00, 11111010b, 11001111b, 0x00
+	;3 DPL DATA
+	dw 0xFFFF, 0x0000
+	db 0x00, 11110010b, 11001111b, 0x00
 gdt_end:
+
+[SECTION .low_bss alloc noexec write nobits align=4096]
+low_bss_start:
+pd:
+resb 0x1000
+pt:
+resb 0x1000
+low_bss_end:
 
 [SECTION .bss]
 resb 0x4000

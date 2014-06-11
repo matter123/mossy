@@ -1,34 +1,35 @@
 CSOURCES:=$(shell find src -name *.c)
 COBJECTS:=$(patsubst %.c, %.o, $(CSOURCES))
-CPPSOURCES:=$(shell find src -name *.cpp)
-CPPOBJECTS:=$(patsubst %.cpp, %.o, $(CPPSOURCES))
+CXXSOURCES:=$(shell find src -name *.cpp)
+CXXOBJECTS:=$(patsubst %.cpp, %.o, $(CXXSOURCES))
 SSOURCES:=$(shell find src -name *.s)
 SOBJECTS:=$(patsubst %.s, %.o, $(SSOURCES))
 
 export
 ARCH:=64
 CC:=$(shell echo $$HOME)/opt/cross/bin/x86_64-elf-gcc
-CPP:=$(shell echo $$HOME)/opt/cross/bin/x86_64-elf-gcc
+CXX:=$(shell echo $$HOME)/opt/cross/bin/x86_64-elf-g++
+CPP:=$(shell echo $$HOME)/opt/cross/bin/x86_64-elf-cpp
 LD:=$(shell echo $$HOME)/opt/cross/bin/x86_64-elf-gcc
 AS:=$(shell echo $$HOME)/opt/cross/bin/x86_64-elf-as
 GAR:=$(shell echo $$HOME)/opt/cross/bin/x86_64-elf-ar
-#CPP=clang
+#CXX=clang
 
 all: build runem
 
-build: clean check $(COBJECTS) $(CPPOBJECTS) $(SOBJECTS) build_libs link mkiso
+build: clean check $(COBJECTS) $(CXXOBJECTS) $(SOBJECTS) build_libs link mkiso
 
 
 WFLAGSON=-Wall -Wextra -Werror=return-type -Wshadow -Wframe-larger-than=16384 -Wdeprecated \
 -Wredundant-decls
-WFLAGSOFF=-Wno-sequence-point -Wno-unused-parameter -Wno-sign-compare -Wno-pointer-arith
+WFLAGSOFF=-Wno-unused-parameter -Wno-sign-compare -Wno-pointer-arith
 FFLAGS=-fno-omit-frame-pointer -ffreestanding -fno-stack-protector
 DFLAGS=-DARCH=_x64 -DVENDOR=_PC -DDEBUG
 MFLAGS=-mcmodel=kernel -mno-red-zone -mno-sse3 -mno-3dnow
 IFLAGS=-Isrc/stdlib/include -Ilibs/clib/include -Isrc/hal -Isrc/arch -Isrc/vendor
 CFLAGS=-O3 -std=c99 $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS) $(MFLAGS) $(IFLAGS)
-CPPFLAGS=-O3 -std=c++11 $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS) $(MFLAGS) $(IFLAGS) -fno-rtti \
--fno-exceptions
+CXXFLAGS=-O3 -std=c++1y $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS) $(MFLAGS) $(IFLAGS) -fno-rtti \
+-fno-exceptions -fdiagnostics-color=auto
 LDFLAGS=-static -Tlinkx64.ld -z max-page-size=0x1000 -ffreestanding -O2 -nostdlib $(FFLAGS) -Llibs
 ASFLAGS=-felf64
 
@@ -42,11 +43,11 @@ check:
 	#@tools/doccheck.py kernel src
 link:
 	@echo Linking
-	@$(LD) $(LDFLAGS) -o kernel64 $(SOBJECTS) $(COBJECTS) $(CPPOBJECTS) -lc$(ARCH) -lgcc
+	@$(LD) $(LDFLAGS) -o kernel64 $(SOBJECTS) $(COBJECTS) $(CXXOBJECTS) -lc$(ARCH) -lgcc
 
 .s.o:
 	@echo Assembling $(patsubst %.o, %.s, $@)
-	@cpp $(CPPFLAGS) -E -P -o $(patsubst %.o, %.cpps, $@) $(patsubst %.o, %.s, $@)
+	@$(CPP) $(CXXFLAGS) -E -P -o $(patsubst %.o, %.cpps, $@) $(patsubst %.o, %.s, $@)
 	@nasm $(ASFLAGS) $(patsubst %.o, %.cpps, $@) -o $@
 	@rm $(patsubst %.o, %.cpps, $@)
 
@@ -56,7 +57,7 @@ link:
 
 .cpp.o:
 	@echo Compiling $<
-	@$(CPP) $(CPPFLAGS) -o $@ -c $<
+	@$(CXX) $(CXXFLAGS) -o $@ -c $<
 
 mkiso:
 	#@tools/packrd.py
