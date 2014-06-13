@@ -16,11 +16,35 @@
 #include <vendor.h>
 #ifdef PC
 #include <hal/multiboot.h>
+#include <hal/mmap.h>
 #include <hal/console.h>
 #include "pic.h"
 namespace hal {
 	void init_vendor() {
 		print_boot_msg("Init PIC",pc::init_pic(),true);
+	}
+	//a is boot info, b is videobuffer
+	static mem_type a;
+	static mem_type b;
+	void add_special_mem_vendor() {
+		add_region(3);
+		a.bootinfo=true;
+		a.resv_mem=true;
+		//IVT and BDA
+		add_region(0x0,0x4FF,a);
+		//get EBDA
+		uint32_t ebda_s=*(reinterpret_cast<uint16_t *>(0x40E));
+		//if ebda is good add it
+		if((ebda_s<<4)<0xA0000) {
+			add_region(ebda_s<<4,0xA0000-(ebda_s<<4),a);
+		} else {
+			//else add a blank to make mmap.cpp happy
+			//will get removed
+			add_region(0,0,a);
+		}
+		//legacy video ram
+		b.videobuffer=true;
+		add_region(0xA0000,0x5FFFF,b);
 	}
 }
 #endif

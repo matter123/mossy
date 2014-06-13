@@ -48,6 +48,9 @@ namespace hal {
 			asm("hlt");
 		}
 	}
+	void add_special_mem_arch() {
+		//i dont know anything
+	}
 }
 uint8_t get_reg_count() {
 	return 14;

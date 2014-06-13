@@ -15,6 +15,7 @@
 */
 #include <stddef.h>
 #include <stdint.h>
+#include <string.h>
 #include <hal/hal.h>
 #include <hal/mmap.h>
 #include <hal/console.h>
@@ -24,7 +25,7 @@
 namespace hal {
 	static size_t tag_count=0;
 	static mem_type types[5];
-	static mem_region_init *regionsi;
+	static mem_region *regionsi;
 	void init_type();
 	bool init_mem() {
 		init_type();
@@ -39,8 +40,8 @@ namespace hal {
 			return false;
 		}
 		tag_count=(mmap_tag->head.size-sizeof(mmap_tag))/(mmap_tag->entry_size);
-		regionsi=reinterpret_cast<mem_region_init *>(
-		             w_malloc(sizeof(mem_region_init)*tag_count,16));
+		regionsi=reinterpret_cast<mem_region *>(
+		             w_malloc(sizeof(mem_region)*tag_count,16));
 		for(size_t s=0; s<tag_count; s++) {
 			void *tptr=reinterpret_cast<void *>(mmap_tag);
 			tptr+=sizeof(multiboot_mmap);
@@ -52,14 +53,17 @@ namespace hal {
 			regionsi[s].type=types[ent->type];
 
 		}
+		//allow the arch and vendor add custom regions
+		add_special_mem_arch();
+		add_special_mem_vendor();
 		for(size_t s=0; s<tag_count; s++) {
 			hal::cout<<hal::dec<<"R "<<s<<": "<<hal::address<<regionsi[s].start
-			         <<" "<<regionsi[s].end<<"\t"<<
-			         regionsi[s].type.to_u64()<<hal::endl;
+			         <<" "<<regionsi[s].end<<" "<<hal::endl;
 		}
 		return true;
 	}
 
+	//multiboot defines 4 main mem_types here they are
 	void init_type() {
 		types[1].avil=true;
 
@@ -69,5 +73,27 @@ namespace hal {
 		types[3].firmware=true;
 
 		types[4].save_on_hib=true;
+	}
+	int add_reg_count=0;
+	bool add_region(uint64_t start, uint64_t len, mem_type type) {
+		if(add_reg_count) {
+			regionsi[tag_count].start=start;
+			regionsi[tag_count].end=start+len;
+			regionsi[tag_count++].type=type;
+			add_reg_count--;
+			return true;
+		}
+		return false;
+	}
+	void add_region(int count) {
+		if((count-add_reg_count)>0) {
+			//need to alloc more space
+			//QnD impl of realloc
+			void *space=w_malloc((tag_count+count)*sizeof(mem_region),16);
+			memcpy(space,(void *)regionsi,tag_count*sizeof(mem_region));
+			regionsi=reinterpret_cast<mem_region *>(space);
+			//w_malloc does not have w_free()
+		}
+		add_reg_count=count;
 	}
 }

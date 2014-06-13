@@ -40,19 +40,15 @@ namespace hal {
 			bool operator==(const mem_type &other) const;
 			uint64_t to_u64() const;
 	} PACKED;
-	struct mem_region_init {
-		uint64_t start;
-		uint64_t end;
-		mem_type type;
-	} PACKED;
 	struct mem_region {
 		uint64_t start;
+		uint64_t end;
 		mem_type type;
 	} PACKED;
 
 	////////////////////////////////////////
 	// Initialize the physical memory map //
-	// and sort boot entries              //
+	//   and sort boot entries            //
 	// Created on 2014-06-03              //
 	// Updated on 2014-06-11              //
 	// Runs in O(1)                       //
@@ -61,9 +57,31 @@ namespace hal {
 
 	////////////////////////////////////////
 	// Get current count of memory        //
-	// regions                            //
+	//   regions                          //
 	// Created on 2014-06-03              //
+	// Updated on 2014-06-03              //
 	// Runs in O(1)                       //
 	////////////////////////////////////////
 	int get_mem_regions();
+
+	////////////////////////////////////////
+	// Add an region to the physical      //
+	//   memory map                       //
+	// Created on 2014-06-11              //
+	// Updated on 2014-06-11              //
+	// Runs in O(n) where n is current    //
+	//   number of regions after the      //
+	//   added region                     //
+	// Return true on success             //
+	////////////////////////////////////////
+	bool add_region(uint64_t start, uint64_t len, mem_type type);
+
+	////////////////////////////////////////
+	// Declares number of regions adding  //
+	// Created on 2014-06-11              //
+	// Updated on 2014-06-11              //
+	// Runs in O(n) where n is current    //
+	//   number of regions                //
+	////////////////////////////////////////
+	void add_region(int count);
 }
