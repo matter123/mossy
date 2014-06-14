@@ -62,15 +62,77 @@ namespace hal {
 			ostream &operator<<(ios_base b);
 			ostream &operator<<(ConsoleColor c);
 	};
+	////////////////////////////////////////
+	// Scroll one line                    //
+	// Created on 2014-04-20              //
+	////////////////////////////////////////
 	void scroll();
+
+	////////////////////////////////////////
+	// Scroll 'lines' lines               //
+	// Created on 2014-04-20              //
+	// Vendor defined                     //
+	////////////////////////////////////////
 	void scroll(int lines);
-	void printc(ConsoleColor c,char let);
+
+	////////////////////////////////////////
+	// Print one UTF8 glyph               //
+	// Created on 2014-04-20              //
+	// Updated on 2014-06-13              //
+	// Vendor defined                     //
+	////////////////////////////////////////
+	void printc(ConsoleColor c,char *glyph);
+
+	////////////////////////////////////////
+	// Clear the screen                   //
+	// Created on 2014-04-20              //
+	// Vendor defined                     //
+	////////////////////////////////////////
 	void cls();
+
+	////////////////////////////////////////
+	// Get console width                  //
+	// Created on 2014-04-26              //
+	// Vendor defined                     //
+	////////////////////////////////////////
 	int width();
+
+	////////////////////////////////////////
+	// Get console height                 //
+	// Created on 2014-04-26              //
+	// Vendor defined                     //
+	////////////////////////////////////////
 	int height();
+
+	////////////////////////////////////////
+	// Get console 'x' position           //
+	// Created on 2014-04-26              //
+	// Vendor defined                     //
+	////////////////////////////////////////
 	int get_x();
+
+	////////////////////////////////////////
+	// Get console 'y' position           //
+	// Created on 2014-04-26              //
+	// Vendor defined                     //
+	////////////////////////////////////////
 	int get_y();
+
+	////////////////////////////////////////
+	// Dump cpu registers                 //
+	// DOES NOT RETURN                    //
+	// Created on 2014-04-26              //
+	////////////////////////////////////////
 	void dump_regs(cpu_state *s);
+
+	////////////////////////////////////////
+	// print a boot time message with an  //
+	//   [OK] or [NO] printed along side  //
+	// msg: message to display            //
+	// ok: whether to display [OK] or [NO]//
+	// halt: halt the cpu if ok was false?//
+	// Created on 2014-05-18              //
+	////////////////////////////////////////
 	void print_boot_msg(const char *msg,bool ok, bool halt);
 	extern ostream cout;
 

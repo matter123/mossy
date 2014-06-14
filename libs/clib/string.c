@@ -1,5 +1,5 @@
 /*
-    Copyright 2013 Matthew Fosdick
+    Copyright 2014 Matthew Fosdick
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -13,9 +13,10 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 */
-#include <string.h>
+#include "string.h"
 #include <stdint.h>
 #include <stdbool.h>
+#include "utf8.h"
 void *memcpy(void *dest, const void *src, size_t num) {
 	uint8_t *d=(uint8_t *)dest;
 	const uint8_t *s=(const uint8_t *)src;
@@ -66,7 +67,49 @@ char *strncpy(char *dest, const char *src, size_t num) {
 	}
 	return d;
 }
-
+char *strlcpy(char *dest, const char *src, size_t num) {
+	bool zero=false;
+	char *d=dest;
+	while(num) {
+		if(!zero) {
+			int len=get_char_len(src);
+			if(len>=num||!*src) {
+				zero=true;
+			} else {
+				char_copy(dest,src);
+				src+=len;
+				dest+=len;
+				num-=len;
+			}
+			continue;
+		}
+		num--;
+		*dest++='\0';
+	}
+	*dest='\0';
+	return d;
+}
+char *mbsncpy(char *dest, const char *src, size_t num) {
+	bool zero=false;
+	char *d=dest;
+	while(num) {
+		if(!zero) {
+			int len=get_char_len(src);
+			if(len>num||!*src) {
+				zero=true;
+			} else {
+				char_copy(dest,src);
+				src+=len;
+				dest+=len;
+				num-=len;
+			}
+			continue;
+		}
+		num--;
+		*dest++='\0';
+	}
+	return d;
+}
 char *strcat(char *dest, const char *src) {
 	char *d=dest;
 	while(*dest++);
@@ -87,7 +130,6 @@ char *strncat(char *dest,const char *src, size_t num) {
 	*dest++='\0';
 	return d;
 }
-
 int memcmp(const void *ptr1, const void *ptr2, size_t num) {
 	const uint8_t *p1=(const uint8_t *)ptr1;
 	const uint8_t *p2=(const uint8_t *)ptr2;
@@ -124,7 +166,6 @@ int strncmp(const char *str1, const char *str2, size_t num) {
 	}
 	return 0;
 }
-
 void *memchr(const void *ptr, int value, size_t num) {
 	uint8_t *p=(uint8_t *)ptr;
 	while(num--) {
@@ -265,7 +306,6 @@ char *strtok(char *str, const char *delim) {
 	last=NULL;
 	return s_tok;
 }
-
 void *memset(void *ptr,int value,size_t num) {
 	uint8_t *p=(uint8_t *)ptr;
 	while(num--) {
@@ -298,6 +338,15 @@ size_t strlen(const char *str) {
 	size_t count=0;
 	while(*str++) {
 		count++;
+	}
+	return count;
+}
+
+size_t mbslen(const char *str) {
+	size_t count=0;
+	while(str&&*str) {
+		count++;
+		str=next_char(str);
 	}
 	return count;
 }

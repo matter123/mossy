@@ -51,7 +51,7 @@ namespace hal {
 	//   and sort boot entries            //
 	// Created on 2014-06-03              //
 	// Updated on 2014-06-11              //
-	// Runs in O(1)                       //
+	// Return true on success             //
 	////////////////////////////////////////
 	bool init_mem();
 
@@ -59,8 +59,6 @@ namespace hal {
 	// Get current count of memory        //
 	//   regions                          //
 	// Created on 2014-06-03              //
-	// Updated on 2014-06-03              //
-	// Runs in O(1)                       //
 	////////////////////////////////////////
 	int get_mem_regions();
 
@@ -68,10 +66,7 @@ namespace hal {
 	// Add an region to the physical      //
 	//   memory map                       //
 	// Created on 2014-06-11              //
-	// Updated on 2014-06-11              //
 	// Runs in O(n) where n is current    //
-	//   number of regions after the      //
-	//   added region                     //
 	// Return true on success             //
 	////////////////////////////////////////
 	bool add_region(uint64_t start, uint64_t len, mem_type type);
@@ -79,9 +74,6 @@ namespace hal {
 	////////////////////////////////////////
 	// Declares number of regions adding  //
 	// Created on 2014-06-11              //
-	// Updated on 2014-06-11              //
-	// Runs in O(n) where n is current    //
-	//   number of regions                //
 	////////////////////////////////////////
 	void add_region(int count);
 }
