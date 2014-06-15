@@ -91,6 +91,7 @@ namespace hal {
 			regionsi[tag_count].start=start;
 			regionsi[tag_count].end=start+len;
 			regionsi[tag_count++].type=type;
+			hal::cout<<hal::hex<<regionsi[tag_count-1].type.to_u64()<<hal::endl;
 			add_reg_count--;
 			return true;
 		}
@@ -101,7 +102,7 @@ namespace hal {
 			// need to alloc more space
 			// QnD impl of realloc
 			void *space=w_malloc((tag_count+count)*sizeof(mem_region), 16);
-			memcpy(space, (void *)regionsi, tag_count*sizeof(mem_region));
+			memmove(space, (void *)regionsi, tag_count*sizeof(mem_region));
 			regionsi=reinterpret_cast<mem_region *>(space);
 			// w_malloc does not have w_free()
 		}
