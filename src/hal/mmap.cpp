@@ -21,7 +21,8 @@
 #include <hal/console.h>
 #include <hal/multiboot.h>
 #include <hal/workspace.h>
-
+extern "C" uint32_t k_start;
+extern "C" uint32_t k_data_end;
 namespace hal {
 	static size_t tag_count=0;
 	static mem_type types[5];
@@ -31,40 +32,49 @@ namespace hal {
 		init_type();
 		multiboot_mmap *mmap_tag=NULL;
 		for(size_t s=0; s<get_tag_count(); s++) {
-			if(get_tag(s)->type==6) {
+			if(get_tag(s)->type == 6) {
 				mmap_tag=reinterpret_cast<multiboot_mmap *>(get_tag(s));
 				break;
 			}
 		}
+
 		if(!mmap_tag) {
 			return false;
 		}
-		tag_count=(mmap_tag->head.size-sizeof(mmap_tag))/(mmap_tag->entry_size);
+		tag_count=(mmap_tag->head.size-sizeof(mmap_tag)) / (mmap_tag->entry_size);
 		regionsi=reinterpret_cast<mem_region *>(
-		             w_malloc(sizeof(mem_region)*tag_count,16));
+		             w_malloc(sizeof(mem_region) * tag_count, 16));
 		for(size_t s=0; s<tag_count; s++) {
 			void *tptr=reinterpret_cast<void *>(mmap_tag);
 			tptr+=sizeof(multiboot_mmap);
 			tptr+=(s*mmap_tag->entry_size);
-			multiboot_mmap_ent *ent
-			    =reinterpret_cast<multiboot_mmap_ent *>(tptr);
+			multiboot_mmap_ent *ent=reinterpret_cast<multiboot_mmap_ent *>(tptr);
 			regionsi[s].start=ent->addr;
-			regionsi[s].end=regionsi[s].start+ent->len;
+			regionsi[s].end=regionsi[s].start + ent->len;
 			regionsi[s].type=types[ent->type];
-
 		}
 		//allow the arch and vendor add custom regions
 		add_special_mem_arch();
 		add_special_mem_vendor();
+		//add kernel
+		add_region(1);
+		uintptr_t start=((uint64_t) &k_start)-get_page_offset_addr();
+		uintptr_t end=(((uint64_t) &k_data_end)-start)-get_page_offset_addr();
+		add_region(start,end,types[0]);
+		//print regions
 		for(size_t s=0; s<tag_count; s++) {
-			hal::cout<<hal::dec<<"R "<<s<<": "<<hal::address<<regionsi[s].start
-			         <<" "<<regionsi[s].end<<" "<<hal::endl;
+			hal::cout<<hal::dec<<"R "<<s<<": "<<hal::address
+			         <<regionsi[s].start<<" "<<regionsi[s].end<<"\t"<<hal::hex
+			         <<(uint64_t)(regionsi[s].type.to_u64())<<hal::endl;
 		}
+
 		return true;
 	}
-
 	//multiboot defines 4 main mem_types here they are
 	void init_type() {
+		types[0].kernel=true;
+		types[0].resv_mem=true;
+
 		types[1].avil=true;
 
 		types[2].resv_mem=true;
@@ -77,6 +87,7 @@ namespace hal {
 	int add_reg_count=0;
 	bool add_region(uint64_t start, uint64_t len, mem_type type) {
 		if(add_reg_count) {
+			hal::cout<<start<<hal::endl;
 			regionsi[tag_count].start=start;
 			regionsi[tag_count].end=start+len;
 			regionsi[tag_count++].type=type;
@@ -87,12 +98,12 @@ namespace hal {
 	}
 	void add_region(int count) {
 		if((count-add_reg_count)>0) {
-			//need to alloc more space
-			//QnD impl of realloc
-			void *space=w_malloc((tag_count+count)*sizeof(mem_region),16);
-			memcpy(space,(void *)regionsi,tag_count*sizeof(mem_region));
+			// need to alloc more space
+			// QnD impl of realloc
+			void *space=w_malloc((tag_count+count)*sizeof(mem_region), 16);
+			memcpy(space, (void *)regionsi, tag_count*sizeof(mem_region));
 			regionsi=reinterpret_cast<mem_region *>(space);
-			//w_malloc does not have w_free()
+			// w_malloc does not have w_free()
 		}
 		add_reg_count=count;
 	}

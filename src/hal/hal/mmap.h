@@ -7,7 +7,7 @@
 
      http://www.apache.org/licenses/LICENSE-2.0
 
-    Unless required by applicable law or agreed to in writing, software
+    Uless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
@@ -18,10 +18,6 @@
 #include <struct.h>
 namespace hal {
 	class mem_type {
-		private:
-			uint32_t resv_1=0;
-			uint16_t resv_2=0;
-			uint resv_n:6;
 		public:
 			bool avil:1;
 			bool resv_mem:1;
@@ -39,6 +35,12 @@ namespace hal {
 			bool can_grow() const;
 			bool operator==(const mem_type &other) const;
 			uint64_t to_u64() const;
+			mem_type(mem_type &other);
+			mem_type();
+		private:
+			uint resv_n:6;
+			uint16_t resv_2=0;
+			uint32_t resv_1=0;
 	} PACKED;
 	struct mem_region {
 		uint64_t start;

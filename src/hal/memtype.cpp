@@ -17,12 +17,14 @@
 #include <stdint.h>
 #include <hal/hal.h>
 #include <hal/mmap.h>
+#include <hal/console.h>
 
 namespace hal {
 	bool mem_type::operator==(const mem_type &other) const {
 		return (this->to_u64())==(other.to_u64());
 	}
 	uint64_t mem_type::to_u64() const {
+		hal::cout<<this->videobuffer<<hal::endl;
 		uint64_t res=0;
 		res|=(this->save_on_hib<<0);
 		res|=(this->pci_mmap<<1);
@@ -35,6 +37,20 @@ namespace hal {
 		res|=(this->resv_mem<<8);
 		res|=(this->avil<<9);
 		return res;
+	}
+	mem_type::mem_type() {
+	}
+	mem_type::mem_type(mem_type &other) {
+		this->save_on_hib=other.save_on_hib;
+		this->pci_mmap=other.pci_mmap;
+		this->no_exist=other.no_exist;
+		this->dma=other.dma;
+		this->videobuffer=other.videobuffer;
+		this->firmware=other.firmware;
+		this->bootinfo=other.bootinfo;
+		this->kernel=other.kernel;
+		this->resv_mem=other.resv_mem;
+		this->avil=other.avil;
 	}
 	bool mem_type::is_more_restrictive(mem_type other) const {
 		if(*this==other) {

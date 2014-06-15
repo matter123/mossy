@@ -33,6 +33,8 @@ namespace hal {
 		add_region(3);
 		a.bootinfo=true;
 		a.resv_mem=true;
+		b.videobuffer=true;
+		b.resv_mem=true;
 		//IVT and BDA
 		add_region(0x0,0x4FF,a);
 		//get EBDA
@@ -46,8 +48,10 @@ namespace hal {
 			add_region(0,0,a);
 		}
 		//legacy video ram
-		b.videobuffer=true;
-		add_region(0xA0000,0x5FFFF,b);
+		if(!add_region(0xA0000,0x5FFFF,b)) {
+			hal::cout<<"OOPS";
+			halt(true);
+		}
 	}
 	void display_code_page() {
 		/*

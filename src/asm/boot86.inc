@@ -147,6 +147,28 @@ flush:
 higherhalf:
 	mov esp, sys_stack
 	mov ebp, sys_stack
+	;enable fpu
+	mov eax, cr0
+	and ax, 0xFFFD
+	or ax, 0x10
+	mov cr0, eax
+	fninit
+	;check for SSE
+	mov eax, 0x1
+	push ebx
+	cpuid
+	pop ebx
+	bt edx, 25
+	jnc .noSSE
+	;enable SSE
+	mov eax, cr0
+	and ax, 0xFFFB
+	or ax, 0x2
+	mov cr0, eax
+	mov eax, cr4
+	or ax, 3 << 9
+	mov cr4, eax
+	.noSSE:
 	add ebx, 0xC0000000 ;move to higher half
 	push ebx
 	call _init
