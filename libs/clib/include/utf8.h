@@ -18,7 +18,9 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>
-
+#ifdef __cplusplus
+extern "C" {
+#endif
 int get_char_len(const char *str);
 
 char *next_char(const char *str);
@@ -28,3 +30,9 @@ char *get_next_char(const char *str, size_t count);
 bool is_char_equal(const char *c1, const char *c2);
 
 void char_copy(char *str, const char *c);
+
+uint32_t get_code_point(const char *c);
+
+#ifdef __cplusplus
+}
+#endif

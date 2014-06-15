@@ -81,7 +81,7 @@ namespace hal {
 	// Updated on 2014-06-13              //
 	// Vendor defined                     //
 	////////////////////////////////////////
-	void printc(ConsoleColor c,char *glyph);
+	void printc(ConsoleColor c,const char *glyph);
 
 	////////////////////////////////////////
 	// Clear the screen                   //

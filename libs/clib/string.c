@@ -16,7 +16,7 @@
 #include "string.h"
 #include <stdint.h>
 #include <stdbool.h>
-#include "utf8.h"
+#include <utf8.h>
 void *memcpy(void *dest, const void *src, size_t num) {
 	uint8_t *d=(uint8_t *)dest;
 	const uint8_t *s=(const uint8_t *)src;

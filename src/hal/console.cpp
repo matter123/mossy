@@ -18,13 +18,15 @@
 #include <limits.h>
 #include <hal/hal.h>
 #include <stdlib.h>
+#include <utf8.h>
 namespace hal {
 	void ostream::print(const char *s) {
 		if(s==NULL) {
 			return print("--NULL POINTER--");
 		}
 		while(*s) {
-			printc(this->c,*s++);
+			printc(this->c,s);
+			s+=get_char_len(s);
 		}
 	}
 	ios_base::ios_base() {

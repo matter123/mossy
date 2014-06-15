@@ -13,7 +13,7 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 */
-#include "utf8.h"
+#include <utf8.h>
 
 int get_char_len(const char *str) {
 	unsigned char c=*str;
@@ -72,5 +72,21 @@ void char_copy(char *str, const char *c) {
 	int len=get_char_len(c);
 	while(len--) {
 		*(str++)=*(c++);
+	}
+}
+uint32_t get_code_point(const char *c) {
+	int len=get_char_len(c);
+	switch(len) {
+		case 1:
+			return *c;
+		case 2:
+			return ((*(c+0)&0x1F)<<6)|((*(c+1)&0x3F)<<0);
+		case 3:
+			return ((*(c+0)&0xF)<<12)|((*(c+1)&0x3F)<<6)|((*(c+2)&0x3F)<<0);
+		case 4:
+			return ((*(c+0)&0x7)<<18)|((*(c+1)&0x3F)<<12)|((*(c+2)&0x3F)<<6)
+			       |((*(c+2)&0x3F)<<0);
+		default:
+			return 0;
 	}
 }
