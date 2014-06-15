@@ -22,21 +22,21 @@ namespace hal {
                                 to be up by then so we don't run out of room*/
 	void *wksp_ptr=&k_end;
 	void *w_malloc(size_t s) {
+		if(s>sizeof(uintptr_t))wksp_ptr=
+			    (void *)(((uintptr_t)wksp_ptr&~(sizeof(uintptr_t)-1))+sizeof(uintptr_t));
 		void *temp=wksp_ptr;
-		if(s>sizeof(uintptr_t))temp=
-			    (void *)(((uintptr_t)temp&~(sizeof(uintptr_t)-1))+sizeof(uintptr_t));
-		if(wksp_ptr+s>=&k_data_end) {
+		if(wksp_ptr+s>&k_data_end) {
 			return reinterpret_cast<void *>(0);
 		}
 		wksp_ptr+=s;
 		return temp;
 	}
 	void *w_malloc(size_t s, size_t align) {
-		void *temp=wksp_ptr;
 		if(!(align&(align-1))) {
-			temp=(void *)(((uintptr_t)temp&~(align-1))+align);
+			wksp_ptr=(void *)(((uintptr_t)wksp_ptr&~(align-1))+align);
 		}
-		if(wksp_ptr+s>=&k_data_end) {
+		void *temp=wksp_ptr;
+		if(wksp_ptr+s>&k_data_end) {
 			return reinterpret_cast<void *>(0);
 		}
 		wksp_ptr+=s;

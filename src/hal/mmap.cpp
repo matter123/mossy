@@ -54,8 +54,10 @@ namespace hal {
 			regionsi[s].type=types[ent->type];
 		}
 		//allow the arch and vendor add custom regions
+		hal::cout<<tag_count<<hal::endl;
 		add_special_mem_arch();
 		add_special_mem_vendor();
+
 		//add kernel
 		add_region(1);
 		uintptr_t start=((uint64_t) &k_start)-get_page_offset_addr();
@@ -86,12 +88,12 @@ namespace hal {
 	}
 	int add_reg_count=0;
 	bool add_region(uint64_t start, uint64_t len, mem_type type) {
+		//hal::cout<<add_reg_count<<hal::endl;
 		if(add_reg_count) {
 			//hal::cout<<tag_count<<hal::endl;
 			regionsi[tag_count].start=start;
 			regionsi[tag_count].end=start+len;
 			regionsi[tag_count++].type=type;
-			hal::cout<<hal::hex<<regionsi[tag_count-1].type.to_u64()<<hal::endl;
 			add_reg_count--;
 			return true;
 		}
@@ -99,10 +101,13 @@ namespace hal {
 	}
 	void add_region(int count) {
 		if((count-add_reg_count)>0) {
+			hal::cout<<count<<" "<<tag_count<<hal::endl;
 			// need to alloc more space
 			// QnD impl of realloc
 			void *space=w_malloc((tag_count+count)*sizeof(mem_region), 16);
-			memmove(space, (void *)regionsi, tag_count*sizeof(mem_region));
+			hal::cout<<(void *)regionsi+(tag_count *sizeof(mem_region))<<hal::endl;
+			hal::cout<<space<<hal::endl;
+			memcpy(space, (void *)regionsi, tag_count*sizeof(mem_region));
 			regionsi=reinterpret_cast<mem_region *>(space);
 			// w_malloc does not have w_free()
 		}
