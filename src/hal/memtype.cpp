@@ -24,7 +24,6 @@ namespace hal {
 		return (this->to_u64())==(other.to_u64());
 	}
 	uint64_t mem_type::to_u64() const {
-		hal::cout<<this->videobuffer<<hal::endl;
 		uint64_t res=0;
 		res|=(this->save_on_hib<<0);
 		res|=(this->pci_mmap<<1);

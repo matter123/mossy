@@ -87,7 +87,7 @@ namespace hal {
 	int add_reg_count=0;
 	bool add_region(uint64_t start, uint64_t len, mem_type type) {
 		if(add_reg_count) {
-			hal::cout<<start<<hal::endl;
+			//hal::cout<<tag_count<<hal::endl;
 			regionsi[tag_count].start=start;
 			regionsi[tag_count].end=start+len;
 			regionsi[tag_count++].type=type;
