@@ -23,6 +23,13 @@ namespace hal {
 	uint16_t *mon=reinterpret_cast<uint16_t *>(get_page_offset_addr()+0xB8000);
 	uint16_t x,y;
 	void printc(ConsoleColor c,unsigned char let) {
+		if(x>=80) {
+			x=0;
+			y++;
+		}
+		if(y>=25) {
+			scroll(y-24);
+		}
 		if(let=='\n') {
 			x=0;
 			y++;
@@ -33,14 +40,6 @@ namespace hal {
 			return;
 		}
 		mon[y*80+x++]=let|c.getColor()<<8;
-		if(x>=80) {
-			x=0;
-			y++;
-		}
-		if(y>=25) {
-			scroll(y-24);
-			y=24;
-		}
 	}
 #define NON_CODE 19
 	unsigned char latin_extend[] = {
@@ -111,23 +110,18 @@ namespace hal {
 	const char *endl="\n";
 
 	void scroll(int lines) {
-		scroll((uint)lines);
-	}
-	void scroll(uint lines) {
-		if(y<lines) {
+		if((uint)y<lines) {
 			cls();
 			return;
 		}
-		for(int i=0; i<=(80-lines); i++) {
-			memcpy(
-			    reinterpret_cast<void *>(mon+160*(i-1)),
-			    reinterpret_cast<void *>(mon+160*i),
-			    160);
-		}
-		memset32(
-		    reinterpret_cast<uint32_t *>(mon+160*(80-lines)),
+		memmove(
+		    reinterpret_cast<void *>(mon),
+		    reinterpret_cast<void *>(mon+80*lines),
+		    160*(25-lines));
+		memset(
+		    reinterpret_cast<void *>(mon+80*(25-lines)),
 		    0,
-		    40*(80-lines));
+		    160*(25-lines));
 		y-=lines;
 	}
 

@@ -21,9 +21,7 @@
 #include <hal/hal.h>
 #include "pic.h"
 namespace hal {
-	void display_code_page();
 	void init_vendor() {
-		display_code_page();
 		print_boot_msg("Init PIC",pc::init_pic(),true);
 	}
 	//a is boot info, b is videobuffer
@@ -52,17 +50,6 @@ namespace hal {
 			hal::cout<<"OOPS";
 			halt(true);
 		}
-	}
-	void display_code_page() {
-		/*
-		    uint16_t *mon=reinterpret_cast<uint16_t *>(get_page_offset_addr()+0xB8000);
-		    uint8_t let=0;
-		    do {
-		     mon=let|(0xF<<8);
-		    mon++;
-		    } while(++let!=0);
-		    halt(true);*/
-		hal::cout<<"¼a𝍱"<<hal::endl;
 	}
 }
 #endif

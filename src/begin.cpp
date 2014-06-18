@@ -20,6 +20,7 @@
 #include <hal/console.h>
 #include <pc/cpu_stuff.h>
 #include <string.h>
+#include <build_info.h>
 
 namespace kernel {
 	extern "C"
@@ -30,7 +31,8 @@ namespace kernel {
 		//hal::cls();
 		hal::cout<<"the HAL says \"hello\""<<hal::endl;
 		hal::cout<<hal::get_tag_count()<<" multiboot tags"<<hal::endl;
-		hal::cout<<(((1<<29)&cpuid(0x80000001,3))==(1<<29))<<hal::endl;
+		hal::cout<<"Built on: "<<BUILD_UNIX_TIME<<" by: "<<BUILD_USERNAME
+		         <<" from: "<<BUILD_GIT_BRANCH<<hal::endl;
 		hal::halt(true);
 		asm volatile(
 		    " movl $0, %eax \

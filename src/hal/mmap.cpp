@@ -25,12 +25,15 @@ extern "C" uint32_t k_start;
 extern "C" uint32_t k_data_end;
 namespace hal {
 	static size_t tag_count=0;
-	static mem_type types[5];
-	static mem_region *regionsi;
+	static mem_type types[6];
+	static mem_region *regions;
+	void print_regions();
 	void init_type();
+	void fix_mmap();
 	bool init_mem() {
 		init_type();
 		multiboot_mmap *mmap_tag=NULL;
+		//get find mmap_tag
 		for(size_t s=0; s<get_tag_count(); s++) {
 			if(get_tag(s)->type == 6) {
 				mmap_tag=reinterpret_cast<multiboot_mmap *>(get_tag(s));
@@ -42,19 +45,19 @@ namespace hal {
 			return false;
 		}
 		tag_count=(mmap_tag->head.size-sizeof(mmap_tag)) / (mmap_tag->entry_size);
-		regionsi=reinterpret_cast<mem_region *>(
-		             w_malloc(sizeof(mem_region) * tag_count, 16));
+		regions=reinterpret_cast<mem_region *>(
+		            w_malloc(sizeof(mem_region) * tag_count, 16));
+		//convert from multiboot_mmap_ent to mem_region
 		for(size_t s=0; s<tag_count; s++) {
 			void *tptr=reinterpret_cast<void *>(mmap_tag);
 			tptr+=sizeof(multiboot_mmap);
 			tptr+=(s*mmap_tag->entry_size);
 			multiboot_mmap_ent *ent=reinterpret_cast<multiboot_mmap_ent *>(tptr);
-			regionsi[s].start=ent->addr;
-			regionsi[s].end=regionsi[s].start + ent->len;
-			regionsi[s].type=types[ent->type];
+			regions[s].start=ent->addr;
+			regions[s].end=regions[s].start + ent->len;
+			regions[s].type=types[ent->type];
 		}
-		//allow the arch and vendor add custom regions
-		hal::cout<<tag_count<<hal::endl;
+
 		add_special_mem_arch();
 		add_special_mem_vendor();
 
@@ -63,16 +66,16 @@ namespace hal {
 		uintptr_t start=((uint64_t) &k_start)-get_page_offset_addr();
 		uintptr_t end=(((uint64_t) &k_data_end)-start)-get_page_offset_addr();
 		add_region(start,end,types[0]);
-		//print regions
-		for(size_t s=0; s<tag_count; s++) {
-			hal::cout<<hal::dec<<"R "<<s<<": "<<hal::address
-			         <<regionsi[s].start<<" "<<regionsi[s].end<<"\t"<<hal::hex
-			         <<(uint64_t)(regionsi[s].type.to_u64())<<hal::endl;
-		}
+
+		//print_regions();
+		//hal::cout<<hal::endl;
+		//fix_mmap();
+		//print_regions();
+		//hal::halt(true);
 
 		return true;
 	}
-	//multiboot defines 4 main mem_types here they are
+
 	void init_type() {
 		types[0].kernel=true;
 		types[0].resv_mem=true;
@@ -85,15 +88,15 @@ namespace hal {
 		types[3].firmware=true;
 
 		types[4].save_on_hib=true;
+
+		types[5].no_exist=true;
 	}
-	int add_reg_count=0;
+	static int add_reg_count=0;
 	bool add_region(uint64_t start, uint64_t len, mem_type type) {
-		//hal::cout<<add_reg_count<<hal::endl;
 		if(add_reg_count) {
-			//hal::cout<<tag_count<<hal::endl;
-			regionsi[tag_count].start=start;
-			regionsi[tag_count].end=start+len;
-			regionsi[tag_count++].type=type;
+			regions[tag_count].start=start;
+			regions[tag_count].end=start+len;
+			regions[tag_count++].type=type;
 			add_reg_count--;
 			return true;
 		}
@@ -101,16 +104,128 @@ namespace hal {
 	}
 	void add_region(int count) {
 		if((count-add_reg_count)>0) {
-			hal::cout<<count<<" "<<tag_count<<hal::endl;
 			// need to alloc more space
 			// QnD impl of realloc
 			void *space=w_malloc((tag_count+count)*sizeof(mem_region), 16);
-			hal::cout<<(void *)regionsi+(tag_count *sizeof(mem_region))<<hal::endl;
-			hal::cout<<space<<hal::endl;
-			memcpy(space, (void *)regionsi, tag_count*sizeof(mem_region));
-			regionsi=reinterpret_cast<mem_region *>(space);
+			memcpy(space, (void *)regions, tag_count*sizeof(mem_region));
+			regions=reinterpret_cast<mem_region *>(space);
 			// w_malloc does not have w_free()
 		}
 		add_reg_count=count;
+	}
+	void print_regions() {
+		hal::ios_base typeb(16,true,true,3);
+		for(size_t s=0; s<tag_count; s++) {
+			hal::cout<<hal::dec<<"R "<<s<<": "<<hal::address
+			         <<regions[s].start<<" "<<regions[s].end<<"\t"
+			         <<typeb<<(uint64_t)(regions[s].type.to_u64())
+			         <<hal::endl;
+		}
+	}
+
+	void remove_invalid() {
+		int entrycount=0;
+		for(size_t s=0; s<tag_count; s++) {
+			if(regions[s].end>regions[s].start
+			        &&regions[s].type.to_u64()!=0) {
+				entrycount++;
+			}
+		}
+		mem_region *mmap_p=reinterpret_cast<mem_region *>(w_malloc(sizeof(
+		                       mem_region)*entrycount));
+		int mc=0;
+		while(mc<entrycount) {
+			for(size_t s=0; s<tag_count; s++) {
+				//check if bit is not set
+				if(regions[s].end>regions[s].start
+				        &&regions[s].type.to_u64()!=0) {
+					memcpy(&mmap_p[mc++],&regions[s],sizeof(mem_region));
+				}
+			}
+		}
+		regions=mmap_p;
+		tag_count=entrycount;
+	}
+	void sort() {
+		mem_region temp;
+		bool has_swap;
+		do {
+			has_swap=false;
+			for(int i=1; i<tag_count; i++) {
+				if(regions[i-1].start>regions[i].start) {
+					memcpy(&temp,&regions[i],sizeof(mem_region));
+					memcpy(&regions[i],&regions[i-1],sizeof(mem_region));
+					memcpy(&regions[i-1],&temp,sizeof(mem_region));
+					has_swap=true;
+				}
+			}
+		} while(has_swap);
+	}
+	void split() {
+		//get a pointer to the current memory
+		mem_region *temp=reinterpret_cast<mem_region *>(
+		                     w_malloc(sizeof(mem_region)));
+		int ecount=0;
+		for(size_t s=1; s<tag_count; s++) {
+			if(ecount==0) {
+				memcpy(&temp[ecount++],&regions[s-1],sizeof(mem_region));
+			}
+			//there are 3 cases
+			//1. no overlap
+			//2. intersection
+			//3. contained
+
+			//1
+			if(temp[ecount-1].end<regions[s].start) {
+				memcpy(&temp[ecount++],&regions[s-1],sizeof(mem_region));
+				continue;
+			}
+
+			//2
+			if(temp[ecount-1].end+1<regions[s].end) {
+				if(temp[ecount-1].type.is_more_restrictive
+				        (regions[s].type)) {
+					regions[s].start=temp[ecount-1].end+1;
+					if(regions[s].start==regions[s].end) {
+						continue;
+					}
+					memcpy(&temp[ecount++],&regions[s],sizeof(mem_region));
+					continue;
+				}
+				temp[ecount-1].end=regions[s].start-1;
+
+				//if temp[ecount-1] is bad copy new one over it
+				if(temp[ecount-1].start>=temp[ecount-1].end) {
+					memcpy(&temp[ecount-1],&regions[s],sizeof(mem_region));
+					continue;
+				}
+				memcpy(&temp[ecount++],&regions[s],sizeof(mem_region));
+			}
+
+			//3
+			if(temp[ecount-1].type.is_more_restrictive
+			        (regions[s].type)) {
+				continue;
+			}
+			uint64_t tend=temp[ecount-1].end;
+			temp[ecount-1].end=regions[s].start-1;
+			if(temp[ecount-1].start==temp[ecount-1].end) {
+				memcpy(&temp[ecount-1],&regions[s],sizeof(mem_region));
+				continue;
+			}
+			//reserve an entry
+			ecount++;
+			temp[ecount-1].end=tend;
+			temp[ecount-1].start=regions[s].end+1;
+			temp[ecount-1].type=temp[ecount-3].type;
+		}
+		regions=temp;
+		tag_count=ecount;
+		wksp_begin((void *)((uintptr_t)(&temp)+(ecount)*sizeof(mem_region)));
+	}
+	void fix_mmap() {
+		remove_invalid();
+		sort();
+		split();
 	}
 }

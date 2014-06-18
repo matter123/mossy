@@ -30,7 +30,7 @@ int get_char_len(const char *str) {
 	if(!count) {
 		count=1;
 	}
-	return (count>4?-1:count);
+	return (count>5?-1:count);
 }
 
 char *next_char(const char *str) {
@@ -86,6 +86,9 @@ uint32_t get_code_point(const char *c) {
 		case 4:
 			return ((*(c+0)&0x7)<<18)|((*(c+1)&0x3F)<<12)|((*(c+2)&0x3F)<<6)
 			       |((*(c+2)&0x3F)<<0);
+		case 5:
+			return ((*(c+0)&0x3)<<24)|((*(c+2)&0x3F)<<18)|((*(c+1)&0x3F)<<12)
+			       |((*(c+2)&0x3F)<<6)|((*(c+2)&0x3F)<<0);
 		default:
 			return 0;
 	}
