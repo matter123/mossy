@@ -69,9 +69,9 @@ namespace hal {
 
 		//print_regions();
 		//hal::cout<<hal::endl;
-		//fix_mmap();
-		//print_regions();
-		//hal::halt(true);
+		fix_mmap();
+		print_regions();
+		hal::halt(true);
 
 		return true;
 	}
@@ -115,8 +115,15 @@ namespace hal {
 	}
 	void print_regions() {
 		hal::ios_base typeb(16,true,true,3);
+		hal::ios_base r(10,true,true,3);
+		if(sizeof(uintptr_t)==4) {
+			hal::cout<<"REGION START      END           TYPE"<<hal::endl;
+		} else if(sizeof(uintptr_t)==8) {
+			hal::cout<<"REGION START              END                   TYPE"
+			         <<hal::endl;
+		}
 		for(size_t s=0; s<tag_count; s++) {
-			hal::cout<<hal::dec<<"R "<<s<<": "<<hal::address
+			hal::cout<<r<<"R "<<s<<": "<<hal::address
 			         <<regions[s].start<<" "<<regions[s].end<<"\t"
 			         <<typeb<<(uint64_t)(regions[s].type.to_u64())
 			         <<hal::endl;
@@ -158,70 +165,66 @@ namespace hal {
 					memcpy(&regions[i-1],&temp,sizeof(mem_region));
 					has_swap=true;
 				}
+				if(regions[i-1].start==regions[i].start) {
+					if(regions[i-1].end>regions[i].end) {
+						memcpy(&temp,&regions[i],sizeof(mem_region));
+						memcpy(&regions[i],&regions[i-1],sizeof(mem_region));
+						memcpy(&regions[i-1],&temp,sizeof(mem_region));
+						has_swap=true;
+					}
+				}
 			}
 		} while(has_swap);
 	}
 	void split() {
-		//get a pointer to the current memory
-		mem_region *temp=reinterpret_cast<mem_region *>(
-		                     w_malloc(sizeof(mem_region)));
+		mem_region *t_regions=(mem_region *)w_malloc(sizeof(mem_region));
 		int ecount=0;
-		for(size_t s=1; s<tag_count; s++) {
+		for(int i=1; i<tag_count; i++) {
 			if(ecount==0) {
-				memcpy(&temp[ecount++],&regions[s-1],sizeof(mem_region));
+				memcpy(&t_regions[ecount++],&regions[0],sizeof(mem_region));
 			}
-			//there are 3 cases
-			//1. no overlap
-			//2. intersection
-			//3. contained
-
-			//1
-			if(temp[ecount-1].end<regions[s].start) {
-				memcpy(&temp[ecount++],&regions[s-1],sizeof(mem_region));
+			//case 1
+			if(t_regions[ecount-1].end<regions[i].start) {
+				memcpy(&t_regions[ecount++],&regions[i],sizeof(mem_region));
 				continue;
 			}
-
-			//2
-			if(temp[ecount-1].end+1<regions[s].end) {
-				if(temp[ecount-1].type.is_more_restrictive
-				        (regions[s].type)) {
-					regions[s].start=temp[ecount-1].end+1;
-					if(regions[s].start==regions[s].end) {
-						continue;
+			//case 2
+			if(t_regions[ecount-1].end<regions[i].end) {
+				//left takes conflict
+				if(t_regions[ecount-1].type.is_more_restrictive(regions[i].type)) {
+					memcpy(&t_regions[ecount++],&regions[i],sizeof(mem_region));
+					t_regions[ecount-1].start=t_regions[ecount-2].end+1;
+					if(t_regions[ecount-1].end<=t_regions[ecount-1].start) {
+						ecount--;
 					}
-					memcpy(&temp[ecount++],&regions[s],sizeof(mem_region));
 					continue;
 				}
-				temp[ecount-1].end=regions[s].start-1;
-
-				//if temp[ecount-1] is bad copy new one over it
-				if(temp[ecount-1].start>=temp[ecount-1].end) {
-					memcpy(&temp[ecount-1],&regions[s],sizeof(mem_region));
-					continue;
+				//right takes conflict
+				t_regions[ecount-1].end=regions[i].start-1;
+				if(t_regions[ecount-1].end<=t_regions[ecount-1].start) {
+					ecount--;
 				}
-				memcpy(&temp[ecount++],&regions[s],sizeof(mem_region));
-			}
-
-			//3
-			if(temp[ecount-1].type.is_more_restrictive
-			        (regions[s].type)) {
+				memcpy(&t_regions[ecount++],&regions[i],sizeof(mem_region));
 				continue;
 			}
-			uint64_t tend=temp[ecount-1].end;
-			temp[ecount-1].end=regions[s].start-1;
-			if(temp[ecount-1].start==temp[ecount-1].end) {
-				memcpy(&temp[ecount-1],&regions[s],sizeof(mem_region));
+			//case 3
+			if(t_regions[ecount-1].type.is_more_restrictive(regions[i].type)) {
+				//absorb (skip over and do nothing)
 				continue;
 			}
-			//reserve an entry
-			ecount++;
-			temp[ecount-1].end=tend;
-			temp[ecount-1].start=regions[s].end+1;
-			temp[ecount-1].type=temp[ecount-3].type;
+			/*
+			    //split
+			    uint64_t old_end=t_regions[ecount-1].end;
+			    t_regions[ecount-1].end=regions[i].start-1;
+			    memcpy(&t_regions[ecount++],&regions[i],sizeof(mem_region));
+			    t_regions[ecount].start=t_regions[ecount-1].end+1;
+			    t_regions[ecount].end=old_end;
+			    t_regions[ecount].type=t_regions[ecount-2].type;
+			    ecount++;*/
 		}
-		regions=temp;
+		regions=t_regions;
 		tag_count=ecount;
-		wksp_begin((void *)((uintptr_t)(&temp)+(ecount)*sizeof(mem_region)));
+		wksp_begin((void *)regions+tag_count*sizeof(mem_region));
 	}
 	void fix_mmap() {
 		remove_invalid();

@@ -23,6 +23,8 @@ import subprocess
 def combine(path1, path2):
 	return path.normpath(path.join(path1, path2))
 
+os.chdir(path.dirname(path.realpath(__file__)))
+
 #I like C, going to ignore PEP 8
 argv=sys.argv
 argc=len(argv)

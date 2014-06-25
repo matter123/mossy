@@ -11,6 +11,7 @@ kernel64.sym
 kernelARM
 kernelARM.sym
 *.o.32
+*.o.86
 *.o.64
 *.o.ARM
 *.a

@@ -147,7 +147,7 @@ start:
 	;check cpu supports AMD64
 	xor eax, eax
 	mov esi, ebx
-	mov edx,0x80000001
+	mov eax,0x80000001
 	cpuid
 	mov ebx, esi
 	bt edx,29
