@@ -1,4 +1,3 @@
-#! /usr/bin/env python2
 # Copyright 2013 Matthew Fosdick
 
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +13,10 @@
 # limitations under the License.
 
 import os.path as path
-import ConfigParser
+try:
+    import ConfigParser
+except ImportError:
+    import configparser as ConfigParser
 
 
 class build_config:
@@ -25,7 +27,7 @@ class build_config:
         sections = ['BUILD', 'COMPILERS', 'PATHS', 'COMPILEOPT', 'GENERAL']
         for s in sections:
             if not self.config.has_section(s):
-                print 'cannot find section [' + s + '], aborting'
+                print ('cannot find section [' + s + '], aborting')
                 exit(1)
 
     def __init__(self, destdir, srcdir, config_file='./build.ini'):
@@ -49,15 +51,16 @@ class build_config:
 
     def getIndex(self, section, prefix, index):
         if not self.config.has_option(section, 'COUNT'):
-            print 'cannot find option \'COUNT\' in [' + section + '], aborting'
+            print (
+                'cannot find option \'COUNT\' in [' + section + '], aborting')
             exit(1)
-        if index > int(self.config.get(section, 'COUNT')):
-            print prefix + str(index) + \
-                ' too large to be in section [' + section + '] aborting'
+        if int(index) > int(self.config.get(section, 'COUNT')):
+            print (prefix + str(index) +
+                   ' too large to be in section [' + section + '] aborting')
             exit(1)
         if not self.config.has_option(section, prefix + str(index)):
-            print prefix + str(index) + \
-                ' not in section [' + section + '] aborting'
+            print (prefix + str(index) +
+                   ' not in section [' + section + '] aborting')
             exit(1)
         return self.config.get(section, prefix + str(index))
 
@@ -69,7 +72,7 @@ class build_config:
     def getIndexDef(self, section, prefix, index, default):
         if not self.config.has_option(section, 'COUNT'):
             return default
-        if index > int(self.config.get(section, 'COUNT')):
+        if int(index) > int(self.config.get(section, 'COUNT')):
             return default
         if not self.config.has_option(section, prefix + str(index)):
             return default
@@ -78,7 +81,7 @@ class build_config:
     def getBuildCount(self):
         count = self.getDef('BUILD', 'COUNT', None)
         if count is None:
-            print 'cannot find option \'COUNT\' in [BUILD], aborting'
+            print ('cannot find option \'COUNT\' in [BUILD], aborting')
             exit(1)
         return int(count)
 
@@ -122,3 +125,6 @@ class build_config:
             args += '-DDEBUG '
         args = ' '.join(args.split(' '))
         return args
+
+    def getPathComp(self, target):
+        return self.getIndex('PATHS', 'PATHC', target[0])

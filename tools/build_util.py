@@ -74,3 +74,18 @@ class build_util:
                                 self.bc.getArchName(target))
                         except OSError:
                             pass
+
+    def needs_rebuild(self, target, obj, src):
+        if self.bc.clean == 1:
+            return True
+        if not self.bc.suffix == 1 and self.bc.getBuildCount() > 1:
+            return True
+        try:
+            if path.getmtime(self.fixpathdest(obj) +
+                             '.' + self.bc.getArchName(target))\
+                    < path.getmtime(self.fixpathsrc(src)):
+                return True
+        except OSError:
+            return True
+        else:
+            return False

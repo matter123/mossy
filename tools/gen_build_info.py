@@ -1,4 +1,3 @@
-#!/usr/bin/env python2
 # Copyright 2014 Matthew Fosdick
 
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -46,7 +45,7 @@ def gen(srcfolder):
     out = subprocess.Popen(
         ["git", "status"], stdout=subprocess.PIPE).communicate()[0]
     os.chdir(old_cwd)
-    bi.write(out.splitlines()[0].split(" ")[2] + "\"\n")
+    bi.write((str(out).splitlines()[0].split(" ")[2] + "\"\n"))
     bi.close()
 
 
