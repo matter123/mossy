@@ -35,6 +35,7 @@ class build_config:
         self.srcdir = srcdir
         self.config = ConfigParser.RawConfigParser()
         self.config.read(self.fixpathsrc(config_file))
+        self.config_file = config_file
         self.__check()
         self.clean = int(self.getDef('GENERAL', 'CLEAN_ON_BUILD', '0'))
         self.suffix = int(self.getDef('GENERAL', 'SUFFIX_OBJS', '0'))
@@ -128,3 +129,27 @@ class build_config:
 
     def getPathComp(self, target):
         return self.getIndex('PATHS', 'PATHC', target[0])
+
+    def applySuffix(self, file, target):
+        return file + '.' + self.getArchName(target) + \
+                      '.' + self.getVendor(target)
+
+    def getFriendlyName(self, target):
+        return '(' + self.getCompilerPrefix(target) + \
+               ',' + self.getVendor(target) + ')'
+
+    def getName(self):
+        return self.getDef('GENERAL', 'NAME', 'UNKNOWN')
+
+    def getProgram(self, name):
+        return self.getDef('CMDS', name, '')
+
+
+class lib_build_config:
+
+    "so much boring-ness, please don't read me, But for libs!!"
+
+    def __init__(self, conf, destdir, srcdir, config_file='./build.ini'):
+        build_config.__init__(conf.destdir,
+                              conf.srcdir, conf.config_file)
+        self.config_file = config_file

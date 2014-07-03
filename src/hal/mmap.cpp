@@ -189,7 +189,7 @@ namespace hal {
 				continue;
 			}
 			//case 2
-			if(t_regions[ecount-1].end<regions[i].end) {
+			if(t_regions[ecount-1].end<=regions[i].end) {
 				//left takes conflict
 				if(t_regions[ecount-1].type.is_more_restrictive(regions[i].type)) {
 					memcpy(&t_regions[ecount++],&regions[i],sizeof(mem_region));
@@ -212,15 +212,15 @@ namespace hal {
 				//absorb (skip over and do nothing)
 				continue;
 			}
-			/*
-			    //split
-			    uint64_t old_end=t_regions[ecount-1].end;
-			    t_regions[ecount-1].end=regions[i].start-1;
-			    memcpy(&t_regions[ecount++],&regions[i],sizeof(mem_region));
-			    t_regions[ecount].start=t_regions[ecount-1].end+1;
-			    t_regions[ecount].end=old_end;
-			    t_regions[ecount].type=t_regions[ecount-2].type;
-			    ecount++;*/
+
+			//split
+			uint64_t old_end=t_regions[ecount-1].end;
+			t_regions[ecount-1].end=regions[i].start-1;
+			memcpy(&t_regions[ecount++],&regions[i],sizeof(mem_region));
+			t_regions[ecount].start=t_regions[ecount-1].end+1;
+			t_regions[ecount].end=old_end;
+			t_regions[ecount].type=t_regions[ecount-2].type;
+			ecount++;
 		}
 		regions=t_regions;
 		tag_count=ecount;

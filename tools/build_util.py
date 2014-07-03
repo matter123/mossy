@@ -1,4 +1,3 @@
-#! /usr/bin/env python2
 # Copyright 2013 Matthew Fosdick
 
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,6 +15,7 @@
 import os
 import fnmatch
 import os.path as path
+import subprocess
 
 
 class build_util:
@@ -78,14 +78,77 @@ class build_util:
     def needs_rebuild(self, target, obj, src):
         if self.bc.clean == 1:
             return True
-        if not self.bc.suffix == 1 and self.bc.getBuildCount() > 1:
-            return True
-        try:
-            if path.getmtime(self.fixpathdest(obj) +
-                             '.' + self.bc.getArchName(target))\
-                    < path.getmtime(self.fixpathsrc(src)):
+        if self.bc.suffix == 1 or self.bc.getBuildCount() == 1:
+            try:
+                if path.getmtime(
+                        self.bc.fixpathdest(
+                            self.bc.applySuffix(obj, target))) >\
+                        path.getmtime(
+                            self.bc.fixpathsrc(src)):
+                    return False
+            except OSError:
                 return True
-        except OSError:
-            return True
+        return True
+
+    def build(self, target, comp, opt, obj, src):
+        ret = "Compiling " + src + ':'
+        obj = self.bc.applySuffix(obj, target)
+        arg = []
+        arg.append(comp)
+        arg += opt.split(' ')
+        arg.append('-o')
+        arg.append(self.bc.fixpathdest(obj))
+        arg.append('-c')
+        arg.append(self.bc.fixpathsrc(src))
+        while '' in arg:
+            arg.remove('')
+
+        err = subprocess.Popen(arg, stderr=subprocess.PIPE).communicate()[0]
+        if err is not None:
+            ret += '\n\t' + err
         else:
-            return False
+            while len(ret) < 71:
+                ret += ' '
+            ret += 'no errors'
+        return ret
+
+    def build_asm(self, target, prep, popt, obj, src):
+        ret = "Assembling " + src + ':'
+        obj = self.bc.applySuffix(obj, target)
+        arg = []
+        arg.append(prep)
+        arg += popt.split(' ')
+        arg += ['-E', '-P', '-o']
+        arg.append(self.bc.fixpathdest(obj + '.cpps'))
+        arg.append(self.bc.fixpathsrc(src))
+        while '' in arg:
+            arg.remove('')
+
+        err = subprocess.Popen(arg, stderr=subprocess.PIPE).communicate()[0]
+        if err is not None:
+            ret += '\n\t' + err
+            return ret
+
+        arg = []
+        arg.append(self.bc.getProgram('NASM'))
+        arg.append(self.bc.getDef('COMPILEOPT', 'NASM', ''))
+        arg.append(self.bc.getDef('COMPILEOPT',
+                                  self.bc.getArchName(target) + '-NASM', ''))
+        arg.append(self.bc.fixpathdest(obj + '.cpps'))
+        arg.append('-o')
+        arg.append(self.bc.fixpathdest(obj))
+        while '' in arg:
+            arg.remove('')
+        err = subprocess.Popen(arg, stderr=subprocess.PIPE).communicate()[0]
+        if err is not None:
+            ret += '\n\t' + err
+            return ret
+        else:
+            while len(ret) < 71:
+                ret += ' '
+            ret += 'no errors'
+        try:
+            os.remove(self.bc.fixpathdest(obj + '.cpps'))
+        except OSError:
+            pass
+        return ret

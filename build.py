@@ -34,15 +34,12 @@ main_util = build_util.build_util(main)
 
 buildc = main.getBuildCount()
 
-printu('building ' + str(buildc) + ' targets')
+printu('building ' + main.getName() + ' (' + str(buildc) + ')targets')
 
 targets = []
 for i in range(buildc):
     target = main.getTarget(i + 1)
     targets.append(target)
-    comp = main.getCompilerPrefix(target)
-    vendor = main.getVendor(target)
-    printu('(' + comp + ',' + vendor + ')')
 
 # start actual build
 gen_build_info.gen(main.srcdir)
@@ -52,6 +49,7 @@ main_util.collectSrcFiles()
 main_util.cleanIfRequested()
 
 for target in targets:
+    printu('\nTarget=' + main.getFriendlyName(target))
     cxxopt = main.collateOpts(target, 'CXX')
     copt = main.collateOpts(target, 'C')
     sopt = main.collateOpts(target, 'S')
@@ -72,4 +70,10 @@ for target in targets:
         cxxobj = main_util.cxxobjs[i]
         cxxsrc = main_util.cxxsrcs[i]
         if main_util.needs_rebuild(target, cxxobj, cxxsrc):
-            main_util.build(target, CXX, cxxopt, cxxobj, cxxsrc)
+            printu(main_util.build(target, CXX, cxxopt, cxxobj, cxxsrc))
+
+    for i in range(len(main_util.sobjs)):
+        sobj = main_util.sobjs[i]
+        ssrc = main_util.ssrcs[i]
+        if main_util.needs_rebuild(target, sobj, ssrc):
+            printu(main_util.build_asm(target, CPP, sopt, sobj, ssrc))
