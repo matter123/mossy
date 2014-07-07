@@ -226,9 +226,38 @@ namespace hal {
 		tag_count=ecount;
 		wksp_begin((void *)regions+tag_count*sizeof(mem_region));
 	}
+	void page_align() {
+#define START_MASK ~((uintptr_t)0xFFF)
+		for(int i=0; i<tag_count; i++) {
+			if((regions[i].start & START_MASK) != 0) {
+				uint64_t old_start=regions[i].start;
+				if(regions[i].type.can_grow()) {
+					regions[i].start&=START_MASK;
+				} else {
+					regions[i].start&=START_MASK;
+					regions[i].start+=0x1000;
+				}
+				if(i && regions[i-1].end==(old_start-1)) {
+					regions[i-1].end=(regions[i].start-1);
+				}
+			}
+			if((regions[i].end & 0xFFF) != 0xFFF) {
+				if(regions[i].type.can_grow()) {
+					regions[i].end=regions[i].end|0xFFF;
+				} else {
+					regions[i].end&=START_MASK;
+					regions[i].end-=1;
+				}
+				if((i+1)<tag_count && regions[i+1].start<regions[i].end) {
+					regions[i+1].start=regions[i].end+1;
+				}
+			}
+		}
+	}
 	void fix_mmap() {
 		remove_invalid();
 		sort();
 		split();
+		page_align();
 	}
 }
