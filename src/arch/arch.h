@@ -58,6 +58,7 @@ uintreg_t get_creg(cpu_state *s, uint8_t creg);
 void set_reg(cpu_state *s, uint8_t reg, uintreg_t value);
 uintreg_t get_stack_pointer(cpu_state *s,bool userspace);
 void set_stack_pointer(cpu_state *s,bool userspace,uintreg_t value);
+int get_byte_order();
 typedef unsigned int uint;
 #endif
 

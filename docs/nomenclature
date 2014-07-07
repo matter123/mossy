@@ -1,0 +1,17 @@
+nomenclature for The Mossy Operating System
+	in no particular order
+
+byte - 8 bits, 0 - 255 for unsigned, -128 - 127 for signed
+word - 2 bytes, 0 - 65535 unsigned, -32768 - 32767 signed
+dword - 2 words (4 bytes), 0 - 4294967295 unsigned,  -2147483648 - 2147483647 signed
+qword - 4 words (8 bytes), 0 - 18446744073709551615  unsigned, 
+	 -9223372036854775808 - 9223372036854775807 signed
+char - a single UTF-8 char, between 1 and 5 bytes
+glyph - the smallest unit of text, comprised of a char and zero or more 'combining' chars
+
+SI prefixes (nano, mico, mili, kilo, etc) have their usual meaning, 
+	additionally kibi, mibi, gibi, tibi, and pibi are defined as multipliers of 1024
+
+dates should always be in ISO 8601 format (YYYY-MM-DD)
+
+requirement word such as may, must, should are defined as in RFC 2119
