@@ -76,7 +76,7 @@ namespace hal {
 	};
 
 	void printc(ConsoleColor c,const char *glyph) {
-		uint32_t cp=get_code_point(glyph);
+		uint32_t cp=decode_char(glyph);
 		if(cp<=0x7F) {
 			return printc(c,cp);
 		}

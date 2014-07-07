@@ -7,12 +7,12 @@ SOBJECTS:=$(patsubst %.s, %.o, $(SSOURCES))
 
 export
 ARCH:=32
-CC:=$(shell echo $$HOME)/opt/cross/bin/i586-elf-gcc
-CXX:=$(shell echo $$HOME)/opt/cross/bin/i586-elf-g++
-CPP:=$(shell echo $$HOME)/opt/cross/bin/i586-elf-cpp
-LD:=$(shell echo $$HOME)/opt/cross/bin/i586-elf-gcc
-AS:=$(shell echo $$HOME)/opt/cross/bin/i586-elf-as
-GAR:=$(shell echo $$HOME)/opt/cross/bin/i586-elf-ar
+CC:=$(shell echo $$HOME)/opt/cross/bin/i686-elf-gcc
+CXX:=$(shell echo $$HOME)/opt/cross/bin/i686-elf-g++
+CPP:=$(shell echo $$HOME)/opt/cross/bin/i686-elf-cpp
+LD:=$(shell echo $$HOME)/opt/cross/bin/i686-elf-gcc
+AS:=$(shell echo $$HOME)/opt/cross/bin/i686-elf-as
+GAR:=$(shell echo $$HOME)/opt/cross/bin/i686-elf-ar
 #CXX=clang
 
 CRTBEGIN_OBJ:=$(shell $(CC) $(CFLAGS) -print-file-name=crtbegin.o)

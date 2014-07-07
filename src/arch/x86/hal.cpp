@@ -104,4 +104,7 @@ char *get_mnemonic(cpu_state *s) {
 uintreg_t get_err_code(cpu_state *s) {
 	return s->code;
 }
+int get_byte_order() {
+	return 1; //LSB
+}
 #endif

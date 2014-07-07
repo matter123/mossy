@@ -21,17 +21,84 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-int get_char_len(const char *str);
+////////////////////////////////////////
+// Counts the number of bytes in the  //
+//   char 'str'                       //
+// Returns the count                  //
+// Created on 2014-06-13              //
+////////////////////////////////////////
+size_t get_char_len(const char *str);
 
+////////////////////////////////////////
+// Gets the next char in the string   //
+//   'str'                            //
+// Returns the next char              //
+// Created on 2014-06-13              //
+////////////////////////////////////////
 char *next_char(const char *str);
 
+////////////////////////////////////////
+// Gets the next 'count' char in the  //
+//   string 'str'                     //
+// Returns the next char              //
+// Created on 2014-06-13              //
+////////////////////////////////////////
 char *get_next_char(const char *str, size_t count);
 
+////////////////////////////////////////
+// Determines if two chars are equal  //
+// Returns true if equal, false       //
+//   otherwise                        //
+// Created on 2014-06-13              //
+////////////////////////////////////////
 bool is_char_equal(const char *c1, const char *c2);
 
+////////////////////////////////////////
+// Copies char 'c' onto string 'str'  //
+// Created on 2014-06-14              //
+////////////////////////////////////////
 void char_copy(char *str, const char *c);
 
-uint32_t get_code_point(const char *c);
+////////////////////////////////////////
+// Decodes the char 'c' into a        //
+//   codepoint                        //
+// Returns the decoded codepoint      //
+// Created on 2014-06-14              //
+////////////////////////////////////////
+uint32_t decode_char(const char *c);
+
+////////////////////////////////////////
+// Encodes the codepoint 'code_point' //
+//   and copies the char onto         //
+//   'buffer'                         //
+// Returns the length of the encoded  //
+//   char                             //
+// Created on 2014-07-05              //
+////////////////////////////////////////
+size_t encode_char(uint32_t code_point,char* buffer);
+
+////////////////////////////////////////
+// Copies the string 'src' into the   //
+//   string 'dest' and normalizes     //
+//   overlong chars, except special   //
+//   5 byte chars                     //
+// Returns the number of bytes copied //
+//   onto 'dest'                      //
+// Created on 2014-07-06              //
+////////////////////////////////////////
+size_t normalize(char *dest, const char *src);
+
+////////////////////////////////////////
+// Copies the string 'src' into the   //
+//   string 'dest' and normalizes     //
+//   overlong chars, except special   //
+//   5 byte chars, copies up to 'num' //
+//   bytes onto 'dest'                //
+// Returns the number of bytes copied //
+//   onto 'dest'                      //
+// Created on 2014-07-06              //
+////////////////////////////////////////
+size_t normalizen(char *dest, const char *src, size_t num);
 
 #ifdef __cplusplus
 }
