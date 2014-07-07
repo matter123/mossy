@@ -11,3 +11,7 @@ glyph - the smallest unit of text, comprised of a char and zero or more 'combini
 
 SI prefixes (nano, mico, mili, kilo, etc) have their usual meaning, 
 	additionally kibi, mibi, gibi, tibi, and pibi are defined as multipliers of 1024
+
+dates should always be in ISO 8601 format (YYYY-MM-DD)
+
+requirement word such as may, must, should are defined as in RFC 2119
