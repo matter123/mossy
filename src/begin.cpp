@@ -25,6 +25,7 @@
 namespace kernel {
 	extern "C"
 	void init_exec(hal::multiboot_header *mboot) {
+		hal::cout<<"HAPPY ANNIVERSITY (1 year)"<<hal::endl;
 		hal::init_mboot(mboot);
 		hal::init_arch();
 		hal::init_vendor();
