@@ -70,8 +70,6 @@ namespace hal {
 		//print_regions();
 		//hal::cout<<hal::endl;
 		fix_mmap();
-		print_regions();
-		hal::halt(true);
 
 		return true;
 	}
