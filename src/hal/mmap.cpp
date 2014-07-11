@@ -125,9 +125,11 @@ namespace hal {
 		for(size_t s=0; s<tag_count; s++) {
 			hal::cout<<r<<"R "<<s<<": "<<hal::address
 			         <<regions[s].start<<" "<<regions[s].end<<"\t"
-			         <<typeb<<(uint64_t)(regions[s].type.to_u64())
+			         <<typeb<<(regions[s].type.to_u64())<<"\t"
+			         //<<typeb<<&(regions[s].type)
 			         <<hal::endl;
 		}
+		hal::cout<<sizeof(mem_type);
 	}
 
 	void remove_invalid() {
@@ -254,10 +256,32 @@ namespace hal {
 			}
 		}
 	}
+
+	void fill() {
+		mem_region *t_regions=(mem_region *)w_malloc(sizeof(mem_region));
+		int ecount=0;
+		for(int i=1; i<tag_count; i++) {
+			if(ecount==0) {
+				memcpy(&t_regions[ecount++],&regions[0],sizeof(mem_region));
+			}
+			if((regions[i].start-1)>t_regions[ecount-1].end) {
+				t_regions[ecount].start=t_regions[ecount-1].end+1;
+				t_regions[ecount].end=regions[i].start-1;
+				t_regions[ecount].type=types[5];
+				ecount++;
+			}
+			memcpy(&t_regions[ecount++],&regions[i],sizeof(mem_region));
+		}
+		regions=t_regions;
+		tag_count=ecount;
+		wksp_begin((void *)regions+tag_count*sizeof(mem_region));
+	}
 	void fix_mmap() {
 		remove_invalid();
 		sort();
 		split();
 		page_align();
+		remove_invalid();
+		fill();
 	}
 }

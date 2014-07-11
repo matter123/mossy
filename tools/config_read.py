@@ -144,6 +144,12 @@ class build_config:
     def getProgram(self, name):
         return self.getDef('CMDS', name, '')
 
+    def getLibCount(self):
+        return int(self.getDef('LIBS', 'COUNT', 0))
+
+    def getLibName(self, lib):
+        return self.getIndexDef('LIBS', 'NAME', lib, '')
+
 
 class lib_build_config:
 

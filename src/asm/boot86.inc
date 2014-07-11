@@ -13,7 +13,7 @@
 ;  limitations under the License.
 
 [BITS 32]
-[section .mboot]
+[section .MBOOT]
 KERNEL_VMA equ 0xC0000000 ;cant do assembler time magic on a scaler
 						  ;value, so keep this updated
 
@@ -47,6 +47,26 @@ ALIGN 8
 	dw 0,0
 	dd 8
 multiboot_header_end:
+
+gdtp:
+	dw gdt_end - gdt - 1
+	dd gdt
+gdt:
+	;NULL
+	dd 0, 0
+	;0 DPL CODE
+	dw 0xFFFF, 0x0000
+	db 0x00, 10011010b, 11001111b, 0x00
+	;0 DPL DATA
+	dw 0xFFFF, 0x0000
+	db 0x00, 10010010b, 11001111b, 0x00
+	;3 DPL CODE
+	dw 0xFFFF, 0x0000
+	db 0x00, 11111010b, 11001111b, 0x00
+	;3 DPL DATA
+	dw 0xFFFF, 0x0000
+	db 0x00, 11110010b, 11001111b, 0x00
+gdt_end:
 
 LB_LEN equ (low_bss_end-low_bss_start)/4
 
@@ -143,7 +163,7 @@ flush:
 
 [section .text]
 [EXTERN init_exec]
-[EXTERN _init]
+[EXTERN __CTOR_LIST__]
 higherhalf:
 	mov esp, sys_stack
 	mov ebp, sys_stack
@@ -171,9 +191,18 @@ higherhalf:
 	.noSSE:
 	add ebx, 0xC0000000 ;move to higher half
 	push ebx
-	call _init
-	call init_exec
+	mov eax, dword __CTOR_LIST__
+	.call_ctor:
+		cmp dword [eax], 0
+		je .cont
+		push eax
+		call [eax]
+		pop eax
+		add eax, 4
+		jmp .call_ctor
+	.cont:
 
+	call init_exec
 	jmp $
 
 [GLOBAL lidt]
@@ -181,27 +210,6 @@ higherhalf:
 	mov eax, [esp+4]
 	lidt [eax]
 	ret
-
-[SECTION .low_data alloc noexec write align=4096]
-gdtp:
-	dw gdt_end - gdt - 1
-	dd gdt
-gdt:
-	;NULL
-	dd 0, 0
-	;0 DPL CODE
-	dw 0xFFFF, 0x0000
-	db 0x00, 10011010b, 11001111b, 0x00
-	;0 DPL DATA
-	dw 0xFFFF, 0x0000
-	db 0x00, 10010010b, 11001111b, 0x00
-	;3 DPL CODE
-	dw 0xFFFF, 0x0000
-	db 0x00, 11111010b, 11001111b, 0x00
-	;3 DPL DATA
-	dw 0xFFFF, 0x0000
-	db 0x00, 11110010b, 11001111b, 0x00
-gdt_end:
 
 [SECTION .low_bss alloc noexec write nobits align=4096]
 low_bss_start:

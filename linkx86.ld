@@ -5,39 +5,43 @@ KERNEL_VMA = 0xC0000000;
 SECTIONS
 {
 	. = KERNEL_LMA;
-	.low_text ALIGN (4096) :
+	.low_text :
 	{
-		*(.mboot)
+		*(.MBOOT)
 		*(.low_text)
 	}
-	.low_data ALIGN (4096) :
-	{
-		*(.low_data)
-	}
-	.low_bss ALIGN (4096) :
+	.low_bss :
 	{
 		*(.low_bss)
 	}
 	. += KERNEL_VMA;
-
 	k_start = .;
-	.text : AT(ADDR(.text) - 0xC0000000)
+	.text ALIGN(4096) : AT(ADDR(.text) - KERNEL_VMA)
 	{
 		*(.text)
 	}
-
-	.data ALIGN (4096) : AT(ADDR(.data) - 0xC0000000)
+	.ctors ALIGN(4096) :AT(ADDR(.ctors) - KERNEL_VMA)
+	{
+		__CTOR_LIST__ = .;
+		*(SORT(.ctors))
+		QUAD(0)
+	}
+	.data ALIGN(4096) : AT(ADDR(.data) - KERNEL_VMA)
 	{
 		*(.data)
 		*(.rodata*)
 	}
-
-	.bss ALIGN (4096) : AT(ADDR(.bss) - 0xC0000000)
+	.bss ALIGN (4096) : AT(ADDR(.bss) - KERNEL_VMA)
 	{
 		*(COMMON*)
 		*(.bss*)
 		k_end = .;
 		. += 131072;
 		k_data_end = .;
+	}
+	/DISCARD/ :
+	{
+		*(.comment)
+		*(.dtors)
 	}
 }

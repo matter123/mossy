@@ -4,7 +4,7 @@
 CSOURCES:=$(shell find . -name "*.c")
 COBJECTS:=$(patsubst %.c, %.o, $(CSOURCES))
 CXXSOURCES:=$(shell find . -name "*.cpp")
-CXXOBJECTS:=$(patsubst %.cpp, %.o, $(CPPSOURCES))
+CXXOBJECTS:=$(patsubst %.cpp, %.o, $(CXXSOURCES))
 
 build: $(COBJECTS) $(CXXOBJECTS) mklib
 

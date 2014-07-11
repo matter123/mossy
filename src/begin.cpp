@@ -21,10 +21,15 @@
 #include <pc/cpu_stuff.h>
 #include <string.h>
 #include <build_info.h>
+#include <time.h>
 
 namespace kernel {
 	extern "C"
 	void init_exec(hal::multiboot_header *mboot) {
+		time_t some_date=1404791398;
+		tm *ret=gmtime(&some_date);
+		//hal::cout<<ret->tm_hour;
+		hal::cout<<asctime(ret)<<hal::endl;
 		hal::cout<<"HAPPY ANNIVERSITY (1 year)"<<hal::endl;
 		hal::init_mboot(mboot);
 		hal::init_arch();

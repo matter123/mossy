@@ -77,3 +77,11 @@ for target in targets:
         ssrc = main_util.ssrcs[i]
         if main_util.needs_rebuild(target, sobj, ssrc):
             printu(main_util.build_asm(target, CPP, sopt, sobj, ssrc))
+
+    #build libs
+    libs = []
+    for i in range(main.getLibCount()):
+        libs.append(i + 1)
+
+    for lib in libs:
+        printu("building " + main.getLibName(lib))

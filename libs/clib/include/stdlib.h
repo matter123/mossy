@@ -16,10 +16,10 @@
 
 #pragma once
 #ifdef __cplusplus
-extern "C"
+extern "C" {
 #endif
-{
 #include <stddef.h>
+#include <stdint.h>
 double atof(const char *str);
 int atoi(const char *str);
 long atol(const char *str);
@@ -47,4 +47,6 @@ void *calloc(size_t num, size_t size); //NO-IMP
 void free(void *ptr); //NO-IMP
 void *malloc(size_t size); //NO-IMP
 void *realloc(void *ptr,size_t size); //NO-IMP
+#ifdef __cplusplus
 }
+#endif

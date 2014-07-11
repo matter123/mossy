@@ -2,6 +2,6 @@
 Contents in this file are not copyrighted material unless obtained
 from a copyrighted source*/
 #pragma once
-#define BUILD_UNIX_TIME 1404346219L
+#define BUILD_UNIX_TIME 1404858076L
 #define BUILD_USERNAME "mfosdick"
 #define BUILD_GIT_BRANCH "master-dev"

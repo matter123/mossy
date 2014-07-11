@@ -50,6 +50,9 @@ namespace hal {
 		this->kernel=other.kernel;
 		this->resv_mem=other.resv_mem;
 		this->avil=other.avil;
+		this->resv_n=0;
+		this->resv_2=0;
+		this->resv_1=0;
 	}
 	bool mem_type::is_more_restrictive(mem_type other) const {
 		if(*this==other) {
