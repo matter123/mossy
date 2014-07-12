@@ -19,10 +19,12 @@
 #include <hal/mmap.h>
 #include <hal/console.h>
 #include <hal/hal.h>
+#include <hal/timer.h>
 #include "pic.h"
 namespace hal {
 	void init_vendor() {
 		print_boot_msg("Init PIC",pc::init_pic(),true);
+		print_boot_msg("Init PIT",hal::timer_init(20),true);
 	}
 	//a is boot info, b is videobuffer
 	static mem_type a;

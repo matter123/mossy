@@ -25,6 +25,52 @@ namespace hal {
 			return print("--NULL POINTER--");
 		}
 		while(*s) {
+			if(get_char_len(s)==5) {
+				uint32_t cp=decode_char(s);
+				if((cp&0x80000)==0x80000) {
+					uint16_t color=cp&0xFFF;
+					uint8_t red=(color>>8)&0xF;
+					uint8_t green=(color>>4)&0xF;
+					uint8_t blue=(color>>0)&0xF;
+					uint8_t fc=0;
+					if(red==0xF&&green==0x0&&blue==0) {
+						fc=12;
+					} else if(red==0x7&&green==0x0&&blue==0x0) {
+						fc=4;
+					} else if(red==0x0&&green==0xF&&blue==0x0) {
+						fc=10;
+					} else if(red==0x0&&green==0x7&&blue==0x0) {
+						fc=2;
+					} else if(red==0x0&&green==0x0&&blue==0xF) {
+						fc=9;
+					} else if(red==0x0&&green==0x0&&blue==0x7) {
+						fc=1;
+					} else if(red==0xF&&green==0xF&&blue==0x0) {
+						fc=14;
+					} else if(red==0x7&&green==0x7&&blue==0x0) {
+						fc=6;
+					} else if(red==0xF&&green==0x0&&blue==0xF) {
+						fc=13;
+					} else if(red==0x7&&green==0x0&&blue==0x7) {
+						fc=5;
+					} else if(red==0x0&&green==0xF&&blue==0xF) {
+						fc=11;
+					} else if(red==0x0&&green==0x7&&blue==0x7) {
+						fc=3;
+					} else if(red==0xF&&green==0xF&&blue==0xF) {
+						fc=15;
+					} else if(red==0x0&&green==0x0&&blue==0x0) {
+						fc=0;
+					} else if(red==0xA&&green==0xA&&blue==0xA) {
+						fc=7;
+					} else if(red==0x5&&green==0x5&&blue==0x5) {
+						fc=8;
+					}
+					this->c.color=fc;
+				}
+				s+=get_char_len(s);
+				continue;
+			}
 			printc(this->c,s);
 			s+=get_char_len(s);
 		}

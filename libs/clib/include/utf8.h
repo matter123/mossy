@@ -75,7 +75,18 @@ uint32_t decode_char(const char *c);
 //   char                             //
 // Created on 2014-07-05              //
 ////////////////////////////////////////
-size_t encode_char(uint32_t code_point,char* buffer);
+size_t encode_char(uint32_t code_point,char *buffer);
+
+
+////////////////////////////////////////
+// Encodes the codepoint 'code_point' //
+//   as a 5 byte UTF8 overlong char   //
+//   and copies the char onto         //
+//   'buffer'                         //
+//   char                             //
+// Created on 2014-07-05              //
+////////////////////////////////////////
+void encode_five(uint32_t code_point,char *buffer);
 
 ////////////////////////////////////////
 // Copies the string 'src' into the   //

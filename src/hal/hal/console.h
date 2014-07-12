@@ -33,10 +33,9 @@ namespace hal {
 			void combine(ios_base b);
 	};
 	class ConsoleColor {
-		private:
+		public:
 			uint8_t backcolor;
 			uint8_t color;
-		public:
 			uint16_t getColor();
 			ConsoleColor(int foreground, int background);
 			ConsoleColor();

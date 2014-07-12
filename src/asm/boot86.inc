@@ -110,8 +110,8 @@ start:
 	jmp .wait_loop
 	.cont_wait:
 	;and finally acknowledge any the came
-	out 0x21, al
-	out 0xA1, al
+	out 0x20, al
+	out 0xA0, al
 	;PIC is finally clean
 
 	lgdt [gdtp]

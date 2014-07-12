@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # Copyright 2014 Matthew Fosdick
 
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import sys
 import os
 import os.path as path
 import time
@@ -50,6 +52,15 @@ def gen(srcfolder):
 
 
 def delete(srcfolder):
-    build_info = combine(
-        path.dirname(srcfolder), "./src/stdlib/include/build_info.h")
+    build_info = combine(srcfolder, "./src/stdlib/include/build_info.h")
     os.remove(build_info)
+
+#if not imported as a module ...
+if __name__ == '__main__':
+    folder = combine(path.dirname(path.abspath(__file__)), "..")
+    if len(sys.argv) == 2:
+        delete(folder)
+        exit(0)
+    else:
+        gen(folder)
+        exit(0)

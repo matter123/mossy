@@ -19,6 +19,6 @@
 #include <hal/int.h>
 namespace pc {
 	bool init_pic();
-	void use_irq(int num, void (*func)(cpu_state *),bool handle_eoi);
+	void use_irq(int num, void (*func)(cpu_state *),bool handle_eoi_before);
 }
 #endif

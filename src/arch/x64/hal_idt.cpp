@@ -153,6 +153,8 @@ namespace hal {
 		if(!IS_SET(used,get_int_num(state))) {
 			dump_regs(state);
 			halt(true);
+		} else {
+			callbacks[get_int_num(state)](0,state);
 		}
 	}
 }

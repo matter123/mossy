@@ -4,6 +4,8 @@
 .project
 .settings/
 *.iso
+iso/kernel32
+iso/kernel64
 kernel32
 kernel64
 kernel32.sym

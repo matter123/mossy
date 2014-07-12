@@ -76,8 +76,10 @@ namespace hal {
 		return 255;
 	}
 
+	int_callback callbacks[256];
 	void register_int(uint16_t int_num,int_callback callback,hal::interrupt_type type,bool user) {
-
+		register_asm_sub_int(int_num,(uintptr_t)exc_arr[int_num],type,user);
+		callbacks[int_num]=callback;
 	}
 
 	void register_asm_sub_int(uint16_t int_num, uintptr_t addr, interrupt_type type,bool user) {
@@ -146,6 +148,8 @@ namespace hal {
 		if(!IS_SET(used,get_int_num(state))) {
 			dump_regs(state);
 			halt(true);
+		} else {
+			callbacks[get_int_num(state)](0,state);
 		}
 	}
 }

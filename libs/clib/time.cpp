@@ -140,6 +140,7 @@ time_t subtract_leap(time_t time) {
 	return time-sub;
 }
 void set_mon(bool leap, time_t yday, int *mon, int *mday) {
+	yday++; //this algorithm assumes Jan 1 is day 1 when really its day 0
 	int mon_list[] = {31,28,31,30,31,30,31,31,30,31,30,31};
 	if(leap) {
 		mon_list[1]=29;
