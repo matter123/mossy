@@ -1,5 +1,5 @@
 /*
-    Copyright 2013 Matthew Fosdick
+    Copyright 2014 Matthew Fosdick
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -21,6 +21,18 @@ namespace std {
 	static const char *chars_low=
 	    "zyxwvutsrqponmlkjihgfedcba9876543210123456789abcdefghijklmnopqrstuvwxyz";
 
+	////////////////////////////////////////
+	// Converts 'value' into a string and //
+	//   copies the string onto 'str'     //
+	// 'Base' what base (2,8,10,26,etc)   //
+	//   to use when converting           //
+	// 'Uppercase' if the base used has   //
+	//   letters, should uppercase?       //
+	// 'Min_digits' minimum number of     //
+	//   digits to have in the string     //
+	// Returns 'str'                      //
+	// Created on 2014-05-30              //
+	////////////////////////////////////////
 	template<class T>
 	char *numtostr(T value,char *str,int base,bool uppercase,int min_digits = 0) {
 		char *rc;
@@ -60,6 +72,16 @@ namespace std {
 		}
 		return rc;
 	}
+	////////////////////////////////////////
+	// Converts 'str' into a base 10      //
+	//   number, or 'def' if can't find   //
+	//   a digit in the 'str'             //
+	// 'Def' number used when no match    //
+	//   was found                        //
+	// Returns the converted number or    //
+	//   'def' if no match was found      //
+	// Created on 2014-05-30              //
+	////////////////////////////////////////
 	template<class T>
 	T strtonum(const char *str, T def) {
 		T accum=0;

@@ -8,5 +8,5 @@ build:
 
 run:
 	@grub2-mkrescue -o bootable.iso iso -- -zisofs level=6
-	@~/bochs-2.6.6/bochs -f bochs.rc -q
+	#@~/bochs-2.6.6/bochs -f bochs.rc -q
 	#@scripts/run_emulator64 `pwd`

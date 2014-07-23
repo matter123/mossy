@@ -28,9 +28,9 @@ namespace x86_64 {
 		hal::mem_type avil;
 		memset(&avil,0,sizeof(hal::mem_type));
 		avil.avil=true;
-		size_t max=hal::get_mem_regions();
+		size_t max=hal::get_phys_mem_regions();
 		for(size_t s=0; s<max; s++) {
-			hal::mem_region *reg=hal::get_mem_region(s);
+			hal::mem_region *reg=hal::get_phys_mem_region(s);
 			if(avil==reg->type) {
 				uintptr_t free_page=reg->start;
 				while(free_page<reg->end) {

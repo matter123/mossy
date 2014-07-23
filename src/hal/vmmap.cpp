@@ -1,5 +1,5 @@
 /*
-    Copyright 2013-2014 Matthew Fosdick
+    Copyright 2014 Matthew Fosdick
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -13,26 +13,23 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 */
+#include <stddef.h>
+#include <stdint.h>
+#include <string.h>
+#include <hal/hal.h>
+#include <hal/mmap.h>
+#include <hal/console.h>
+#include <hal/multiboot.h>
+#include <hal/workspace.h>
 
-#pragma once
-#ifdef __cplusplus
-extern "C" {
-#endif
-int isalnum(int c);
-int isalpha(int c);
-int isblank(int c);
-int iscntrl(int c);
-int isdigit(int c);
-int isgraph(int c);
-int islower(int c);
-int isprint(int c);
-int ispunct(int c);
-int isspace(int c);
-int isupper(int c);
-int isxdigit(int c);
-
-int tolower(int c);
-int toupper(int c);
-#ifdef __cplusplus
+extern "C" uintptr_t k_start;
+extern "C" uintptr_t k_data_end;
+namespace hal {
+	static mem_regs regs;
+	void print_regions();
+	void init_type();
+	void fix_mmap();
+	bool init_virt_mem() {
+		return true;
+	}
 }
-#endif

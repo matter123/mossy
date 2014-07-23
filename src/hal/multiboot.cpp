@@ -1,5 +1,5 @@
 /*
-    Copyright 2013 Matthew Fosdick
+    Copyright 2013-2014 Matthew Fosdick
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -77,7 +77,7 @@ namespace hal {
 			}
 		}
 		print_boot_msg("Init Multiboot",true,false);
-		print_boot_msg("Init MMAP",init_mem(),true);
+		print_boot_msg("Init MMAP",init_phys_mem(),true);
 	}
 
 	int get_tag_count() {
