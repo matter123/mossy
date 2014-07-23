@@ -5,7 +5,7 @@
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+    http://www.apache.org/licenses/LICENSE-2.0
 
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,29 +14,12 @@
     limitations under the License.
 */
 #pragma once
-#include <stdlib.h>
+#include <arch.h>
+#ifdef X86_64
 #include <stdint.h>
-namespace std {
-	namespace TC {
-		extern char RED[];
-		extern char BLUE[];
-		extern char GREEN[];
-		extern char YELLOW[];
-		extern char MAGENTA[];
-		extern char CYAN[];
-		extern char WHITE[];
-		extern char BLACK[];
-
-		extern char DRED[];
-		extern char DBLUE[];
-		extern char DGREEN[];
-		extern char DYELLOW[];
-		extern char DMAGENTA[];
-		extern char DCYAN[];
-		extern char DGRAY[];
-		extern char LGRAY[];
-		extern char BACKCOLOR[];
-
-		char *getColor(uint8_t red, uint8_t green, uint8_t blue);
-	}
+namespace x86_64 {
+	bool init_pfa();
+	uintptr_t get_free_page();
+	void add_free_page(uintptr_t page);
 }
+#endif

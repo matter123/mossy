@@ -93,7 +93,7 @@ uint32_t decode_char(const char *c) {
 			return ((*(c+0)&0x07)<<18)|((*(c+1)&0x3F)<<12)|((*(c+2)&0x3F)<<6)
 			       |((*(c+3)&0x3F)<<0);
 		case 5:
-			return ((*(c+0)&0x03)<<24)|((*(c+1)&0x3F)<<18)|((*(c+1)&0x3F)<<12)
+			return ((*(c+0)&0x03)<<24)|((*(c+1)&0x3F)<<18)|((*(c+2)&0x3F)<<12)
 			       |((*(c+3)&0x3F)<<6)|((*(c+4)&0x3F)<<0);
 		default:
 			return 0;
@@ -145,23 +145,20 @@ void encode_five(uint32_t cp,char *b) {
 	if(cp>0x3FFFFFF) {
 		return;
 	}
-	size_t len=5;
 	int cp_store=26;
 
 	//set non coding portion of lead byte
-	uint8_t lead=(len==1?0x00:0x80);
-	for(int i=2; i<=len; i++) {
+	uint8_t lead=0x80;
+	for(int i=2; i<=5; i++) {
 		lead|=(1<<(8-i));
 	}
 
-	uint8_t lead_cp[5]= {7,5,4,3,2};
-	uint8_t masks[6]= {0x7F,0x1F,0xF,0x7,0x3,0x3F};
 	//create lead byte
-	*b++=lead|((cp>>(cp_store-=lead_cp[len-1]))&masks[len-1]);
+	*b++=lead|((cp>>(cp_store-=2))&0x3);
 
 	//fill in following bytes
 	while(cp_store>0) {
-		*b++=0x80|((cp>>(cp_store-=6))&masks[5]);
+		*b++=0x80|((cp>>(cp_store-=6))&0x3F);
 	}
 }
 

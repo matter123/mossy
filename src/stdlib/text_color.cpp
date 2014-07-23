@@ -35,6 +35,7 @@ namespace std {
 		char DCYAN[6];
 		char DGRAY[6];
 		char LGRAY[6];
+		char BACKCOLOR[6];
 
 		char *init_colors() {
 			static char b[6]= {0};
@@ -55,6 +56,8 @@ namespace std {
 			encode_five(0x80000|(0x7<<4)|0x7,DCYAN);
 			encode_five(0x80000|(0x5<<8)|(0x5<<4)|0x5,DGRAY);
 			encode_five(0x80000|(0xA<<8)|(0xA<<4)|0xA,LGRAY);
+			encode_five(0x80000|(0xA<<8)|(0xA<<4)|0xA,LGRAY);
+			encode_five(0x81000,BACKCOLOR);
 			return b;
 		}
 

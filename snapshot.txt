@@ -1,0 +1,25 @@
+Init Multiboot............................................................ [OK]
+Init MMAP................................................................. [OK]
+Init IDT.................................................................. [OK]
+Init pre-paging........................................................... [OK]
+Init paging............................................................... [OK]
+0xC01F4000 0x2FCCB000
+0xFFF00000 0x2FCC9000
+0xFFFFF000 0x2FCC7000
+0xFFFFF000 0x2FCC6000
+0xFFFFF000 0x2FCC5000
+0xFFFFF000 0x2FCC4000
+0xFFFFF000 0x2FCC3000
+0xFFFFF000 0x2FCC2000
+0xFFFFF000 0x2FCC1000
+0xFFFFF000 0x2FCC0000
+0xFFFFF000 0x2FCBF000
+0xFFFFF000 0x2FCBE000
+0xFFFFF000 0x2FCBD000
+0xFFFFF000 0x2FCBC000
+0xFFFFF000 0x2FCBB000
+0xFFFFF000 0x2FCBA000
+0xFFFFF000 0x2FCB9000
+0xFFFFF000 0x2FCB8000
+0xFFFFF000 0x2FCB7000
+0xFFFFF000 0x2FCB6000

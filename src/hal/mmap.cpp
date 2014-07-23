@@ -21,8 +21,8 @@
 #include <hal/console.h>
 #include <hal/multiboot.h>
 #include <hal/workspace.h>
-extern "C" uint32_t k_start;
-extern "C" uint32_t k_data_end;
+extern "C" uintptr_t k_start;
+extern "C" uintptr_t k_data_end;
 namespace hal {
 	static size_t tag_count=0;
 	static mem_type types[6];
@@ -281,5 +281,15 @@ namespace hal {
 		page_align();
 		remove_invalid();
 		fill();
+	}
+	mem_region *get_mem_region(int index) {
+		if(index<tag_count) {
+			return &regions[index];
+		}
+		return NULL;
+	}
+
+	int get_mem_regions() {
+		return tag_count;
 	}
 }

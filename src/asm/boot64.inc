@@ -137,8 +137,8 @@ start:
 	jmp .wait_loop
 	.cont_wait:
 	;and finally acknowledge any the came
-	out 0x21, al
-	out 0xA1, al
+	out 0x20, al
+	out 0xA0, al
 	;PIC is finally clean
 
 	cmp edx, 0x36D76289
@@ -225,6 +225,10 @@ start:
 	or eax,3
 	mov [pml4], eax
 	mov [pml4 + (((KERNEL_VMA>>39)&511)*8)], eax
+
+	mov eax, pml4
+	or eax, 3
+	mov [pml4 + 510*8], eax
 	mov eax, pml4
 	mov cr3, eax
 	xor eax, eax

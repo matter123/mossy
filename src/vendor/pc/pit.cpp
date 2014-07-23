@@ -19,15 +19,19 @@
 #include <hal/console.h>
 #include <io.h>
 #include <arch.h>
+#include <text_color.h>
 #include "pic.h"
 namespace hal {
 #define CHAN_BP 0x40
 #define COMMAND 0x43
-	uint64_t count;
-	uint32_t freq;
+	static uint64_t count=0;
+	static uint32_t freq;
+	static timer_tick timers[16];
+	static int mods[16];
 	void tick(cpu_state *s);
 
 	bool timer_init(uint32_t f) {
+		freq=f;
 		uint32_t div=1193180/f;
 		if(div<2) {
 			div=2;
@@ -37,17 +41,40 @@ namespace hal {
 		outb(COMMAND, 0x36);
 		outb(CHAN_BP+0,(uint8_t)(div&0xFF));
 		outb(CHAN_BP+0,(uint8_t)((div>>8)&0xFF));
-		pc::use_irq(1,&tick,false);
+		pc::use_irq(0,&tick,false);
+
 		return true;
 	}
-	/*
-	    bool install_timer_callback(timer_tick callback, int tick_mod);
-	    bool reset_counter();
-	    uint64_t get_counter();
-	    uint32_t get_timer_freq();*/
+
+	bool install_timer_callback(timer_tick callback, int tick_mod) {
+		for(int i=0; i<16; i++) {
+			if(timers[i]==NULL) {
+				timers[i]=callback;
+				mods[i]=tick_mod;
+				return true;
+			}
+		}
+		return false;
+	}
+
+	bool reset_counter() {
+		count=0;
+		return true;
+	}
+	uint64_t get_counter() {
+		return count;
+	}
+	uint32_t get_timer_freq() {
+		return freq;
+	}
 
 	void tick(cpu_state *s) {
-		hal::cout<<"tick"<<hal::endl;
+		for(int i=0; i<16; i++) {
+			if(timers[i]!=NULL&&count%mods[i]==0) {
+				timers[i](count);
+			}
+		}
+		count++;
 	}
 }
 #endif

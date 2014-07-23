@@ -37,7 +37,6 @@ namespace pc {
 		if(pic_range.len==0) {
 			return false;
 		}
-		hal::cout<<pic_range.start<<hal::endl;
 		//remap pic around this range
 		outb(M_CMD,0x11);//init
 		io_wait();

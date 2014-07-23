@@ -1,5 +1,5 @@
 /*
-    Copyright 2013 Matthew Fosdick
+    Copyright 2014 Matthew Fosdick
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -244,7 +244,7 @@ char *strrchr(const char *str1, int value);
 //   char that matches or NULL        //
 // Created on 2014-07-06              //
 ////////////////////////////////////////
-char *mbsrchr(const char *str1, const char * value);
+char *mbsrchr(const char *str1, const char *value);
 
 ////////////////////////////////////////
 // Searches 'str' for any bytes in    //

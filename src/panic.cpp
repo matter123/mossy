@@ -18,6 +18,7 @@
 #include <string.h>
 #include <conv.hpp>
 #include <hal/console.h>
+#include <text_color.h>
 
 namespace kernel {
 	void panic() {
@@ -27,8 +28,8 @@ namespace kernel {
 		panic("");
 	}
 	void panic(const char *msg) {
-		hal::cout<<hal::endl<<"PANIC: An Unrecoverable Error Has Occurred";
-		hal::cout<<hal::endl<<msg;
+		hal::cout<<hal::endl<<std::TC::DRED<<"PANIC: An Unrecoverable Error Has Occurred";
+		hal::cout<<hal::endl<<std::TC::WHITE<<msg;
 		asm("cli\nhlt");
 		while(1);//will never execute
 	}

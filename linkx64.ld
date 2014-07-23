@@ -35,9 +35,10 @@ SECTIONS
 	{
 		*(COMMON*)
 		*(.bss*)
-		k_end = .;
-		. += 131072;
+		k_end = ALIGN(4096);
+		. += 128K;
 		k_data_end = .;
+		. += 64K;
 	}
 	/DISCARD/ :
 	{

@@ -19,9 +19,12 @@
 #include <string.h>
 #include <hal/hal.h>
 #include <utf8.h>
+#include <io.h>
 namespace hal {
 	uint16_t *mon=reinterpret_cast<uint16_t *>(get_page_offset_addr()+0xB8000);
 	uint16_t x,y;
+	int program_vga();
+	int dummy=program_vga();
 	void printc(ConsoleColor c,unsigned char let) {
 		if(x>=80) {
 			x=0;
@@ -146,5 +149,14 @@ namespace hal {
 		return y;
 	}
 	ios_base address(16,2,2,sizeof(uintreg_t)*2);
+
+	int program_vga() {
+		uint8_t a=inb(0x3DA);
+		outb(0x3C0,0x30);
+		a=inb(0x3C1);
+		a&=0xF7;
+		outb(0x3C0,a);
+		return a;
+	}
 }
 #endif

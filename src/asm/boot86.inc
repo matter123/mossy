@@ -133,7 +133,7 @@ flush:
 
 	mov edi, pt
 	xor ecx, ecx
-	mov esi, 1024
+	mov esi, 500
 
 	;id map 4mb, in this setup first 12 bits of KERNEL_LMA and KERNEL_VMA need to be zero
 	;KERNEL_VMA must also be the offest from KERNEL_LMA
@@ -149,9 +149,12 @@ flush:
 		jmp .id_map
 	.cont:
 	mov eax, pt
-	or eax,3
-	mov [pd],eax
-	mov [pd + ((KERNEL_VMA>>22)*4)],eax
+	or eax, 3
+	mov [pd], eax
+	mov [pd + ((KERNEL_VMA>>22)*4)], eax
+	mov eax, pd
+	or eax, 3
+	mov [pd + 1023*4], eax
 
 	mov eax, pd
 	mov cr3, eax
@@ -212,6 +215,7 @@ higherhalf:
 	ret
 
 [SECTION .low_bss alloc noexec write nobits align=4096]
+[GLOBAL pd]
 low_bss_start:
 pd:
 resb 0x1000

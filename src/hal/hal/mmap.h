@@ -65,6 +65,13 @@ namespace hal {
 	int get_mem_regions();
 
 	////////////////////////////////////////
+	// Get a region at index 'index'      //
+	// Returns a region                   //
+	// Created on 2014-07-13              //
+	////////////////////////////////////////
+	mem_region *get_mem_region(int index);
+
+	////////////////////////////////////////
 	// Add an region to the physical      //
 	//   memory map                       //
 	// Created on 2014-06-11              //

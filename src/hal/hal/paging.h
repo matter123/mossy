@@ -5,7 +5,7 @@
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+    http://www.apache.org/licenses/LICENSE-2.0
 
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,29 +14,21 @@
     limitations under the License.
 */
 #pragma once
-#include <stdlib.h>
 #include <stdint.h>
-namespace std {
-	namespace TC {
-		extern char RED[];
-		extern char BLUE[];
-		extern char GREEN[];
-		extern char YELLOW[];
-		extern char MAGENTA[];
-		extern char CYAN[];
-		extern char WHITE[];
-		extern char BLACK[];
+namespace hal {
+	struct page_opt {
+		bool user;
+		bool exec;
+		bool write;
+	};
+	void map_free_to_virt_cur(uintptr_t virt, page_opt options);
 
-		extern char DRED[];
-		extern char DBLUE[];
-		extern char DGREEN[];
-		extern char DYELLOW[];
-		extern char DMAGENTA[];
-		extern char DCYAN[];
-		extern char DGRAY[];
-		extern char LGRAY[];
-		extern char BACKCOLOR[];
+	void map_phys_to_virt_cur(uintptr_t virt, uint64_t phys, page_opt options);
 
-		char *getColor(uint8_t red, uint8_t green, uint8_t blue);
-	}
+	void unmap_virt_cur(uintptr_t virt);
+
+	uintptr_t unmap_virt_phys_cur(uintptr_t virt);
+
+	uintptr_t phys_from_virt(uintptr_t virt);
+
 }

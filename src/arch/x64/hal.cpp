@@ -18,12 +18,19 @@
 #include <stdint.h>
 #include <hal/multiboot.h>
 #include <x64/idt.h>
+#include <x86_64/pfa.h>
+#include <x64/paging.h>
 #include <hal/console.h>
 namespace hal {
 	void init_arch() {
 		//an okay gdt is already setup
 		//so IDT
 		print_boot_msg("Init IDT",init_idt(),true);
+		print_boot_msg("Init pre-paging",x64::init_paging(),true);
+		print_boot_msg("Init PFA",x86_64::init_pfa(),true);
+		if(!x64::paging_ready()) {
+			print_boot_msg("Init paging",x64::init_paging(),true);
+		}
 	}
 	void magic_break() {
 		asm volatile("xchg %bx, %bx");

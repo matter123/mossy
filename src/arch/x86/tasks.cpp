@@ -13,10 +13,15 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 */
-#pragma once
-#ifdef X86_64
-#include <stdint.h>
-namespace x86_64 {
-	bool init_pit(uint32_t freq);
+#include <arch.h>
+#ifdef X86
+#include <stdlib.h>
+namespace x86 {
+	cpu_state *schedule(cpu_state *s) {
+		return s;
+	}
+	void add_task(cpu_state s) {
+
+	}
 }
 #endif

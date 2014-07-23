@@ -1,5 +1,5 @@
 /*
-    Copyright 2013 Matthew Fosdick
+    Copyright 2014 Matthew Fosdick
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -19,15 +19,17 @@
 #include <hal/multiboot.h>
 #include <x86/idt.h>
 #include <hal/console.h>
+#include <x86_64/pfa.h>
+#include "paging.h"
 
 namespace hal {
 	void init_arch() {
-		//the 32 bit kernel boots in higher half with a gdt trick
-		//this setups up paging and a proper gdt
-		//print_boot_msg("Init Higher Half kernel",true,false);
-		//init_higher_half();
-		//once we have a stable gdt and higher half page setup we do the rest of system startup
 		print_boot_msg("Init IDT",init_idt(),true);
+		print_boot_msg("Init pre-paging",x86::init_paging(),true);
+		print_boot_msg("Init PFA",x86_64::init_pfa(),true);
+		if(!x86::paging_ready()) {
+			print_boot_msg("Init paging",x86::init_paging(),true);
+		}
 	}
 	void magic_break() {
 		asm volatile("xchg %bx, %bx");

@@ -21,6 +21,7 @@
 #include <utf8.h>
 namespace hal {
 	void ostream::print(const char *s) {
+		static bool back=false;
 		if(s==NULL) {
 			return print("--NULL POINTER--");
 		}
@@ -28,6 +29,14 @@ namespace hal {
 			if(get_char_len(s)==5) {
 				uint32_t cp=decode_char(s);
 				if((cp&0x80000)==0x80000) {
+					if(!back) {
+						back=(cp&0x1000)==0x1000;
+						if(back) {
+							//magic_break();
+							s+=get_char_len(s);
+							continue;
+						}
+					}
 					uint16_t color=cp&0xFFF;
 					uint8_t red=(color>>8)&0xF;
 					uint8_t green=(color>>4)&0xF;
@@ -66,7 +75,12 @@ namespace hal {
 					} else if(red==0x5&&green==0x5&&blue==0x5) {
 						fc=8;
 					}
-					this->c.color=fc;
+					if(back) {
+						this->c.backcolor=fc;
+						back=false;
+					} else {
+						this->c.color=fc;
+					}
 				}
 				s+=get_char_len(s);
 				continue;

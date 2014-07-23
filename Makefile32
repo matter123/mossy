@@ -22,11 +22,11 @@ build: clean check $(COBJECTS) $(CXXOBJECTS) $(SOBJECTS) build_libs link mkiso
 WFLAGSON=-Wall -Wextra -Werror=return-type -Wshadow -Wundef -Wframe-larger-than=16384 -Wdeprecated \
 -Wredundant-decls
 WFLAGSOFF=-Wno-unused-parameter -Wno-sign-compare -Wno-pointer-arith
-FFLAGS=-fno-omit-frame-pointer -ffreestanding -fno-stack-protector
+FFLAGS=-fno-omit-frame-pointer -ffreestanding -fno-stack-protector -fno-common
 DFLAGS=-DARCH=_x86 -DVENDOR=_PC -DDEBUG
 IFLAGS=-Isrc/stdlib/include -Ilibs/clib/include -Isrc/hal -Isrc/arch -Isrc/vendor
-CFLAGS=-O3 -std=c99 $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS) $(IFLAGS)
-CXXFLAGS=-O3 -std=c++1y $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS) $(IFLAGS) -fno-rtti \
+CFLAGS=-O0 -std=c99 $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS) $(IFLAGS)
+CXXFLAGS=-O0 -std=c++1y $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS) $(IFLAGS) -fno-rtti \
 -fno-exceptions -fdiagnostics-color=auto
 LDFLAGS=-static -Tlinkx86.ld -z max-page-size=0x1000 -ffreestanding -O2 -nostdlib $(FFLAGS) -Llibs
 ASFLAGS=-felf
