@@ -26,8 +26,8 @@ extern "C" uintptr_t k_data_end;
 namespace hal {
 	static mem_type types[6];
 	static mem_regs regs;
-	void init_type();
-	void fix_mmap();
+	static void init_type();
+	static void fix_mmap();
 	bool init_phys_mem() {
 		init_type();
 		multiboot_mmap *mmap_tag=NULL;
@@ -56,8 +56,8 @@ namespace hal {
 			regs.regions[s].type=types[ent->type];
 		}
 
-		add_special_mem_arch();
-		add_special_mem_vendor();
+		add_phys_mem_arch();
+		add_phys_mem_vendor();
 
 		//add kernel
 		add_phys_region(1);
@@ -69,7 +69,7 @@ namespace hal {
 		return true;
 	}
 
-	void init_type() {
+	static void init_type() {
 		types[0].kernel=true;
 		types[0].resv_mem=true;
 
@@ -106,8 +106,12 @@ namespace hal {
 		}
 		add_reg_count=count;
 	}
-	void fix_mmap() {
+	static void fix_mmap() {
+		uintptr_t old=reinterpret_cast<uintptr_t>(regs.regions);
 		regs=*fill(remove_invalid(page_align(split(sort(remove_invalid(&regs))))));
+		memmove((void *)old,regs.regions,sizeof(mem_region)*regs.tag_count);
+		regs.regions=reinterpret_cast<mem_region *>(old);
+		wksp_begin((void *)old+sizeof(mem_region)*regs.tag_count);
 	}
 	mem_region *get_phys_mem_region(int index) {
 		if(index<regs.tag_count) {

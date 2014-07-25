@@ -55,7 +55,7 @@ namespace hal {
 			asm("hlt");
 		}
 	}
-	void add_special_mem_arch() {
+	void add_phys_mem_arch() {
 		//i dont know anything
 	}
 }

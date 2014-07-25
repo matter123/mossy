@@ -1,5 +1,5 @@
 /*
-    Copyright 2013 Matthew Fosdick
+    Copyright 2013-2014 Matthew Fosdick
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -23,9 +23,13 @@ namespace hal {
 
 	void init_vendor();
 
-	void add_special_mem_arch();
+	void add_phys_mem_arch();
 
-	void add_special_mem_vendor();
+	void add_phys_mem_vendor();
+
+	void add_virt_mem_arch();
+
+	void add_virt_mem_vendor();
 
 	uintptr_t get_page_offset_addr();
 

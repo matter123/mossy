@@ -22,7 +22,7 @@
 #include <hal/hal.h>
 #include <hal/console.h>
 #include <string.h>
-#include "../../panic.h"
+#include <panic.h>
 namespace x64 {
 	static bool pre_init_handle(int level, cpu_state *s);
 	static bool handle(int level, cpu_state *s);

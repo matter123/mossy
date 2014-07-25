@@ -22,7 +22,7 @@
 #include <hal/hal.h>
 #include <hal/console.h>
 #include <string.h>
-#include "../../panic.h"
+#include <panic.h>
 extern "C" uint32_t pd;
 namespace x86 {
 	static bool pre_init_handle(int level, cpu_state *s);

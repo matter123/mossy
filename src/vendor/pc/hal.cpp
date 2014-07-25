@@ -29,7 +29,7 @@ namespace hal {
 	//a is boot info, b is videobuffer
 	static mem_type a;
 	static mem_type b;
-	void add_special_mem_vendor() {
+	void add_phys_mem_vendor() {
 		add_phys_region(3);
 		a.bootinfo=true;
 		a.resv_mem=true;
@@ -43,7 +43,7 @@ namespace hal {
 		if((ebda_s<<4)<0xA0000) {
 			add_phys_region(ebda_s<<4,0xA0000-(ebda_s<<4),a);
 		} else {
-			//else add a blank to make mmap.cpp happy
+			//else add a blank to make pmmap.cpp happy
 			//will get removed
 			add_phys_region(0,0,a);
 		}

@@ -20,6 +20,7 @@
 #include <x86/idt.h>
 #include <hal/console.h>
 #include <x86_64/pfa.h>
+#include <hal/mmap.h>
 #include "paging.h"
 
 namespace hal {
@@ -54,8 +55,16 @@ namespace hal {
 			asm("hlt");
 		}
 	}
-
-	void add_special_mem_arch() {
+	static mem_type types[3];
+	void add_virt_mem_arch() {
+		types[0].userspace=true;
+		types[1].paging_struct=true;
+		types[1].heap=true;
+		add_virt_region(3);
+		add_virt_region(0x0,0xBFFFFFFF,types[0]);
+		add_virt_region(0xFFC00000,0x3FFFFF,types[1]);
+	}
+	void add_phys_mem_arch() {
 		//i dont know anything
 	}
 }
