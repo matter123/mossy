@@ -133,7 +133,7 @@ flush:
 
 	mov edi, pt
 	xor ecx, ecx
-	mov esi, 500
+	mov esi, 1024
 
 	;id map 4mb, in this setup first 12 bits of KERNEL_LMA and KERNEL_VMA need to be zero
 	;KERNEL_VMA must also be the offest from KERNEL_LMA

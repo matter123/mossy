@@ -14,14 +14,8 @@
     limitations under the License.
 */
 #pragma once
-namespace std {
-	template<class T>
-	inline T min(T a,T b) {
-		return (a<b?a:b);
-	}
-
-	template<class T>
-	inline T max(T a,T b) {
-		return (a<b?b:a);
-	}
+#include <arch.h>
+namespace kernel {
+	void add_task(cpu_state *s);
+	cpu_state *create_task(uintptr_t stack, void *func,bool kernel);
 }

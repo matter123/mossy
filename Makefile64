@@ -19,14 +19,9 @@ all: build runem
 
 build: clean check $(COBJECTS) $(CXXOBJECTS) $(SOBJECTS) build_libs link mkiso
 
-
-WFLAGSON=-Wall -Wextra -Werror=return-type -Wshadow -Wframe-larger-than=16384 -Wdeprecated \
--Wredundant-decls
-WFLAGSOFF=-Wno-unused-parameter -Wno-sign-compare -Wno-pointer-arith
 FFLAGS=-fno-omit-frame-pointer -ffreestanding -fno-stack-protector -fno-common
 DFLAGS=-DARCH=_x64 -DVENDOR=_PC -DDEBUG
 MFLAGS=-mcmodel=kernel -mno-red-zone -mno-mmx -mno-sse -mno-sse2 -mno-sse3 -mno-3dnow
-IFLAGS=-Isrc/stdlib/include -Ilibs/clib/include -Isrc/hal -Isrc/arch -Isrc/vendor
 CFLAGS=-O3 -std=c99 $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS) $(MFLAGS) $(IFLAGS)
 CXXFLAGS=-O3 -std=c++1y $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS) $(MFLAGS) $(IFLAGS) -fno-rtti \
 -fno-exceptions -fdiagnostics-color=auto

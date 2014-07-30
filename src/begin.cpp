@@ -22,28 +22,43 @@
 #include <build_info.h>
 #include <time.h>
 #include <text_color.h>
+#include <sys/kstacks.h>
+#include <sys/tasks.h>
+#include <sys/heap.h>
 
 namespace kernel {
+	void B() {
+		while(1) {
+			static int let=5;
+			hal::cout<<std::TC::RED<<(char)(33+let++);
+			let%=93;
+		}
+	}
 	extern "C"
 	void init_exec(hal::multiboot_header *mboot) {
 		//hal::magic_break();
 		hal::init_mboot(mboot);
 		hal::init_arch();
 		hal::init_vendor();
-		hal::enable_interrupts();
+		hal::print_boot_msg("Init kstacks",init_kstacks(),true);
+		hal::print_boot_msg("Init heap",heap_init(),true);
 		time_t bt=BUILD_UNIX_TIME;
 		hal::cout<<"Built on: "<<std::TC::GREEN<<asctime(gmtime(&bt))<<std::TC::WHITE
 		         <<" By: "     <<std::TC::GREEN<<BUILD_USERNAME      <<std::TC::WHITE
 		         <<" From: "   <<std::TC::GREEN<<BUILD_GIT_BRANCH    <<std::TC::WHITE<<hal::endl;
-		//hal::halt(false);
-		hal::map_free_to_virt_cur(0x700000, {true,false,true});
-		hal::map_phys_to_virt_cur(0x800000,hal::phys_from_virt(0x700000), {true,false,true});
-
-
-		strcpy((char *)0x700000,"APPLE");
-		hal::cout<<(char *)0x800000;
+		hal::enable_interrupts();
+		void *a=malloc(8);
+		void *b=malloc(8);
+		free(a);
+		free(b);
+		void *c=malloc(16);
+		hal::cout<<hal::address<<a<<" "<<b<<" "<<c<<hal::endl;
+		hal::halt(true);
+		add_task(create_task(get_new_stack(),(void *)&B,true));
 		while(1) {
-			//hal::cout<<"A";
+			static int let=0;
+			hal::cout<<std::TC::GREEN<<(char)(33+let++);
+			let%=93;
 		}
 		asm volatile(
 		    " movl $0, %eax \

@@ -1,5 +1,5 @@
 /*
-    Copyright 2013 Matthew Fosdick
+    Copyright 2013-2014 Matthew Fosdick
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -35,6 +35,10 @@ namespace hal {
 		res|=(this->kernel<<7);
 		res|=(this->resv_mem<<8);
 		res|=(this->avil<<9);
+		res|=(this->heap<<10);
+		res|=(this->userspace<<11);
+		res|=(this->kthread_stacks<<12);
+		res|=(this->paging_struct<<13);
 		return res;
 	}
 	mem_type::mem_type() {
@@ -50,6 +54,10 @@ namespace hal {
 		this->kernel=other.kernel;
 		this->resv_mem=other.resv_mem;
 		this->avil=other.avil;
+		this->heap=other.heap;
+		this->userspace=other.userspace;
+		this->kthread_stacks=other.kthread_stacks;
+		this->paging_struct=other.paging_struct;
 		this->resv_n=0;
 		this->resv_2=0;
 		this->resv_1=0;
@@ -87,6 +95,18 @@ namespace hal {
 		}
 		if(this->avil^other.avil) {
 			return this->avil;
+		}
+		if(this->paging_struct^other.paging_struct) {
+			return this->paging_struct;
+		}
+		if(this->kthread_stacks^other.kthread_stacks) {
+			return this->kthread_stacks;
+		}
+		if(this->heap^other.heap) {
+			return this->heap;
+		}
+		if(this->userspace^other.userspace) {
+			return this->userspace;
 		}
 		return false;
 	}

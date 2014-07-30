@@ -18,8 +18,6 @@
 #include <string.h>
 #include <hal/hal.h>
 #include <hal/mmap.h>
-#include <hal/console.h>
-#include <hal/multiboot.h>
 #include <hal/workspace.h>
 extern "C" uintptr_t k_start;
 extern "C" uintptr_t k_data_end;
@@ -27,18 +25,6 @@ namespace hal {
 	static mem_regs regs;
 	static void fix_mmap();
 	bool init_virt_mem() {
-		multiboot_mmap *mmap_tag=NULL;
-		//get find mmap_tag
-		for(size_t s=0; s<get_tag_count(); s++) {
-			if(get_tag(s)->type == 6) {
-				mmap_tag=reinterpret_cast<multiboot_mmap *>(get_tag(s));
-				break;
-			}
-		}
-
-		if(!mmap_tag) {
-			return false;
-		}
 		regs.tag_count=1;
 		regs.regions=reinterpret_cast<mem_region *>(
 		                 w_malloc(sizeof(mem_region) * regs.tag_count, 16));
@@ -83,6 +69,7 @@ namespace hal {
 	static void fix_mmap() {
 		uintptr_t old=reinterpret_cast<uintptr_t>(regs.regions);
 		regs=*remove_invalid(split(sort(remove_invalid(&regs))));
+		//regs=*remove_invalid(&regs);
 		memmove((void *)old,regs.regions,sizeof(mem_region)*regs.tag_count);
 		regs.regions=reinterpret_cast<mem_region *>(old);
 		wksp_begin((void *)old+sizeof(mem_region)*regs.tag_count);

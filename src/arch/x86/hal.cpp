@@ -28,6 +28,7 @@ namespace hal {
 		print_boot_msg("Init IDT",init_idt(),true);
 		print_boot_msg("Init pre-paging",x86::init_paging(),true);
 		print_boot_msg("Init PFA",x86_64::init_pfa(),true);
+		print_boot_msg("Init VMMAP",init_virt_mem(),true);
 		if(!x86::paging_ready()) {
 			print_boot_msg("Init paging",x86::init_paging(),true);
 		}
@@ -55,14 +56,19 @@ namespace hal {
 			asm("hlt");
 		}
 	}
-	static mem_type types[3];
+	static mem_type types[4];
 	void add_virt_mem_arch() {
 		types[0].userspace=true;
 		types[1].paging_struct=true;
-		types[1].heap=true;
-		add_virt_region(3);
+		types[2].heap=true;
+		types[3].kthread_stacks=true;
+		add_virt_region(4);
 		add_virt_region(0x0,0xBFFFFFFF,types[0]);
 		add_virt_region(0xFFC00000,0x3FFFFF,types[1]);
+		uint32_t pfa_end=(x86_64::get_end()&(0xFFF==0)?x86_64::get_end():(x86_64::get_end()&~
+		                  (0xFFF))+0x1000);
+		add_virt_region(pfa_end,0x7FFFFFF,types[3]);
+		add_virt_region(pfa_end+0x8000000,0xFFBFFFFF-(pfa_end+0x8000000),types[2]);
 	}
 	void add_phys_mem_arch() {
 		//i dont know anything

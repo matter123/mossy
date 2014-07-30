@@ -1,5 +1,5 @@
 /*
-    Copyright 2013 Matthew Fosdick
+    Copyright 2013-2014 Matthew Fosdick
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -55,9 +55,4 @@ extern "C" {
 
 	//int rand(); //NO-IMP
 	//void srand(unsigned int seed); //NO-IMP
-
-	//void *calloc(size_t num, size_t size); //NO-IMP
-	//void free(void *ptr); //NO-IMP
-	//void *malloc(size_t size); //NO-IMP
-	//void *realloc(void *ptr,size_t size); //NO-IMP
 }

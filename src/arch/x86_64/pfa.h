@@ -20,6 +20,7 @@
 namespace x86_64 {
 	bool init_pfa();
 	uintptr_t get_free_page();
+	uintptr_t get_end();
 	void add_free_page(uintptr_t page);
 }
 #endif

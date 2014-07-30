@@ -91,6 +91,7 @@ exc_stub:
 	;schedule new kernel task
 	push esp
 	call _ZN3x868scheduleEP9cpu_state
+	add esp , 4
 	mov esp, eax
 	;clean up stack
 	pop_x86

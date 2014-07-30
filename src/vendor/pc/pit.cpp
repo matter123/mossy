@@ -1,5 +1,5 @@
 /*
-    Copyright 2013 Matthew Fosdick
+    Copyright 2013-2014 Matthew Fosdick
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ namespace hal {
 		outb(COMMAND, 0x36);
 		outb(CHAN_BP+0,(uint8_t)(div&0xFF));
 		outb(CHAN_BP+0,(uint8_t)((div>>8)&0xFF));
-		pc::use_irq(0,&tick,false);
+		pc::use_irq(0,&tick,true);
 
 		return true;
 	}

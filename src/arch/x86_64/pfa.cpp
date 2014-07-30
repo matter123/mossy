@@ -25,7 +25,7 @@
 extern "C" uintptr_t k_data_end;
 namespace x86_64 {
 	static uintptr_t *stack=reinterpret_cast<uintptr_t *>(&k_data_end);
-	static uintptr_t *end;
+	static uintptr_t *end=0;
 	static uintptr_t count=0;
 	bool init_pfa() {
 		hal::mem_type avil;
@@ -63,7 +63,7 @@ namespace x86_64 {
 		stack++;
 		*stack=page;
 		count++;
-		end=max(end,stack);
+		end=std::max(end,stack);
 	}
 	uintptr_t get_end() {
 		return reinterpret_cast<uintptr_t>(end);

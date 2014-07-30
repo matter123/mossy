@@ -1,5 +1,5 @@
 /*
-    Copyright 2013 Matthew Fosdick
+    Copyright 2014 Matthew Fosdick
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@
 #ifdef X86
 namespace x86 {
 	cpu_state *schedule(cpu_state *s);
-	void add_task(cpu_state s);
+	void add_task(cpu_state *s);
+	cpu_state *create_task(uintptr_t stack, void *func,bool kernel);
 }
 #endif

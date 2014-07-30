@@ -14,16 +14,17 @@
     limitations under the License.
 */
 #include <arch.h>
-#ifdef X86
+#ifdef X64
 #include <stdlib.h>
 #include <string.h>
-#include <hal/hal.h>
 #include <hal/console.h>
-namespace x86 {
+#include <hal/hal.h>
+namespace x64 {
 	static cpu_state *tasks[128];
 	static uint next=1;
 	static int last=-1;
 	cpu_state *schedule(cpu_state *s) {
+		//hal::magic_break();
 		if(last==-1) {
 			last=0;
 		}
@@ -52,17 +53,11 @@ namespace x86 {
 		stack-=sizeof(cpu_state);
 		cpu_state *s=reinterpret_cast<cpu_state *>(stack);
 		memset(s,0,sizeof(cpu_state));
-		s->eip=reinterpret_cast<uintreg_t>(func);
-		s->eflags|=(1<<9);
-		s->cs=(kernel?0x8:0x18);
-		s->ds=(kernel?0x10:0x20);
-		s->es=(kernel?0x10:0x20);
-		s->fs=(kernel?0x10:0x20);
-		s->gs=(kernel?0x10:0x20);
-		if(!kernel) {
-			s->esp=stack;
-			s->ss=0x20;
-		}
+		s->rip=reinterpret_cast<uintreg_t>(func);
+		s->rsp=stack+=sizeof(cpu_state);
+		s->cs=(kernel?0x8:0x0);//0x0 is not a vlid GDT entry
+		s->ss=0x10;
+		s->rflags|=(1<<9);
 		return s;
 	}
 }

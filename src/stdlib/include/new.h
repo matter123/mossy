@@ -14,14 +14,8 @@
     limitations under the License.
 */
 #pragma once
-namespace std {
-	template<class T>
-	inline T min(T a,T b) {
-		return (a<b?a:b);
-	}
 
-	template<class T>
-	inline T max(T a,T b) {
-		return (a<b?b:a);
-	}
-}
+inline void *operator new(size_t, void *p)     throw() { return p; }
+inline void *operator new[](size_t, void *p)   throw() { return p; }
+inline void  operator delete  (void *, void *) throw() { };
+inline void  operator delete[](void *, void *) throw() { };

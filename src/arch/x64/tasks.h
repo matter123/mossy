@@ -5,7 +5,7 @@
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+    http://www.apache.org/licenses/LICENSE-2.0
 
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,14 +14,11 @@
     limitations under the License.
 */
 #pragma once
-namespace std {
-	template<class T>
-	inline T min(T a,T b) {
-		return (a<b?a:b);
-	}
-
-	template<class T>
-	inline T max(T a,T b) {
-		return (a<b?b:a);
-	}
+#include <arch.h>
+#ifdef X64
+namespace x64 {
+	cpu_state *schedule(cpu_state *s);
+	void add_task(cpu_state *s);
+	cpu_state *create_task(uintptr_t stack, void *func,bool kernel);
 }
+#endif

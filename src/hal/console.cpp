@@ -1,5 +1,5 @@
 /*
-    Copyright 2013 Matthew Fosdick
+    Copyright 2013-2014 Matthew Fosdick
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -141,6 +141,12 @@ namespace hal {
 
 	ostream::ostream(ConsoleColor color) {
 		c=color;
+	}
+	ostream &ostream::operator<<(char s) {
+		static char buf[2]= {0,0};
+		buf[0]=s;
+		print(buf);
+		return *this;
 	}
 	ostream &ostream::operator<<(const char *s) {
 		print(s);

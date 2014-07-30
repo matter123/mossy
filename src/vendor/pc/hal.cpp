@@ -24,7 +24,7 @@
 namespace hal {
 	void init_vendor() {
 		print_boot_msg("Init PIC",pc::init_pic(),true);
-		print_boot_msg("Init PIT",hal::timer_init(20),true);
+		print_boot_msg("Init PIT",hal::timer_init(2),true);
 	}
 	//a is boot info, b is videobuffer
 	static mem_type a;
@@ -52,6 +52,9 @@ namespace hal {
 			hal::cout<<"OOPS";
 			halt(true);
 		}
+	}
+	void add_virt_mem_vendor() {
+		//nadda
 	}
 }
 #endif

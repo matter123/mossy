@@ -17,6 +17,7 @@
 #ifdef X64
 #include <stdint.h>
 #include <hal/multiboot.h>
+#include <hal/mmap.h>
 #include <x64/idt.h>
 #include <x86_64/pfa.h>
 #include <x64/paging.h>
@@ -28,6 +29,7 @@ namespace hal {
 		print_boot_msg("Init IDT",init_idt(),true);
 		print_boot_msg("Init pre-paging",x64::init_paging(),true);
 		print_boot_msg("Init PFA",x86_64::init_pfa(),true);
+		print_boot_msg("Init VMMAP",init_virt_mem(),true);
 		if(!x64::paging_ready()) {
 			print_boot_msg("Init paging",x64::init_paging(),true);
 		}
@@ -57,6 +59,18 @@ namespace hal {
 	}
 	void add_phys_mem_arch() {
 		//i dont know anything
+	}
+	static mem_type types[4];
+	void add_virt_mem_arch() {
+		types[0].userspace=true;
+		types[1].paging_struct=true;
+		types[2].heap=true;
+		types[3].kthread_stacks=true;
+		add_virt_region(4);
+		add_virt_region(0x0,0x7FFFFFFFFFFF,types[0]);
+		add_virt_region(0xFFFFFF0000000000,0x7FFFFFFFFF,types[1]);
+		add_virt_region(0xFFFFFE8000000000,0x7FFFFFFFFF,types[2]);
+		add_virt_region(0xFFFFFE0000000000,0x0FFFFFFFFF,types[3]);
 	}
 }
 uint8_t get_reg_count() {
