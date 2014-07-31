@@ -1,5 +1,5 @@
 /*
-    Copyright 2013 Matthew Fosdick
+    Copyright 2013-2014 Matthew Fosdick
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -43,10 +43,10 @@ unsigned long long stroull(const char *str, char **end_ptr); //NO-IMP
 int rand(); //NO-IMP
 void srand(unsigned int seed); //NO-IMP
 
-void *calloc(size_t num, size_t size); //NO-IMP
-void free(void *ptr); //NO-IMP
-void *malloc(size_t size); //NO-IMP
-void *realloc(void *ptr,size_t size); //NO-IMP
+void *calloc(size_t num, size_t size);
+void free(void *ptr);
+void *malloc(size_t size);
+void *realloc(void *ptr,size_t size);
 #ifdef __cplusplus
 }
 #endif

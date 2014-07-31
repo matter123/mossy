@@ -18,7 +18,6 @@
 #include <string.h>
 #include <arch.h>
 #include <hal/mmap.h>
-#include <hal/console.h>
 namespace kernel {
 	struct HEAD {
 		uint      magic:24;
@@ -82,8 +81,9 @@ namespace kernel {
 		}
 		return true;
 	}
-	void split(HEAD *head, size_t new_size);
-	void dumb_merge(HEAD *left, HEAD *right);
+	static void split(HEAD *head, size_t new_size);
+	static void dumb_merge(HEAD *left, HEAD *right);
+	static void scoot(HEAD *prev, size_t prev_size);
 	extern "C"
 	void *malloc(size_t size) {
 		if(size==0) {
@@ -118,9 +118,54 @@ namespace kernel {
 			head=head->prev;
 		}
 		while(head->next&&head->next->free) {
-			dumb_merge(head,head->next); void dumb_merge(HEAD *left, HEAD *right);
+			dumb_merge(head,head->next);
 		}
-
+	}
+	extern "C"
+	void *calloc(size_t num, size_t size) {
+		void *addr=malloc(num*size);
+		memset(addr,0,num*size);
+		return addr;
+	}
+	extern "C"
+	void *realloc(void *ptr,size_t size) {
+		if(ptr==NULL) {
+			return malloc(size);
+		}
+		HEAD *head=(HEAD *)(ptr-sizeof(HEAD));
+		if(head->magic!=0xC0FFEE) {
+			return NULL;
+		}
+		if(head->free) {
+			return NULL;
+		}
+		if(size<head->len) {
+			if(head->len>(size+sizeof(HEAD))) {
+				split(head,size);
+				return ptr;
+			} else {
+				if(head->next&&head->next->free) {
+					scoot(head,size);
+					return ptr;
+				}
+				return ptr;
+			}
+		} else if(size>head->len) {
+			size_t os=head->len;
+			while(head->next&&head->next->free) {
+				dumb_merge(head,head->next);
+			}
+			if(size<head->len) {
+				//cheap trick to not repeat the shrinking logic above
+				return realloc(head,size);
+			} else {
+				void *addr=malloc(size);
+				memcpy(addr,ptr,os);
+				free(head);
+				return addr;
+			}
+		}
+		return ptr;
 	}
 	void split(HEAD *head, size_t new_size) {
 		HEAD *newh=(HEAD *)(((void *)head)+sizeof(HEAD)+new_size);
@@ -143,4 +188,33 @@ namespace kernel {
 			left->next->prev=left;
 		}
 	}
+	void scoot(HEAD *head, size_t new_size) {
+		HEAD *newh=(HEAD *)(((void *)head)+sizeof(HEAD)+new_size);
+		if(head->next) {
+			memmove(newh,head->next,sizeof(HEAD));
+			if(newh->next) {
+				newh->next->prev=newh;
+			}
+			head->next=newh;
+		}
+	}
+}
+extern "C"
+void *operator new(size_t size) {
+	return kernel::malloc(size);
+}
+
+extern "C"
+void *operator new[](size_t size) {
+	return kernel::malloc(size);
+}
+
+extern "C"
+void operator delete(void *p) {
+	kernel::free(p);
+}
+
+extern "C"
+void operator delete[](void *p) {
+	kernel::free(p);
 }

@@ -27,13 +27,22 @@
 #include <sys/heap.h>
 
 namespace kernel {
-	void B() {
-		while(1) {
-			static int let=5;
-			hal::cout<<std::TC::RED<<(char)(33+let++);
-			let%=93;
-		}
-	}
+	class test {
+			int getIndex() {
+				static int i=0;
+				return i++;
+			}
+			int cindex;
+		public:
+			test() {
+				cindex=getIndex();
+				hal::cout<<"Created a new test at: "<<hal::address<<this<<hal::endl;
+				hal::cout<<"\tindex: "<<hal::dec<<cindex<<hal::endl;
+			}
+			~test() {
+				hal::cout<<"destroying: "<<hal::dec<<cindex<<hal::endl;
+			}
+	};
 	extern "C"
 	void init_exec(hal::multiboot_header *mboot) {
 		//hal::magic_break();
@@ -47,26 +56,14 @@ namespace kernel {
 		         <<" By: "     <<std::TC::GREEN<<BUILD_USERNAME      <<std::TC::WHITE
 		         <<" From: "   <<std::TC::GREEN<<BUILD_GIT_BRANCH    <<std::TC::WHITE<<hal::endl;
 		hal::enable_interrupts();
-		void *a=malloc(8);
-		void *b=malloc(8);
-		free(a);
-		free(b);
-		void *c=malloc(16);
-		hal::cout<<hal::address<<a<<" "<<b<<" "<<c<<hal::endl;
+		test *t=new test();
+		test *t2=new test();
+		delete t2;
+		t2=new test();
+		delete t;
+		t=new test();
+		delete t2;
+		delete t;
 		hal::halt(true);
-		add_task(create_task(get_new_stack(),(void *)&B,true));
-		while(1) {
-			static int let=0;
-			hal::cout<<std::TC::GREEN<<(char)(33+let++);
-			let%=93;
-		}
-		asm volatile(
-		    " movl $0, %eax \
-		    \nmovl $1, %ebx \
-		    \nmovl $2, %ecx \
-		    \nmovl $3, %edx \
-		    \nmovl $4, %esi \
-		    \nmovl $5, %edi \
-		    \nint $3");
 	}
 }
