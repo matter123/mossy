@@ -25,24 +25,22 @@
 #include <sys/kstacks.h>
 #include <sys/tasks.h>
 #include <sys/heap.h>
+#include <sys/synchronization.h>
 
 namespace kernel {
-	class test {
-			int getIndex() {
-				static int i=0;
-				return i++;
+	spinlock *s;
+	void func() {
+		char c='A';
+		while(true) {
+			uintptr_t flag=s->acquire();
+			hal::cout<<std::TC::GREEN<<c;
+			c++;
+			if(c>'Z') {
+				c='A';
 			}
-			int cindex;
-		public:
-			test() {
-				cindex=getIndex();
-				hal::cout<<"Created a new test at: "<<hal::address<<this<<hal::endl;
-				hal::cout<<"\tindex: "<<hal::dec<<cindex<<hal::endl;
-			}
-			~test() {
-				hal::cout<<"destroying: "<<hal::dec<<cindex<<hal::endl;
-			}
-	};
+			s->release(flag);
+		}
+	}
 	extern "C"
 	void init_exec(hal::multiboot_header *mboot) {
 		//hal::magic_break();
@@ -56,14 +54,17 @@ namespace kernel {
 		         <<" By: "     <<std::TC::GREEN<<BUILD_USERNAME      <<std::TC::WHITE
 		         <<" From: "   <<std::TC::GREEN<<BUILD_GIT_BRANCH    <<std::TC::WHITE<<hal::endl;
 		hal::enable_interrupts();
-		test *t=new test();
-		test *t2=new test();
-		delete t2;
-		t2=new test();
-		delete t;
-		t=new test();
-		delete t2;
-		delete t;
-		hal::halt(true);
+		s=new spinlock();
+		add_task(create_task(get_new_stack(),(void *)func,true));
+		char c='A';
+		while(true) {
+			uintptr_t flag=s->acquire();
+			hal::cout<<std::TC::RED<<c;
+			c++;
+			if(c>'Z') {
+				c='A';
+			}
+			s->release(flag);
+		}
 	}
 }

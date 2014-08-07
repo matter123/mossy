@@ -1,5 +1,5 @@
 /*
-    Copyright 2013 Matthew Fosdick
+    Copyright 2013-2014 Matthew Fosdick
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ namespace hal {
 	struct idt_range {
 		uint16_t start;
 		uint16_t len;
-	} FULL;
+	};
 
 	idt_range reserve_range(uint16_t count, uint16_t min_count, bool aligned);
 
