@@ -326,6 +326,9 @@ int mbsncmp(const char *str1, const char *str2, size_t num) {
 		if(len>num) {
 			return 0;
 		}
+		if(str1=='\0'||str2=='\0') {
+			break;
+		}
 		if(is_char_equal(str1,str2)) {
 			str1=next_char(str1);
 			str2=next_char(str2);

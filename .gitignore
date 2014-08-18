@@ -19,3 +19,4 @@ kernelARM.sym
 *.o.ARM.RPI
 *.o.ARM.STM
 *.a
+docs/html

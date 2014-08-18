@@ -17,6 +17,12 @@
 #pragma once
 #include <stddef.h>
 #include <stdint.h>
+/**
+ * @file
+ * @brief C style string functions
+ * @details most string functions in <string.h>
+ * along with UTF-8 variants and safe copy functions
+ */
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -27,48 +33,102 @@ extern "C" {
 // Returns 'dest'                     //
 // Created on 2014-06-13              //
 ////////////////////////////////////////
+/**
+ * @brief copies memory
+ * @details using a left-to-right copy,
+ * copy \a num bytes from \a src to \a
+ * dest
+ * 
+ * @param dest pointer to a block of memory at least
+ * \a num bytes big, MUST NOT overlap with \a src
+ * @param src pointer to a block of memory at least
+ * \a num bytes big, MUST NOT overlap with \a dest
+ * @param num number of bytes to copy from \a src to \a dest
+ * 
+ * @return a pointer equal to \a dest
+ * @date created on 2014-06-13
+ * @sa memmove
+ */
 void *memcpy(void *dest, const void *src, size_t num);
 
-////////////////////////////////////////
-// Copies 'num' bytes from 'src' to   //
-//   'dest', 'src' and 'dest' may     //
-//   overlap                          //
-// Returns 'dest'                     //
-// Created on 2014-06-13              //
-////////////////////////////////////////
+/**
+ * @brief copies potentially overlapping memory
+ * @details using a left-to-right or right-to-left copy,
+ * copy \a num bytes from \a src to \a
+ * dest safely
+ * 
+ * @param dest pointer to a block of memory at least
+ * \a num bytes big, MAY overlap with \a src
+ * @param src pointer to a block of memory at least
+ * \a num bytes big, MAY overlap with \a dest
+ * @param num number of bytes to copy from \a src to \a dest
+ * 
+ * @return pointer equal to \a dest
+ * @date created on 2014-06-13
+ * @sa memcpy
+ */
 void *memmove(void *dest, const void *src, size_t num);
 
-////////////////////////////////////////
-// Copies chars from 'src' to 'dest'  //
-//   stopping when a null byte is     //
-//   found and appends a null byte to //
-//   the end of 'dest'                //
-// Returns 'dest'                     //
-// Created on 2014-06-13              //
-////////////////////////////////////////
+/**
+ * @brief copies chars from \a src to \a dest
+ * @details copies chars from \a src to \a dest
+ * stopping the copy when a NULL byte is found
+ * 
+ * @param dest pointer to buffer of memory
+ * @param src pointer to a string of UTF-8 chars
+ * 
+ * @return pointer equal to \a dest
+ * @date created on 2014-06-13
+ * @sa strncpy
+ * @sa strlcpy
+ * @sa mbsncpy
+ */
 char *strcpy(char *dest, const char *src);
 
-////////////////////////////////////////
-// Copies 'num' bytes from 'src' to   //
-//   'dest' if a null byte is found   //
-//   in 'src' the rest of 'dest' is   //
-//   appended with null bytes         //
-// Returns 'dest'                     //
-// Created on 2014-06-13              //
-////////////////////////////////////////
+/**
+ * @brief copies \a num bytes from \a src to \a dest
+ * @details copies \a num bytes from \a src to \a dest
+ * if a NULL byte is found when copying, then the rest
+ * of \dest is filled with NULL bytes
+ * 
+ * @note this function DOES NOT guarantee that \a dest
+ * will end with a NULL byte
+ * 
+ * @param dest pointer to a buf of memory at least \a num bytes big
+ * @param src pointer to a string of UTF-8 chars
+ * @param num number of bytes to fill \a dest with
+ * 
+ * @return pointer equal to \a dest
+ * @date created on 2014-06-13
+ * @sa strcpy
+ * @sa strlcpy
+ * @sa mbsncpy
+ */
 char *strncpy(char *dest, const char *src, size_t num);
 
-////////////////////////////////////////
-// Copies 'num' bytes from 'src' to   //
-//   'dest' if a null byte is found   //
-//   in 'src' the rest of 'dest' is   //
-//   appended with null bytes, does   //
-//   not break apart multi-byte chars //
-//   ensures that the string ends in  //
-//   a null byte                      //
-// Returns 'dest'                     //
-// Created on 2014-06-13              //
-////////////////////////////////////////
+/**
+ * @brief copies upto \a num bytes from \a src to \a dest
+ * @details copies upto \a num bytes from \a src to \dest
+ * if a NULL byte is found when coping, then the rest of
+ * \a dest will be filled with NULL bytes. If the number
+ * of bytes remaining to copy is less then the length of
+ * the current char plus 1, then the current char is not
+ * copied and the rest of \a dest is filled with NULL bytes
+ * 
+ * @note this function DOES guarantee that \a dest
+ * will end with a NULL byte    
+ * 
+ * @param dest pointer to a block of memory at least \a num
+ * bytes big
+ * @param src pointer to a string of UTF-8 chars
+ * @param num number of bytes to fill \a dest with
+ * 
+ * @return pointer equal to \a dest
+ * @date created on 2014-06-13
+ * @sa strcpy
+ * @sa strncpy
+ * @sa mbsncpy
+ */
 char *strlcpy(char *dest, const char *src, size_t num);
 
 ////////////////////////////////////////
