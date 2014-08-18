@@ -86,6 +86,9 @@ namespace kernel {
 	static void scoot(HEAD *prev, size_t prev_size);
 	extern "C"
 	void *malloc(size_t size) {
+		if(size%sizeof(uintptr_t)) {
+			size+=sizeof(uintptr_t)-(size%sizeof(uintptr_t));
+		}
 		if(size==0) {
 			return NULL;
 		}
@@ -138,6 +141,13 @@ namespace kernel {
 		}
 		if(head->free) {
 			return NULL;
+		}
+		if(size==0) {
+			free(ptr);
+			return NULL;
+		}
+		if(size%sizeof(uintptr_t)) {
+			size+=sizeof(uintptr_t)-(size%sizeof(uintptr_t));
 		}
 		if(size<head->len) {
 			if(head->len>(size+sizeof(HEAD))) {
