@@ -13,23 +13,34 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 */
-#pragma once
 #include <arch.h>
-namespace kernel {
-	struct thread_info {
-		uint32_t PID;
-		uint8_t  priority;
-		bool     active:1;
-		bool     running:1;
-		bool     sleeping:1;
-		bool     waiting:1;
-		bool     has_user_stack:1;
-		int      resv_state:3;
-		uint16_t sleep_ticks;
-		void     *wait_on;
-		void     *user_stack;
-		::cpu_state *cpu_state;
+#ifdef X86
+#include <stdint.h>
+#include <stdlib.h>
+
+extern "C" uint32_t get_ebp();
+namespace hal {
+	struct stack_frame {
+		uint32_t ebp;
+		uint32_t eip;
 	};
-	void add_task(thread_info *s);
-	thread_info *create_task(uintptr_t stack, void *func,bool kernel, uint32_t PID);
+
+	uint32_t get_your_ebp(uint32_t junk) {
+		uint32_t *ebp=&junk-2;
+		return ebp[0];
+	}
+
+	uintptr_t get_function(stack_frame *s) {
+		return s->eip;
+	}
+	stack_frame *get_next_frame(stack_frame *s) {
+		if(s->eip) {
+			return reinterpret_cast<stack_frame *>(s->ebp);
+		}
+		return NULL;
+	}
+	stack_frame *get_current_frame() {
+		return reinterpret_cast<stack_frame *>(get_ebp());
+	}
 }
+#endif

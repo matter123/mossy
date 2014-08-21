@@ -17,30 +17,26 @@
 #include <hal/multiboot.h>
 #include <hal/hal.h>
 #include <hal/console.h>
-#include <hal/paging.h>
-#include <string.h>
 #include <build_info.h>
 #include <time.h>
 #include <text_color.h>
 #include <sys/kstacks.h>
-#include <sys/tasks.h>
 #include <sys/heap.h>
+#include <sys/tasks.h>
+#include <sys/scheduler.h>
 #include <sys/synchronization.h>
 
 namespace kernel {
-	spinlock *s;
+
+	mutex *m;
 	void func() {
-		char c='A';
 		while(true) {
-			uintptr_t flag=s->acquire();
-			hal::cout<<std::TC::GREEN<<c;
-			c++;
-			if(c>'Z') {
-				c='A';
-			}
-			s->release(flag);
+			m->lock();
+			hal::cout<<std::TC::RED<<'B';
+			m->unlock();
 		}
 	}
+	extern "C" uintptr_t sys_stack;
 	extern "C"
 	void init_exec(hal::multiboot_header *mboot) {
 		//hal::magic_break();
@@ -49,22 +45,19 @@ namespace kernel {
 		hal::init_vendor();
 		hal::print_boot_msg("Init kstacks",init_kstacks(),true);
 		hal::print_boot_msg("Init heap",heap_init(),true);
+		hal::print_boot_msg("Init scheduler",init_scheduler((thread_info *)sys_stack),true);
 		time_t bt=BUILD_UNIX_TIME;
 		hal::cout<<"Built on: "<<std::TC::GREEN<<asctime(gmtime(&bt))<<std::TC::WHITE
 		         <<" By: "     <<std::TC::GREEN<<BUILD_USERNAME      <<std::TC::WHITE
 		         <<" From: "   <<std::TC::GREEN<<BUILD_GIT_BRANCH    <<std::TC::WHITE<<hal::endl;
 		hal::enable_interrupts();
-		s=new spinlock();
-		add_task(create_task(get_new_stack(),(void *)func,true));
-		char c='A';
+		m=new mutex();
+		add_task(create_task(get_new_stack(),(void *)func,true,0));
+		hal::magic_break();
 		while(true) {
-			uintptr_t flag=s->acquire();
-			hal::cout<<std::TC::RED<<c;
-			c++;
-			if(c>'Z') {
-				c='A';
-			}
-			s->release(flag);
+			m->lock();
+			hal::cout<<std::TC::GREEN<<'A';
+			m->unlock();
 		}
 	}
 }

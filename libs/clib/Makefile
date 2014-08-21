@@ -11,13 +11,13 @@ build: $(COBJECTS) $(CXXOBJECTS) mklib
 .c.o:
 	@echo Compiling $<
 	@cd ../.. && $(CC) $(CFLAGS) -fno-tree-loop-distribute-patterns \
-	-pedantic -o libs/clib/$@.$(ARCH) -c libs/clib/$<
+	-pedantic -o libs/clib/$@.$(OBJ_SUFFIX) -c libs/clib/$<
 
 .cpp.o:
 	@echo Compiling $<
 	@cd ../.. && $(CXX) $(CXXFLAGS) -fno-tree-loop-distribute-patterns \
-	-pedantic -o libs/clib/$@.$(ARCH) -c libs/clib/$<
+	-pedantic -o libs/clib/$@.$(OBJ_SUFFIX) -c libs/clib/$<
 
 mklib:
-	@rm -f ../libc$(ARCH).a
-	@$(GAR) rcs ../libc$(ARCH).a *.o.$(ARCH)
+	@rm -f ../libc$(OBJ_SUFFIX).a
+	@$(GAR) rcs ../libc$(OBJ_SUFFIX).a *.o.$(OBJ_SUFFIX)

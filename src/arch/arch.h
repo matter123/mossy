@@ -1,5 +1,5 @@
 /*
-    Copyright 2013 Matthew Fosdick
+    Copyright 2013-2014 Matthew Fosdick
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@
 
 #ifndef asm
 #include <stdint.h>
+#include <hal/stackframe.h>
 #ifdef X64
 typedef uint64_t uintreg_t;
 struct cpu_state {
@@ -58,6 +59,8 @@ uintreg_t get_creg(cpu_state *s, uint8_t creg);
 void set_reg(cpu_state *s, uint8_t reg, uintreg_t value);
 uintreg_t get_stack_pointer(cpu_state *s,bool userspace);
 void set_stack_pointer(cpu_state *s,bool userspace,uintreg_t value);
+uintptr_t get_instruction_pointer(cpu_state *s);
+hal::stack_frame *get_frame(cpu_state *s);
 int get_byte_order();
 typedef unsigned int uint;
 #endif

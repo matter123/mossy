@@ -5,7 +5,7 @@
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+     http://www.apache.org/licenses/LICENSE-2.0
 
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,10 +13,11 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 */
-#include <sys/synchronization.h>
-namespace kernel {
-	///rest of impl are in //asm/spinlock.s
-	bool spinlock::check() {
-		return this->lock;
-	}
+#pragma once
+#include <stdint.h>
+namespace hal {
+	struct stack_frame;
+	uintptr_t get_function(stack_frame *s);
+	stack_frame *get_next_frame(stack_frame *s);
+	stack_frame *get_current_frame();
 }

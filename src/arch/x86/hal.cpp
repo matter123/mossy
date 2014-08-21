@@ -124,4 +124,10 @@ uintreg_t get_err_code(cpu_state *s) {
 int get_byte_order() {
 	return 1; //LSB
 }
+uintptr_t get_instruction_pointer(cpu_state *s) {
+	return s->eip;
+}
+hal::stack_frame *get_frame(cpu_state *s) {
+	return reinterpret_cast<hal::stack_frame *>(s->ebp);
+}
 #endif

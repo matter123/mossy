@@ -16,20 +16,13 @@
 #pragma once
 #include <arch.h>
 namespace kernel {
-	struct thread_info {
-		uint32_t PID;
-		uint8_t  priority;
-		bool     active:1;
-		bool     running:1;
-		bool     sleeping:1;
-		bool     waiting:1;
-		bool     has_user_stack:1;
-		int      resv_state:3;
-		uint16_t sleep_ticks;
-		void     *wait_on;
-		void     *user_stack;
-		::cpu_state *cpu_state;
-	};
-	void add_task(thread_info *s);
-	thread_info *create_task(uintptr_t stack, void *func,bool kernel, uint32_t PID);
+#ifdef X86
+#define syscall_0_0(num) asm volatile("int %0"::"N"(num))
+#define syscall_1_0(num,arg1) asm volatile("int %0"::"N"(num),"a"(arg1))
+#define syscall_2_0(num,arg1,arg2) asm volatile("int %0"::"N"(num),"a"(arg1),"b"(arg2))
+#elif defined X64
+#define syscall_0_0(num) asm volatile("int %0"::"N"(num))
+#define syscall_1_0(num,arg1) asm volatile("int %0"::"N"(num),"a"(arg1))
+#define syscall_2_0(num,arg1,arg2) asm volatile("int %0"::"N"(num),"a"(arg1),"b"(arg2))
+#endif
 }

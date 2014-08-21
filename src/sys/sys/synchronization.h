@@ -24,4 +24,26 @@ namespace kernel {
 			void release(uintptr_t reg);
 			bool check();
 	};
+
+	class semaphore {
+		private:
+			spinlock *s;
+			int free_count;
+		public:
+			semaphore(int free_count);
+			~semaphore();
+			void wait();
+			void signal();
+			int get_free();
+	};
+
+	class mutex {
+		private:
+			semaphore *s;
+		public:
+			mutex();
+			~mutex();
+			void lock();
+			void unlock();
+	};
 }

@@ -1,5 +1,5 @@
 /*
-    Copyright 2013 Matthew Fosdick
+    Copyright 2013-2014 Matthew Fosdick
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -63,11 +63,11 @@ namespace hal {
 		idtr.base=&idt;
 		idtr.limit=static_cast<uint16_t>(sizeof(idt));
 		lidt(&idtr);
-		for(int i=0; i<128; i++) {
+		for(int i=0; i<256; i++) {
 			register_asm_sub_int(i,(uintptr_t)exc_arr[i],NON_REENTRANT,false);
 		}
 		//allow exceptions to be called again
-		for(int i=0; i<128; i++) {
+		for(int i=0; i<256; i++) {
 			UN_SET(used,i);
 		}
 		return true;

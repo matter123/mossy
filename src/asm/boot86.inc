@@ -170,6 +170,8 @@ flush:
 higherhalf:
 	mov esp, sys_stack
 	mov ebp, sys_stack
+	sub esp, 20
+	sub ebp, 20
 	;enable fpu
 	mov eax, cr0
 	and ax, 0xFFFD
@@ -225,4 +227,5 @@ low_bss_end:
 
 [SECTION .bss]
 resb 0x4000
+[GLOBAL sys_stack]
 sys_stack:

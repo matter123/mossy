@@ -20,7 +20,7 @@
 #include <hal/console.h>
 #include <arch.h>
 #include <io.h>
-#include <pc/cpu_stuff.h>
+#include <x86_64/cpu_stuff.h>
 namespace pc {
 #define M_CMD 0x20
 #define M_DAT 0x21

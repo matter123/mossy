@@ -6,7 +6,9 @@ SSOURCES:=$(shell find src -name *.s)
 SOBJECTS:=$(patsubst %.s, %.o, $(SSOURCES))
 
 export
-ARCH:=32
+ARCH=86
+VENDOR=PC
+OBJ_SUFFIX:=$(ARCH)_$(VENDOR)
 CC:=$(shell echo $$HOME)/opt/cross/bin/i586-elf-gcc
 CXX:=$(shell echo $$HOME)/opt/cross/bin/i586-elf-g++
 CPP:=$(shell echo $$HOME)/opt/cross/bin/i586-elf-cpp
@@ -21,8 +23,8 @@ build: clean check $(COBJECTS) $(CXXOBJECTS) $(SOBJECTS) build_libs link mkiso
 
 FFLAGS=-fno-omit-frame-pointer -ffreestanding -fno-stack-protector -fno-common
 DFLAGS=-DARCH=_x86 -DVENDOR=_PC -DDEBUG
-CFLAGS=-O0 -std=c99 $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS) $(IFLAGS)
-CXXFLAGS=-O0 -std=c++1y $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS) $(IFLAGS) -fno-rtti \
+CFLAGS=-O3 -std=c99 $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS) $(IFLAGS)
+CXXFLAGS=-O3 -std=c++1y $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS) $(IFLAGS) -fno-rtti \
 -fno-exceptions -fdiagnostics-color=auto
 LDFLAGS=-static -Tlinkx86.ld -z max-page-size=0x1000 -ffreestanding -O2 -nostdlib $(FFLAGS) -Llibs
 ASFLAGS=-felf
@@ -37,8 +39,7 @@ check:
 	#@tools/doccheck.py kernel src
 link:
 	@echo Linking
-	@$(LD) $(LDFLAGS) -o kernel32 $(SOBJECTS) $(COBJECTS) $(CXXOBJECTS)\
-	  -lc$(ARCH) -lgcc
+	@$(LD) $(LDFLAGS) -o kernel$(OBJ_SUFFIX) $(SOBJECTS) $(COBJECTS) $(CXXOBJECTS) -lc$(OBJ_SUFFIX) -lgcc
 
 .s.o:
 	@echo Assembling $(patsubst %.o, %.s, $@)
@@ -56,9 +57,9 @@ link:
 
 mkiso:
 	#@tools/packrd.py
-	#@tools/symexport.py kernel32
-	@cp -f kernel$(ARCH) iso/kernel$(ARCH)
-	@cp -f kernel$(ARCH).sym iso/kernel$(ARCH).sym
+	#@tools/symexport.py kernel$(OBJ_SUFFIX)
+	@cp -f kernel$(OBJ_SUFFIX) iso/kernel$(OBJ_SUFFIX)
+	@cp -f kernel$(OBJ_SUFFIX).sym iso/kernel$(OBJ_SUFFIX).sym
 	#@cp -f initrd.rd iso/initrd.rd
 
 runem:

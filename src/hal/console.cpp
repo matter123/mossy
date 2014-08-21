@@ -17,6 +17,7 @@
 #include <conv.hpp>
 #include <limits.h>
 #include <hal/hal.h>
+#include <hal/stackframe.h>
 #include <stdlib.h>
 #include <utf8.h>
 namespace hal {
@@ -332,7 +333,15 @@ namespace hal {
 		if(!endol) {
 			cout<<endl;
 		}
+		cout<<"instruction pointer: "<<address<<::get_instruction_pointer(s)<<endl;
 		cout<<"end cpu dump"<<endl;
+		cout<<"Stack Trace:"<<endl;
+		stack_frame *f=::get_frame(s);
+		while(f&&get_function(f)) {
+			cout<<"\t"<<address<<get_function(f)<<endl;
+			f=get_next_frame(f);
+		}
+		cout<<"end stack trace"<<endl;
 	}
 	ConsoleColor ColorDef(0xF,0x0);
 	ostream cout;

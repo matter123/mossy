@@ -15,21 +15,7 @@
 */
 #pragma once
 #include <arch.h>
+#include <sys/tasks.h>
 namespace kernel {
-	struct thread_info {
-		uint32_t PID;
-		uint8_t  priority;
-		bool     active:1;
-		bool     running:1;
-		bool     sleeping:1;
-		bool     waiting:1;
-		bool     has_user_stack:1;
-		int      resv_state:3;
-		uint16_t sleep_ticks;
-		void     *wait_on;
-		void     *user_stack;
-		::cpu_state *cpu_state;
-	};
-	void add_task(thread_info *s);
-	thread_info *create_task(uintptr_t stack, void *func,bool kernel, uint32_t PID);
+	bool init_scheduler(thread_info *cur_task);
 }

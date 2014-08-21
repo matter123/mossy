@@ -256,9 +256,11 @@ start:
 	;dont need to reload the *s registers since the GDTR_64 points to the same structure
 
 	;setup stack
-	mov rax, qword stack_start
+	mov rax, qword sys_stack
 	mov rsp, rax
 	mov rbp, rsp
+	sub rsp, 32
+	sub rbp, 32
 
 	;turn on FPU
 	mov rax, cr0
@@ -324,4 +326,5 @@ start:
 	ldtr: dq 0
 	[SECTION .bss]
 	resb 0x4000
-	stack_start:
+	[GLOBAL sys_stack]
+	sys_stack:

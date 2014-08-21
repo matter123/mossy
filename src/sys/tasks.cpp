@@ -15,19 +15,20 @@
 */
 #include <x86/tasks.h>
 #include <x64/tasks.h>
+#include <sys/tasks.h>
+#include <string.h>
 namespace kernel {
-	void add_task(cpu_state *s) {
+	thread_info *create_task(uintptr_t stack, void *func,bool kernel, uint32_t PID) {
+		thread_info *t=reinterpret_cast<thread_info *>(stack);
+		memset((void *)t,0,sizeof(thread_info));
+		stack-=sizeof(thread_info);
 #ifdef X64
-		return x64::add_task(s);
+		t->cpu_state = x64::create_task(stack, func, kernel);
 #elif defined X86
-		return x86::add_task(s);
+		t->cpu_state = x86::create_task(stack, func, kernel);
 #endif
-	}
-	cpu_state *create_task(uintptr_t stack, void *func,bool kernel) {
-#ifdef X64
-		return x64::create_task(stack, func, kernel);
-#elif defined X86
-		return x86::create_task(stack, func, kernel);
-#endif
+		t->PID=PID;
+		t->active=true;
+		return t;
 	}
 }

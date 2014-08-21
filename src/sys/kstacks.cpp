@@ -35,22 +35,22 @@ namespace kernel {
 			return false;
 		}
 		uintptr_t len=region->end-region->start;
-		total_stacks=len/(16*1024);//16KiB stacks are nice and big
+		total_stacks=len/(4*1024);//4KiB stacks
 		uintptr_t temp=total_stacks;
-		//0x20000 = 8 bits to a byte 16KiB stack means 0x20000 entries in a
+		//0x8000 = 8 bits to a byte 16KiB stack means 0x8000 entries in a
 		// bitmap before you need to use a new stack
-		if(temp%0x20000) {
-			temp+=(0x20000-(temp%0x20000));
+		if(temp%0x8000) {
+			temp+=(0x8000-(temp%0x8000));
 		}
-		stacks_taken=temp/0x20000;
+		stacks_taken=temp/0x8000;
 		total_stacks-=stacks_taken;
 		bitmap=reinterpret_cast<uint8_t *>(region->start);
-		stack_start=region->start+0x4000*(stacks_taken+1);//1 is because stacks grow down
+		stack_start=region->start+0x1000*(stacks_taken+1);//1 is because stacks grow down
 		temp=total_stacks/8;
 		if(total_stacks%8) {
 			temp++;
 		}
-		memset(bitmap,0,temp); //PAGE FAULTS INCOMING
+		memset(bitmap,0,temp*0x1000); //PAGE FAULTS INCOMING
 		return true;
 	}
 
@@ -62,14 +62,14 @@ namespace kernel {
 		for(size_t s=0; s<total_stacks; s++) {
 			if(!(bitmap[s/8]&(1<<s%8))) {
 				bitmap[s/8]|=(1<<s%8);
-				return stack_start+0x4000*s;
+				return stack_start+0x1000*s;
 			}
 		}
 		return 0x0;
 	}
 
 	uintptr_t get_stack(size_t stack) {
-		return stack_start+0x4000*stack;
+		return stack_start+0x1000*stack;
 	}
 
 	void free_stack(uintptr_t ptr_in_stack) {
@@ -77,7 +77,7 @@ namespace kernel {
 		if(ps<0) {
 			bitmap[0]&=~(1<<0);
 		}
-		ps/=0x4000;
+		ps/=0x1000;
 		ps++;
 		bitmap[ps/8]&=~(1<<ps%8);
 	}

@@ -5,7 +5,7 @@
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+    http://www.apache.org/licenses/LICENSE-2.0
 
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,21 +15,16 @@
 */
 #pragma once
 #include <arch.h>
-namespace kernel {
-	struct thread_info {
-		uint32_t PID;
-		uint8_t  priority;
-		bool     active:1;
-		bool     running:1;
-		bool     sleeping:1;
-		bool     waiting:1;
-		bool     has_user_stack:1;
-		int      resv_state:3;
-		uint16_t sleep_ticks;
-		void     *wait_on;
-		void     *user_stack;
-		::cpu_state *cpu_state;
-	};
-	void add_task(thread_info *s);
-	thread_info *create_task(uintptr_t stack, void *func,bool kernel, uint32_t PID);
+#ifdef X86_64
+#include <stdint.h>
+extern "C" uint32_t cpuid(uint32_t eax, int retreg) __attribute__((const));
+
+static inline void wrmsr(uint32_t msr_id, uint64_t msr_value) {
+	asm volatile("wrmsr" : : "c"(msr_id), "A"(msr_value));
 }
+static inline uint64_t rdmsr(uint32_t msr_id) {
+	uint64_t msr_value;
+	asm volatile("rdmsr" : "=A"(msr_value) : "c"(msr_id));
+	return msr_value;
+}
+#endif

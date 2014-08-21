@@ -92,7 +92,7 @@ exc%1:
 %endmacro
 
 [EXTERN _ZN3hal11call_handleEP9cpu_state]
-[EXTERN _ZN3x648scheduleEP9cpu_state]
+[EXTERN _ZN6kernel8scheduleEP9cpu_state]
 exc_stub:
 	push_x64
 	mov rdi, rsp
@@ -102,7 +102,7 @@ exc_stub:
 	call _ZN3hal11call_handleEP9cpu_state
 	;schedule new kernel task
 	mov rdi, rsp
-	call _ZN3x648scheduleEP9cpu_state
+	call _ZN6kernel8scheduleEP9cpu_state
 	mov rsp, rax
 	;clean up stack
 	pop_x64

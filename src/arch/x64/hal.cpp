@@ -70,7 +70,7 @@ namespace hal {
 		add_virt_region(0x0,0x7FFFFFFFFFFF,types[0]);
 		add_virt_region(0xFFFFFF0000000000,0x7FFFFFFFFF,types[1]);
 		add_virt_region(0xFFFFFE8000000000,0x7FFFFFFFFF,types[2]);
-		add_virt_region(0xFFFFFE0000000000,0x0FFFFFFFFF,types[3]);
+		add_virt_region(0xFFFFFE0000000000,0x000FFFFFFF,types[3]);
 	}
 }
 uint8_t get_reg_count() {
@@ -138,5 +138,11 @@ uintreg_t get_err_code(cpu_state *s) {
 }
 int get_byte_order() {
 	return 1; //LSB
+}
+uintptr_t get_instruction_pointer(cpu_state *s) {
+	return s->rip;
+}
+hal::stack_frame *get_frame(cpu_state *s) {
+	return reinterpret_cast<hal::stack_frame *>(s->rbp);
 }
 #endif

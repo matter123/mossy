@@ -75,7 +75,7 @@ exc%1:
 %endmacro
 
 [EXTERN _ZN3hal11call_handleEP9cpu_state]
-[EXTERN _ZN3x868scheduleEP9cpu_state]
+[EXTERN _ZN6kernel8scheduleEP9cpu_state]
 exc_stub:
 	push_x86
 	;clean up segment selectors
@@ -90,7 +90,7 @@ exc_stub:
 	add esp, 4
 	;schedule new kernel task
 	push esp
-	call _ZN3x868scheduleEP9cpu_state
+	call _ZN6kernel8scheduleEP9cpu_state
 	add esp , 4
 	mov esp, eax
 	;clean up stack
