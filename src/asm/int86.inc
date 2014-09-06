@@ -13,10 +13,10 @@
 ;  limitations under the License.
 [SECTION .text]
 %macro push_x86 0
-push word gs
-push word fs
-push word es
-push word ds
+push gs
+push fs
+push es
+push ds
 push dword ebp
 push dword eax
 push dword ebx
@@ -43,10 +43,10 @@ pop dword ecx
 pop dword ebx
 pop dword eax
 pop dword ebp
-pop word ds
-pop word es
-pop word fs
-pop word gs
+pop ds
+pop es
+pop fs
+pop gs
 %endmacro
 
 %macro EXCEPT_C 2
@@ -76,7 +76,16 @@ exc%1:
 
 [EXTERN _ZN3hal11call_handleEP9cpu_state]
 [EXTERN _ZN6kernel8scheduleEP9cpu_state]
+[EXTERN in_interrupt]
+[EXTERN interrupt_count]
 exc_stub:
+	mov byte [in_interrupt], 1
+	inc dword [interrupt_count]
+	;xchg bx, bx
+	cmp dword [esp + 4], 0xC0
+	jne .test_kern
+	;xchg bx, bx
+	.test_kern:
 	push_x86
 	;clean up segment selectors
 	mov ax, 0x10
@@ -96,4 +105,5 @@ exc_stub:
 	;clean up stack
 	pop_x86
 	add esp, 12
+	mov byte [in_interrupt], 0
 	iretd

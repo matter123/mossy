@@ -33,6 +33,7 @@ namespace kernel {
 		while(true) {
 			m->lock();
 			hal::cout<<std::TC::RED<<'B';
+			//hal::magic_break();
 			m->unlock();
 		}
 	}
@@ -53,7 +54,6 @@ namespace kernel {
 		hal::enable_interrupts();
 		m=new mutex();
 		add_task(create_task(get_new_stack(),(void *)func,true,0));
-		hal::magic_break();
 		while(true) {
 			m->lock();
 			hal::cout<<std::TC::GREEN<<'A';

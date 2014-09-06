@@ -335,6 +335,11 @@ namespace hal {
 		}
 		cout<<"instruction pointer: "<<address<<::get_instruction_pointer(s)<<endl;
 		cout<<"end cpu dump"<<endl;
+		cout<<"cs: "<<s->cs<<endl;
+		cout<<"ds: "<<s->ds<<endl;
+		cout<<"es: "<<s->es<<endl;
+		cout<<"ss: "<<s->ss<<endl;
+		hal::magic_break();
 		cout<<"Stack Trace:"<<endl;
 		stack_frame *f=::get_frame(s);
 		while(f&&get_function(f)) {

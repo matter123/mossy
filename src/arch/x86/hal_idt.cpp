@@ -46,6 +46,10 @@ namespace x86 {
 }
 
 extern "C" void lidt(x86::IDTR *idtr);
+bool in_int;
+bool *in_interrupt=&in_int;
+uint32_t c_int;
+uint32_t *interrupt_count=&c_int;
 
 bool IS_SET(uint8_t arr[],uint index) {
 	return (arr[index/8]&(1<<index%8))==(1<<index%8);

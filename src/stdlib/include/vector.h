@@ -46,9 +46,7 @@ namespace std {
 			}
 
 			T at(int index) {
-				if(index>count||index<0) {
-					return T();
-				}
+				//assume index is valid
 				return arr[index];
 			}
 

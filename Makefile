@@ -8,7 +8,7 @@ IFLAGS=-Isrc/stdlib/include -Ilibs/clib/include -Isrc/hal -Isrc/arch -Isrc/vendo
 build:
 	tools/gen_build_info.py
 	$(MAKE) -f Makefile32 build
-	$(MAKE) -f Makefile64 build
+	#$(MAKE) -f Makefile64 build
 	tools/gen_build_info.py delete
 
 run:

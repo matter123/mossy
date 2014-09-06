@@ -19,6 +19,8 @@
 #include <hal/hal.h>
 #include <vector.h>
 #include <hal/int.h>
+#include <hal/console.h>
+#include <text_color.h>
 namespace kernel {
 	static std::vector<thread_info *> *blocked;
 	static std::vector<thread_info *> *active;
@@ -30,14 +32,15 @@ namespace kernel {
 		if(!init) {
 			return s;
 		}
-		active->at(current)->running=false;
-		active->at(current)->cpu_state = s;
+		thread_info *cur_task=active->at(current);
+		cur_task->running=false;
+		cur_task->cpu_state = s;
+
 		if(active->at(current)->waiting) {
 			active->erase(current);
 			current--;
 		}
 		if(wait_on) {
-			hal::magic_break();
 			thread_info *t=NULL;
 			for(int i=blocked->size(); i>=0; i--) {
 				if(blocked->at(i)->wait_on==wait_on) {
@@ -46,6 +49,7 @@ namespace kernel {
 					blocked->at(i)->active=true;
 					if(!t) {
 						t=blocked->at(i);
+						t->waiting=false;
 						t->running=true;
 					}
 					blocked->erase(i);
@@ -53,19 +57,20 @@ namespace kernel {
 			}
 			wait_on=NULL;
 			if(t!=NULL) {
+				hal::magic_break();
 				return t->cpu_state;
 			} else {
 				thread_info *t2=active->at(current);
 				t2->running=true;
-				return t->cpu_state;
+				return t2->cpu_state;
 			}
 		}
 		if((++current)%active->size()==0) {
 			current=0;
 		}
-		thread_info *t=active->at(current);
-		t->running=true;
-		return t->cpu_state;
+		thread_info *new_task=active->at(current);
+		new_task->running=true;
+		return new_task->cpu_state;
 	}
 
 	thread_info *get_self() {
@@ -93,6 +98,8 @@ namespace kernel {
 			blocked->push_back(active->at(current));
 		}
 		if(get_reg(s,0)==1) {
+			hal::magic_break();
+			hal::cout<<std::TC::WHITE<<hal::address<<(void *)get_reg(s,1)<<" ";
 			wait_on=(void *)get_reg(s,1);
 		}
 		return true;
