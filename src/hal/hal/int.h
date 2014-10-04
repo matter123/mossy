@@ -19,11 +19,12 @@
 namespace hal {
 	uint16_t get_max_interrupt();
 
-	typedef bool (*int_callback)(int level,cpu_state *cpu);
+	typedef void (*int_callback)(cpu_state *cpu);
 
 	enum interrupt_type {
-		NON_REENTRANT,
-		REENTRANT,
+		NON_REENTRANT = 0x01,
+		REENTRANT     = 0x02,
+		NO_SCHEDULER  = 0x80,
 	};
 
 	void register_int(uint16_t int_num,int_callback callback,interrupt_type type,bool user);

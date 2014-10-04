@@ -40,7 +40,7 @@ namespace x86 {
 			pre_init=false;
 			return true;
 		} else {
-			hal::register_int(14,&handle,hal::NON_REENTRANT,false);
+			hal::register_int(14,&handle,hal::NON_REENTRANT|hal::NO_SCHEDULER,false);
 			p.init(x86_64::get_free_page);
 			init=true;
 			return true;
