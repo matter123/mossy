@@ -27,6 +27,7 @@
 
 #include "../vendor/vendor.h"
 #ifdef PC
+[SECTION .text]
 EXCEPT_NC 0,  e00
 EXCEPT_NC 1,  e01
 EXCEPT_NC 2,  e02

@@ -74,6 +74,7 @@ exc%1:
 	pop rax
 	%endif
 	jmp exc_stub
+	db 'FAILFAST'
 %endmacro
 
 %macro EXCEPT_NC 2
@@ -89,6 +90,7 @@ exc%1:
 	pop rax
 	%endif
 	jmp exc_stub
+	db 'FAILFAST'
 %endmacro
 
 [EXTERN _ZN3hal11call_handleEP9cpu_state]

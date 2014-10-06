@@ -24,7 +24,7 @@
 namespace kernel {
 	static std::vector<thread_info *> *blocked;
 	static std::vector<thread_info *> *active;
-	static bool schedule_int(int level, cpu_state *s);
+	static void schedule_int(cpu_state *s);
 	static uint64_t current=0;
 	static bool init=false;
 	static void *wait_on;
@@ -86,12 +86,12 @@ namespace kernel {
 		cur_task->running=true;
 		add_task(cur_task);
 		blocked=new std::vector<thread_info *>(16);
-		hal::register_int(0xC0,&schedule_int,hal::interrupt_type::NON_REENTRANT,true);
+		hal::register_int(0xC0,&schedule_int, NON_REENTRANT,true);
 		init=true;
 		return true;
 	}
 
-	bool schedule_int(int level, cpu_state *s) {
+	void schedule_int(cpu_state *s) {
 		if(get_reg(s,0)==0) {
 			active->at(current)->waiting=true;
 			active->at(current)->wait_on=(void *)get_reg(s,1);
@@ -102,6 +102,5 @@ namespace kernel {
 			hal::cout<<std::TC::WHITE<<hal::address<<(void *)get_reg(s,1)<<" ";
 			wait_on=(void *)get_reg(s,1);
 		}
-		return true;
 	}
 }

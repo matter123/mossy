@@ -43,6 +43,18 @@ namespace x86 {
 		uint16_t limit;
 		IDT *base;
 	} PACKED;
+
+	struct trampoline {
+		char begin[3];
+#ifdef DEBUG
+		char *id;
+#else
+		char id;
+#endif
+		char jmp_byte;
+		int32_t rel_jmp;
+		uint32_t abs_jmp;
+	} PACKED;
 }
 
 extern "C" void lidt(x86::IDTR *idtr);
@@ -67,9 +79,11 @@ namespace hal {
 		idtr.base=&idt;
 		idtr.limit=static_cast<uint16_t>(sizeof(idt));
 		lidt(&idtr);
+		hal::magic_break();
 		for(int i=0; i<256; i++) {
 			register_asm_sub_int(i,(uintptr_t)exc_arr[i],NON_REENTRANT,false);
 		}
+		hal::magic_break();
 		//allow exceptions to be called again
 		for(int i=0; i<256; i++) {
 			UN_SET(used,i);
@@ -81,12 +95,12 @@ namespace hal {
 	}
 
 	int_callback callbacks[256];
-	void register_int(uint16_t int_num,int_callback callback,hal::interrupt_type type,bool user) {
+	void register_int(uint16_t int_num,int_callback callback,int type,bool user) {
 		register_asm_sub_int(int_num,(uintptr_t)exc_arr[int_num],type,user);
 		callbacks[int_num]=callback;
 	}
 
-	void register_asm_sub_int(uint16_t int_num, uintptr_t addr, interrupt_type type,bool user) {
+	void register_asm_sub_int(uint16_t int_num, uintptr_t addr, int type,bool user) {
 		//callee assumes all responsibility of handling the interrupt
 		if(int_num>256||IS_SET(used,int_num)) {
 			return;
@@ -104,10 +118,17 @@ namespace hal {
 				break;
 		}
 		ent.present=true;
-		ent.code_segment=0x8;//see hhalf.cpp for this magic number
-
+		ent.code_segment=0x8;
 		ent.offset_low=static_cast<uint16_t>(addr&0xFFFF);
 		ent.offset_med=static_cast<uint16_t>((addr>>16)&0xFFFF);
+		x86::trampoline *tramp=(x86::trampoline *)exc_arr[int_num];
+		if(tramp->begin[0]==0x6A&&tramp->begin[1]==0x00&&tramp->begin[2]==0x6A) {
+			tramp=(x86::trampoline *)((void *)exc_arr[int_num]+2);
+		}
+		int32_t diff=(addr-tramp->abs_jmp);
+		//reset the rel_jmp and abs_jmp
+		tramp->rel_jmp+=diff;
+		tramp->abs_jmp=addr;
 		idt.entries[int_num]=ent;
 		SET(used,int_num);
 	}
@@ -153,8 +174,12 @@ namespace hal {
 			dump_regs(state);
 			halt(true);
 		} else {
-			callbacks[get_int_num(state)](0,state);
+			callbacks[get_int_num(state)](state);
 		}
+	}
+
+	void fail_fast(cpu_state *state) {
+
 	}
 }
 #endif

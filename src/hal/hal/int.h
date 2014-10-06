@@ -21,15 +21,16 @@ namespace hal {
 
 	typedef void (*int_callback)(cpu_state *cpu);
 
-	enum interrupt_type {
-		NON_REENTRANT = 0x01,
-		REENTRANT     = 0x02,
-		NO_SCHEDULER  = 0x80,
-	};
+	/*INTERRUPT TYPES*/
+#define NON_REENTRANT 0x01
+#define REENTRANT     0x02
+	/*INTERRUPT FLAGS*/
+#define NO_SCHEDULER  0x80
 
-	void register_int(uint16_t int_num,int_callback callback,interrupt_type type,bool user);
 
-	void register_asm_sub_int(uint16_t int_num,uintptr_t addr,interrupt_type type,bool user);
+	void register_int(uint16_t int_num,int_callback callback,int interrupt_type,bool user);
+
+	void register_asm_sub_int(uint16_t int_num,uintptr_t addr,int interrupt_type,bool user);
 
 	struct idt_range {
 		uint16_t start;

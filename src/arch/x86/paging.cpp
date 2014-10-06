@@ -25,8 +25,8 @@
 #include <panic.h>
 extern "C" uint32_t pd;
 namespace x86 {
-	static bool pre_init_handle(int level, cpu_state *s);
-	static bool handle(int level, cpu_state *s);
+	static void pre_init_handle(cpu_state *s);
+	static void handle(cpu_state *s);
 	static bool init=false;
 	static recursive_paging p;
 	bool init_paging() {
@@ -36,11 +36,11 @@ namespace x86 {
 			//paging and needing paging to implement free page allocator, do a
 			//to step init, first install a page handler that begins actual
 			//paging init then actually handle the page fault
-			hal::register_int(14,&pre_init_handle,hal::NON_REENTRANT,false);
+			hal::register_int(14,&pre_init_handle,NON_REENTRANT,false);
 			pre_init=false;
 			return true;
 		} else {
-			hal::register_int(14,&handle,hal::NON_REENTRANT|hal::NO_SCHEDULER,false);
+			hal::register_int(14,&handle,NON_REENTRANT|NO_SCHEDULER,false);
 			p.init(x86_64::get_free_page);
 			init=true;
 			return true;
@@ -49,16 +49,14 @@ namespace x86 {
 	bool paging_ready() {
 		return init;
 	}
-	bool pre_init_handle(int level, cpu_state *s) {
+	void pre_init_handle(cpu_state *s) {
 		hal::print_boot_msg("Init paging",init_paging(),true);
-		return true;
 		//cpu will resume executing, causing another page fault that will be
 		//handled by the real page fault handler
 	}
-	bool handle(int level, cpu_state *s) {
+	void handle(cpu_state *s) {
 		//for now assume page fault was caused by an unmapped page in kernel
 		p.map(x86_64::get_free_page(), get_creg(s,2), {true,false,true});
-		return true;
 	}
 	void invlpage(uintptr_t addr) {
 		asm volatile("invlpg (%0)" ::"r"(addr) : "memory");

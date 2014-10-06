@@ -27,16 +27,6 @@
 #include <sys/synchronization.h>
 
 namespace kernel {
-
-	mutex *m;
-	void func() {
-		while(true) {
-			m->lock();
-			hal::cout<<std::TC::RED<<'B';
-			//hal::magic_break();
-			m->unlock();
-		}
-	}
 	extern "C" uintptr_t sys_stack;
 	extern "C"
 	void init_exec(hal::multiboot_header *mboot) {
@@ -44,20 +34,12 @@ namespace kernel {
 		hal::init_mboot(mboot);
 		hal::init_arch();
 		hal::init_vendor();
-		hal::print_boot_msg("Init kstacks",init_kstacks(),true);
-		hal::print_boot_msg("Init heap",heap_init(),true);
-		hal::print_boot_msg("Init scheduler",init_scheduler((thread_info *)sys_stack),true);
+		//hal::print_boot_msg("Init kstacks",init_kstacks(),true);
+		//hal::print_boot_msg("Init heap",heap_init(),true);
+		//hal::print_boot_msg("Init scheduler",init_scheduler((thread_info *)sys_stack),true);
 		time_t bt=BUILD_UNIX_TIME;
 		hal::cout<<"Built on: "<<std::TC::GREEN<<asctime(gmtime(&bt))<<std::TC::WHITE
 		         <<" By: "     <<std::TC::GREEN<<BUILD_USERNAME      <<std::TC::WHITE
 		         <<" From: "   <<std::TC::GREEN<<BUILD_GIT_BRANCH    <<std::TC::WHITE<<hal::endl;
-		hal::enable_interrupts();
-		m=new mutex();
-		add_task(create_task(get_new_stack(),(void *)func,true,0));
-		while(true) {
-			m->lock();
-			hal::cout<<std::TC::GREEN<<'A';
-			m->unlock();
-		}
 	}
 }
