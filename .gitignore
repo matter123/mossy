@@ -14,8 +14,8 @@ kernelARM
 kernelARM.sym
 *.o.32
 *.o.64
-*.o.86.PC
-*.o.64.PC
+*.o.86_PC
+*.o.64_PC
 *.o.ARM.RPI
 *.o.ARM.STM
 *.a
