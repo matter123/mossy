@@ -15,8 +15,8 @@ CPP:=$(shell echo $$HOME)/opt/cross/bin/i686-elf-cpp
 LD:=$(shell echo $$HOME)/opt/cross/bin/i686-elf-gcc
 AS:=$(shell echo $$HOME)/opt/cross/bin/i686-elf-as
 GAR:=$(shell echo $$HOME)/opt/cross/bin/i686-elf-ar
-ClangXX=clang++ --target=i686-elf
-Clang=clang --target=i686-elf
+ClangXX=clang++ --target=i686-elf -Wdocumentation
+Clang=clang --target=i686-elf -Wdocumentation
 
 
 all: build runem
@@ -44,7 +44,7 @@ link:
 
 .s.o:
 	@echo Assembling $(patsubst %.o, %.s, $@)
-	@$(CPP) $(CXXFLAGS) -DASM -E -P -o $(patsubst %.o, %.cpps, $@) $(patsubst %.o, %.s, $@)
+	@$(CPP) $(DFLAGS)  $(IFLAGS) -DASM -E -P -o $(patsubst %.o, %.cpps, $@) $(patsubst %.o, %.s, $@)
 	@nasm $(ASFLAGS) $(patsubst %.o, %.cpps, $@) -o $@
 	@rm $(patsubst %.o, %.cpps, $@)
 

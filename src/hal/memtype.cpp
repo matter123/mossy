@@ -23,6 +23,25 @@ namespace hal {
 	bool mem_type::operator==(const mem_type &other) const {
 		return (this->to_u64())==(other.to_u64());
 	}
+	void mem_type::operator=(const mem_type &rhs) {
+		this->save_on_hib=rhs.save_on_hib;
+		this->pci_mmap=rhs.pci_mmap;
+		this->no_exist=rhs.no_exist;
+		this->dma=rhs.dma;
+		this->videobuffer=rhs.videobuffer;
+		this->firmware=rhs.firmware;
+		this->bootinfo=rhs.bootinfo;
+		this->kernel=rhs.kernel;
+		this->resv_mem=rhs.resv_mem;
+		this->avil=rhs.avil;
+		this->heap=rhs.heap;
+		this->userspace=rhs.userspace;
+		this->kthread_stacks=rhs.kthread_stacks;
+		this->paging_struct=rhs.paging_struct;
+		this->resv_n=0;
+		this->resv_2=0;
+		this->resv_1=0;
+	}
 	uint64_t mem_type::to_u64() const {
 		uint64_t res=0;
 		res|=(this->save_on_hib<<0);

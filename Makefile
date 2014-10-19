@@ -1,4 +1,4 @@
-all: build run
+all: build
 export
 WFLAGSON=-Wall -Wextra -Werror=return-type -Wshadow -Wundef -Wdeprecated \
 -Wredundant-decls -Werror=parentheses
@@ -9,7 +9,7 @@ IFLAGS=-Isrc/stdlib/include -Ilibs/clib/include -Ilibs/encode/include -Isrc/hal 
 build:
 	tools/gen_build_info.py
 	$(MAKE) -f Makefile32 build
-	#$(MAKE) -f Makefile64 build
+	$(MAKE) -f Makefile64 build
 	tools/gen_build_info.py delete
 
 run:

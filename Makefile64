@@ -15,7 +15,8 @@ CPP:=$(shell echo $$HOME)/opt/cross/bin/x86_64-elf-cpp
 LD:=$(shell echo $$HOME)/opt/cross/bin/x86_64-elf-gcc
 AS:=$(shell echo $$HOME)/opt/cross/bin/x86_64-elf-as
 GAR:=$(shell echo $$HOME)/opt/cross/bin/x86_64-elf-ar
-#CXX=clang
+ClangXX=clang++ --target=x86_64-elf -Wdocumentation
+Clang=clang --target=x86_64-elf -Wdocumentation
 
 all: build runem
 
@@ -40,21 +41,22 @@ check:
 	#@tools/doccheck.py kernel src
 link:
 	@echo Linking
-	@$(LD) $(LDFLAGS) -o kernel$(OBJ_SUFFIX) $(SOBJECTS) $(COBJECTS) $(CXXOBJECTS) -lc$(OBJ_SUFFIX) -lgcc
+	@$(LD) $(LDFLAGS) -o kernel$(OBJ_SUFFIX) $(SOBJECTS) $(COBJECTS) $(CXXOBJECTS) -lc$(OBJ_SUFFIX)\
+	 -lencode$(OBJ_SUFFIX) -lgcc
 
 .s.o:
 	@echo Assembling $(patsubst %.o, %.s, $@)
-	@$(CPP) $(CXXFLAGS) -E -P -o $(patsubst %.o, %.cpps, $@) $(patsubst %.o, %.s, $@)
+	@$(CPP) $(DFLAGS)  $(IFLAGS) -DASM -E -P -o $(patsubst %.o, %.cpps, $@) $(patsubst %.o, %.s, $@)
 	@nasm $(ASFLAGS) $(patsubst %.o, %.cpps, $@) -o $@
 	@rm $(patsubst %.o, %.cpps, $@)
 
 .c.o:
 	@echo Compiling $<
-	@$(CC) $(CFLAGS) -o $@ -c $<
+	@$(Clang) $(CFLAGS) -o $@ -c $<
 
 .cpp.o:
 	@echo Compiling $<
-	@$(CXX) $(CXXFLAGS) -o $@ -c $<
+	@$(ClangXX) $(CXXFLAGS) -o $@ -c $<
 
 mkiso:
 	#@tools/packrd.py
@@ -69,3 +71,4 @@ runem:
 
 build_libs:
 	cd libs/clib && $(MAKE) build
+	cd libs/encode && $(MAKE) build
