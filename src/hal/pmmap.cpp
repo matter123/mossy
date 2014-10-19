@@ -47,7 +47,7 @@ namespace hal {
 		                 w_malloc(sizeof(mem_region) * regs.tag_count, 16));
 		//convert from multiboot_mmap_ent to mem_region
 		for(size_t s=0; s<regs.tag_count; s++) {
-			void *tptr=reinterpret_cast<void *>(mmap_tag);
+			pointer tptr=reinterpret_cast<pointer>(mmap_tag);
 			tptr+=sizeof(multiboot_mmap);
 			tptr+=(s*mmap_tag->entry_size);
 			multiboot_mmap_ent *ent=reinterpret_cast<multiboot_mmap_ent *>(tptr);
@@ -111,7 +111,7 @@ namespace hal {
 		regs=*fill(remove_invalid(page_align(split(sort(remove_invalid(&regs))))));
 		memmove((void *)old,regs.regions,sizeof(mem_region)*regs.tag_count);
 		regs.regions=reinterpret_cast<mem_region *>(old);
-		wksp_begin((void *)old+sizeof(mem_region)*regs.tag_count);
+		wksp_begin((pointer)old+sizeof(mem_region)*regs.tag_count);
 	}
 	mem_region *get_phys_mem_region(int index) {
 		if(index<regs.tag_count) {

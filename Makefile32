@@ -9,22 +9,24 @@ export
 ARCH=86
 VENDOR=PC
 OBJ_SUFFIX:=$(ARCH)_$(VENDOR)
-CC:=$(shell echo $$HOME)/opt/cross/bin/i586-elf-gcc
-CXX:=$(shell echo $$HOME)/opt/cross/bin/i586-elf-g++
-CPP:=$(shell echo $$HOME)/opt/cross/bin/i586-elf-cpp
-LD:=$(shell echo $$HOME)/opt/cross/bin/i586-elf-gcc
-AS:=$(shell echo $$HOME)/opt/cross/bin/i586-elf-as
-GAR:=$(shell echo $$HOME)/opt/cross/bin/i586-elf-ar
-#CXX=clang
+CC:=$(shell echo $$HOME)/opt/cross/bin/i686-elf-gcc
+CXX:=$(shell echo $$HOME)/opt/cross/bin/i686-elf-g++
+CPP:=$(shell echo $$HOME)/opt/cross/bin/i686-elf-cpp
+LD:=$(shell echo $$HOME)/opt/cross/bin/i686-elf-gcc
+AS:=$(shell echo $$HOME)/opt/cross/bin/i686-elf-as
+GAR:=$(shell echo $$HOME)/opt/cross/bin/i686-elf-ar
+ClangXX=clang++ --target=i686-elf
+Clang=clang --target=i686-elf
+
 
 all: build runem
 
-build: clean check $(COBJECTS) $(CXXOBJECTS) $(SOBJECTS) build_libs link mkiso
+build: clean $(COBJECTS) $(CXXOBJECTS) $(SOBJECTS) build_libs link mkiso
 
 FFLAGS=-fno-omit-frame-pointer -ffreestanding -fno-stack-protector -fno-common
 DFLAGS=-DARCH=_x86 -DVENDOR=_PC -DDEBUG
-CFLAGS=-O3 -std=c99 $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS) $(IFLAGS)
-CXXFLAGS=-O3 -std=c++1y $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS) $(IFLAGS) -fno-rtti \
+CFLAGS=-O3 -std=c11 $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS) $(IFLAGS)
+CXXFLAGS=-O3 -std=gnu++11 $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS) $(IFLAGS) -fno-rtti \
 -fno-exceptions -fdiagnostics-color=auto
 LDFLAGS=-static -Tlinkx86.ld -z max-page-size=0x1000 -ffreestanding -O2 -nostdlib $(FFLAGS) -Llibs
 ASFLAGS=-felf
@@ -35,25 +37,24 @@ clean:
 	@find . -name '*.o' -delete
 	@rm -f kernel$(ARCH)
 
-check:
-	#@tools/doccheck.py kernel src
 link:
 	@echo Linking
-	@$(LD) $(LDFLAGS) -o kernel$(OBJ_SUFFIX) $(SOBJECTS) $(COBJECTS) $(CXXOBJECTS) -lc$(OBJ_SUFFIX) -lgcc
+	@$(LD) $(LDFLAGS) -o kernel$(OBJ_SUFFIX) $(SOBJECTS) $(COBJECTS) $(CXXOBJECTS) -lc$(OBJ_SUFFIX)\
+	 -lencode$(OBJ_SUFFIX) -lgcc
 
 .s.o:
 	@echo Assembling $(patsubst %.o, %.s, $@)
-	@$(CPP) $(CXXFLAGS) -E -P -o $(patsubst %.o, %.cpps, $@) $(patsubst %.o, %.s, $@)
+	@$(CPP) $(CXXFLAGS) -DASM -E -P -o $(patsubst %.o, %.cpps, $@) $(patsubst %.o, %.s, $@)
 	@nasm $(ASFLAGS) $(patsubst %.o, %.cpps, $@) -o $@
 	@rm $(patsubst %.o, %.cpps, $@)
 
 .c.o:
 	@echo Compiling $<
-	@$(CC) $(CFLAGS) -o $@ -c $<
+	@$(Clang) $(CFLAGS) -o $@ -c $<
 
 .cpp.o:
 	@echo Compiling $<
-	@$(CXX) $(CXXFLAGS) -o $@ -c $<
+	@$(ClangXX) $(CXXFLAGS) -o $@ -c $<
 
 mkiso:
 	#@tools/packrd.py
@@ -68,3 +69,4 @@ runem:
 
 build_libs:
 	cd libs/clib && $(MAKE) build
+	cd libs/encode && $(MAKE) build

@@ -27,7 +27,7 @@
 #define UINTREG_MAX UINT32_MAX
 #endif
 
-#ifndef asm
+#ifndef ASM
 #include <stdint.h>
 #include <hal/stackframe.h>
 #ifdef X64

@@ -1,9 +1,10 @@
 all: build run
 export
-WFLAGSON=-Wall -Wextra -Werror=return-type -Wshadow -Wundef -Wframe-larger-than=16384 -Wdeprecated \
+WFLAGSON=-Wall -Wextra -Werror=return-type -Wshadow -Wundef -Wdeprecated \
 -Wredundant-decls -Werror=parentheses
-WFLAGSOFF=-Wno-unused-parameter -Wno-sign-compare -Wno-pointer-arith
-IFLAGS=-Isrc/stdlib/include -Ilibs/clib/include -Isrc/hal -Isrc/arch -Isrc/vendor -Isrc/sys
+WFLAGSOFF=-Wno-unused-parameter -Wno-sign-compare -Wno-gnu
+IFLAGS=-Isrc/stdlib/include -Ilibs/clib/include -Ilibs/encode/include -Isrc/hal -Isrc/arch \
+-Isrc/vendor -Isrc/sys -include src/stdlib/global.h
 
 build:
 	tools/gen_build_info.py

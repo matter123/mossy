@@ -72,7 +72,7 @@ namespace hal {
 		//regs=*remove_invalid(&regs);
 		memmove((void *)old,regs.regions,sizeof(mem_region)*regs.tag_count);
 		regs.regions=reinterpret_cast<mem_region *>(old);
-		wksp_begin((void *)old+sizeof(mem_region)*regs.tag_count);
+		wksp_begin((pointer)old+sizeof(mem_region)*regs.tag_count);
 	}
 	mem_region *get_virt_mem_region(int index) {
 		if(index<regs.tag_count) {

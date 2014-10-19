@@ -123,7 +123,7 @@ namespace hal {
 		ent.offset_med=static_cast<uint16_t>((addr>>16)&0xFFFF);
 		x86::trampoline *tramp=(x86::trampoline *)exc_arr[int_num];
 		if(tramp->begin[0]==0x6A&&tramp->begin[1]==0x00&&tramp->begin[2]==0x6A) {
-			tramp=(x86::trampoline *)((void *)exc_arr[int_num]+2);
+			tramp=(x86::trampoline *)((pointer)exc_arr[int_num]+2);
 		}
 		int32_t diff=(addr-tramp->abs_jmp);
 		//reset the rel_jmp and abs_jmp

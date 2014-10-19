@@ -43,6 +43,8 @@ namespace hal {
 			return;
 		}
 		mon[y*80+x++]=let|c.getColor()<<8;
+		while((inb(0x3FD)&0x20)==0);
+		outb(0x3F8, let);
 	}
 #define NON_CODE 19
 	unsigned char latin_extend[] = {
@@ -156,6 +158,15 @@ namespace hal {
 		a=inb(0x3C1);
 		a&=0xF7;
 		outb(0x3C0,a);
+
+		//init serial
+		outb(0x3F9, 0x00);//these do some shit i don't want to explain right now
+   		outb(0x3FA, 0x80);
+   		outb(0x3F8, 0x03);
+   		outb(0x3F9, 0x00);
+   		outb(0x3FB, 0x03);
+   		outb(0x3FA, 0xC7);
+   		outb(0x3FC, 0x0B);
 		return a;
 	}
 }
