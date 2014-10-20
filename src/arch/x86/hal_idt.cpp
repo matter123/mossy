@@ -79,11 +79,9 @@ namespace hal {
 		idtr.base=&idt;
 		idtr.limit=static_cast<uint16_t>(sizeof(idt));
 		lidt(&idtr);
-		hal::magic_break();
 		for(int i=0; i<256; i++) {
 			register_asm_sub_int(i,(uintptr_t)exc_arr[i],NON_REENTRANT,false);
 		}
-		hal::magic_break();
 		//allow exceptions to be called again
 		for(int i=0; i<256; i++) {
 			UN_SET(used,i);

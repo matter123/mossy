@@ -9,14 +9,14 @@ export
 ARCH=64
 VENDOR=PC
 OBJ_SUFFIX:=$(ARCH)_$(VENDOR)
-CC:=$(shell echo $$HOME)/opt/cross/bin/x86_64-elf-gcc
-CXX:=$(shell echo $$HOME)/opt/cross/bin/x86_64-elf-g++
 CPP:=$(shell echo $$HOME)/opt/cross/bin/x86_64-elf-cpp
 LD:=$(shell echo $$HOME)/opt/cross/bin/x86_64-elf-gcc
 AS:=$(shell echo $$HOME)/opt/cross/bin/x86_64-elf-as
 GAR:=$(shell echo $$HOME)/opt/cross/bin/x86_64-elf-ar
 ClangXX=clang++ --target=x86_64-elf -Wdocumentation
 Clang=clang --target=x86_64-elf -Wdocumentation
+CC:=$(Clang)
+CXX:=$(ClangXX)
 
 all: build runem
 

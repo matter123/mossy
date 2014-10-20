@@ -1,8 +1,8 @@
-all: build
+all: build run
 export
 WFLAGSON=-Wall -Wextra -Werror=return-type -Wshadow -Wundef -Wdeprecated \
 -Wredundant-decls -Werror=parentheses
-WFLAGSOFF=-Wno-unused-parameter -Wno-sign-compare -Wno-gnu
+WFLAGSOFF=-Wno-unused-parameter -Wno-sign-compare
 IFLAGS=-Isrc/stdlib/include -Ilibs/clib/include -Ilibs/encode/include -Isrc/hal -Isrc/arch \
 -Isrc/vendor -Isrc/sys -include src/stdlib/global.h
 

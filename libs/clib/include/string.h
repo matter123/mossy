@@ -152,7 +152,8 @@ char *mbsncpy(char *dest, const char *src, size_t num);
 
 /**
     @brief appends \a src onto \a dest
-    @details uh FILL THIS IN
+    @details appends the entire string of chars in \a src
+    onto the end of \a dest
 
     @param dest pointer to a string of UTF-8 chars
     @param src pointer to a string of UTF-8 chars
@@ -212,27 +213,44 @@ char *strlcat(char *dest, const char *src, size_t num);
     @return 0 if the bytes of of \a ptr1 and \a ptr2 are the same, else *\a ptr1 - *\a ptr2
     @date created on 2014-05-30
     @sa strcmp
+    @sa mbscmp
 */
 int memcmp(const void *ptr1, const void *ptr2, size_t num);
 
-////////////////////////////////////////
-// Compares each byte of 'str1' and   //
-//   'str2', stopping at a null byte  //
-// Returns 0 if equal, or the         //
-//   difference of the non-equal byte //
-//   otherwise                        //
-// Created on 2014-05-30              //
-////////////////////////////////////////
+/**
+ * @brief compares \a str1 and \a str2
+ * @details compares byte by byte of each string
+ * \a str1 and \a str2 stopping at the first NULL byte
+ * 
+ * @param str1 pointer to a string of UTF-8 chars
+ * @param str2 pointer to another string of UTF-8 char
+ * 
+ * @return 0 if both strings are equal, the difference
+ * of the first different byte if not
+ * @date created on 2014-05-30
+ * @sa memcmp
+ * @sa mbscmp
+ */
 int strcmp(const char *str1, const char *str2);
 
-////////////////////////////////////////
-// Compares each char of 'str1' and   //
-//   'str2', stopping at a null byte  //
-// Returns 0 if equal, or the         //
-//   difference of the codepoints of  //
-//   the non-equal char otherwise     //
-// Created on 2014-07-06              //
-////////////////////////////////////////
+/**
+ * @brief compares \a str1 and \a str2
+ * @details compares each char of \a str1 and \a str2
+ * two chars are considered equal if after decoding they
+ * result in the same codepoint
+ * 
+ * @note this method counts combining char pairs as separate
+ * chars from there precombinded versions 
+ * 
+ * @param str1 pointer to a UTF-8 string
+ * @param str2 pointer to another UTF-8 string
+ * 
+ * @return 0 if the strings are equal, the difference
+ * in the first differing codepoint otherwise
+ * @date created on 2014-07-06
+ * @sa memcmp
+ * @sa strcmp
+ */
 int mbscmp(const char *str1, const char *str2);
 
 ////////////////////////////////////////

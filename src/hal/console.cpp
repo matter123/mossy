@@ -273,7 +273,7 @@ namespace hal {
 			cout<<endl;
 		}
 		cout<<msg;
-		while(width()-6>get_x()) {
+		while(width()-7>get_x()) {
 			cout<<".";
 		}
 		cout<<" [";

@@ -25,7 +25,9 @@
 #include <sys/tasks.h>
 #include <sys/scheduler.h>
 #include <sys/synchronization.h>
-
+#include <unicode.h>
+#include <string.h>
+#include <ctype.h>
 namespace kernel {
 	extern "C" uintptr_t sys_stack;
 	extern "C"
@@ -34,6 +36,8 @@ namespace kernel {
 		hal::init_mboot(mboot);
 		hal::init_arch();
 		hal::init_vendor();
+		char *test=(char *)"abcdnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnkkkkkkkd";
+		hal::cout<<hal::hex<<(uintptr_t)*(test+1)<<hal::dec<<" "<<detect_encoding(test,55);
 		//hal::print_boot_msg("Init kstacks",init_kstacks(),true);
 		//hal::print_boot_msg("Init heap",heap_init(),true);
 		//hal::print_boot_msg("Init scheduler",init_scheduler((thread_info *)sys_stack),true);
@@ -41,5 +45,6 @@ namespace kernel {
 		hal::cout<<"Built on: "<<std::TC::GREEN<<asctime(gmtime(&bt))<<std::TC::WHITE
 		         <<" By: "     <<std::TC::GREEN<<BUILD_USERNAME      <<std::TC::WHITE
 		         <<" From: "   <<std::TC::GREEN<<BUILD_GIT_BRANCH    <<std::TC::WHITE<<hal::endl;
+		while(1);
 	}
 }

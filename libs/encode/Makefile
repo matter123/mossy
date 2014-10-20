@@ -10,12 +10,12 @@ build: $(COBJECTS) $(CXXOBJECTS) mklib
 
 .c.o:
 	@echo Compiling $<
-	@cd ../.. && $(CC) $(CFLAGS) -fno-tree-loop-distribute-patterns \
+	@cd ../.. && $(CC) $(CFLAGS) \
 	-o libs/encode/$@.$(OBJ_SUFFIX) -c libs/encode/$<
 
 .cpp.o:
 	@echo Compiling $<
-	@cd ../.. && $(CXX) $(CXXFLAGS) -fno-tree-loop-distribute-patterns \
+	@cd ../.. && $(CXX) $(CXXFLAGS) \
 	-o libs/encode/$@.$(OBJ_SUFFIX) -c libs/encode/$<
 
 mklib:

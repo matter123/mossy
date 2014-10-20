@@ -43,6 +43,10 @@ namespace hal {
 			return;
 		}
 		mon[y*80+x++]=let|c.getColor()<<8;
+		if(let=='\n') {
+			while((inb(0x3FD)&0x20)==0);
+			outb(0x3F8, '\r');
+		}
 		while((inb(0x3FD)&0x20)==0);
 		outb(0x3F8, let);
 	}
