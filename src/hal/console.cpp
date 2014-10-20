@@ -20,6 +20,7 @@
 #include <hal/stackframe.h>
 #include <stdlib.h>
 #include <utf8.h>
+#include <string.h>
 namespace hal {
 	void ostream::print(const char *s) {
 		static bool back=false;
@@ -267,6 +268,22 @@ namespace hal {
 	}
 	void scroll() {
 		scroll(1);
+	}
+	void print_boot_msg(const char *level,const char *app,const char *msg) {
+		if(get_x()!=0) {
+			cout<<endl;
+		}
+		ConsoleColor l(0xB,0x0);
+		if(strcmp(level,"WARN")==0) {
+			l=ConsoleColor(0x6,0x0);
+		}else if(strcmp(level,"INFO")==0) {
+			l=ConsoleColor(0x7,0x0);
+		}
+		cout<<'['<<l<<level<<ColorDef<<']';
+		if(app) {
+			cout<<" ["<<ConsoleColor(0xB,0x0)<<app<<ColorDef<<"]";
+		}
+		cout<<" "<<msg<<endl;
 	}
 	void print_boot_msg(const char *msg,bool ok, bool hlt) {
 		if(get_x()!=0) {

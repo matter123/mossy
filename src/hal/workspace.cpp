@@ -16,6 +16,8 @@
 
 #include <hal/workspace.h>
 #include <hal/console.h>
+#include <stdlib.h>
+#include <string.h>
 namespace hal {
 	extern "C" uint32_t k_end;      /*we have 128kb after this reserved*/
 	extern "C" uint32_t k_data_end; /*end of working space, PFA and paging needs
@@ -47,5 +49,10 @@ namespace hal {
 			begin=&k_data_end;
 		}
 		wksp_ptr=(pointer)begin;
+		uintptr_t diff=((pointer)&k_data_end-wksp_ptr)/1024;
+		char msg[40]="wksp_begin called, ";
+		itoa(diff,msg+19,10);
+		strcat(msg," KiBs left");
+		print_boot_msg("INFO","W_MALLOC",msg);
 	}
 }

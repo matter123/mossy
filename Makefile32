@@ -37,7 +37,7 @@ clean:
 
 link:
 	@echo Linking
-	$(CXX) $(LDFLAGS) -o kernel$(OBJ_SUFFIX) $(SOBJECTS) $(COBJECTS) $(CXXOBJECTS) -lc$(OBJ_SUFFIX)\
+	@$(CXX) $(LDFLAGS) -o kernel$(OBJ_SUFFIX) $(SOBJECTS) $(COBJECTS) $(CXXOBJECTS) -lc$(OBJ_SUFFIX)\
 	 -lencode$(OBJ_SUFFIX) -lgcc
 
 .s.o:
