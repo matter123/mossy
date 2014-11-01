@@ -9,8 +9,6 @@ export
 ARCH=86
 VENDOR=PC
 OBJ_SUFFIX:=$(ARCH)_$(VENDOR)
-CPP:=$(shell echo $$HOME)/opt/cross/bin/i686-elf-cpp
-GAR:=$(shell echo $$HOME)/opt/cross/bin/i686-elf-ar
 ClangXX:=clang++ --target=i686-elf -Wdocumentation
 Clang:=clang --target=i686-elf -Wdocumentation
 CC:=$(Clang)
@@ -42,7 +40,7 @@ link:
 
 .s.o:
 	@echo Assembling $(patsubst %.o, %.s, $@)
-	@$(CPP) $(DFLAGS)  $(IFLAGS) -DASM -E -P -o $(patsubst %.o, %.cpps, $@) $(patsubst %.o, %.s, $@)
+	@cpp $(DFLAGS) $(IFLAGS) -DASM -E -P$(patsubst %.o, %.s, $@) -o$(patsubst %.o, %.cpps, $@)
 	@nasm $(ASFLAGS) $(patsubst %.o, %.cpps, $@) -o $@
 	@rm $(patsubst %.o, %.cpps, $@)
 

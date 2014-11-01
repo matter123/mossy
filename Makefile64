@@ -9,10 +9,6 @@ export
 ARCH=64
 VENDOR=PC
 OBJ_SUFFIX:=$(ARCH)_$(VENDOR)
-CPP:=$(shell echo $$HOME)/opt/cross/bin/x86_64-elf-cpp
-LD:=$(shell echo $$HOME)/opt/cross/bin/x86_64-elf-gcc
-AS:=$(shell echo $$HOME)/opt/cross/bin/x86_64-elf-as
-GAR:=$(shell echo $$HOME)/opt/cross/bin/x86_64-elf-ar
 ClangXX=clang++ --target=x86_64-elf -Wdocumentation
 Clang=clang --target=x86_64-elf -Wdocumentation
 CC:=$(Clang)
@@ -28,7 +24,7 @@ MFLAGS=-mcmodel=kernel -mno-red-zone -mno-mmx -mno-sse -mno-sse2 -mno-sse3 -mno-
 CFLAGS=-O3 -std=c99 $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS) $(MFLAGS) $(IFLAGS)
 CXXFLAGS=-O0 -std=c++1y $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS) $(MFLAGS) $(IFLAGS) -fno-rtti \
 -fno-exceptions -fdiagnostics-color=auto
-LDFLAGS=-static -Tlinkx64.ld -z max-page-size=0x1000 -ffreestanding -O2 -nostdlib $(FFLAGS) -Llibs
+LDFLAGS=-static -Tlinkx64.ld -ffreestanding -O2 -nostdlib $(FFLAGS) -Llibs -z max-page-size=0x1000
 ASFLAGS=-felf64
 
 
@@ -41,12 +37,12 @@ check:
 	#@tools/doccheck.py kernel src
 link:
 	@echo Linking
-	@$(LD) $(LDFLAGS) -o kernel$(OBJ_SUFFIX) $(SOBJECTS) $(COBJECTS) $(CXXOBJECTS) -lc$(OBJ_SUFFIX)\
+	g++ $(LDFLAGS) -o kernel$(OBJ_SUFFIX) $(SOBJECTS) $(COBJECTS) $(CXXOBJECTS) -lc$(OBJ_SUFFIX)\
 	 -lencode$(OBJ_SUFFIX) -lgcc
 
 .s.o:
 	@echo Assembling $(patsubst %.o, %.s, $@)
-	@$(CPP) $(DFLAGS)  $(IFLAGS) -DASM -E -P -o $(patsubst %.o, %.cpps, $@) $(patsubst %.o, %.s, $@)
+	@cpp $(DFLAGS)  $(IFLAGS) -DASM -E -P -o $(patsubst %.o, %.cpps, $@) $(patsubst %.o, %.s, $@)
 	@nasm $(ASFLAGS) $(patsubst %.o, %.cpps, $@) -o $@
 	@rm $(patsubst %.o, %.cpps, $@)
 

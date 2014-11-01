@@ -20,9 +20,12 @@
 #include <hal/hal.h>
 #include <utf8.h>
 #include <io.h>
+#include <hal/paging.h>
 namespace hal {
 	uint16_t *mon=reinterpret_cast<uint16_t *>(get_page_offset_addr()+0xB8000);
 	uint16_t x,y;
+	extern "C" int pt_vga[1024];
+	extern "C" int pd[1024];
 	int program_vga();
 	int dummy=program_vga();
 	void printc(ConsoleColor c,unsigned char let) {
@@ -172,6 +175,47 @@ namespace hal {
    		outb(0x3FA, 0xC7);
    		outb(0x3FC, 0x0B);
 		return a;
+	}
+
+	void setup_vga() {
+		hal::multiboot_fb *fb_info=NULL;
+		for(int i=0; i<hal::get_tag_count(); i++) {
+			if(hal::get_tag(i)==NULL) {
+				break;
+			}
+			hal::multiboot_tag *tag=hal::get_tag(i);
+			if(tag->type!=8) {
+				continue;
+			}
+			fb_info=reinterpret_cast<hal::multiboot_fb *>(tag);
+		}
+		if(fb_info==NULL) {
+			print_boot_msg("WARN", "CONSOLE","FB not found");
+			return;
+		}
+		if(fb_info->addr>=UINT32_MAX) {
+			print_boot_msg("Init VGA", false,true);
+		}
+		uint32_t addr=static_cast<uint32_t>(fb_info->addr);
+		if(addr<<10!=0) {
+			print_boot_msg("WARN", "CONSOLE","addr not 4MiB aligned");
+			print_boot_msg("Init VGA", false,true);
+		}
+		uint32_t space_req=fb_info->pitch*fb_info->height;
+		if(space_req>0x400000) {
+			print_boot_msg("WARN", "CONSOLE","FB is too big");
+			print_boot_msg("Init VGA", false,true);
+		}
+		uint32_t cur_offset=0;
+		uint32_t sreq=space_req;
+		while(sreq>0) {
+			map_phys_to_virt_cur(fb_info->addr+cur_offset*0x1000,fb_info->addr+cur_offset*0x1000,{false,false,false});
+			cur_offset++;
+			sreq-=0x1000;
+		}
+		for(uint32_t i=0;i<space_req;i++) {
+			*(((pointer)fb_info->addr)+i)=(i%3?0xFF:0x00);
+		}
 	}
 }
 #endif

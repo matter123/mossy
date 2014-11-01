@@ -46,6 +46,18 @@ namespace x64 {
 		uint16_t limit;
 		IDT *base;
 	} PACKED;
+
+	struct trampoline {
+		char begin[4];
+#ifdef DEBUG
+		char tmp[3];
+		uintptr_t id;
+		char tmp2[6];
+#endif
+		char jmp_byte;
+		int32_t rel_jmp;
+		uint64_t abs_jmp;
+	} PACKED;
 }
 
 bool IS_SET(uint8_t arr[],uint index) {
@@ -109,6 +121,14 @@ namespace hal {
 		ent.offset_low=static_cast<uint16_t>(addr&0xFFFF);
 		ent.offset_med=static_cast<uint16_t>((addr>>16)&0xFFFF);
 		ent.offset_high=static_cast<uint32_t>(addr>>32);
+		x64::trampoline *tramp=(x64::trampoline *)exc_arr[int_num];
+		if(tramp->begin[0]==0x6A&&tramp->begin[1]==0x00&&tramp->begin[2]==0x6A) {
+			tramp=(x64::trampoline *)((pointer)exc_arr[int_num]+2);
+		}
+		int32_t diff=(addr-tramp->abs_jmp);
+		//reset the rel_jmp and abs_jmp
+		tramp->rel_jmp+=diff;
+		tramp->abs_jmp=addr;
 		idt.entries[int_num]=ent;
 		SET(used,int_num);
 	}
@@ -156,6 +176,10 @@ namespace hal {
 		} else {
 			callbacks[get_int_num(state)](state);
 		}
+	}
+
+	void fail_fast(cpu_state *state) {
+
 	}
 }
 #endif

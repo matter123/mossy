@@ -20,7 +20,7 @@ build: $(COBJECTS) $(CXXOBJECTS) mklib
 
 mklib:
 	@rm -f ../libencode$(OBJ_SUFFIX).a
-	@$(GAR) rcs ../libencode$(OBJ_SUFFIX).a *.o.$(OBJ_SUFFIX)
+	@$(AR) rcs ../libencode$(OBJ_SUFFIX).a *.o.$(OBJ_SUFFIX)
 
 clean:
 	@echo cleaning libencode

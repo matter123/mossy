@@ -28,28 +28,17 @@
 #include <unicode.h>
 #include <string.h>
 #include <ctype.h>
+namespace hal {
+	void setup_vga();
+}
 namespace kernel {
 	extern "C" uintptr_t sys_stack;
 	extern "C"
 	void init_exec(hal::multiboot_header *mboot) {
 		//hal::magic_break();
 		hal::init_mboot(mboot);
-		for(int i=0; i<hal::get_tag_count(); i++) {
-			if(hal::get_tag(i)==NULL) {
-				break;
-			}
-			hal::multiboot_tag *tag=hal::get_tag(i);
-			if(tag->type!=8) {
-				continue;
-			}
-			hal::multiboot_fb *fb_info=reinterpret_cast<hal::multiboot_fb *>(tag);
-			hal::cout<<hal::hex<<fb_info->addr<<hal::dec
-			         <<" "<<fb_info->pitch
-			         <<" "<<fb_info->height
-			         <<" "<<fb_info->bpp
-			         <<" "<<fb_info->type<<hal::endl;
-		}
 		hal::init_arch();
+		//hal::setup_vga();
 		hal::init_vendor();
 		//hal::print_boot_msg("Init kstacks",init_kstacks(),true);
 		//hal::print_boot_msg("Init heap",heap_init(),true);

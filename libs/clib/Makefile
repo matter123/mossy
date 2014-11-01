@@ -20,7 +20,7 @@ build: $(COBJECTS) $(CXXOBJECTS) mklib
 
 mklib:
 	@rm -f ../libc$(OBJ_SUFFIX).a
-	@$(GAR) rcs ../libc$(OBJ_SUFFIX).a *.o.$(OBJ_SUFFIX)
+	@$(AR) rcs ../libc$(OBJ_SUFFIX).a *.o.$(OBJ_SUFFIX)
 
 clean:
 	@echo cleaning CLIB

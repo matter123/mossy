@@ -74,6 +74,7 @@ ALIGN 4
 	dd null_gdt
 
 [SECTION .low_bss alloc noexec write nobits align=4096]
+[GLOBAL pt_vga]
 low_bss_start:
 pml4:
 resb 0x1000
@@ -84,6 +85,8 @@ resb 0x1000
 pt:
 resb 0x1000
 pt_1:
+resb 0x1000
+pt_vga:
 resb 0x1000
 low_bss_end:
 
