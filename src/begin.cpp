@@ -28,6 +28,8 @@
 #include <unicode.h>
 #include <string.h>
 #include <ctype.h>
+#include <acpi.h>
+#include <tables/rsdp.h>
 namespace hal {
 	void setup_vga();
 }
@@ -38,6 +40,9 @@ namespace kernel {
 		//hal::magic_break();
 		hal::init_mboot(mboot);
 		hal::init_arch();
+		hal::cout<<"HI"<<hal::endl;
+		acpi::init_tables();
+		hal::cout<<acpi::tables::rsdp_ptr<<hal::endl;
 		//hal::setup_vga();
 		hal::init_vendor();
 		//hal::print_boot_msg("Init kstacks",init_kstacks(),true);

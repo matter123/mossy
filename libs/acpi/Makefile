@@ -1,4 +1,4 @@
-#custom make file for integrating Mossy2 and CLIB
+#custom make file for integrating Mossy2 and acpica
 #licensed under Apache 2.0 Public license
 
 CSOURCES:=$(shell find . -name "*.c")
@@ -11,18 +11,18 @@ build: $(COBJECTS) $(CXXOBJECTS) mklib
 %.o.$(OBJ_SUFFIX): %.c
 	@echo Compiling $<
 	@cd ../.. && $(CC) $(CFLAGS) \
-	-pedantic -o libs/clib/$@ -c libs/clib/$<
+	-o libs/acpi/$@. -c libs/acpi/$<
 
 %.o.$(OBJ_SUFFIX): %.cpp
 	@echo Compiling $<
 	@cd ../.. && $(CXX) $(CXXFLAGS) \
-	-pedantic -o libs/clib/$@ -c libs/clib/$<
+	-o libs/acpi/$@ -c libs/acpi/$<
 
 mklib:
-	@rm -f ../libc$(OBJ_SUFFIX).a
-	@$(AR) rcs ../libc$(OBJ_SUFFIX).a $(COBJECTS) $(CXXOBJECTS)
+	@rm -f ../libacpi$(OBJ_SUFFIX).a
+	@$(AR) rcs ../libacpi$(OBJ_SUFFIX).a $(COBJECTS) $(CXXOBJECTS) 
 
 clean:
-	@echo cleaning CLIB
-	@rm -f ../libc$(OBJ_SUFFIX).a
+	@echo cleaning acpi
+	@rm -f ../libacpi$(OBJ_SUFFIX).a
 	find . -name '*.o.*' -delete

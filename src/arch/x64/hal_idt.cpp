@@ -114,8 +114,7 @@ namespace hal {
 				break;
 		}
 		ent.present=true;
-		ent.IST=0;//don't really know what this does,
-		//but AMD manual says zero is safe
+		ent.IST=0;//0 means no seperate stack if interrupted code is DPL 0
 		ent.code_segment=0x8;//see boot64.inc for this magic number
 
 		ent.offset_low=static_cast<uint16_t>(addr&0xFFFF);

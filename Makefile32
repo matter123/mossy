@@ -36,7 +36,7 @@ clean:
 link:
 	@echo Linking
 	@$(CXX) $(LDFLAGS) -o kernel$(OBJ_SUFFIX) $(SOBJECTS) $(COBJECTS) $(CXXOBJECTS) -lc$(OBJ_SUFFIX)\
-	 -lencode$(OBJ_SUFFIX) -lgcc
+	 -lencode$(OBJ_SUFFIX) -lacpi$(OBJ_SUFFIX) -lgcc
 
 .s.o:
 	@echo Assembling $(patsubst %.o, %.s, $@)
@@ -44,11 +44,11 @@ link:
 	@nasm $(ASFLAGS) $(patsubst %.o, %.cpps, $@) -o $@
 	@rm $(patsubst %.o, %.cpps, $@)
 
-.c.o:
+%.o: %.c
 	@echo Compiling $<
 	@$(Clang) $(CFLAGS) -o $@ -c $<
 
-.cpp.o:
+%.o: %.cpp
 	@echo Compiling $<
 	@$(ClangXX) $(CXXFLAGS) -o $@ -c $<
 
@@ -66,3 +66,4 @@ runem:
 build_libs:
 	cd libs/clib && $(MAKE) build
 	cd libs/encode && $(MAKE) build
+	cd libs/acpi && $(MAKE) build
