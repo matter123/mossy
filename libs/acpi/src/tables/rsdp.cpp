@@ -30,6 +30,9 @@ namespace acpi {
 			if(checksum!=0) {
 				return false;
 			}
+			if(rsdp_ptr->begin.revision==0) {
+				return true;
+			}
 			for(int i=0; i<sizeof(RSDP20); i++) {
 				checksum+=bytes[i];
 			}
@@ -37,13 +40,13 @@ namespace acpi {
 		}
 		bool find_rsdp() {
 			/**@note BIOS only*/
-			uintptr_t bda=os::get_virt_phys(0x040E, 2);
+			uintptr_t bda=os::get_virt_phys(0x040E, 2,NULL);
 			uintptr_t ebda_start=*(reinterpret_cast<uint16_t *>(bda))<<4;
 			os::unget_phys(0x040E,2,bda);
-			uintptr_t rsdp_start1=os::get_virt_phys(ebda_start,0x1000)&~(0xF);
-			uintptr_t rsdp_start2=os::get_virt_phys(0xE0000,0x20000)&~(0xF);
+			uintptr_t rsdp_start1=os::get_virt_phys(ebda_start,0x1000,NULL)&~(0xF);
+			uintptr_t rsdp_start2=os::get_virt_phys(0xE0000,0x20000,NULL)&~(0xF);
 			for(uintptr_t i=0; i<0x20000; i+=16) {
-				asm("xchg %bx, %bx");
+				//check both spots
 				if(memcmp((void *)(rsdp_start2+i),"RSD PTR ",8)==0) {
 					rsdp_ptr=reinterpret_cast<RSDP20 *>(rsdp_start2+i);
 					break;
@@ -53,13 +56,20 @@ namespace acpi {
 					break;
 				}
 			}
-			asm("xchg %bx, %bx");
 			if(!rsdp_ptr) {
 				return false;
 			}
 			if(!do_checksum()) {
+				rsdp_ptr=NULL;
 				return false;
 			}
+			void *rsdp=os::alloc_mem(sizeof(RSDP20));
+			//memcpy the right amount of memory
+			memcmp(rsdp,rsdp_ptr,rsdp_ptr->begin.revision==0?sizeof(RSDP):sizeof(RSDP20));
+			rsdp_ptr=reinterpret_cast<RSDP20 *>(rsdp);
+			//and free the firmware
+			os::unget_phys(ebda_start,0x1000,rsdp_start1);
+			os::unget_phys(0xE0000,0x20000,rsdp_start2);
 			return true;
 		}
 	}

@@ -15,5 +15,12 @@
 */
 #pragma once
 namespace acpi {
+	/**
+	    @brief initalizes the static table portion of acpi
+	    @details finds parses and extracts all tables found in the firmware
+	    without executing and aml or enabling acpi mode
+
+	    @date created on 2014-11-03
+	*/
 	void init_tables();
 }

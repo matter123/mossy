@@ -14,10 +14,57 @@
     limitations under the License.
 */
 #pragma once
+#include <stddef.h>
 namespace acpi {
 	namespace os {
+		/**
+		    @brief initalizes acpi os interface
+		    @details this is called by libacpi when initalizing itself
+		    @return true on sucess false otherwise
+
+		    @date created on 2014-11-03
+		*/
 		bool init_acpi_os();
-		uintptr_t get_virt_phys(uintptr_t phys, uintptr_t len);
+		/**
+		    @brief allocates firmware memory
+		    @details allocates memory from the virtual firware block that
+		    covers the area described by \a phys and \a len
+
+		    @param phys base address of physical block of memory to acsess
+		    @param len length of blovk of memory
+		    @param[out] alloc_len if non-NULL will be filled with how much was over
+		    allocated and can be safely used
+		    @return address to start of the virtual firmware block allocated
+
+		    @date created on 2014-11-03
+
+		    @sa alloc_mem
+		*/
+		uintptr_t get_virt_phys(uintptr_t phys, uintptr_t len, uintptr_t *alloc_len);
+		/**
+		    @brief deallocates firmware memory
+		    @details deallocates a block of virtual firmware memory
+
+		    @param phys base addres of physical block of memory that was allocated, MUST
+		    be the same as what was passed to get_virt_phys
+		    @param len length of physical block of memory that was allocated, MUST be the
+		    the same as what was passed to get_virt_phys
+		    @param virt virtual address returned by get_virt_phys
+
+		    @date created on 2014-11-03
+		*/
 		void unget_phys(uintptr_t phys, uintptr_t len, uintptr_t virt);
+		/**
+		    @brief allocates general purpose memory
+		    @details allocates memory from the heap that is backed with ram
+
+		    @param len length of memory to allocate
+		    @return a pointer to the start of the allocated memory
+
+		    @date created on 2014-11-05
+
+		    @sa get_virt_phys
+		*/
+		void *alloc_mem(size_t len);
 	}
 }

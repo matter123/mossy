@@ -16,14 +16,18 @@
 
 
 /**
- * @file
- * @brief header included into every file
- * @detail this header contains #defines and typedefs
- * that should be in every single file
- * @note never manually include this file 
- */
+    @file
+    @brief header included into every file
+    @detail this header contains #defines and typedefs
+    that should be in every single file
+    @note never manually include this file
+*/
 #pragma once
 #ifndef ASM
 #include <stdint.h>
+
+#ifdef __cplusplus
+#include <panic.h>
+#endif
 typedef uint8_t *pointer;
 #endif

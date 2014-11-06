@@ -29,6 +29,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <acpi.h>
+#include <acpi_os.h>
 #include <tables/rsdp.h>
 namespace hal {
 	void setup_vga();
@@ -40,13 +41,13 @@ namespace kernel {
 		//hal::magic_break();
 		hal::init_mboot(mboot);
 		hal::init_arch();
-		hal::cout<<"HI"<<hal::endl;
-		acpi::init_tables();
+		hal::magic_break();
+		hal::print_boot_msg("Init heap",heap_init(),true);
+		//acpi::init_tables();
 		hal::cout<<acpi::tables::rsdp_ptr<<hal::endl;
 		//hal::setup_vga();
 		hal::init_vendor();
 		//hal::print_boot_msg("Init kstacks",init_kstacks(),true);
-		//hal::print_boot_msg("Init heap",heap_init(),true);
 		//hal::print_boot_msg("Init scheduler",init_scheduler((thread_info *)sys_stack),true);
 		time_t bt=BUILD_UNIX_TIME;
 		hal::cout<<"Built on: "<<std::TC::GREEN<<asctime(gmtime(&bt))<<std::TC::WHITE

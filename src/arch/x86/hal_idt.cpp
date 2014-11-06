@@ -46,11 +46,11 @@ namespace x86 {
 
 	struct trampoline {
 		char begin[3];
-#ifdef DEBUG
+		#ifdef DEBUG
 		char *id;
-#else
+		#else
 		char id;
-#endif
+		#endif
 		char jmp_byte;
 		int32_t rel_jmp;
 		uint32_t abs_jmp;
@@ -95,10 +95,21 @@ namespace hal {
 	int_callback callbacks[256];
 	void register_int(uint16_t int_num,int_callback callback,int type,bool user) {
 		register_asm_sub_int(int_num,(uintptr_t)exc_arr[int_num],type,user);
+		hal::cout<<"registering interrupt "<<hal::dec<<int_num<<" at "<<hal::address<<
+		         (uintptr_t)callback<<endl;
 		callbacks[int_num]=callback;
+		x86::trampoline *tramp=(x86::trampoline *)exc_arr[int_num];
+		if(tramp->begin[0]==0x6A&&tramp->begin[1]==0x00&&tramp->begin[2]==0x6A) {
+			tramp=(x86::trampoline *)((pointer)exc_arr[int_num]+2);
+		}
+		int32_t diff=(((uintptr_t)callback)-tramp->abs_jmp);
+		//reset the rel_jmp and abs_jmp
+		tramp->rel_jmp+=diff;
+		tramp->abs_jmp=((uintptr_t)callback);
 	}
 
-	void register_asm_sub_int(uint16_t int_num, uintptr_t addr, int type,bool user) {
+	void register_asm_sub_int(uint16_t int_num, uintptr_t addr, int type, bool user) {
+		hal::cout<<"registering interrupt "<<hal::dec<<int_num<<" at "<<hal::address<<addr<<endl;
 		//callee assumes all responsibility of handling the interrupt
 		if(int_num>256||IS_SET(used,int_num)) {
 			return;
@@ -119,14 +130,6 @@ namespace hal {
 		ent.code_segment=0x8;
 		ent.offset_low=static_cast<uint16_t>(addr&0xFFFF);
 		ent.offset_med=static_cast<uint16_t>((addr>>16)&0xFFFF);
-		x86::trampoline *tramp=(x86::trampoline *)exc_arr[int_num];
-		if(tramp->begin[0]==0x6A&&tramp->begin[1]==0x00&&tramp->begin[2]==0x6A) {
-			tramp=(x86::trampoline *)((pointer)exc_arr[int_num]+2);
-		}
-		int32_t diff=(addr-tramp->abs_jmp);
-		//reset the rel_jmp and abs_jmp
-		tramp->rel_jmp+=diff;
-		tramp->abs_jmp=addr;
 		idt.entries[int_num]=ent;
 		SET(used,int_num);
 	}
@@ -177,7 +180,7 @@ namespace hal {
 	}
 
 	void fail_fast(cpu_state *state) {
-
+		kernel::panic("fail fast");
 	}
 }
 #endif

@@ -16,15 +16,15 @@
 #include <stdint.h>
 #include <hal/mmap.h>
 #include <hal/paging.h>
-#include <hal/console.h>
 #include <stddef.h>
+#include <stdlib.h>
 namespace acpi {
 	namespace os {
 		bool IS_SET(uint8_t arr[],unsigned int index) {
 			return (arr[index/8]&(1<<index%8))==(1<<index%8);
 		}
-#define SET(a,i) do {a[i/8]|=(1<<(i%8));}while(0)
-#define UN_SET(a,i) do {a[i/8]&=~(1<<(i%8));}while(0)
+#define SET(a,i)    do {a[(i)/8]|= (1<<((i)%8));}while(0)
+#define UN_SET(a,i) do {a[(i)/8]&=~(1<<((i)%8));}while(0)
 		uint8_t bitmap[128];
 		uintptr_t start_loc;
 
@@ -43,32 +43,28 @@ namespace acpi {
 			}
 			start_loc=(uintptr_t)region->start;
 			//assume 4MiB firmware area
-			hal::cout<<hal::address<<start_loc<<hal::endl;
 			return true;
 		}
-		uintptr_t get_virt_phys(uintptr_t phys, uintptr_t len) {
+		uintptr_t get_virt_phys(uintptr_t phys, uintptr_t len, uintptr_t *alloc_len) {
 			uintptr_t pa_phys=phys&~(0xFFF);
 			uintptr_t pa_len=(len+(0x1000-len%0x1000))/0x1000+(phys%0x1000
 			                                                   +len%0x1000)/0x1000;
 			for(size_t s=0; s<1024; s++) {
-				bool flag=false;
 				for(size_t i=0; i<pa_len; i++) {
 					if(IS_SET(bitmap,s+i)) {
-						flag=true;
-						break;
+						goto skip;
 					}
 				}
-				if(!flag) {
-					for(size_t i=0; i<pa_len; i++) {
-						SET(bitmap,s+i);
-						hal::map_phys_to_virt_cur(start_loc+(s+i)*0x1000,pa_phys+i*0x1000,
-						{false,false,true});
-					}
-					hal::cout<<"requested ("<<(uintptr_t)phys<<","<<(uintptr_t)len<<") gave ("<<((
-					             uintptr_t)phys&0xFFF+start_loc
-					         +s*0x1000)<<","<<((uintptr_t)pa_len)<<")\n";
-					return phys&0xFFF+start_loc+s*0x1000;
+				for(size_t i=0; i<pa_len; i++) {
+					SET(bitmap,s+i);
+					hal::map_phys_to_virt_cur(start_loc+(s+i)*0x1000,pa_phys+i*0x1000,
+					{false,false,true});
 				}
+				if(alloc_len) {
+					*alloc_len=(pa_len*0x1000)-(phys&0xFFF);
+				}
+				return (phys&0xFFF)+start_loc+s*0x1000;
+			skip:;
 			}
 			return 0;
 		}
@@ -81,6 +77,9 @@ namespace acpi {
 				hal::unmap_virt_phys_cur(virt+i*0x1000);
 				UN_SET(bitmap,s+i);
 			}
+		}
+		void *alloc_mem(size_t len) {
+			return ::malloc(len);
 		}
 	}
 }
