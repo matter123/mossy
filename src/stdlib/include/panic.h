@@ -14,8 +14,7 @@
     limitations under the License.
 */
 
-#ifndef PANIC_H
-#define PANIC_H
+#pragma once
 #include <stdint.h>
 #include <stdlib.h>
 namespace kernel {
@@ -24,4 +23,3 @@ namespace kernel {
 	void panic(const char *msg)__attribute__((noreturn));
 	void panic(const char *file,uint32_t line)__attribute__((noreturn));
 }
-#endif

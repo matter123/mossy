@@ -16,16 +16,18 @@
 
 #include <hal/workspace.h>
 #include <hal/console.h>
+#include <stdlib.h>
+#include <string.h>
 namespace hal {
 	extern "C" uint32_t k_end;      /*we have 128kb after this reserved*/
 	extern "C" uint32_t k_data_end; /*end of working space, PFA and paging needs
                                 to be up by then so we don't run out of room*/
-	void *wksp_ptr=&k_end;
+	pointer wksp_ptr=(pointer)&k_end;
 	void *w_malloc(size_t s) {
 		if(s>sizeof(uintptr_t))wksp_ptr=
-			    (void *)(((uintptr_t)wksp_ptr&~(sizeof(uintptr_t)-1))+sizeof(uintptr_t));
+			    (pointer)(((uintptr_t)wksp_ptr&~(sizeof(uintptr_t)-1))+sizeof(uintptr_t));
 		void *temp=wksp_ptr;
-		if(wksp_ptr+s>&k_data_end) {
+		if(wksp_ptr+s>(pointer)&k_data_end) {
 			return reinterpret_cast<void *>(0);
 		}
 		wksp_ptr+=s;
@@ -33,16 +35,24 @@ namespace hal {
 	}
 	void *w_malloc(size_t s, size_t align) {
 		if(!(align&(align-1))) {
-			wksp_ptr=(void *)(((uintptr_t)wksp_ptr&~(align-1))+align);
+			wksp_ptr=(pointer)(((uintptr_t)wksp_ptr&~(align-1))+align);
 		}
 		void *temp=wksp_ptr;
-		if(wksp_ptr+s>&k_data_end) {
+		if(wksp_ptr+s>(pointer)&k_data_end) {
 			return reinterpret_cast<void *>(0);
 		}
 		wksp_ptr+=s;
 		return temp;
 	}
 	void  wksp_begin(void *begin) {
-		wksp_ptr=begin;
+		if(begin>&k_data_end) {
+			begin=&k_data_end;
+		}
+		wksp_ptr=(pointer)begin;
+		uintptr_t diff=((pointer)&k_data_end-wksp_ptr)/1024;
+		char msg[40]="wksp_begin called, ";
+		itoa(diff,msg+19,10);
+		strcat(msg," KiBs left");
+		print_boot_msg("INFO","W_MALLOC",msg);
 	}
 }

@@ -46,6 +46,18 @@ namespace x64 {
 		uint16_t limit;
 		IDT *base;
 	} PACKED;
+
+	struct trampoline {
+		char begin[4];
+#ifdef DEBUG
+		char tmp[3];
+		uintptr_t id;
+		char tmp2[6];
+#endif
+		char jmp_byte;
+		int32_t rel_jmp;
+		uint64_t abs_jmp;
+	} PACKED;
 }
 
 bool IS_SET(uint8_t arr[],uint index) {
@@ -79,12 +91,12 @@ namespace hal {
 		return 255;
 	}
 	int_callback callbacks[256];
-	void register_int(uint16_t int_num,int_callback callback,hal::interrupt_type type,bool user) {
+	void register_int(uint16_t int_num,int_callback callback,int type,bool user) {
 		register_asm_sub_int(int_num,(uintptr_t)exc_arr[int_num],type,user);
 		callbacks[int_num]=callback;
 	}
 
-	void register_asm_sub_int(uint16_t int_num, uintptr_t addr, interrupt_type type,bool user) {
+	void register_asm_sub_int(uint16_t int_num, uintptr_t addr, int type,bool user) {
 		//callee assumes all responsibility of handling the interrupt
 		if(int_num>256||IS_SET(used,int_num)) {
 			return;
@@ -102,13 +114,20 @@ namespace hal {
 				break;
 		}
 		ent.present=true;
-		ent.IST=0;//don't really know what this does,
-		//but AMD manual says zero is safe
+		ent.IST=0;//0 means no seperate stack if interrupted code is DPL 0
 		ent.code_segment=0x8;//see boot64.inc for this magic number
 
 		ent.offset_low=static_cast<uint16_t>(addr&0xFFFF);
 		ent.offset_med=static_cast<uint16_t>((addr>>16)&0xFFFF);
 		ent.offset_high=static_cast<uint32_t>(addr>>32);
+		x64::trampoline *tramp=(x64::trampoline *)exc_arr[int_num];
+		if(tramp->begin[0]==0x6A&&tramp->begin[1]==0x00&&tramp->begin[2]==0x6A) {
+			tramp=(x64::trampoline *)((pointer)exc_arr[int_num]+2);
+		}
+		int32_t diff=(addr-tramp->abs_jmp);
+		//reset the rel_jmp and abs_jmp
+		tramp->rel_jmp+=diff;
+		tramp->abs_jmp=addr;
 		idt.entries[int_num]=ent;
 		SET(used,int_num);
 	}
@@ -154,8 +173,12 @@ namespace hal {
 			dump_regs(state);
 			halt(true);
 		} else {
-			callbacks[get_int_num(state)](0,state);
+			callbacks[get_int_num(state)](state);
 		}
+	}
+
+	void fail_fast(cpu_state *state) {
+
 	}
 }
 #endif

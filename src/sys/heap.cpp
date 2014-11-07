@@ -53,7 +53,7 @@ namespace kernel {
 			len-=UINT32_MAX;
 			HEAD *cur=start;
 			while(len>UINT32_MAX) {
-				void *addr=(void *)cur;
+				pointer addr=(pointer)cur;
 				addr+=UINT32_MAX;
 				HEAD *next=(HEAD *)addr;
 				memset(next,0,sizeof(HEAD));
@@ -66,7 +66,7 @@ namespace kernel {
 				cur=cur->next;
 			}
 			if(len>sizeof(HEAD)) {
-				void *addr=(void *)cur;
+				pointer addr=(pointer)cur;
 				addr+=UINT32_MAX;
 				HEAD *next=(HEAD *)addr;
 				memset(next,0,sizeof(HEAD));
@@ -77,7 +77,6 @@ namespace kernel {
 				cur->next=next;
 				next->prev=cur;
 			}
-
 		}
 		return true;
 	}
@@ -104,11 +103,11 @@ namespace kernel {
 			split(cur,size);
 		}
 		cur->free=false;
-		return ((void *)cur)+sizeof(HEAD);
+		return ((pointer)cur)+sizeof(HEAD);
 	}
 	extern "C"
 	void free(void *ptr) {
-		HEAD *head=(HEAD *)(ptr-sizeof(HEAD));
+		HEAD *head=(HEAD *)((pointer)ptr-sizeof(HEAD));
 		if(head->magic!=0xC0FFEE) {
 			return;
 		}
@@ -135,7 +134,7 @@ namespace kernel {
 		if(ptr==NULL) {
 			return malloc(size);
 		}
-		HEAD *head=(HEAD *)(ptr-sizeof(HEAD));
+		HEAD *head=(HEAD *)((pointer)ptr-sizeof(HEAD));
 		if(head->magic!=0xC0FFEE) {
 			return NULL;
 		}
@@ -178,7 +177,7 @@ namespace kernel {
 		return ptr;
 	}
 	void split(HEAD *head, size_t new_size) {
-		HEAD *newh=(HEAD *)(((void *)head)+sizeof(HEAD)+new_size);
+		HEAD *newh=(HEAD *)(((pointer)head)+sizeof(HEAD)+new_size);
 		newh->len=head->len-(new_size+sizeof(HEAD));
 		newh->magic=0xC0FFEE;
 		newh->free=true;
@@ -199,7 +198,7 @@ namespace kernel {
 		}
 	}
 	void scoot(HEAD *head, size_t new_size) {
-		HEAD *newh=(HEAD *)(((void *)head)+sizeof(HEAD)+new_size);
+		HEAD *newh=(HEAD *)(((pointer)head)+sizeof(HEAD)+new_size);
 		if(head->next) {
 			memmove(newh,head->next,sizeof(HEAD));
 			if(newh->next) {

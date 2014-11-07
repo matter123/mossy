@@ -39,6 +39,7 @@ namespace hal {
 			bool can_shrink() const;
 			bool can_grow() const;
 			bool operator==(const mem_type &other) const;
+			void operator=(const mem_type &rhs);
 			uint64_t to_u64() const;
 			mem_type(mem_type &other);
 			mem_type();

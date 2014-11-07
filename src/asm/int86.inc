@@ -58,7 +58,8 @@ exc%1:
 	%else
 	push dword 0
 	%endif
-	jmp exc_stub
+	jmp fail_fast
+	dd fail_fast ;stores the absolute address of fail_fast so i can properly path the jmp
 %endmacro
 
 %macro EXCEPT_NC 2
@@ -71,16 +72,33 @@ exc%1:
 	%else
 	push dword 0
 	%endif
-	jmp exc_stub
+	jmp fail_fast
+	dd fail_fast
 %endmacro
 
+[EXTERN _ZN3hal9fail_fastEP9cpu_state]
+fail_fast:
+	push_x86
+	mov ax, 0x10
+	mov ds, ax
+	mov es, ax
+	push esp
+	call _ZN3hal9fail_fastEP9cpu_state
+	jmp .past
+	.blidt:
+	dd 0
+	dw 0
+	.past:
+	mov eax, .blidt
+	lidt [eax]
+	xor bx, bx
+	div bx
+	iret ;shouldn't get to here, the div should triple fault the cpu
+
+[GLOBAL exc_stub_sched]
 [EXTERN _ZN3hal11call_handleEP9cpu_state]
 [EXTERN _ZN6kernel8scheduleEP9cpu_state]
-[EXTERN in_interrupt]
-[EXTERN interrupt_count]
-exc_stub:
-	mov byte [in_interrupt], 1
-	inc dword [interrupt_count]
+exc_stub_sched:
 	;xchg bx, bx
 	cmp dword [esp + 4], 0xC0
 	jne .test_kern
@@ -105,5 +123,4 @@ exc_stub:
 	;clean up stack
 	pop_x86
 	add esp, 12
-	mov byte [in_interrupt], 0
 	iretd

@@ -32,7 +32,7 @@ namespace hal {
 		if(head->size!=mboot->size) {
 			print_boot_msg("Init Multiboot",false,true);
 		}
-		void *temp_ptr=reinterpret_cast<void *>(head)+sizeof(multiboot_header);
+		pointer temp_ptr=reinterpret_cast<pointer>(head)+sizeof(multiboot_header);
 		while(true) {
 			multiboot_tag *tag=reinterpret_cast<multiboot_tag *>(temp_ptr);
 			if(tag->type==0&&tag->size==8) {
@@ -41,7 +41,7 @@ namespace hal {
 				tag_count++;
 				temp_ptr+=tag->size;
 				if((uintptr_t)temp_ptr%8) {
-					temp_ptr=(void *)(((uintptr_t)temp_ptr&~0x7)+8);
+					temp_ptr=(pointer)(((uintptr_t)temp_ptr&~0x7)+8);
 				}
 			}
 		}
@@ -50,12 +50,12 @@ namespace hal {
 			print_boot_msg("Init Multiboot",false,true);
 		}
 		tags=reinterpret_cast<multiboot_tag **>(temp2_ptr);
-		temp_ptr=reinterpret_cast<void *>(head)+sizeof(multiboot_header);
+		temp_ptr=reinterpret_cast<pointer>(head)+sizeof(multiboot_header);
 		for(int i=0; i<tag_count; i++) {
 			tags[i]=reinterpret_cast<multiboot_tag *>(temp_ptr);
 			temp_ptr+=tags[i]->size;
 			if((uintptr_t)temp_ptr%8) {
-				temp_ptr=(void *)(((uintptr_t)temp_ptr&~0x7)+8);
+				temp_ptr=(pointer)(((uintptr_t)temp_ptr&~0x7)+8);
 			}
 		}
 		//total size of all modules should be less than ~70% of workspace area

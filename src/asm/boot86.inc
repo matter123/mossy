@@ -42,6 +42,15 @@ ALIGN 8
 
 	dw 6,0
 	dd 12
+	
+	dq 0
+	
+	;dw 5,0
+	;dd 20
+	;dd 1024
+	;dd 768
+	;dd 0
+
 	dd 0
 ALIGN 8
 	dw 0,0
@@ -218,10 +227,13 @@ higherhalf:
 
 [SECTION .low_bss alloc noexec write nobits align=4096]
 [GLOBAL pd]
+[GLOBAL pt_vga]
 low_bss_start:
 pd:
 resb 0x1000
 pt:
+resb 0x1000
+pt_vga:
 resb 0x1000
 low_bss_end:
 

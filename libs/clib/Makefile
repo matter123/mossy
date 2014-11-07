@@ -2,22 +2,27 @@
 #licensed under Apache 2.0 Public license
 
 CSOURCES:=$(shell find . -name "*.c")
-COBJECTS:=$(patsubst %.c, %.o, $(CSOURCES))
+COBJECTS:=$(patsubst %.c, %.o.$(OBJ_SUFFIX), $(CSOURCES))
 CXXSOURCES:=$(shell find . -name "*.cpp")
-CXXOBJECTS:=$(patsubst %.cpp, %.o, $(CXXSOURCES))
+CXXOBJECTS:=$(patsubst %.cpp, %.o.$(OBJ_SUFFIX), $(CXXSOURCES))
 
 build: $(COBJECTS) $(CXXOBJECTS) mklib
 
-.c.o:
+%.o.$(OBJ_SUFFIX): %.c
 	@echo Compiling $<
-	@cd ../.. && $(CC) $(CFLAGS) -fno-tree-loop-distribute-patterns \
-	-pedantic -o libs/clib/$@.$(OBJ_SUFFIX) -c libs/clib/$<
+	@cd ../.. && $(CC) $(CFLAGS) \
+	-pedantic -o libs/clib/$@ -c libs/clib/$<
 
-.cpp.o:
+%.o.$(OBJ_SUFFIX): %.cpp
 	@echo Compiling $<
-	@cd ../.. && $(CXX) $(CXXFLAGS) -fno-tree-loop-distribute-patterns \
-	-pedantic -o libs/clib/$@.$(OBJ_SUFFIX) -c libs/clib/$<
+	@cd ../.. && $(CXX) $(CXXFLAGS) \
+	-pedantic -o libs/clib/$@ -c libs/clib/$<
 
 mklib:
 	@rm -f ../libc$(OBJ_SUFFIX).a
-	@$(GAR) rcs ../libc$(OBJ_SUFFIX).a *.o.$(OBJ_SUFFIX)
+	@$(AR) rcs ../libc$(OBJ_SUFFIX).a $(COBJECTS) $(CXXOBJECTS)
+
+clean:
+	@echo cleaning CLIB
+	@rm -f ../libc$(OBJ_SUFFIX).a
+	find . -name '*.o.*' -delete

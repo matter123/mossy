@@ -17,21 +17,20 @@
 #include <sys/tasks.h>
 #include <hal/int.h>
 #include <hal/hal.h>
-#include <vector.h>
 #include <hal/int.h>
 #include <hal/console.h>
 #include <text_color.h>
 namespace kernel {
-	static std::vector<thread_info *> *blocked;
-	static std::vector<thread_info *> *active;
-	static bool schedule_int(int level, cpu_state *s);
-	static uint64_t current=0;
+	//static std::vector<thread_info *> *blocked;
+	//static std::vector<thread_info *> *active;
+	static void schedule_int(cpu_state *s);
+	//static uint64_t current=0;
 	static bool init=false;
-	static void *wait_on;
+	//static void *wait_on;
 	cpu_state *schedule(cpu_state *s) {
-		if(!init) {
+		//if(!init) {
 			return s;
-		}
+		/*}
 		thread_info *cur_task=active->at(current);
 		cur_task->running=false;
 		cur_task->cpu_state = s;
@@ -70,28 +69,29 @@ namespace kernel {
 		}
 		thread_info *new_task=active->at(current);
 		new_task->running=true;
-		return new_task->cpu_state;
+		return new_task->cpu_state;*/
 	}
 
-	thread_info *get_self() {
+	/*thread_info *get_self() {
 		return active->at(current);
-	}
+	}*/
 
 	void add_task(thread_info *t) {
-		active->push_back(t);
+	//	active->push_back(t);
 	}
 
 	bool init_scheduler(thread_info *cur_task) {
-		active=new std::vector<thread_info *>(256);
+	//	active=new std::vector<thread_info *>(256);
 		cur_task->running=true;
 		add_task(cur_task);
-		blocked=new std::vector<thread_info *>(16);
-		hal::register_int(0xC0,&schedule_int,hal::interrupt_type::NON_REENTRANT,true);
+	//	blocked=new std::vector<thread_info *>(16);
+		hal::register_int(0xC0,&schedule_int, NON_REENTRANT,true);
 		init=true;
 		return true;
 	}
 
-	bool schedule_int(int level, cpu_state *s) {
+	void schedule_int(cpu_state *s) {
+		/*
 		if(get_reg(s,0)==0) {
 			active->at(current)->waiting=true;
 			active->at(current)->wait_on=(void *)get_reg(s,1);
@@ -102,6 +102,6 @@ namespace kernel {
 			hal::cout<<std::TC::WHITE<<hal::address<<(void *)get_reg(s,1)<<" ";
 			wait_on=(void *)get_reg(s,1);
 		}
-		return true;
+		*/
 	}
 }

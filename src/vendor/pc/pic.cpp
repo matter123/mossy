@@ -28,7 +28,7 @@ namespace pc {
 #define S_DAT 0xA1
 	hal::idt_range pic_range;
 
-	bool callback(int level, cpu_state *s);
+	void callback(cpu_state *s);
 	void (*funcs[16])(cpu_state *)= {NULL};
 	bool handle_eoi[16] = {false};
 
@@ -62,12 +62,12 @@ namespace pc {
 		io_wait();
 		outb(S_DAT,0xFF);
 		for(int i=0; i<pic_range.len; i++) {
-			register_int(pic_range.start+i,callback,hal::REENTRANT,false);
+			hal::register_int(pic_range.start+i,callback,REENTRANT,false);
 		}
 		return true;
 	}
 
-	bool callback(int level, cpu_state *s) {
+	void callback(cpu_state *s) {
 		int irq=get_int_num(s)-pic_range.start;
 		void (*func)(cpu_state *)=funcs[irq];
 		if(handle_eoi[irq]) {
@@ -85,7 +85,6 @@ namespace pc {
 			}
 			outb(M_CMD,0x20);
 		}
-		return true;
 	}
 
 	void unmask(int irq) {

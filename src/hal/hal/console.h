@@ -133,6 +133,7 @@ namespace hal {
 	// Created on 2014-05-18              //
 	////////////////////////////////////////
 	void print_boot_msg(const char *msg,bool ok, bool halt);
+	void print_boot_msg(const char *level,const char *app,const char *msg);
 	extern ostream cout;
 
 	extern ios_base hex;

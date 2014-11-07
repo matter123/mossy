@@ -15,7 +15,6 @@
 #undef DEBUG
 %define DEBUG
 #endif
-#define asm
 #include <arch.h>
 #ifdef X86
 [GLOBAL _ZN6kernel8spinlock7acquireEv]
@@ -42,8 +41,8 @@ _ZN6kernel8spinlock7acquireEv:
 		ret
 
 
-[GLOBAL _ZN6kernel8spinlock7releaseEm]
-_ZN6kernel8spinlock7releaseEm:
+[GLOBAL _ZN6kernel8spinlock7releaseEj]
+_ZN6kernel8spinlock7releaseEj:
 	push ebp
 	mov ebp, esp
 	mov eax, [ebp + 8]

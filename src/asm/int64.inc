@@ -74,6 +74,7 @@ exc%1:
 	pop rax
 	%endif
 	jmp exc_stub
+	dq fail_fast
 %endmacro
 
 %macro EXCEPT_NC 2
@@ -89,7 +90,28 @@ exc%1:
 	pop rax
 	%endif
 	jmp exc_stub
+	dq fail_fast
 %endmacro
+
+[EXTERN _ZN3hal9fail_fastEP9cpu_state]
+fail_fast:
+	push_x64
+	mov rdi, rsp
+	mov ax, 0x10
+	mov fs, ax
+	mov gs, ax
+	call _ZN3hal9fail_fastEP9cpu_state
+	jmp .past
+	.blidt:
+	dd 0
+	dw 0
+	.past:
+	mov rax, .blidt
+	lidt [rax]
+	xor bx, bx
+	div bx
+	iret ;shouldn't get to here, the div should triple fault the cpu
+
 
 [EXTERN _ZN3hal11call_handleEP9cpu_state]
 [EXTERN _ZN6kernel8scheduleEP9cpu_state]

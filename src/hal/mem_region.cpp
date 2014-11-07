@@ -118,7 +118,7 @@ namespace hal {
 		}
 		regs->regions=t_regions;
 		regs->tag_count=ecount;
-		wksp_begin((void *)regs->regions+regs->tag_count*sizeof(mem_region));
+		wksp_begin((pointer)regs->regions+regs->tag_count*sizeof(mem_region));
 		return regs;
 	}
 	mem_regs *page_align(mem_regs *regs) {
@@ -169,7 +169,7 @@ namespace hal {
 		}
 		regs->regions=t_regions;
 		regs->tag_count=ecount;
-		wksp_begin((void *)regs->regions+regs->tag_count*sizeof(mem_region));
+		wksp_begin((pointer)regs->regions+regs->tag_count*sizeof(mem_region));
 		return regs;
 	}
 }

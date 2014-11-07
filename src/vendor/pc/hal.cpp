@@ -23,10 +23,10 @@
 #include "pic.h"
 namespace hal {
 	void init_vendor() {
-		print_boot_msg("Init PIC",pc::init_pic(),true);
-		print_boot_msg("Init PIT",hal::timer_init(2),true);
+		print_boot_msg("Init PIC", pc::init_pic(), true);
+		print_boot_msg("Init PIT", hal::timer_init(2), true);
 	}
-	//a is boot info, b is videobuffer
+	// a is boot info, b is videobuffer
 	static mem_type a;
 	static mem_type b;
 	void add_phys_mem_vendor() {
@@ -35,26 +35,26 @@ namespace hal {
 		a.resv_mem=true;
 		b.videobuffer=true;
 		b.resv_mem=true;
-		//IVT and BDA
+		// IVT and BDA
 		add_phys_region(0x0,0x4FF,a);
-		//get EBDA
+		// get EBDA
 		uint32_t ebda_s=*(reinterpret_cast<uint16_t *>(0x40E));
-		//if ebda is good add it
+		// if ebda is good add it
 		if((ebda_s<<4)<0xA0000) {
 			add_phys_region(ebda_s<<4,0xA0000-(ebda_s<<4),a);
-		} else {
-			//else add a blank to make pmmap.cpp happy
-			//will get removed
+		}else{
+			// else add a blank to make pmmap.cpp happy
+			// will get removed
 			add_phys_region(0,0,a);
 		}
-		//legacy video ram
+		// legacy video ram
 		if(!add_phys_region(0xA0000,0x5FFFF,b)) {
 			hal::cout<<"OOPS";
 			halt(true);
 		}
 	}
 	void add_virt_mem_vendor() {
-		//nadda
+		// nadda
 	}
 }
 #endif
