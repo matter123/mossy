@@ -77,7 +77,6 @@ namespace kernel {
 				cur->next=next;
 				next->prev=cur;
 			}
-
 		}
 		return true;
 	}

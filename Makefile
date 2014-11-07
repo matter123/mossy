@@ -14,5 +14,5 @@ build:
 
 run:
 	@grub2-mkrescue -o bootable.iso iso
-	@bochs -f bochs.cfg -q
-	#@scripts/run_emulator64 `pwd`
+	#@bochs -f bochs.cfg -q
+	@scripts/run_emulator64 `pwd`

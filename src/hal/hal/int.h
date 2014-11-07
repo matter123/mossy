@@ -26,11 +26,14 @@ namespace hal {
 #define REENTRANT     0x02
 	/*INTERRUPT FLAGS*/
 #define NO_SCHEDULER  0x80
+#define SYSCALL       0x40
 
 
 	void register_int(uint16_t int_num,int_callback callback,int interrupt_type,bool user);
 
-	void register_asm_sub_int(uint16_t int_num,uintptr_t addr,int interrupt_type,bool user);
+	void register_stub_int(uint16_t int_num,uintptr_t addr,int interrupt_type,bool user);
+
+	void register_asm_stub_int(uint16_t int_num,uintptr_t addr,int interrupt_type,bool user);
 
 	struct idt_range {
 		uint16_t start;

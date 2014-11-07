@@ -95,6 +95,7 @@ fail_fast:
 	div bx
 	iret ;shouldn't get to here, the div should triple fault the cpu
 
+[GLOBAL exc_stub_sched]
 [EXTERN _ZN3hal11call_handleEP9cpu_state]
 [EXTERN _ZN6kernel8scheduleEP9cpu_state]
 exc_stub_sched:

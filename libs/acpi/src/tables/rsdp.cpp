@@ -65,7 +65,7 @@ namespace acpi {
 			}
 			void *rsdp=os::alloc_mem(sizeof(RSDP20));
 			//memcpy the right amount of memory
-			memcmp(rsdp,rsdp_ptr,rsdp_ptr->begin.revision==0?sizeof(RSDP):sizeof(RSDP20));
+			memcpy(rsdp,rsdp_ptr,rsdp_ptr->begin.revision==0?sizeof(RSDP):sizeof(RSDP20));
 			rsdp_ptr=reinterpret_cast<RSDP20 *>(rsdp);
 			//and free the firmware
 			os::unget_phys(ebda_start,0x1000,rsdp_start1);

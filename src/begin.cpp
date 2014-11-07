@@ -30,7 +30,7 @@
 #include <ctype.h>
 #include <acpi.h>
 #include <acpi_os.h>
-#include <tables/rsdp.h>
+#include <tables/sdt.h>
 namespace hal {
 	void setup_vga();
 }
@@ -41,10 +41,9 @@ namespace kernel {
 		//hal::magic_break();
 		hal::init_mboot(mboot);
 		hal::init_arch();
-		hal::magic_break();
 		hal::print_boot_msg("Init heap",heap_init(),true);
-		//acpi::init_tables();
-		hal::cout<<acpi::tables::rsdp_ptr<<hal::endl;
+		acpi::init_tables();
+		hal::cout<<hal::address<<acpi::tables::rsdt->header.revision<<hal::endl;
 		//hal::setup_vga();
 		hal::init_vendor();
 		//hal::print_boot_msg("Init kstacks",init_kstacks(),true);

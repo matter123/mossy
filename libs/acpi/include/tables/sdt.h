@@ -13,19 +13,39 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 */
-#include <acpi_os.h>
-#include <tables/rsdp.h>
-#include <tables/sdt.h>
+
+#pragma once
+#include <stdint.h>
+#include <struct.h>
 namespace acpi {
-	void init_tables() {
-		os::init_acpi_os();
-		tables::find_rsdp();
-		if(tables::rsdp_ptr->begin.revision==0) {
-			tables::rsdt=(tables::RSDT *)tables::load_table(
-			                             (void *)tables::rsdp_ptr->begin.RSDTaddr);
-		} else {
-			tables::xsdt=(tables::XSDT *)tables::load_table(
-			                             (void *)tables::rsdp_ptr->XSDTaddr);
-		}
+	namespace tables {
+		struct SDT {
+			char Signature[4];
+			uint32_t length;
+			uint8_t revision;
+			uint8_t checksum;
+			char OEMID[6];
+			char OEMTableID[8];
+			uint32_t OEMrevision;
+			uint32_t creatorID;
+			uint32_t creator_revision;
+		} PACKED;
+
+		struct RSDT {
+			SDT header;
+			uint32_t tables[0];
+		};
+
+		struct XSDT {
+			SDT header;
+			uint64_t tables[0];
+		};
+
+		extern RSDT *rsdt;
+		extern XSDT *xsdt;
+
+		SDT *load_table(void * tbl_phys_base);
+
+		bool do_checksum(SDT * table);
 	}
 }
