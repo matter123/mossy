@@ -52,7 +52,7 @@ namespace hal {
 			ostream &operator<<(char c);
 			ostream &operator<<(const char *s);
 			ostream &operator<<(int i);
-			ostream &operator<<(unsigned u);
+			ostream &operator<<(unsigned int u);
 			ostream &operator<<(long l);
 			ostream &operator<<(unsigned long ul);
 			ostream &operator<<(long long ll);

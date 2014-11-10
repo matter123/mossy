@@ -37,8 +37,8 @@ check:
 	#@tools/doccheck.py kernel src
 link:
 	@echo Linking
-	g++ $(LDFLAGS) -o kernel$(OBJ_SUFFIX) $(SOBJECTS) $(COBJECTS) $(CXXOBJECTS) -lc$(OBJ_SUFFIX)\
-	 -lencode$(OBJ_SUFFIX) -lgcc
+	@g++ $(LDFLAGS) -o kernel$(OBJ_SUFFIX) $(SOBJECTS) $(COBJECTS) $(CXXOBJECTS) -lc$(OBJ_SUFFIX)\
+	 -lencode$(OBJ_SUFFIX) -lacpi$(OBJ_SUFFIX) -lgcc
 
 .s.o:
 	@echo Assembling $(patsubst %.o, %.s, $@)
@@ -68,3 +68,4 @@ runem:
 build_libs:
 	cd libs/clib && $(MAKE) build
 	cd libs/encode && $(MAKE) build
+	cd libs/acpi && $(MAKE) build

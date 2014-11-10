@@ -1,0 +1,450 @@
+/home/mfosdick/mossy2/libs/encode/include/unicode.h:34: warning: Empty prototype found!
+Reading /h/home/mfosdick/mossy2/src/arch/x64/paging.h:41: warning: Compound x64::recursive_paging::pde is not documented.
+/home/mfosdick/mossy2/src/hal/hal/multiboot.h:85: warning: Compound hal::multiboot_ci_0 is not documented.
+/home/mfosdick/mossy2/src/hal/hal/multiboot.h:71: warning: Compound hal::multiboot_ci_1 is not documented.
+/home/mfosdick/mossy2/src/arch/x86_64/int.h:126: warning: Compound x86::IDT is not documented.
+/home/mfosdick/mossy2/src/hal/hal/mem_region.h:51: warning: Compound hal::mem_region is not documented.
+/home/mfosdick/mossy2/src/hal/hal/multiboot.h:27: warning: Compound hal::multiboot_tag is not documented.
+/home/mfosdick/mossy2/libs/acpi/include/tables/sdt.h:39: warning: Compound acpi::tables::XSDT is not documented.
+/home/mfosdick/mossy2/src/arch/x86/paging.h:25: warning: Compound x86::recursive_paging::pde is not documented.
+/home/mfosdick/mossy2/src/hal/hal/console.h:20: warning: Compound hal::ios_base is not documented.
+/home/mfosdick/mossy2/src/hal/hal/console.h:44: warning: Compound hal::ostream is not documented.
+/home/mfosdick/mossy2/src/hal/hal/int.h:38: warning: Compound hal::idt_range is not documented.
+/home/mfosdick/mossy2/src/sys/sys/synchronization.h:28: warning: Compound kernel::semaphore is not documented.
+/home/mfosdick/mossy2/src/arch/x86/stackframe.cpp:23: warning: Compound hal::stack_frame is not documented.
+/home/mfosdick/mossy2/src/arch/x64/stackframe.cpp:22: warning: Compound hal::stack_frame is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:95: warning: Compound x64::recursive_paging::pml4 is not documented.
+/home/mfosdick/mossy2/src/arch/x86/paging.h:50: warning: Compound x86::recursive_paging::pd is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:26: warning: Compound x64::recursive_paging::pte is not documented.
+/home/mfosdick/mossy2/src/arch/x86/paging.h:54: warning: Compound x86::recursive_paging::pt is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:24: warning: Compound x64::recursive_paging is not documented.
+/home/mfosdick/mossy2/src/arch/x86_64/int.h:166: warning: Compound x64::IDTR is not documented.
+/home/mfosdick/mossy2/src/arch/x86_64/int.h:115: warning: Compound x86::idt_entry is not documented.
+/home/mfosdick/mossy2/src/arch/x86/paging.h:37: warning: Compound x86::recursive_paging::pte is not documented.
+/home/mfosdick/mossy2/src/hal/hal/console.h:35: warning: Compound hal::ConsoleColor is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:91: warning: Compound x64::recursive_paging::pdpt is not documented.
+/home/mfosdick/mossy2/src/hal/hal/multiboot.h:41: warning: Compound hal::multiboot_mmap_ent is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:69: warning: Compound x64::recursive_paging::pml4e is not documented.
+/home/mfosdick/mossy2/src/hal/hal/multiboot.h:47: warning: Compound hal::multiboot_vbe is not documented.
+/home/mfosdick/mossy2/src/hal/hal/mem_region.h:56: warning: Compound hal::mem_regs is not documented.
+/home/mfosdick/mossy2/src/arch/x86/paging.h:58: warning: Compound x86::recursive_paging::page_map is not documented.
+/home/mfosdick/mossy2/libs/acpi/include/tables/rsdp.h:22: warning: Compound acpi::tables::RSDP is not documented.
+/home/mfosdick/mossy2/libs/acpi/include/tables/sdt.h:34: warning: Compound acpi::tables::RSDT is not documented.
+/home/mfosdick/mossy2/src/arch/x86_64/int.h:135: warning: Compound x86::trampoline is not documented.
+/home/mfosdick/mossy2/src/arch/x86_64/int.h:162: warning: Compound x64::IDT is not documented.
+/home/mfosdick/mossy2/src/sys/sys/synchronization.h:40: warning: Compound kernel::mutex is not documented.
+/home/mfosdick/mossy2/src/arch/x86_64/int.h:130: warning: Compound x86::IDTR is not documented.
+/home/mfosdick/mossy2/src/hal/hal/multiboot.h:56: warning: Compound hal::multiboot_fb is not documented.
+/home/mfosdick/mossy2/src/arch/x86/paging.h:24: warning: Compound x86::recursive_paging is not documented.
+/home/mfosdick/mossy2/src/arch/arch.h:44: warning: Compound cpu_state is not documented.
+/home/mfosdick/mossy2/src/arch/arch.h:35: warning: Compound cpu_state is not documented.
+/home/mfosdick/mossy2/src/hal/hal/multiboot.h:79: warning: Compound hal::multiboot_mmap is not documented.
+/home/mfosdick/mossy2/libs/acpi/include/tables/sdt.h:22: warning: Compound acpi::tables::SDT is not documented.
+/home/mfosdick/mossy2/src/hal/hal/paging.h:19: warning: Compound hal::page_opt is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:87: warning: Compound x64::recursive_paging::pd is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:83: warning: Compound x64::recursive_paging::pt is not documented.
+/home/mfosdick/mossy2/libs/acpi/include/tables/rsdp.h:30: warning: Compound acpi::tables::RSDP20 is not documented.
+/home/mfosdick/mossy2/src/hal/hal/multiboot.h:66: warning: Compound hal::multiboot_palette is not documented.
+/home/mfosdick/mossy2/src/hal/hal/multiboot.h:23: warning: Compound hal::multiboot_header is not documented.
+/home/mfosdick/mossy2/src/init/modules.h:22: warning: Compound kernel::mboot_module_t is not documented.
+/home/mfosdick/mossy2/src/sys/sys/synchronization.h:20: warning: Compound kernel::spinlock is not documented.
+/home/mfosdick/mossy2/src/arch/x86_64/int.h:171: warning: Compound x64::trampoline is not documented.
+/home/mfosdick/mossy2/src/sys/sys/tasks.h:19: warning: Compound kernel::thread_info is not documented.
+/home/mfosdick/mossy2/src/hal/hal/multiboot.h:31: warning: Compound hal::multiboot_command is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:55: warning: Compound x64::recursive_paging::pdpte is not documented.
+/home/mfosdick/mossy2/src/hal/hal/multiboot.h:35: warning: Compound hal::multiboot_module is not documented.
+/home/mfosdick/mossy2/src/arch/x86_64/int.h:148: warning: Compound x64::idt_entry is not documented.
+/home/mfosdick/mossy2/src/sys/heap.cpp:22: warning: Compound kernel::HEAD is not documented.
+/home/mfosdick/mossy2/libs/clib/include/time.h:23: warning: Compound tm is not documented.
+/home/mfosdick/mossy2/src/hal/hal/mem_region.h:20: warning: Compound hal::mem_type is not documented.
+/home/mfosdick/mossy2/libs/encode/include/unicode.h:32: warning: member with no name found.
+Parsing /home/mfosdick/mossy2/libs/clib/include/string.h:265: warning: Member strncmp(const char *str1, const char *str2, size_t num) (function) of file string.h is not documented.
+/home/mfosdick/mossy2/libs/clib/include/string.h:277: warning: Member mbsncmp(const char *str1, const char *str2, size_t num) (function) of file string.h is not documented.
+/home/mfosdick/mossy2/libs/clib/include/string.h:287: warning: Member memchr(const void *ptr, int value, size_t num) (function) of file string.h is not documented.
+/home/mfosdick/mossy2/libs/clib/include/string.h:296: warning: Member strchr(const char *str, int value) (function) of file string.h is not documented.
+/home/mfosdick/mossy2/libs/clib/include/string.h:305: warning: Member mbschr(const char *str, const char *value) (function) of file string.h is not documented.
+/home/mfosdick/mossy2/libs/clib/include/string.h:315: warning: Member strcspn(const char *str, const char *bytes) (function) of file string.h is not documented.
+/home/mfosdick/mossy2/libs/clib/include/string.h:325: warning: Member mbscspn(const char *str, const char *chars) (function) of file string.h is not documented.
+/home/mfosdick/mossy2/libs/clib/include/string.h:334: warning: Member strpbrk(const char *str1, const char *bytes) (function) of file string.h is not documented.
+/home/mfosdick/mossy2/libs/clib/include/string.h:343: warning: Member mbspbrk(const char *str1, const char *chars) (function) of file string.h is not documented.
+/home/mfosdick/mossy2/libs/clib/include/string.h:352: warning: Member strrchr(const char *str1, int value) (function) of file string.h is not documented.
+/home/mfosdick/mossy2/libs/clib/include/string.h:361: warning: Member mbsrchr(const char *str1, const char *value) (function) of file string.h is not documented.
+/home/mfosdick/mossy2/libs/clib/include/string.h:371: warning: Member strspn(const char *str, const char *bytes) (function) of file string.h is not documented.
+/home/mfosdick/mossy2/libs/clib/include/string.h:381: warning: Member mbsspn(const char *str, const char *chars) (function) of file string.h is not documented.
+/home/mfosdick/mossy2/libs/clib/include/string.h:392: warning: Member strstr(char *str1, const char *str2) (function) of file string.h is not documented.
+/home/mfosdick/mossy2/libs/clib/include/string.h:402: warning: Member mbsstr(char *str1, const char *str2) (function) of file string.h is not documented.
+/home/mfosdick/mossy2/libs/clib/include/string.h:409: warning: Member strtok(char *str, const char *delim) (function) of file string.h is not documented.
+/home/mfosdick/mossy2/libs/clib/include/string.h:416: warning: Member mbstok(char *str, const char *delim) (function) of file string.h is not documented.
+/home/mfosdick/mossy2/libs/clib/include/string.h:424: warning: Member memset(void *ptr, int value, size_t num) (function) of file string.h is not documented.
+/home/mfosdick/mossy2/libs/clib/include/string.h:432: warning: Member memset16(uint16_t *ptr, uint16_t value, size_t num) (function) of file string.h is not documented.
+/home/mfosdick/mossy2/libs/clib/include/string.h:440: warning: Member memset32(uint32_t *ptr, uint32_t value, size_t num) (function) of file string.h is not documented.
+/home/mfosdick/mossy2/libs/clib/include/string.h:448: warning: Member memset64(uint64_t *ptr, uint64_t value, size_t num) (function) of file string.h is not documented.
+/home/mfosdick/mossy2/libs/clib/include/string.h:457: warning: Member strlen(const char *str) (function) of file string.h is not documented.
+/home/mfosdick/mossy2/libs/clib/include/string.h:465: warning: Member mbslen(const char *str) (function) of file string.h is not documented.
+/home/mfosdick/mossy2/libs/encode/include/unicode.h:35: warning: Member codepoint (typedef) of file unicode.h is not documented.
+/home/mfosdick/mossy2/src/stdlib/global.h:32: warning: Member pointer (typedef) of file global.h is not documented.
+/home/mfosdick/mossy2/src/arch/arch.h:36: warning: Member cr4 (variable) of class cpu_state is not documented.
+/home/mfosdick/mossy2/src/arch/arch.h:36: warning: Member cr3 (variable) of class cpu_state is not documented.
+/home/mfosdick/mossy2/src/arch/arch.h:36: warning: Member cr2 (variable) of class cpu_state is not documented.
+/home/mfosdick/mossy2/src/arch/arch.h:36: warning: Member cr0 (variable) of class cpu_state is not documented.
+/home/mfosdick/mossy2/src/arch/arch.h:37: warning: Member r15 (variable) of class cpu_state is not documented.
+/home/mfosdick/mossy2/src/arch/arch.h:37: warning: Member r14 (variable) of class cpu_state is not documented.
+/home/mfosdick/mossy2/src/arch/arch.h:37: warning: Member r13 (variable) of class cpu_state is not documented.
+/home/mfosdick/mossy2/src/arch/arch.h:37: warning: Member r12 (variable) of class cpu_state is not documented.
+/home/mfosdick/mossy2/src/arch/arch.h:37: warning: Member r11 (variable) of class cpu_state is not documented.
+/home/mfosdick/mossy2/src/arch/arch.h:37: warning: Member r10 (variable) of class cpu_state is not documented.
+/home/mfosdick/mossy2/src/arch/arch.h:37: warning: Member r9 (variable) of class cpu_state is not documented.
+/home/mfosdick/mossy2/src/arch/arch.h:37: warning: Member r8 (variable) of class cpu_state is not documented.
+/home/mfosdick/mossy2/src/arch/arch.h:38: warning: Member rdi (variable) of class cpu_state is not documented.
+/home/mfosdick/mossy2/src/arch/arch.h:38: warning: Member rsi (variable) of class cpu_state is not documented.
+/home/mfosdick/mossy2/src/arch/arch.h:38: warning: Member rdx (variable) of class cpu_state is not documented.
+/home/mfosdick/mossy2/src/arch/arch.h:38: warning: Member rcx (variable) of class cpu_state is not documented.
+/home/mfosdick/mossy2/src/arch/arch.h:38: warning: Member rbx (variable) of class cpu_state is not documented.
+/home/mfosdick/mossy2/src/arch/arch.h:38: warning: Member rax (variable) of class cpu_state is not documented.
+/home/mfosdick/mossy2/src/arch/arch.h:38: warning: Member rbp (variable) of class cpu_state is not documented.
+/home/mfosdick/mossy2/src/arch/arch.h:38: warning: Member fs (variable) of class cpu_state is not documented.
+/home/mfosdick/mossy2/src/arch/arch.h:38: warning: Member gs (variable) of class cpu_state is not documented.
+/home/mfosdick/mossy2/src/arch/arch.h:39: warning: Member mnemonic (variable) of class cpu_state is not documented.
+/home/mfosdick/mossy2/src/arch/arch.h:39: warning: Member int_num (variable) of class cpu_state is not documented.
+/home/mfosdick/mossy2/src/arch/arch.h:39: warning: Member code (variable) of class cpu_state is not documented.
+/home/mfosdick/mossy2/src/arch/arch.h:40: warning: Member rip (variable) of class cpu_state is not documented.
+/home/mfosdick/mossy2/src/arch/arch.h:40: warning: Member cs (variable) of class cpu_state is not documented.
+/home/mfosdick/mossy2/src/arch/arch.h:40: warning: Member rflags (variable) of class cpu_state is not documented.
+/home/mfosdick/mossy2/src/arch/arch.h:40: warning: Member rsp (variable) of class cpu_state is not documented.
+/home/mfosdick/mossy2/src/arch/arch.h:40: warning: Member ss (variable) of class cpu_state is not documented.
+/home/mfosdick/mossy2/src/arch/arch.h:46: warning: Member edi (variable) of class cpu_state is not documented.
+/home/mfosdick/mossy2/src/arch/arch.h:46: warning: Member esi (variable) of class cpu_state is not documented.
+/home/mfosdick/mossy2/src/arch/arch.h:46: warning: Member edx (variable) of class cpu_state is not documented.
+/home/mfosdick/mossy2/src/arch/arch.h:46: warning: Member ecx (variable) of class cpu_state is not documented.
+/home/mfosdick/mossy2/src/arch/arch.h:46: warning: Member ebx (variable) of class cpu_state is not documented.
+/home/mfosdick/mossy2/src/arch/arch.h:46: warning: Member eax (variable) of class cpu_state is not documented.
+/home/mfosdick/mossy2/src/arch/arch.h:46: warning: Member ebp (variable) of class cpu_state is not documented.
+/home/mfosdick/mossy2/src/arch/arch.h:46: warning: Member ds (variable) of class cpu_state is not documented.
+/home/mfosdick/mossy2/src/arch/arch.h:46: warning: Member es (variable) of class cpu_state is not documented.
+/home/mfosdick/mossy2/src/arch/arch.h:48: warning: Member eip (variable) of class cpu_state is not documented.
+/home/mfosdick/mossy2/src/arch/arch.h:48: warning: Member eflags (variable) of class cpu_state is not documented.
+/home/mfosdick/mossy2/src/arch/arch.h:48: warning: Member esp (variable) of class cpu_state is not documented.
+/home/mfosdick/mossy2/libs/clib/include/time.h:24: warning: Member tm_sec (variable) of class tm is not documented.
+/home/mfosdick/mossy2/libs/clib/include/time.h:25: warning: Member tm_min (variable) of class tm is not documented.
+/home/mfosdick/mossy2/libs/clib/include/time.h:26: warning: Member tm_hour (variable) of class tm is not documented.
+/home/mfosdick/mossy2/libs/clib/include/time.h:27: warning: Member tm_mday (variable) of class tm is not documented.
+/home/mfosdick/mossy2/libs/clib/include/time.h:28: warning: Member tm_mon (variable) of class tm is not documented.
+/home/mfosdick/mossy2/libs/clib/include/time.h:29: warning: Member tm_year (variable) of class tm is not documented.
+/home/mfosdick/mossy2/libs/clib/include/time.h:30: warning: Member tm_wday (variable) of class tm is not documented.
+/home/mfosdick/mossy2/libs/clib/include/time.h:31: warning: Member tm_yday (variable) of class tm is not documented.
+/home/mfosdick/mossy2/libs/clib/include/time.h:32: warning: Member tm_isdst (variable) of class tm is not documented.
+/home/mfosdick/mossy2/libs/acpi/include/tables/rsdp.h:23: warning: Member sig[8] (variable) of class acpi::tables::RSDP is not documented.
+/home/mfosdick/mossy2/libs/acpi/include/tables/rsdp.h:24: warning: Member checksum (variable) of class acpi::tables::RSDP is not documented.
+/home/mfosdick/mossy2/libs/acpi/include/tables/rsdp.h:25: warning: Member OEMID[6] (variable) of class acpi::tables::RSDP is not documented.
+/home/mfosdick/mossy2/libs/acpi/include/tables/rsdp.h:26: warning: Member revision (variable) of class acpi::tables::RSDP is not documented.
+/home/mfosdick/mossy2/libs/acpi/include/tables/rsdp.h:27: warning: Member RSDTaddr (variable) of class acpi::tables::RSDP is not documented.
+/home/mfosdick/mossy2/libs/acpi/include/tables/rsdp.h:31: warning: Member begin (variable) of class acpi::tables::RSDP20 is not documented.
+/home/mfosdick/mossy2/libs/acpi/include/tables/rsdp.h:32: warning: Member length (variable) of class acpi::tables::RSDP20 is not documented.
+/home/mfosdick/mossy2/libs/acpi/include/tables/rsdp.h:33: warning: Member XSDTaddr (variable) of class acpi::tables::RSDP20 is not documented.
+/home/mfosdick/mossy2/libs/acpi/include/tables/rsdp.h:34: warning: Member ext_checksum (variable) of class acpi::tables::RSDP20 is not documented.
+/home/mfosdick/mossy2/libs/acpi/include/tables/rsdp.h:35: warning: Member resv[3] (variable) of class acpi::tables::RSDP20 is not documented.
+/home/mfosdick/mossy2/libs/acpi/include/tables/sdt.h:23: warning: Member Signature[4] (variable) of class acpi::tables::SDT is not documented.
+/home/mfosdick/mossy2/libs/acpi/include/tables/sdt.h:24: warning: Member length (variable) of class acpi::tables::SDT is not documented.
+/home/mfosdick/mossy2/libs/acpi/include/tables/sdt.h:25: warning: Member revision (variable) of class acpi::tables::SDT is not documented.
+/home/mfosdick/mossy2/libs/acpi/include/tables/sdt.h:26: warning: Member checksum (variable) of class acpi::tables::SDT is not documented.
+/home/mfosdick/mossy2/libs/acpi/include/tables/sdt.h:27: warning: Member OEMID[6] (variable) of class acpi::tables::SDT is not documented.
+/home/mfosdick/mossy2/libs/acpi/include/tables/sdt.h:28: warning: Member OEMTableID[8] (variable) of class acpi::tables::SDT is not documented.
+/home/mfosdick/mossy2/libs/acpi/include/tables/sdt.h:29: warning: Member OEMrevision (variable) of class acpi::tables::SDT is not documented.
+/home/mfosdick/mossy2/libs/acpi/include/tables/sdt.h:30: warning: Member creatorID (variable) of class acpi::tables::SDT is not documented.
+/home/mfosdick/mossy2/libs/acpi/include/tables/sdt.h:31: warning: Member creator_revision (variable) of class acpi::tables::SDT is not documented.
+/home/mfosdick/mossy2/libs/acpi/include/tables/sdt.h:35: warning: Member header (variable) of class acpi::tables::RSDT is not documented.
+/home/mfosdick/mossy2/libs/acpi/include/tables/sdt.h:36: warning: Member tables[0] (variable) of class acpi::tables::RSDT is not documented.
+/home/mfosdick/mossy2/libs/acpi/include/tables/sdt.h:40: warning: Member header (variable) of class acpi::tables::XSDT is not documented.
+/home/mfosdick/mossy2/libs/acpi/include/tables/sdt.h:41: warning: Member tables[0] (variable) of class acpi::tables::XSDT is not documented.
+/home/mfosdick/mossy2/src/arch/x64/stackframe.cpp:23: warning: Member rbp (variable) of class hal::stack_frame is not documented.
+/home/mfosdick/mossy2/src/arch/x64/stackframe.cpp:24: warning: Member rip (variable) of class hal::stack_frame is not documented.
+/home/mfosdick/mossy2/src/arch/x86/stackframe.cpp:24: warning: Member ebp (variable) of class hal::stack_frame is not documented.
+/home/mfosdick/mossy2/src/arch/x86/stackframe.cpp:25: warning: Member eip (variable) of class hal::stack_frame is not documented.
+/home/mfosdick/mossy2/src/hal/hal/console.h:30: warning: Member ios_base(int base, int uppercase, int showbase) (function) of class hal::ios_base is not documented.
+/home/mfosdick/mossy2/src/hal/hal/console.h:31: warning: Member ios_base(int base, int uppercase, int showbase, int min_digits) (function) of class hal::ios_base is not documented.
+/home/mfosdick/mossy2/src/hal/hal/console.h:32: warning: Member ios_base(int base) (function) of class hal::ios_base is not documented.
+/home/mfosdick/mossy2/src/hal/hal/console.h:33: warning: Member combine(ios_base b) (function) of class hal::ios_base is not documented.
+/home/mfosdick/mossy2/src/hal/hal/console.h:22: warning: Member base (variable) of class hal::ios_base is not documented.
+/home/mfosdick/mossy2/src/hal/hal/console.h:23: warning: Member min_digits (variable) of class hal::ios_base is not documented.
+/home/mfosdick/mossy2/src/hal/hal/console.h:26: warning: Member showbase (variable) of class hal::ios_base is not documented.
+/home/mfosdick/mossy2/src/hal/hal/console.h:27: warning: Member uppercase (variable) of class hal::ios_base is not documented.
+/home/mfosdick/mossy2/src/hal/hal/console.h:39: warning: Member getColor() (function) of class hal::ConsoleColor is not documented.
+/home/mfosdick/mossy2/src/hal/hal/console.h:40: warning: Member ConsoleColor(int foreground, int background) (function) of class hal::ConsoleColor is not documented.
+/home/mfosdick/mossy2/src/hal/hal/console.h:37: warning: Member backcolor (variable) of class hal::ConsoleColor is not documented.
+/home/mfosdick/mossy2/src/hal/hal/console.h:38: warning: Member color (variable) of class hal::ConsoleColor is not documented.
+/home/mfosdick/mossy2/src/hal/hal/console.h:51: warning: Member ostream(ConsoleColor c) (function) of class hal::ostream is not documented.
+/home/mfosdick/mossy2/src/hal/hal/console.h:52: warning: Member operator<<(char c) (function) of class hal::ostream is not documented.
+/home/mfosdick/mossy2/src/hal/hal/console.h:53: warning: Member operator<<(const char *s) (function) of class hal::ostream is not documented.
+/home/mfosdick/mossy2/src/hal/hal/console.h:54: warning: Member operator<<(int i) (function) of class hal::ostream is not documented.
+/home/mfosdick/mossy2/src/hal/hal/console.h:55: warning: Member operator<<(unsigned int u) (function) of class hal::ostream is not documented.
+/home/mfosdick/mossy2/src/hal/hal/console.h:56: warning: Member operator<<(long l) (function) of class hal::ostream is not documented.
+/home/mfosdick/mossy2/src/hal/hal/console.h:57: warning: Member operator<<(unsigned long ul) (function) of class hal::ostream is not documented.
+/home/mfosdick/mossy2/src/hal/hal/console.h:58: warning: Member operator<<(long long ll) (function) of class hal::ostream is not documented.
+/home/mfosdick/mossy2/src/hal/hal/console.h:59: warning: Member operator<<(unsigned long long ull) (function) of class hal::ostream is not documented.
+/home/mfosdick/mossy2/src/hal/hal/console.h:60: warning: Member operator<<(const void *p) (function) of class hal::ostream is not documented.
+/home/mfosdick/mossy2/src/hal/hal/console.h:61: warning: Member operator<<(ios_base b) (function) of class hal::ostream is not documented.
+/home/mfosdick/mossy2/src/hal/hal/console.h:62: warning: Member operator<<(ConsoleColor c) (function) of class hal::ostream is not documented.
+/home/mfosdick/mossy2/src/hal/hal/console.h:48: warning: Member print(const char *s) (function) of class hal::ostream is not documented.
+/home/mfosdick/mossy2/src/hal/hal/console.h:46: warning: Member c (variable) of class hal::ostream is not documented.
+/home/mfosdick/mossy2/src/hal/hal/console.h:47: warning: Member b (variable) of class hal::ostream is not documented.
+/home/mfosdick/mossy2/src/hal/hal/int.h:39: warning: Member start (variable) of class hal::idt_range is not documented.
+/home/mfosdick/mossy2/src/hal/hal/int.h:40: warning: Member len (variable) of class hal::idt_range is not documented.
+/home/mfosdick/mossy2/src/hal/hal/mem_region.h:37: warning: Member is_more_restrictive(mem_type other) const  (function) of class hal::mem_type is not documented.
+/home/mfosdick/mossy2/src/hal/hal/mem_region.h:38: warning: Member can_adjust_start() const  (function) of class hal::mem_type is not documented.
+/home/mfosdick/mossy2/src/hal/hal/mem_region.h:39: warning: Member can_shrink() const  (function) of class hal::mem_type is not documented.
+/home/mfosdick/mossy2/src/hal/hal/mem_region.h:40: warning: Member can_grow() const  (function) of class hal::mem_type is not documented.
+/home/mfosdick/mossy2/src/hal/hal/mem_region.h:41: warning: Member operator==(const mem_type &other) const  (function) of class hal::mem_type is not documented.
+/home/mfosdick/mossy2/src/hal/hal/mem_region.h:42: warning: Member operator=(const mem_type &rhs) (function) of class hal::mem_type is not documented.
+/home/mfosdick/mossy2/src/hal/hal/mem_region.h:43: warning: Member to_u64() const  (function) of class hal::mem_type is not documented.
+/home/mfosdick/mossy2/src/hal/hal/mem_region.h:44: warning: Member mem_type(mem_type &other) (function) of class hal::mem_type is not documented.
+/home/mfosdick/mossy2/src/hal/hal/mem_region.h:22: warning: Member avil (variable) of class hal::mem_type is not documented.
+/home/mfosdick/mossy2/src/hal/hal/mem_region.h:23: warning: Member resv_mem (variable) of class hal::mem_type is not documented.
+/home/mfosdick/mossy2/src/hal/hal/mem_region.h:24: warning: Member kernel (variable) of class hal::mem_type is not documented.
+/home/mfosdick/mossy2/src/hal/hal/mem_region.h:25: warning: Member bootinfo (variable) of class hal::mem_type is not documented.
+/home/mfosdick/mossy2/src/hal/hal/mem_region.h:26: warning: Member firmware (variable) of class hal::mem_type is not documented.
+/home/mfosdick/mossy2/src/hal/hal/mem_region.h:27: warning: Member videobuffer (variable) of class hal::mem_type is not documented.
+/home/mfosdick/mossy2/src/hal/hal/mem_region.h:28: warning: Member dma (variable) of class hal::mem_type is not documented.
+/home/mfosdick/mossy2/src/hal/hal/mem_region.h:29: warning: Member no_exist (variable) of class hal::mem_type is not documented.
+/home/mfosdick/mossy2/src/hal/hal/mem_region.h:30: warning: Member pci_mmap (variable) of class hal::mem_type is not documented.
+/home/mfosdick/mossy2/src/hal/hal/mem_region.h:31: warning: Member save_on_hib (variable) of class hal::mem_type is not documented.
+/home/mfosdick/mossy2/src/hal/hal/mem_region.h:33: warning: Member heap (variable) of class hal::mem_type is not documented.
+/home/mfosdick/mossy2/src/hal/hal/mem_region.h:34: warning: Member userspace (variable) of class hal::mem_type is not documented.
+/home/mfosdick/mossy2/src/hal/hal/mem_region.h:35: warning: Member kthread_stacks (variable) of class hal::mem_type is not documented.
+/home/mfosdick/mossy2/src/hal/hal/mem_region.h:36: warning: Member paging_struct (variable) of class hal::mem_type is not documented.
+/home/mfosdick/mossy2/src/hal/hal/mem_region.h:47: warning: Member resv_n (variable) of class hal::mem_type is not documented.
+/home/mfosdick/mossy2/src/hal/hal/mem_region.h:48: warning: Member resv_2 (variable) of class hal::mem_type is not documented.
+/home/mfosdick/mossy2/src/hal/hal/mem_region.h:49: warning: Member resv_1 (variable) of class hal::mem_type is not documented.
+/home/mfosdick/mossy2/src/hal/hal/mem_region.h:52: warning: Member start (variable) of class hal::mem_region is not documented.
+/home/mfosdick/mossy2/src/hal/hal/mem_region.h:53: warning: Member end (variable) of class hal::mem_region is not documented.
+/home/mfosdick/mossy2/src/hal/hal/mem_region.h:54: warning: Member type (variable) of class hal::mem_region is not documented.
+/home/mfosdick/mossy2/src/hal/hal/mem_region.h:57: warning: Member regions (variable) of class hal::mem_regs is not documented.
+/home/mfosdick/mossy2/src/hal/hal/mem_region.h:58: warning: Member tag_count (variable) of class hal::mem_regs is not documented.
+/home/mfosdick/mossy2/src/hal/hal/multiboot.h:24: warning: Member size (variable) of class hal::multiboot_header is not documented.
+/home/mfosdick/mossy2/src/hal/hal/multiboot.h:25: warning: Member resv (variable) of class hal::multiboot_header is not documented.
+/home/mfosdick/mossy2/src/hal/hal/multiboot.h:28: warning: Member type (variable) of class hal::multiboot_tag is not documented.
+/home/mfosdick/mossy2/src/hal/hal/multiboot.h:29: warning: Member size (variable) of class hal::multiboot_tag is not documented.
+/home/mfosdick/mossy2/src/hal/hal/multiboot.h:32: warning: Member head (variable) of class hal::multiboot_command is not documented.
+/home/mfosdick/mossy2/src/hal/hal/multiboot.h:33: warning: Member string[] (variable) of class hal::multiboot_command is not documented.
+/home/mfosdick/mossy2/src/hal/hal/multiboot.h:36: warning: Member head (variable) of class hal::multiboot_module is not documented.
+/home/mfosdick/mossy2/src/hal/hal/multiboot.h:37: warning: Member mod_start (variable) of class hal::multiboot_module is not documented.
+/home/mfosdick/mossy2/src/hal/hal/multiboot.h:38: warning: Member mod_end (variable) of class hal::multiboot_module is not documented.
+/home/mfosdick/mossy2/src/hal/hal/multiboot.h:39: warning: Member string[] (variable) of class hal::multiboot_module is not documented.
+/home/mfosdick/mossy2/src/hal/hal/multiboot.h:42: warning: Member addr (variable) of class hal::multiboot_mmap_ent is not documented.
+/home/mfosdick/mossy2/src/hal/hal/multiboot.h:43: warning: Member len (variable) of class hal::multiboot_mmap_ent is not documented.
+/home/mfosdick/mossy2/src/hal/hal/multiboot.h:44: warning: Member type (variable) of class hal::multiboot_mmap_ent is not documented.
+/home/mfosdick/mossy2/src/hal/hal/multiboot.h:45: warning: Member resv (variable) of class hal::multiboot_mmap_ent is not documented.
+/home/mfosdick/mossy2/src/hal/hal/multiboot.h:48: warning: Member head (variable) of class hal::multiboot_vbe is not documented.
+/home/mfosdick/mossy2/src/hal/hal/multiboot.h:49: warning: Member vbe_mode (variable) of class hal::multiboot_vbe is not documented.
+/home/mfosdick/mossy2/src/hal/hal/multiboot.h:50: warning: Member vbe_interface_seg (variable) of class hal::multiboot_vbe is not documented.
+/home/mfosdick/mossy2/src/hal/hal/multiboot.h:51: warning: Member vbe_interface_off (variable) of class hal::multiboot_vbe is not documented.
+/home/mfosdick/mossy2/src/hal/hal/multiboot.h:52: warning: Member vbe_interface_len (variable) of class hal::multiboot_vbe is not documented.
+/home/mfosdick/mossy2/src/hal/hal/multiboot.h:53: warning: Member vbe_control_info[512] (variable) of class hal::multiboot_vbe is not documented.
+/home/mfosdick/mossy2/src/hal/hal/multiboot.h:54: warning: Member vbe_mode_info[256] (variable) of class hal::multiboot_vbe is not documented.
+/home/mfosdick/mossy2/src/hal/hal/multiboot.h:57: warning: Member head (variable) of class hal::multiboot_fb is not documented.
+/home/mfosdick/mossy2/src/hal/hal/multiboot.h:58: warning: Member addr (variable) of class hal::multiboot_fb is not documented.
+/home/mfosdick/mossy2/src/hal/hal/multiboot.h:59: warning: Member pitch (variable) of class hal::multiboot_fb is not documented.
+/home/mfosdick/mossy2/src/hal/hal/multiboot.h:60: warning: Member width (variable) of class hal::multiboot_fb is not documented.
+/home/mfosdick/mossy2/src/hal/hal/multiboot.h:61: warning: Member height (variable) of class hal::multiboot_fb is not documented.
+/home/mfosdick/mossy2/src/hal/hal/multiboot.h:62: warning: Member bpp (variable) of class hal::multiboot_fb is not documented.
+/home/mfosdick/mossy2/src/hal/hal/multiboot.h:63: warning: Member type (variable) of class hal::multiboot_fb is not documented.
+/home/mfosdick/mossy2/src/hal/hal/multiboot.h:64: warning: Member rsv (variable) of class hal::multiboot_fb is not documented.
+/home/mfosdick/mossy2/src/hal/hal/multiboot.h:67: warning: Member red (variable) of class hal::multiboot_palette is not documented.
+/home/mfosdick/mossy2/src/hal/hal/multiboot.h:68: warning: Member green (variable) of class hal::multiboot_palette is not documented.
+/home/mfosdick/mossy2/src/hal/hal/multiboot.h:69: warning: Member blue (variable) of class hal::multiboot_palette is not documented.
+/home/mfosdick/mossy2/src/hal/hal/multiboot.h:72: warning: Member red_pos (variable) of class hal::multiboot_ci_1 is not documented.
+/home/mfosdick/mossy2/src/hal/hal/multiboot.h:73: warning: Member red_mask (variable) of class hal::multiboot_ci_1 is not documented.
+/home/mfosdick/mossy2/src/hal/hal/multiboot.h:74: warning: Member green_pos (variable) of class hal::multiboot_ci_1 is not documented.
+/home/mfosdick/mossy2/src/hal/hal/multiboot.h:75: warning: Member green_mask (variable) of class hal::multiboot_ci_1 is not documented.
+/home/mfosdick/mossy2/src/hal/hal/multiboot.h:76: warning: Member blue_pos (variable) of class hal::multiboot_ci_1 is not documented.
+/home/mfosdick/mossy2/src/hal/hal/multiboot.h:77: warning: Member blue_mask (variable) of class hal::multiboot_ci_1 is not documented.
+/home/mfosdick/mossy2/src/hal/hal/multiboot.h:80: warning: Member head (variable) of class hal::multiboot_mmap is not documented.
+/home/mfosdick/mossy2/src/hal/hal/multiboot.h:81: warning: Member entry_size (variable) of class hal::multiboot_mmap is not documented.
+/home/mfosdick/mossy2/src/hal/hal/multiboot.h:82: warning: Member entry_version (variable) of class hal::multiboot_mmap is not documented.
+/home/mfosdick/mossy2/src/hal/hal/multiboot.h:83: warning: Member entries[] (variable) of class hal::multiboot_mmap is not documented.
+/home/mfosdick/mossy2/src/hal/hal/multiboot.h:86: warning: Member num_color (variable) of class hal::multiboot_ci_0 is not documented.
+/home/mfosdick/mossy2/src/hal/hal/multiboot.h:87: warning: Member palette[] (variable) of class hal::multiboot_ci_0 is not documented.
+/home/mfosdick/mossy2/src/hal/hal/paging.h:20: warning: Member user (variable) of class hal::page_opt is not documented.
+/home/mfosdick/mossy2/src/hal/hal/paging.h:21: warning: Member exec (variable) of class hal::page_opt is not documented.
+/home/mfosdick/mossy2/src/hal/hal/paging.h:22: warning: Member write (variable) of class hal::page_opt is not documented.
+/home/mfosdick/mossy2/src/init/modules.h:23: warning: Member mod_start (variable) of class kernel::mboot_module_t is not documented.
+/home/mfosdick/mossy2/src/init/modules.h:24: warning: Member mod_size (variable) of class kernel::mboot_module_t is not documented.
+/home/mfosdick/mossy2/src/init/modules.h:25: warning: Member string (variable) of class kernel::mboot_module_t is not documented.
+/home/mfosdick/mossy2/src/init/modules.h:26: warning: Member resv (variable) of class kernel::mboot_module_t is not documented.
+/home/mfosdick/mossy2/src/sys/heap.cpp:23: warning: Member magic (variable) of class kernel::HEAD is not documented.
+/home/mfosdick/mossy2/src/sys/heap.cpp:24: warning: Member free (variable) of class kernel::HEAD is not documented.
+/home/mfosdick/mossy2/src/sys/heap.cpp:25: warning: Member resv (variable) of class kernel::HEAD is not documented.
+/home/mfosdick/mossy2/src/sys/heap.cpp:26: warning: Member len (variable) of class kernel::HEAD is not documented.
+/home/mfosdick/mossy2/src/sys/heap.cpp:27: warning: Member prev (variable) of class kernel::HEAD is not documented.
+/home/mfosdick/mossy2/src/sys/heap.cpp:28: warning: Member next (variable) of class kernel::HEAD is not documented.
+/home/mfosdick/mossy2/src/sys/sys/synchronization.h:23: warning: Member acquire() (function) of class kernel::spinlock is not documented.
+/home/mfosdick/mossy2/src/sys/sys/synchronization.h:24: warning: Member release(uintptr_t reg) (function) of class kernel::spinlock is not documented.
+/home/mfosdick/mossy2/src/sys/sys/synchronization.h:25: warning: Member check() (function) of class kernel::spinlock is not documented.
+/home/mfosdick/mossy2/src/sys/sys/synchronization.h:21: warning: Member lock (variable) of class kernel::spinlock is not documented.
+/home/mfosdick/mossy2/src/sys/sys/synchronization.h:33: warning: Member semaphore(int free_count) (function) of class kernel::semaphore is not documented.
+/home/mfosdick/mossy2/src/sys/sys/synchronization.h:35: warning: Member wait() (function) of class kernel::semaphore is not documented.
+/home/mfosdick/mossy2/src/sys/sys/synchronization.h:36: warning: Member signal() (function) of class kernel::semaphore is not documented.
+/home/mfosdick/mossy2/src/sys/sys/synchronization.h:37: warning: Member get_free() (function) of class kernel::semaphore is not documented.
+/home/mfosdick/mossy2/src/sys/sys/synchronization.h:30: warning: Member s (variable) of class kernel::semaphore is not documented.
+/home/mfosdick/mossy2/src/sys/sys/synchronization.h:31: warning: Member free_count (variable) of class kernel::semaphore is not documented.
+/home/mfosdick/mossy2/src/sys/sys/synchronization.h:46: warning: Member lock() (function) of class kernel::mutex is not documented.
+/home/mfosdick/mossy2/src/sys/sys/synchronization.h:47: warning: Member unlock() (function) of class kernel::mutex is not documented.
+/home/mfosdick/mossy2/src/sys/sys/synchronization.h:42: warning: Member s (variable) of class kernel::mutex is not documented.
+/home/mfosdick/mossy2/src/sys/sys/tasks.h:20: warning: Member PID (variable) of class kernel::thread_info is not documented.
+/home/mfosdick/mossy2/src/sys/sys/tasks.h:21: warning: Member priority (variable) of class kernel::thread_info is not documented.
+/home/mfosdick/mossy2/src/sys/sys/tasks.h:22: warning: Member active (variable) of class kernel::thread_info is not documented.
+/home/mfosdick/mossy2/src/sys/sys/tasks.h:23: warning: Member running (variable) of class kernel::thread_info is not documented.
+/home/mfosdick/mossy2/src/sys/sys/tasks.h:24: warning: Member sleeping (variable) of class kernel::thread_info is not documented.
+/home/mfosdick/mossy2/src/sys/sys/tasks.h:25: warning: Member waiting (variable) of class kernel::thread_info is not documented.
+/home/mfosdick/mossy2/src/sys/sys/tasks.h:26: warning: Member has_user_stack (variable) of class kernel::thread_info is not documented.
+/home/mfosdick/mossy2/src/sys/sys/tasks.h:27: warning: Member resv_state (variable) of class kernel::thread_info is not documented.
+/home/mfosdick/mossy2/src/sys/sys/tasks.h:28: warning: Member sleep_ticks (variable) of class kernel::thread_info is not documented.
+/home/mfosdick/mossy2/src/sys/sys/tasks.h:29: warning: Member wait_on (variable) of class kernel::thread_info is not documented.
+/home/mfosdick/mossy2/src/sys/sys/tasks.h:30: warning: Member user_stack (variable) of class kernel::thread_info is not documented.
+/home/mfosdick/mossy2/src/sys/sys/tasks.h:31: warning: Member cpu_state (variable) of class kernel::thread_info is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:103: warning: Member init(uintptr_t(*a_func)()) (function) of class x64::recursive_paging is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:104: warning: Member map(uintptr_t phys, uintptr_t virt, hal::page_opt options) (function) of class x64::recursive_paging is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:105: warning: Member unmap(uintptr_t virt) (function) of class x64::recursive_paging is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:106: warning: Member locate(uintptr_t virt) (function) of class x64::recursive_paging is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:40: warning: Member PACKED (variable) of class x64::recursive_paging is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:54: warning: Member PACKED (variable) of class x64::recursive_paging is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:68: warning: Member PACKED (variable) of class x64::recursive_paging is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:82: warning: Member PACKED (variable) of class x64::recursive_paging is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:86: warning: Member PACKED (variable) of class x64::recursive_paging is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:90: warning: Member PACKED (variable) of class x64::recursive_paging is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:94: warning: Member PACKED (variable) of class x64::recursive_paging is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:98: warning: Member PACKED (variable) of class x64::recursive_paging is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:100: warning: Member alloc_func)() (variable) of class x64::recursive_paging is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:101: warning: Member base (variable) of class x64::recursive_paging is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:88: warning: Member entries[512] (variable) of class x64::recursive_paging::pd is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:89: warning: Member entriesi[512] (variable) of class x64::recursive_paging::pd is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:42: warning: Member present (variable) of class x64::recursive_paging::pde is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:43: warning: Member read_write (variable) of class x64::recursive_paging::pde is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:44: warning: Member user (variable) of class x64::recursive_paging::pde is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:45: warning: Member write_through (variable) of class x64::recursive_paging::pde is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:46: warning: Member no_cache (variable) of class x64::recursive_paging::pde is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:47: warning: Member accessed (variable) of class x64::recursive_paging::pde is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:48: warning: Member ign (variable) of class x64::recursive_paging::pde is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:49: warning: Member zero (variable) of class x64::recursive_paging::pde is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:50: warning: Member unused (variable) of class x64::recursive_paging::pde is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:51: warning: Member addr (variable) of class x64::recursive_paging::pde is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:52: warning: Member unused_1 (variable) of class x64::recursive_paging::pde is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:53: warning: Member nx (variable) of class x64::recursive_paging::pde is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:92: warning: Member entries[512] (variable) of class x64::recursive_paging::pdpt is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:93: warning: Member entriesi[512] (variable) of class x64::recursive_paging::pdpt is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:56: warning: Member present (variable) of class x64::recursive_paging::pdpte is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:57: warning: Member read_write (variable) of class x64::recursive_paging::pdpte is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:58: warning: Member user (variable) of class x64::recursive_paging::pdpte is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:59: warning: Member write_through (variable) of class x64::recursive_paging::pdpte is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:60: warning: Member no_cache (variable) of class x64::recursive_paging::pdpte is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:61: warning: Member accessed (variable) of class x64::recursive_paging::pdpte is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:62: warning: Member ign (variable) of class x64::recursive_paging::pdpte is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:63: warning: Member zero (variable) of class x64::recursive_paging::pdpte is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:64: warning: Member unused (variable) of class x64::recursive_paging::pdpte is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:65: warning: Member addr (variable) of class x64::recursive_paging::pdpte is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:66: warning: Member unused_1 (variable) of class x64::recursive_paging::pdpte is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:67: warning: Member nx (variable) of class x64::recursive_paging::pdpte is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:96: warning: Member entries[512] (variable) of class x64::recursive_paging::pml4 is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:97: warning: Member entriesi[512] (variable) of class x64::recursive_paging::pml4 is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:70: warning: Member present (variable) of class x64::recursive_paging::pml4e is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:71: warning: Member read_write (variable) of class x64::recursive_paging::pml4e is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:72: warning: Member user (variable) of class x64::recursive_paging::pml4e is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:73: warning: Member write_through (variable) of class x64::recursive_paging::pml4e is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:74: warning: Member no_cache (variable) of class x64::recursive_paging::pml4e is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:75: warning: Member accessed (variable) of class x64::recursive_paging::pml4e is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:76: warning: Member ign (variable) of class x64::recursive_paging::pml4e is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:77: warning: Member zero (variable) of class x64::recursive_paging::pml4e is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:78: warning: Member unused (variable) of class x64::recursive_paging::pml4e is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:79: warning: Member addr (variable) of class x64::recursive_paging::pml4e is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:80: warning: Member unused_1 (variable) of class x64::recursive_paging::pml4e is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:81: warning: Member nx (variable) of class x64::recursive_paging::pml4e is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:84: warning: Member entries[512] (variable) of class x64::recursive_paging::pt is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:85: warning: Member entriesi[512] (variable) of class x64::recursive_paging::pt is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:27: warning: Member present (variable) of class x64::recursive_paging::pte is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:28: warning: Member read_write (variable) of class x64::recursive_paging::pte is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:29: warning: Member user (variable) of class x64::recursive_paging::pte is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:30: warning: Member write_through (variable) of class x64::recursive_paging::pte is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:31: warning: Member no_cache (variable) of class x64::recursive_paging::pte is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:32: warning: Member accessed (variable) of class x64::recursive_paging::pte is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:33: warning: Member dirty (variable) of class x64::recursive_paging::pte is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:34: warning: Member pat (variable) of class x64::recursive_paging::pte is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:35: warning: Member global (variable) of class x64::recursive_paging::pte is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:36: warning: Member unused (variable) of class x64::recursive_paging::pte is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:37: warning: Member addr (variable) of class x64::recursive_paging::pte is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:38: warning: Member unused_1 (variable) of class x64::recursive_paging::pte is not documented.
+/home/mfosdick/mossy2/src/arch/x64/paging.h:39: warning: Member nx (variable) of class x64::recursive_paging::pte is not documented.
+/home/mfosdick/mossy2/src/arch/x86_64/int.h:149: warning: Member offset_low (variable) of class x64::idt_entry is not documented.
+/home/mfosdick/mossy2/src/arch/x86_64/int.h:150: warning: Member code_segment (variable) of class x64::idt_entry is not documented.
+/home/mfosdick/mossy2/src/arch/x86_64/int.h:151: warning: Member IST (variable) of class x64::idt_entry is not documented.
+/home/mfosdick/mossy2/src/arch/x86_64/int.h:152: warning: Member resv (variable) of class x64::idt_entry is not documented.
+/home/mfosdick/mossy2/src/arch/x86_64/int.h:153: warning: Member type (variable) of class x64::idt_entry is not documented.
+/home/mfosdick/mossy2/src/arch/x86_64/int.h:154: warning: Member zero (variable) of class x64::idt_entry is not documented.
+/home/mfosdick/mossy2/src/arch/x86_64/int.h:155: warning: Member DPL (variable) of class x64::idt_entry is not documented.
+/home/mfosdick/mossy2/src/arch/x86_64/int.h:156: warning: Member present (variable) of class x64::idt_entry is not documented.
+/home/mfosdick/mossy2/src/arch/x86_64/int.h:157: warning: Member offset_med (variable) of class x64::idt_entry is not documented.
+/home/mfosdick/mossy2/src/arch/x86_64/int.h:158: warning: Member offset_high (variable) of class x64::idt_entry is not documented.
+/home/mfosdick/mossy2/src/arch/x86_64/int.h:159: warning: Member resv_1 (variable) of class x64::idt_entry is not documented.
+/home/mfosdick/mossy2/src/arch/x86_64/int.h:163: warning: Member entries[256] (variable) of class x64::IDT is not documented.
+/home/mfosdick/mossy2/src/arch/x86_64/int.h:167: warning: Member limit (variable) of class x64::IDTR is not documented.
+/home/mfosdick/mossy2/src/arch/x86_64/int.h:168: warning: Member base (variable) of class x64::IDTR is not documented.
+/home/mfosdick/mossy2/src/arch/x86_64/int.h:172: warning: Member begin[4] (variable) of class x64::trampoline is not documented.
+/home/mfosdick/mossy2/src/arch/x86_64/int.h:174: warning: Member tmp[3] (variable) of class x64::trampoline is not documented.
+/home/mfosdick/mossy2/src/arch/x86_64/int.h:175: warning: Member id (variable) of class x64::trampoline is not documented.
+/home/mfosdick/mossy2/src/arch/x86_64/int.h:176: warning: Member tmp2[6] (variable) of class x64::trampoline is not documented.
+/home/mfosdick/mossy2/src/arch/x86_64/int.h:178: warning: Member jmp_byte (variable) of class x64::trampoline is not documented.
+/home/mfosdick/mossy2/src/arch/x86_64/int.h:179: warning: Member rel_jmp (variable) of class x64::trampoline is not documented.
+/home/mfosdick/mossy2/src/arch/x86_64/int.h:180: warning: Member abs_jmp (variable) of class x64::trampoline is not documented.
+/home/mfosdick/mossy2/src/arch/x86/paging.h:65: warning: Member init(uintptr_t(*a_func)()) (function) of class x86::recursive_paging is not documented.
+/home/mfosdick/mossy2/src/arch/x86/paging.h:66: warning: Member map(uintptr_t phys, uintptr_t virt, hal::page_opt options) (function) of class x86::recursive_paging is not documented.
+/home/mfosdick/mossy2/src/arch/x86/paging.h:67: warning: Member unmap(uintptr_t virt) (function) of class x86::recursive_paging is not documented.
+/home/mfosdick/mossy2/src/arch/x86/paging.h:68: warning: Member locate(uintptr_t virt) (function) of class x86::recursive_paging is not documented.
+/home/mfosdick/mossy2/src/arch/x86/paging.h:36: warning: Member PACKED (variable) of class x86::recursive_paging is not documented.
+/home/mfosdick/mossy2/src/arch/x86/paging.h:49: warning: Member PACKED (variable) of class x86::recursive_paging is not documented.
+/home/mfosdick/mossy2/src/arch/x86/paging.h:53: warning: Member PACKED (variable) of class x86::recursive_paging is not documented.
+/home/mfosdick/mossy2/src/arch/x86/paging.h:57: warning: Member PACKED (variable) of class x86::recursive_paging is not documented.
+/home/mfosdick/mossy2/src/arch/x86/paging.h:61: warning: Member PACKED (variable) of class x86::recursive_paging is not documented.
+/home/mfosdick/mossy2/src/arch/x86/paging.h:62: warning: Member alloc_func)() (variable) of class x86::recursive_paging is not documented.
+/home/mfosdick/mossy2/src/arch/x86/paging.h:63: warning: Member pmap (variable) of class x86::recursive_paging is not documented.
+/home/mfosdick/mossy2/src/arch/x86/paging.h:59: warning: Member tables[1023] (variable) of class x86::recursive_paging::page_map is not documented.
+/home/mfosdick/mossy2/src/arch/x86/paging.h:60: warning: Member master (variable) of class x86::recursive_paging::page_map is not documented.
+/home/mfosdick/mossy2/src/arch/x86/paging.h:51: warning: Member entries[1024] (variable) of class x86::recursive_paging::pd is not documented.
+/home/mfosdick/mossy2/src/arch/x86/paging.h:52: warning: Member entriesi[1024] (variable) of class x86::recursive_paging::pd is not documented.
+/home/mfosdick/mossy2/src/arch/x86/paging.h:26: warning: Member present (variable) of class x86::recursive_paging::pde is not documented.
+/home/mfosdick/mossy2/src/arch/x86/paging.h:27: warning: Member read_write (variable) of class x86::recursive_paging::pde is not documented.
+/home/mfosdick/mossy2/src/arch/x86/paging.h:28: warning: Member user (variable) of class x86::recursive_paging::pde is not documented.
+/home/mfosdick/mossy2/src/arch/x86/paging.h:29: warning: Member write_through (variable) of class x86::recursive_paging::pde is not documented.
+/home/mfosdick/mossy2/src/arch/x86/paging.h:30: warning: Member no_cache (variable) of class x86::recursive_paging::pde is not documented.
+/home/mfosdick/mossy2/src/arch/x86/paging.h:31: warning: Member accessed (variable) of class x86::recursive_paging::pde is not documented.
+/home/mfosdick/mossy2/src/arch/x86/paging.h:32: warning: Member zero (variable) of class x86::recursive_paging::pde is not documented.
+/home/mfosdick/mossy2/src/arch/x86/paging.h:33: warning: Member big (variable) of class x86::recursive_paging::pde is not documented.
+/home/mfosdick/mossy2/src/arch/x86/paging.h:34: warning: Member unused (variable) of class x86::recursive_paging::pde is not documented.
+/home/mfosdick/mossy2/src/arch/x86/paging.h:35: warning: Member addr (variable) of class x86::recursive_paging::pde is not documented.
+/home/mfosdick/mossy2/src/arch/x86/paging.h:55: warning: Member entries[1024] (variable) of class x86::recursive_paging::pt is not documented.
+/home/mfosdick/mossy2/src/arch/x86/paging.h:56: warning: Member entriesi[1024] (variable) of class x86::recursive_paging::pt is not documented.
+/home/mfosdick/mossy2/src/arch/x86/paging.h:38: warning: Member present (variable) of class x86::recursive_paging::pte is not documented.
+/home/mfosdick/mossy2/src/arch/x86/paging.h:39: warning: Member read_write (variable) of class x86::recursive_paging::pte is not documented.
+/home/mfosdick/mossy2/src/arch/x86/paging.h:40: warning: Member user (variable) of class x86::recursive_paging::pte is not documented.
+/home/mfosdick/mossy2/src/arch/x86/paging.h:41: warning: Member write_through (variable) of class x86::recursive_paging::pte is not documented.
+/home/mfosdick/mossy2/src/arch/x86/paging.h:42: warning: Member no_cache (variable) of class x86::recursive_paging::pte is not documented.
+/home/mfosdick/mossy2/src/arch/x86/paging.h:43: warning: Member accessed (variable) of class x86::recursive_paging::pte is not documented.
+/home/mfosdick/mossy2/src/arch/x86/paging.h:44: warning: Member dirty (variable) of class x86::recursive_paging::pte is not documented.
+/home/mfosdick/mossy2/src/arch/x86/paging.h:45: warning: Member zero (variable) of class x86::recursive_paging::pte is not documented.
+/home/mfosdick/mossy2/src/arch/x86/paging.h:46: warning: Member global (variable) of class x86::recursive_paging::pte is not documented.
+/home/mfosdick/mossy2/src/arch/x86/paging.h:47: warning: Member unused (variable) of class x86::recursive_paging::pte is not documented.
+/home/mfosdick/mossy2/src/arch/x86/paging.h:48: warning: Member addr (variable) of class x86::recursive_paging::pte is not documented.
+/home/mfosdick/mossy2/src/arch/x86_64/int.h:116: warning: Member offset_low (variable) of class x86::idt_entry is not documented.
+/home/mfosdick/mossy2/src/arch/x86_64/int.h:117: warning: Member code_segment (variable) of class x86::idt_entry is not documented.
+/home/mfosdick/mossy2/src/arch/x86_64/int.h:118: warning: Member resv (variable) of class x86::idt_entry is not documented.
+/home/mfosdick/mossy2/src/arch/x86_64/int.h:119: warning: Member type (variable) of class x86::idt_entry is not documented.
+/home/mfosdick/mossy2/src/arch/x86_64/int.h:120: warning: Member zero (variable) of class x86::idt_entry is not documented.
+/home/mfosdick/mossy2/src/arch/x86_64/int.h:121: warning: Member DPL (variable) of class x86::idt_entry is not documented.
+/home/mfosdick/mossy2/src/arch/x86_64/int.h:122: warning: Member present (variable) of class x86::idt_entry is not documented.
+/home/mfosdick/mossy2/src/arch/x86_64/int.h:123: warning: Member offset_med (variable) of class x86::idt_entry is not documented.
+/home/mfosdick/mossy2/src/arch/x86_64/int.h:127: warning: Member entries[256] (variable) of class x86::IDT is not documented.
+/home/mfosdick/mossy2/src/arch/x86_64/int.h:131: warning: Member limit (variable) of class x86::IDTR is not documented.
+/home/mfosdick/mossy2/src/arch/x86_64/int.h:132: warning: Member base (variable) of class x86::IDTR is not documented.
+/home/mfosdick/mossy2/src/arch/x86_64/int.h:136: warning: Member begin[3] (variable) of class x86::trampoline is not documented.
+/home/mfosdick/mossy2/src/arch/x86_64/int.h:138: warning: Member id (variable) of class x86::trampoline is not documented.
+/home/mfosdick/mossy2/src/arch/x86_64/int.h:140: warning: Member id (variable) of class x86::trampoline is not documented.
+/home/mfosdick/mossy2/src/arch/x86_64/int.h:142: warning: Member jmp_byte (variable) of class x86::trampoline is not documented.
+/home/mfosdick/mossy2/src/arch/x86_64/int.h:143: warning: Member rel_jmp (variable) of class x86::trampoline is not documented.
+/home/mfosdick/mossy2/src/arch/x86_64/int.h:144: warning: Member abs_jmp (variable) of class x86::trampoline is not documented.

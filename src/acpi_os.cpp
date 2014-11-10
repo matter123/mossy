@@ -20,9 +20,7 @@
 #include <stdlib.h>
 namespace acpi {
 	namespace os {
-		bool IS_SET(uint8_t arr[],unsigned int index) {
-			return (arr[index/8]&(1<<index%8))==(1<<index%8);
-		}
+#define IS_SET(a,i)    (a[(i)/8]&(1<<(i)%8))
 #define SET(a,i)    do {a[(i)/8]|= (1<<((i)%8));}while(0)
 #define UN_SET(a,i) do {a[(i)/8]&=~(1<<((i)%8));}while(0)
 		uint8_t bitmap[128];

@@ -17,68 +17,32 @@
 #ifdef X64
 #include <stdint.h>
 #include <stddef.h>
-#include <struct.h>
 #include <string.h>
 #include <hal/int.h>
 #include <hal/hal.h>
 #include <hal/console.h>
 #include <x86_64/int.h>
-namespace x64 {
-	struct idt_entry {
-		uint16_t offset_low;
-		uint16_t code_segment;
-		uint IST:3;
-		uint resv:5;
-		uint type:4;
-		uint zero:1;
-		uint DPL:2;
-		bool present:1;
-		uint16_t offset_med;
-		uint32_t offset_high;
-		uint32_t resv_1;
-	} PACKED;
 
-	struct IDT {
-		idt_entry entries[256];
-	} PACKED;
-
-	struct IDTR {
-		uint16_t limit;
-		IDT *base;
-	} PACKED;
-
-	struct trampoline {
-		char begin[4];
-#ifdef DEBUG
-		char tmp[3];
-		uintptr_t id;
-		char tmp2[6];
-#endif
-		char jmp_byte;
-		int32_t rel_jmp;
-		uint64_t abs_jmp;
-	} PACKED;
-}
-
-bool IS_SET(uint8_t arr[],uint index) {
-	return (arr[index/8]&(1<<index%8))==(1<<index%8);
-}
 
 extern "C" void lidt(x64::IDTR *idtr);
+extern "C" void exc_stub_sched();
+
 namespace hal {
+#define IS_SET(a,i)    (a[(i)/8]&(1<<(i)%8))
+#define SET(a,i)    do {a[(i)/8]|= (1<<((i)%8));}while(0)
+#define UN_SET(a,i) do {a[(i)/8]&=~(1<<((i)%8));}while(0)
+
 	x64::IDTR idtr;
 	x64::IDT idt;
 	uint8_t used[32];
 	uint8_t resv[32];
-#define SET(a,i) do {a[i/8]|=(1<<i%8);}while(0)
-#define UN_SET(a,i) do {a[i/8]&=~(1<<i%8);}while(0)
 	bool init_idt() {
 		memset(static_cast<void *>(&idt),0,sizeof(idt));
 		idtr.base=&idt;
 		idtr.limit=static_cast<uint16_t>(sizeof(idt));
 		lidt(&idtr);
 		for(int i=0; i<256; i++) {
-			register_asm_sub_int(i,(uintptr_t)exc_arr[i],NON_REENTRANT,false);
+			register_int(i,&dump_regs,NON_REENTRANT,false);
 		}
 		//allow exceptions to be called again
 		for(int i=0; i<256; i++) {
@@ -92,18 +56,30 @@ namespace hal {
 	}
 	int_callback callbacks[256];
 	void register_int(uint16_t int_num,int_callback callback,int type,bool user) {
-		register_asm_sub_int(int_num,(uintptr_t)exc_arr[int_num],type,user);
+		register_stub_int(int_num,(uintptr_t)&exc_stub_sched,type,user);
 		callbacks[int_num]=callback;
 	}
 
-	void register_asm_sub_int(uint16_t int_num, uintptr_t addr, int type,bool user) {
+	void register_stub_int(uint16_t int_num, uintptr_t addr, int type, bool user) {
+		register_asm_stub_int(int_num,(uintptr_t)exc_arr[int_num],type,user);
+		x64::trampoline *tramp=(x64::trampoline *)exc_arr[int_num];
+		if(tramp->begin[0]==0x6A&&tramp->begin[1]==0x00&&tramp->begin[2]==0x6A) {
+			tramp=(x64::trampoline *)((pointer)exc_arr[int_num]+2);
+		}
+		int32_t diff=(addr-tramp->abs_jmp);
+		//reset the rel_jmp and abs_jmp
+		tramp->rel_jmp+=diff;
+		tramp->abs_jmp=addr;
+	}
+
+	void register_asm_stub_int(uint16_t int_num, uintptr_t addr, int type,bool user) {
 		//callee assumes all responsibility of handling the interrupt
-		if(int_num>256||IS_SET(used,int_num)) {
+		if(int_num>256) {
 			return;
 		}
 		x64::idt_entry ent=idt.entries[int_num];
 		ent.DPL=(user?3:0);
-		switch(type) {
+		switch(type&0xF) {
 			case NON_REENTRANT:
 				//interrupt gate
 				ent.type=0xE;
@@ -120,15 +96,6 @@ namespace hal {
 		ent.offset_low=static_cast<uint16_t>(addr&0xFFFF);
 		ent.offset_med=static_cast<uint16_t>((addr>>16)&0xFFFF);
 		ent.offset_high=static_cast<uint32_t>(addr>>32);
-		x64::trampoline *tramp=(x64::trampoline *)exc_arr[int_num];
-		if(tramp->begin[0]==0x6A&&tramp->begin[1]==0x00&&tramp->begin[2]==0x6A) {
-			tramp=(x64::trampoline *)((pointer)exc_arr[int_num]+2);
-		}
-		int32_t diff=(addr-tramp->abs_jmp);
-		//reset the rel_jmp and abs_jmp
-		tramp->rel_jmp+=diff;
-		tramp->abs_jmp=addr;
-		idt.entries[int_num]=ent;
 		SET(used,int_num);
 	}
 

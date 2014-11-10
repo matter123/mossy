@@ -17,6 +17,7 @@
 #include <arch.h>
 #ifdef X64
 #include <stdint.h>
+#include <struct.h>
 namespace hal {
 	bool init_idt();
 }

@@ -13,7 +13,9 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 */
+#pragma once
 #include <arch.h>
+#include <struct.h>
 #ifdef X86_64
 
 extern "C" void *exc0; extern "C" void *exc1; extern "C" void *exc2; extern "C" void *exc3;
@@ -80,7 +82,8 @@ extern "C" void *exc240; extern "C" void *exc241; extern "C" void *exc242; exter
 extern "C" void *exc244; extern "C" void *exc245; extern "C" void *exc246; extern "C" void *exc247;
 extern "C" void *exc248; extern "C" void *exc249; extern "C" void *exc250; extern "C" void *exc251;
 extern "C" void *exc252; extern "C" void *exc253; extern "C" void *exc254; extern "C" void *exc255;
-
+//skip doxygen complaining
+/// @cond FOO
 void *exc_arr[256] {
 	&exc0, &exc1, &exc2, &exc3, &exc4, &exc5, &exc6, &exc7, &exc8, &exc9, &exc10, &exc11,
 	&exc12, &exc13, &exc14, &exc15, &exc16, &exc17, &exc18, &exc19, &exc20, &exc21, &exc22, &exc23,
@@ -107,4 +110,74 @@ void *exc_arr[256] {
 	&exc237, &exc238, &exc239, &exc240, &exc241, &exc242, &exc243, &exc244, &exc245, &exc246,
 	&exc247, &exc248, &exc249, &exc250, &exc251, &exc252, &exc253, &exc254, &exc255,
 };
+/// @endcond
+namespace x86 {
+	struct idt_entry {
+		uint16_t offset_low;
+		uint16_t code_segment;
+		uint8_t resv;
+		uint type:4;
+		uint zero:1;
+		uint DPL:2;
+		bool present:1;
+		uint16_t offset_med;
+	} PACKED;
+
+	struct IDT {
+		idt_entry entries[256];
+	} PACKED;
+
+	struct IDTR {
+		uint16_t limit;
+		IDT *base;
+	} PACKED;
+
+	struct trampoline {
+		char begin[3];
+		#ifdef DEBUG
+		char *id;
+		#else
+		char id;
+		#endif
+		char jmp_byte;
+		int32_t rel_jmp;
+		uint32_t abs_jmp;
+	} PACKED;
+}
+namespace x64 {
+	struct idt_entry {
+		uint16_t offset_low;
+		uint16_t code_segment;
+		uint IST:3;
+		uint resv:5;
+		uint type:4;
+		uint zero:1;
+		uint DPL:2;
+		bool present:1;
+		uint16_t offset_med;
+		uint32_t offset_high;
+		uint32_t resv_1;
+	} PACKED;
+
+	struct IDT {
+		idt_entry entries[256];
+	} PACKED;
+
+	struct IDTR {
+		uint16_t limit;
+		IDT *base;
+	} PACKED;
+
+	struct trampoline {
+		char begin[4];
+#ifdef DEBUG
+		char tmp[3];
+		uintptr_t id;
+		char tmp2[6];
+#endif
+		char jmp_byte;
+		int32_t rel_jmp;
+		uint64_t abs_jmp;
+	} PACKED;
+}
 #endif

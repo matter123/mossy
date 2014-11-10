@@ -23,16 +23,13 @@
 #include <hal/hal.h>
 #include <hal/console.h>
 #include <x86_64/int.h>
-#include <x86/idt.h>
 
 extern "C" void lidt(x86::IDTR *idtr);
 extern "C" void exc_stub_sched();
 
 
 namespace hal {
-		bool IS_SET(uint8_t arr[],unsigned int index) {
-			return (arr[index/8]&(1<<index%8))==(1<<index%8);
-		}
+#define IS_SET(a,i)    (a[(i)/8]&(1<<(i)%8))
 #define SET(a,i)    do {a[(i)/8]|= (1<<((i)%8));}while(0)
 #define UN_SET(a,i) do {a[(i)/8]&=~(1<<((i)%8));}while(0)
 

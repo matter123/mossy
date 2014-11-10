@@ -18,7 +18,7 @@
 /**
     @file
     @brief header included into every file
-    @detail this header contains #defines and typedefs
+    @details this header contains #%defines and typedefs
     that should be in every single file
     @note never manually include this file
 */
