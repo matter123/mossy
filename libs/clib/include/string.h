@@ -218,72 +218,92 @@ char *strlcat(char *dest, const char *src, size_t num);
 int memcmp(const void *ptr1, const void *ptr2, size_t num);
 
 /**
- * @brief compares \a str1 and \a str2
- * @details compares byte by byte of each string
- * \a str1 and \a str2 stopping at the first NULL byte
- * 
- * @param str1 pointer to a string of UTF-8 chars
- * @param str2 pointer to another string of UTF-8 char
- * 
- * @return 0 if both strings are equal, the difference
- * of the first different byte if not
- * @date created on 2014-05-30
- * @sa memcmp
- * @sa mbscmp
- */
+    @brief compares \a str1 and \a str2
+    @details compares byte by byte of each string
+    \a str1 and \a str2 stopping at the first NULL byte
+
+    @param str1 pointer to a string of UTF-8 chars
+    @param str2 pointer to another string of UTF-8 char
+
+    @return 0 if both strings are equal, the difference
+    of the first different byte if not
+    @date created on 2014-05-30
+    @sa memcmp
+    @sa mbscmp
+*/
 int strcmp(const char *str1, const char *str2);
 
 /**
- * @brief compares \a str1 and \a str2
- * @details compares each char of \a str1 and \a str2
- * two chars are considered equal if after decoding they
- * result in the same codepoint
- * 
- * @note this method counts combining char pairs as separate
- * chars from there precombinded versions 
- * 
- * @param str1 pointer to a UTF-8 string
- * @param str2 pointer to another UTF-8 string
- * 
- * @return 0 if the strings are equal, the difference
- * in the first differing codepoint otherwise
- * @date created on 2014-07-06
- * @sa memcmp
- * @sa strcmp
- */
+    @brief compares \a str1 and \a str2
+    @details compares each char of \a str1 and \a str2
+    two chars are considered equal if after decoding they
+    result in the same codepoint
+
+    @note this method counts combining char pairs as separate
+    chars from there precombinded versions
+
+    @param str1 pointer to a UTF-8 string
+    @param str2 pointer to another UTF-8 string
+
+    @return 0 if the strings are equal, the difference
+    in the first differing codepoint otherwise
+    @date created on 2014-07-06
+    @sa memcmp
+    @sa strcmp
+*/
 int mbscmp(const char *str1, const char *str2);
 
-////////////////////////////////////////
-// Compares up to 'num' bytes in      //
-//   'str1' and 'str2', stopping if a //
-//   null byte is found               //
-// Returns 0 if equal, or the         //
-//   difference of the non-equal byte //
-//   otherwise                        //
-// Created on 2014-05-30              //
-////////////////////////////////////////
+/**
+    @brief compares 2 strings
+    @details compares up to num bytes of \a str1 and
+    \a str2.
+
+    @param str1 pointer to a UTF-8 string
+    @param str2 pointer to a UTF-8 string
+    @param num max number of bytes to compare
+
+    @return 0 if strings are equal the diffrence in the first byte otherwise
+    @date created on 2014-05-30
+    @sa mbscmp
+    @sa strcmp
+    @sa mbsncmp
+*/
 int strncmp(const char *str1, const char *str2, size_t num);
 
-////////////////////////////////////////
-// Compares up to 'num' bytes in      //
-//   'str1' and 'str2' using          //
-//   codepoints, stopping if a null   //
-//   byte is found                    //
-// Returns 0 if equal, or the         //
-//   difference of the codepoints of  //
-//   the non-equal char otherwise     //
-// Created on 2014-05-30              //
-////////////////////////////////////////
+/**
+    @brief compares 2 strings
+    @details compares up to num bytes of \a str1 and
+    \a str2. the two strings are compared codepoint to codepoint
+    combining chars are ignored
+
+    @param str1 pointer to a UTF-8 string
+    @param str2 pointer to a UTF-8 string
+    @param num max number of bytes to compare
+
+    @return 0 if strings are equal the diffrence in the first codepoint otherwise
+    @date created on 2014-05-30
+    @sa mbscmp
+    @sa strcmp
+    @sa strncmp
+*/
 int mbsncmp(const char *str1, const char *str2, size_t num); //WORKS
 
-////////////////////////////////////////
-// Searches between 'ptr' and 'num'   //
-//   for a byte with the value of     //
-//   'value'                          //
-// Returns a pointer between 'ptr'    //
-//   and 'num' or NULL                //
-// Created on 2014-05-30              //
-////////////////////////////////////////
+/**
+    @brief finds a byte
+    @details searches the first num bytes pointed to by
+    \a ptr and looks for the bytes with the value of
+    \a value
+
+    @param ptr pointer to a block of bytes
+    @param value value of byte to look for capped at 0xFF
+    @param num number of bytes to search
+
+    @return a pointer to the first matching byte, NULL
+    if it not found
+    @date created on 2014-05-30
+    @sa strchr
+    @sa mbschr
+*/
 void *memchr(const void *ptr, int value, size_t num);
 
 ////////////////////////////////////////
@@ -389,7 +409,7 @@ size_t mbsspn(const char *str, const char *chars);
 //   the null byte                    //
 // Created on 2014-05-30              //
 ////////////////////////////////////////
-char *strstr(char *str1, const char *str2);
+char *strstr(const char *str1, const char *str2);
 
 ////////////////////////////////////////
 // Searches 'str1' for all chars in   //

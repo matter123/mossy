@@ -165,15 +165,14 @@ namespace hal {
 		a=inb(0x3C1);
 		a&=0xF7;
 		outb(0x3C0,a);
-
 		//init serial
 		outb(0x3F9, 0x00);//these do some shit i don't want to explain right now
-   		outb(0x3FA, 0x80);
-   		outb(0x3F8, 0x03);
-   		outb(0x3F9, 0x00);
-   		outb(0x3FB, 0x03);
-   		outb(0x3FA, 0xC7);
-   		outb(0x3FC, 0x0B);
+		outb(0x3FA, 0x80);
+		outb(0x3F8, 0x03);
+		outb(0x3F9, 0x00);
+		outb(0x3FB, 0x03);
+		outb(0x3FA, 0xC7);
+		outb(0x3FC, 0x0B);
 		return a;
 	}
 
@@ -209,11 +208,11 @@ namespace hal {
 		uint32_t cur_offset=0;
 		uint32_t sreq=space_req;
 		while(sreq>0) {
-			map_phys_to_virt_cur(fb_info->addr+cur_offset*0x1000,fb_info->addr+cur_offset*0x1000,{false,false,false});
+			map_phys_to_virt_cur(fb_info->addr+cur_offset*0x1000,fb_info->addr+cur_offset*0x1000, {false,false,false});
 			cur_offset++;
 			sreq-=0x1000;
 		}
-		for(uint32_t i=0;i<space_req;i++) {
+		for(uint32_t i=0; i<space_req; i++) {
 			*(((pointer)fb_info->addr)+i)=(i%3?0xFF:0x00);
 		}
 	}

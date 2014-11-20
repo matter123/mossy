@@ -108,6 +108,7 @@ fail_fast:
 	.past:
 	mov rax, .blidt
 	lidt [rax]
+	xchg bx, bx
 	xor bx, bx
 	div bx
 	iret ;shouldn't get to here, the div should triple fault the cpu

@@ -17,15 +17,25 @@
 #include <tables/rsdp.h>
 #include <tables/sdt.h>
 namespace acpi {
+	static bool h_acpi=false;
 	void init_tables() {
 		os::init_acpi_os();
 		tables::find_rsdp();
+		if(tables::rsdp_ptr) {
+			h_acpi=true;
+		} else {
+			return;
+		}
 		if(tables::rsdp_ptr->begin.revision==0) {
 			tables::rsdt=(tables::RSDT *)tables::load_table(
-			                             (void *)tables::rsdp_ptr->begin.RSDTaddr);
+			                 (void *)tables::rsdp_ptr->begin.RSDTaddr);
 		} else {
 			tables::xsdt=(tables::XSDT *)tables::load_table(
-			                             (void *)tables::rsdp_ptr->XSDTaddr);
+			                 (void *)tables::rsdp_ptr->XSDTaddr);
 		}
+	}
+
+	bool has_acpi() {
+		return h_acpi;
 	}
 }

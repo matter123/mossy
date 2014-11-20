@@ -1,0 +1,14 @@
+acpi
+->ioapic
+->lapic
+  ->apic timer
+->power managment
+documentation
+better console api
+testing framework
+scheduler
+->userspace
+  ->system calls
+->driver api (cdi? udi? my own?)
+pci
+->plug n play

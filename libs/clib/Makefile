@@ -1,9 +1,9 @@
 #custom make file for integrating Mossy2 and CLIB
 #licensed under Apache 2.0 Public license
 
-CSOURCES:=$(shell find . -name "*.c")
+CSOURCES:=$(shell find . -name "*.c" -not -path "*/test/*")
 COBJECTS:=$(patsubst %.c, %.o.$(OBJ_SUFFIX), $(CSOURCES))
-CXXSOURCES:=$(shell find . -name "*.cpp")
+CXXSOURCES:=$(shell find . -name "*.cpp" -not -path "*/test/*")
 CXXOBJECTS:=$(patsubst %.cpp, %.o.$(OBJ_SUFFIX), $(CXXSOURCES))
 
 build: $(COBJECTS) $(CXXOBJECTS) mklib

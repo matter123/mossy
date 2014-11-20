@@ -70,6 +70,7 @@ namespace hal {
 		uint32_t pfa_end=(x86_64::get_end()&(0xFFF==0)?x86_64::get_end():(x86_64::get_end()&~
 		                  (0xFFF))+0x1000);
 		add_virt_region(pfa_end,0x7FFFFFF,types[3]);
+		hal::cout<<hal::address<<(pfa_end+0x8000000);
 		add_virt_region(pfa_end+0x8000000,0xFFBFFFFF-(pfa_end+0x8000000),types[2]);
 	}
 	void add_phys_mem_arch() {

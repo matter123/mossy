@@ -31,7 +31,7 @@ namespace hal {
 			return regs;
 		}
 		mem_region *t_regions=reinterpret_cast<mem_region *>(w_malloc(sizeof(
-		                          mem_region)*entrycount));
+		                                                         mem_region)*entrycount));
 		int mc=0;
 		while(mc<entrycount) {
 			for(size_t s=0; s<regs->tag_count; s++) {
@@ -106,7 +106,6 @@ namespace hal {
 				//absorb (skip over and do nothing)
 				continue;
 			}
-
 			//split
 			uint64_t old_end=t_regions[ecount-1].end;
 			t_regions[ecount-1].end=regs->regions[i].start-1;
@@ -124,7 +123,7 @@ namespace hal {
 	mem_regs *page_align(mem_regs *regs) {
 #define START_MASK ~((uintptr_t)0xFFF)
 		for(int i=0; i<regs->tag_count; i++) {
-			if((regs->regions[i].start & START_MASK) != 0) {
+			if((regs->regions[i].start & 0xFFF) != 0) {
 				uint64_t old_start=regs->regions[i].start;
 				if(regs->regions[i].type.can_grow()) {
 					regs->regions[i].start&=START_MASK;
@@ -135,6 +134,9 @@ namespace hal {
 				if(i && regs->regions[i-1].end==(old_start-1)) {
 					regs->regions[i-1].end=(regs->regions[i].start-1);
 				}
+			}
+			if(regs->regions[i].end==0x100000000) {
+				regs->regions[i].end-=1;
 			}
 			if((regs->regions[i].end & 0xFFF) != 0xFFF) {
 				if(regs->regions[i].type.can_grow()) {

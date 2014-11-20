@@ -1,5 +1,5 @@
 /*
-    Copyright 2014 Matthew Fosdick
+    Copyright 2013-2014 Matthew Fosdick
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -13,24 +13,10 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 */
-#pragma once
-namespace acpi {
-	/**
-	    @brief initalizes the static table portion of acpi
-	    @details finds parses and extracts all tables found in the firmware
-	    without executing and aml or enabling acpi mode
-
-	    @date created on 2014-11-03
-	*/
-	void init_tables();
-
-	/**
-	 * @brief determines if acpi exists
-	 * @details should be called after \a init_tables and before
-	 * attempting to use any acpi feature
-	 *
-	 * @return true is acpi support was found
-	 * @date created on 2014-11-19
-	 */
-	bool has_acpi();
+#include <test.h>
+#if TEST
+#include <hal/hal.h>
+void test_utf8() {
 }
+static volatile kernel::test_module tm=kernel::test_module("UTF-8       ",&test_utf8);
+#endif

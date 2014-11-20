@@ -38,7 +38,6 @@ namespace hal {
 				break;
 			}
 		}
-
 		if(!mmap_tag) {
 			return false;
 		}
@@ -55,16 +54,13 @@ namespace hal {
 			regs.regions[s].end=regs.regions[s].start + ent->len;
 			regs.regions[s].type=types[ent->type];
 		}
-
 		add_phys_mem_arch();
 		add_phys_mem_vendor();
-
 		//add kernel
 		add_phys_region(1);
 		uintptr_t start=((uint64_t) &k_start)-get_page_offset_addr();
 		uintptr_t end=(((uint64_t) &k_data_end)-start)-get_page_offset_addr();
 		add_phys_region(start,end,types[0]);
-
 		fix_mmap();
 		return true;
 	}
@@ -72,16 +68,11 @@ namespace hal {
 	static void init_type() {
 		types[0].kernel=true;
 		types[0].resv_mem=true;
-
 		types[1].avil=true;
-
 		types[2].resv_mem=true;
-
 		types[3].avil=true;
 		types[3].firmware=true;
-
 		types[4].save_on_hib=true;
-
 		types[5].no_exist=true;
 	}
 	static int add_reg_count=0;

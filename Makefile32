@@ -20,7 +20,7 @@ all: build runem
 build: clean $(COBJECTS) $(CXXOBJECTS) $(SOBJECTS) build_libs link mkiso
 
 FFLAGS=-fno-omit-frame-pointer -ffreestanding -fno-stack-protector -fno-common
-DFLAGS=-DARCH=_x86 -DVENDOR=_PC -DDEBUG
+DFLAGS:=$(DFLAGS) -DARCH=_x86 -DVENDOR=_PC -DDEBUG
 CFLAGS=-O3 -std=c11 $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS) $(IFLAGS)
 CXXFLAGS=-O3 -std=gnu++11 $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS) $(IFLAGS) -fno-rtti \
 -fno-exceptions -fdiagnostics-color=auto

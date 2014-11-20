@@ -18,7 +18,31 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+/**
+ * @brief checks if char is alphanumeric
+ * @details determines if an ascii char is alphanumeric
+ * i.e. '0' through '9' or 'A' through 'Z' or 'a' through 'z'
+ *
+ * @param c an ascii char
+ *
+ * @return 1 if alphanumeric, 0 otherwise
+ * @date created on 2014-05-30
+ * @sa isalpha
+ * @sa isdigit
+ * @sa isxdigit
+ */
 int isalnum(int c);
+/**
+ * @brief check is char is alphabetic
+ * @details determines if an ascii char is alphabetic
+ * i.e. 'A' through 'Z' or 'a' through 'z'
+ *
+ * @param c an ascii char
+ *
+ * @return 1 if alphabetic, 0 otherwise
+ * @sa isalpha
+ * @sa isxdigit
+ */
 int isalpha(int c);
 int isblank(int c);
 int iscntrl(int c);

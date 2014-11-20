@@ -18,14 +18,20 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <acpi_os.h>
+#include <hal/console.h>
+#include <string.h>
 namespace acpi {
 	namespace tables {
 		RSDT *rsdt;
 		XSDT *xsdt;
 
-		SDT *load_table(void * tbl_phys_base) {
+		SDT *load_table(void *tbl_phys_base) {
 			uintptr_t alloc_size=0;
+			char test[5];
 			SDT *sdt=(SDT *)os::get_virt_phys((uintptr_t)tbl_phys_base,sizeof(SDT),&alloc_size);
+			memcpy(test,sdt->Signature,4);
+			test[4]='\0';
+			hal::cout<<test<<hal::endl;
 			int needed_length=sdt->length-sizeof(SDT);
 			if(needed_length>alloc_size) {
 				os::unget_phys((uintptr_t)tbl_phys_base,sizeof(SDT),(uintptr_t)sdt);
@@ -37,7 +43,7 @@ namespace acpi {
 			return sdt;
 		}
 
-		bool do_checksum(SDT * table) {
+		bool do_checksum(SDT *table) {
 			pointer bytes=reinterpret_cast<pointer>(table);
 			uint8_t checksum=0;
 			for(int i=0; i<table->length; i++) {

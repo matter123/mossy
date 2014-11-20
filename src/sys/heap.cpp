@@ -18,9 +18,10 @@
 #include <string.h>
 #include <arch.h>
 #include <hal/mmap.h>
+#include <hal/hal.h>
 namespace kernel {
 	struct HEAD {
-		uint      magic:24;
+		uint     magic:24;
 		bool     free:1;
 		int      resv:7;
 		uint32_t len;
@@ -187,7 +188,6 @@ namespace kernel {
 		if(newh->next) {
 			newh->next->prev=newh;
 		}
-
 	}
 	void dumb_merge(HEAD *left, HEAD *right) {
 		left->len+=sizeof(HEAD)+right->len;

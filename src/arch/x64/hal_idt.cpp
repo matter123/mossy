@@ -92,10 +92,10 @@ namespace hal {
 		ent.present=true;
 		ent.IST=0;//0 means no seperate stack if interrupted code is DPL 0
 		ent.code_segment=0x8;//see boot64.inc for this magic number
-
 		ent.offset_low=static_cast<uint16_t>(addr&0xFFFF);
 		ent.offset_med=static_cast<uint16_t>((addr>>16)&0xFFFF);
 		ent.offset_high=static_cast<uint32_t>(addr>>32);
+		idt.entries[int_num]=ent;
 		SET(used,int_num);
 	}
 
@@ -145,7 +145,6 @@ namespace hal {
 	}
 
 	void fail_fast(cpu_state *state) {
-
 	}
 }
 #endif
