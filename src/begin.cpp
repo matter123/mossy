@@ -55,7 +55,7 @@ namespace kernel {
 		while(1) {
 			int x=(rand()%(get_w()-130))+20;
 			int y=(rand()%(get_h()-59))+20;
-			draw_string_at(x,y,"MOSSY!");
+			draw_string_at(x,y,"lowercase Whoo~!");
 		}
 		acpi::init_tables();
 		hal::print_boot_msg("Init ACPI",acpi::has_acpi(),false);
