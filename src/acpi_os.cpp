@@ -31,7 +31,6 @@ namespace acpi {
 			for(int i=0; i<hal::get_virt_mem_regions(); i++) {
 				hal::mem_region *reg=hal::get_virt_mem_region(i);
 				if(reg->type.firmware) {
-					//for sanity only assume one section
 					region=reg;
 					break;
 				}
@@ -75,9 +74,6 @@ namespace acpi {
 				hal::unmap_virt_phys_cur(virt+i*0x1000);
 				UN_SET(bitmap,s+i);
 			}
-		}
-		void *alloc_mem(size_t len) {
-			return ::malloc(len);
 		}
 	}
 }

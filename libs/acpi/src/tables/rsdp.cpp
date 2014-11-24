@@ -17,6 +17,7 @@
 #include <tables/rsdp.h>
 #include <acpi_os.h>
 #include <string.h>
+#include <stdlib.h>
 namespace acpi {
 	namespace tables {
 		RSDP20 *rsdp_ptr=NULL;
@@ -63,7 +64,7 @@ namespace acpi {
 				rsdp_ptr=NULL;
 				return false;
 			}
-			void *rsdp=os::alloc_mem(sizeof(RSDP20));
+			void *rsdp=malloc(sizeof(RSDP20));
 			//memcpy the right amount of memory
 			memcpy(rsdp,rsdp_ptr,rsdp_ptr->begin.revision==0?sizeof(RSDP):sizeof(RSDP20));
 			rsdp_ptr=reinterpret_cast<RSDP20 *>(rsdp);

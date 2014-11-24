@@ -14,7 +14,17 @@
     limitations under the License.
 */
 #include <utf8.h>
+#if TEST
+#include <test.h>
+void test_utf8()__attribute__((used));
+static kernel::test_module test_module=kernel::test_module("UTF-8   ",&test_utf8);
+void test_utf8() {
+	bool abrt = false;
+	unit_test("a",0,0);
+	test_module.set_passed();
+}
 
+#endif
 size_t get_char_len(const char *str) {
 	unsigned char c=*str;
 	//if not a start of char return -1

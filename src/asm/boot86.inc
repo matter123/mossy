@@ -45,11 +45,11 @@ ALIGN 8
 	
 	dq 0
 	
-	;dw 5,0
-	;dd 20
-	;dd 1024
-	;dd 768
-	;dd 0
+	dw 5,0
+	dd 20
+	dd 1024
+	dd 768
+	dd 32
 
 	dd 0
 ALIGN 8

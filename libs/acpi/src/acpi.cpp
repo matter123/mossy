@@ -16,6 +16,7 @@
 #include <acpi_os.h>
 #include <tables/rsdp.h>
 #include <tables/sdt.h>
+    #include <hal/console.h>
 namespace acpi {
 	static bool h_acpi=false;
 	void init_tables() {
@@ -28,10 +29,21 @@ namespace acpi {
 		}
 		if(tables::rsdp_ptr->begin.revision==0) {
 			tables::rsdt=(tables::RSDT *)tables::load_table(
-			                 (void *)tables::rsdp_ptr->begin.RSDTaddr);
+			                 (void *)(uintptr_t)tables::rsdp_ptr->begin.RSDTaddr);
+			hal::cout<<sizeof(tables::SDT)<<" "<<sizeof(tables::RSDT);
+			uint32_t *tables=(uint32_t *)(((pointer)tables::rsdt)+sizeof(tables::RSDT));
+			size_t table_count=(tables::rsdt->header.length-sizeof(tables::RSDT))/4;
+			for(size_t s=0;s<table_count;s++) {
+				tables::load_table((void *)(uintptr_t)tables[s]);
+			}
 		} else {
 			tables::xsdt=(tables::XSDT *)tables::load_table(
-			                 (void *)tables::rsdp_ptr->XSDTaddr);
+			                 (void *)(uintptr_t)tables::rsdp_ptr->XSDTaddr);
+			uint64_t *tables=(uint64_t *)(((pointer)tables::xsdt)+sizeof(tables::XSDT));
+			size_t table_count=(tables::xsdt->header.length-sizeof(tables::XSDT))/8;
+			for(size_t s=0;s<table_count;s++) {
+				tables::load_table((void *)(uintptr_t)tables[s]);
+			}
 		}
 	}
 

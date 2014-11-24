@@ -16,21 +16,26 @@
 
 #pragma once
 #include <stdint.h>
+#include <hal/console.h>
+#include <text_color.h>
 namespace kernel {
 	void test();
 #define unit_test(name, res, exp)\
-	do{if((res)==(exp))hal::cout<<(name)<<std::TC::GREEN<<" passed"<<std::TC::WHITE<<hal::endl;\
-		else {hal::cout<<(name)<<std::TC::RED<<" failed"<<std::TC::WHITE\
+	do{if((res)==(exp))hal::cout<<"  "<<(name)<<std::TC::GREEN<<" passed"<<std::TC::WHITE<<hal::endl;\
+		else {hal::cout<<"  "<<(name)<<std::TC::RED<<" failed"<<std::TC::WHITE\
 			               <<" expected ("<<(exp)<<") got ("<<(res)<<")"<<hal::endl;\
-			if(abrt)panic((name));}}while(0)
-	struct test_module {
-		char name[13];
-		bool finished;
-		uint16_t depend_count;
+			if(abrt)kernel::panic((name));}}while(0)
+
+	class test_module {
+		const char *name;
+		const char *depends;
 		void (*test_func)();
 		test_module *next;
-		test_module *prev;
-		test_module(char *name,void (*test_func)());
+		bool passed;
+	public:
+		test_module(const char *test_name, void (*test_function)());
+		test_module(const char *test_name, void (*test_function)(), const char *dependencies);
+		void set_passed();
+		void run_test();
 	};
-	void register_test(test_module *module);
 }

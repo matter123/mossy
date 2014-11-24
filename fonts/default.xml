@@ -1,0 +1,259 @@
+<?xml version="1.0"?>
+<mbf png="default.png" def="20">
+	<glyph>
+		<codepoint>20</codepoint>
+		<pos x="0" y="0"/>
+	</glyph>
+	<glyph>
+		<codepoint>21</codepoint>
+		<pos x="1" y="0"/>
+	</glyph>
+	<glyph>
+		<codepoint>22</codepoint>
+		<pos x="2" y="0"/>
+	</glyph>
+	<glyph>
+		<codepoint>23</codepoint>
+		<pos x="3" y="0"/>
+	</glyph>
+	<glyph>
+		<codepoint>24</codepoint>
+		<pos x="4" y="0"/>
+	</glyph>
+	<glyph>
+		<codepoint>25</codepoint>
+		<pos x="5" y="0"/>
+	</glyph>
+	<glyph>
+		<codepoint>26</codepoint>
+		<pos x="6" y="0"/>
+	</glyph>
+	<glyph>
+		<codepoint>27</codepoint>
+		<pos x="7" y="0"/>
+	</glyph>
+	<glyph>
+		<codepoint>28</codepoint>
+		<pos x="8" y="0"/>
+	</glyph>
+	<glyph>
+		<codepoint>29</codepoint>
+		<pos x="9" y="0"/>
+	</glyph>
+	<glyph>
+		<codepoint>2a</codepoint>
+		<pos x="10" y="0"/>
+	</glyph>
+	<glyph>
+		<codepoint>2b</codepoint>
+		<pos x="11" y="0"/>
+	</glyph>
+	<glyph>
+		<codepoint>2c</codepoint>
+		<pos x="12" y="0"/>
+	</glyph>
+	<glyph>
+		<codepoint>2d</codepoint>
+		<pos x="13" y="0"/>
+	</glyph>
+	<glyph>
+		<codepoint>2e</codepoint>
+		<pos x="14" y="0"/>
+	</glyph>
+	<glyph>
+		<codepoint>2f</codepoint>
+		<pos x="15" y="0"/>
+	</glyph>
+		<glyph>
+		<codepoint>30</codepoint>
+		<pos x="0" y="1"/>
+	</glyph>
+	<glyph>
+		<codepoint>31</codepoint>
+		<pos x="1" y="1"/>
+	</glyph>
+	<glyph>
+		<codepoint>33</codepoint>
+		<pos x="2" y="1"/>
+	</glyph>
+	<glyph>
+		<codepoint>33</codepoint>
+		<pos x="3" y="1"/>
+	</glyph>
+	<glyph>
+		<codepoint>34</codepoint>
+		<pos x="4" y="1"/>
+	</glyph>
+	<glyph>
+		<codepoint>35</codepoint>
+		<pos x="5" y="1"/>
+	</glyph>
+	<glyph>
+		<codepoint>36</codepoint>
+		<pos x="6" y="1"/>
+	</glyph>
+	<glyph>
+		<codepoint>37</codepoint>
+		<pos x="7" y="1"/>
+	</glyph>
+	<glyph>
+		<codepoint>38</codepoint>
+		<pos x="8" y="1"/>
+	</glyph>
+	<glyph>
+		<codepoint>39</codepoint>
+		<pos x="9" y="1"/>
+	</glyph>
+	<glyph>
+		<codepoint>3a</codepoint>
+		<pos x="10" y="1"/>
+	</glyph>
+	<glyph>
+		<codepoint>3b</codepoint>
+		<pos x="11" y="1"/>
+	</glyph>
+	<glyph>
+		<codepoint>3c</codepoint>
+		<pos x="12" y="1"/>
+	</glyph>
+	<glyph>
+		<codepoint>3d</codepoint>
+		<pos x="13" y="1"/>
+	</glyph>
+	<glyph>
+		<codepoint>3e</codepoint>
+		<pos x="14" y="1"/>
+	</glyph>
+	<glyph>
+		<codepoint>3f</codepoint>
+		<pos x="15" y="1"/>
+	</glyph>
+	<glyph>
+		<codepoint>40</codepoint>
+		<pos x="0" y="2"/>
+	</glyph>
+	<glyph>
+		<codepoint>41</codepoint>
+		<pos x="1" y="2"/>
+	</glyph>
+	<glyph>
+		<codepoint>42</codepoint>
+		<pos x="2" y="2"/>
+	</glyph>
+	<glyph>
+		<codepoint>43</codepoint>
+		<pos x="3" y="2"/>
+	</glyph>
+	<glyph>
+		<codepoint>44</codepoint>
+		<pos x="4" y="2"/>
+	</glyph>
+	<glyph>
+		<codepoint>45</codepoint>
+		<pos x="5" y="2"/>
+	</glyph>
+	<glyph>
+		<codepoint>46</codepoint>
+		<pos x="6" y="2"/>
+	</glyph>
+	<glyph>
+		<codepoint>47</codepoint>
+		<pos x="7" y="2"/>
+	</glyph>
+	<glyph>
+		<codepoint>48</codepoint>
+		<pos x="8" y="2"/>
+	</glyph>
+	<glyph>
+		<codepoint>49</codepoint>
+		<pos x="9" y="2"/>
+	</glyph>
+	<glyph>
+		<codepoint>4a</codepoint>
+		<pos x="10" y="2"/>
+	</glyph>
+	<glyph>
+		<codepoint>4b</codepoint>
+		<pos x="11" y="2"/>
+	</glyph>
+	<glyph>
+		<codepoint>4c</codepoint>
+		<pos x="12" y="2"/>
+	</glyph>
+	<glyph>
+		<codepoint>4d</codepoint>
+		<pos x="13" y="2"/>
+	</glyph>
+	<glyph>
+		<codepoint>4e</codepoint>
+		<pos x="14" y="2"/>
+	</glyph>
+	<glyph>
+		<codepoint>4f</codepoint>
+		<pos x="15" y="2"/>
+	</glyph>
+	<glyph>
+		<codepoint>50</codepoint>
+		<pos x="0" y="3"/>
+	</glyph>
+	<glyph>
+		<codepoint>51</codepoint>
+		<pos x="1" y="3"/>
+	</glyph>
+	<glyph>
+		<codepoint>52</codepoint>
+		<pos x="2" y="3"/>
+	</glyph>
+	<glyph>
+		<codepoint>53</codepoint>
+		<pos x="3" y="3"/>
+	</glyph>
+	<glyph>
+		<codepoint>54</codepoint>
+		<pos x="4" y="3"/>
+	</glyph>
+	<glyph>
+		<codepoint>55</codepoint>
+		<pos x="5" y="3"/>
+	</glyph>
+	<glyph>
+		<codepoint>56</codepoint>
+		<pos x="6" y="3"/>
+	</glyph>
+	<glyph>
+		<codepoint>57</codepoint>
+		<pos x="7" y="3"/>
+	</glyph>
+	<glyph>
+		<codepoint>58</codepoint>
+		<pos x="8" y="3"/>
+	</glyph>
+	<glyph>
+		<codepoint>59</codepoint>
+		<pos x="9" y="3"/>
+	</glyph>
+	<glyph>
+		<codepoint>5a</codepoint>
+		<pos x="10" y="3"/>
+	</glyph>
+	<glyph>
+		<codepoint>5b</codepoint>
+		<pos x="11" y="3"/>
+	</glyph>
+	<glyph>
+		<codepoint>5c</codepoint>
+		<pos x="12" y="3"/>
+	</glyph>
+	<glyph>
+		<codepoint>5d</codepoint>
+		<pos x="13" y="3"/>
+	</glyph>
+	<glyph>
+		<codepoint>5e</codepoint>
+		<pos x="14" y="3"/>
+	</glyph>
+	<glyph>
+		<codepoint>5f</codepoint>
+		<pos x="15" y="3"/>
+	</glyph>
+</mbf>

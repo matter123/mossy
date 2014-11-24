@@ -1,4 +1,4 @@
-all: build run
+all: build buildiso run
 export
 WFLAGSON=-Wall -Wextra -Werror=return-type -Wshadow -Wundef -Wdeprecated \
 -Wredundant-decls -Werror=parentheses
@@ -13,7 +13,10 @@ build:
 	$(MAKE) -f Makefile64 build
 	tools/gen_build_info.py delete
 
-run:
+buildiso:
+	@cp fonts/default.mbf iso/fonts/
 	@grub2-mkrescue -o bootable.iso iso
+
+run:
 	@bochs -f bochs.cfg -q
 	#@scripts/run_emulator64 `pwd`

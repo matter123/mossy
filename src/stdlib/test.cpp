@@ -25,10 +25,53 @@
 
 
 namespace kernel {
-	test_module::test_module(char *f_name,void (*func)()) {
-		hal::magic_break();
+	static test_module *first=NULL;
+	test_module::test_module(const char *test_name, void (*test_function)()) {
+		this->name=test_name;
+		this->depends="";
+		this->test_func=test_function;
+		this->passed=false;
+		this->next=first;
+		first=this;
+	}
+	test_module::test_module(const char *test_name, void (*test_function)(), const char *dep) {
+		this->name=test_name;
+		this->depends=dep;
+		this->test_func=test_function;
+		this->passed=false;
+		this->next=first;
+		first=this;
+
+	}
+	void test_module::set_passed() {
+		this->passed=true;
+	}
+	void test_module::run_test(){
+		if(this->passed) {
+			return;
+		}
+		const char *dep=this->depends;
+		test_module *mod=first;
+		while(*dep!='\0') {
+			for(int i=0;i<8;i++) {
+				if(mod->name[i]!=*(dep+i)) {
+					goto next;
+				}
+			}
+			if(!mod->passed){
+				mod->run_test();
+				dep+=8;
+				mod=first;
+				continue;
+			}
+			next:
+			mod=mod->next;
+		}
+		this->test_func();
+		hal::cout<<std::TC::GREEN<<name<<std::TC::WHITE<<hal::endl;
 	}
 	void test() {
+		if(first)first->run_test();
 		hal::cls();
 		bool abrt=false;
 		unit_test("unit test, pass  ", 7 ,7);

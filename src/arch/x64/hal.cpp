@@ -60,17 +60,21 @@ namespace hal {
 	void add_phys_mem_arch() {
 		//i dont know anything
 	}
-	static mem_type types[4];
+	static mem_type types[6];
 	void add_virt_mem_arch() {
 		types[0].userspace=true;
 		types[1].paging_struct=true;
 		types[2].heap=true;
 		types[3].kthread_stacks=true;
-		add_virt_region(4);
+		types[4].firmware=true;
+		types[5].videobuffer=true;
+		add_virt_region(6);
 		add_virt_region(0x0,0x7FFFFFFFFFFF,types[0]);
 		add_virt_region(0xFFFFFF0000000000,0x7FFFFFFFFF,types[1]);
 		add_virt_region(0xFFFFFE8000000000,0x7FFFFFFFFF,types[2]);
 		add_virt_region(0xFFFFFE0000000000,0x000FFFFFFF,types[3]);
+		add_virt_region(0xFFFFFE0010000000,0x000FFFFFFF,types[4]);
+		add_virt_region(0xFFFFFE0020000000,0x0000FD2000,types[5]);
 	}
 }
 uint8_t get_reg_count() {

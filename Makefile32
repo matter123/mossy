@@ -50,7 +50,7 @@ link:
 
 %.o: %.cpp
 	@echo Compiling $<
-	@$(ClangXX) $(CXXFLAGS) -o $@ -c $<
+	$(ClangXX) $(CXXFLAGS) -o $@ -c $<
 
 mkiso:
 	#@tools/packrd.py

@@ -40,8 +40,9 @@ long long stroll(const char *str, char **end_ptr); //NO-IMP
 unsigned long stroul(const char *str, char **end_ptr); //NO-IMP
 unsigned long long stroull(const char *str, char **end_ptr); //NO-IMP
 
-int rand(); //NO-IMP
-void srand(unsigned int seed); //NO-IMP
+#define RAND_MAX 1073741824
+int rand();
+void srand(unsigned int seed);
 
 void *calloc(size_t num, size_t size);
 void free(void *ptr);

@@ -1,5 +1,5 @@
 /*
-    Copyright 2013 Matthew Fosdick
+    Copyright 2014 Matthew Fosdick
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -29,6 +29,8 @@ namespace hal {
 	int program_vga();
 	int dummy=program_vga();
 	void printc(ConsoleColor c,unsigned char let) {
+		while((inb(0x3FD)&0x20)==0);
+		outb(0x3F8, let);
 		if(x>=80) {
 			x=0;
 			y++;
@@ -46,12 +48,6 @@ namespace hal {
 			return;
 		}
 		mon[y*80+x++]=let|c.getColor()<<8;
-		if(let=='\n') {
-			while((inb(0x3FD)&0x20)==0);
-			outb(0x3F8, '\r');
-		}
-		while((inb(0x3FD)&0x20)==0);
-		outb(0x3F8, let);
 	}
 #define NON_CODE 19
 	unsigned char latin_extend[] = {
@@ -85,6 +81,14 @@ namespace hal {
 		NON_CODE,NON_CODE,NON_CODE,NON_CODE,NON_CODE,NON_CODE,NON_CODE,NON_CODE,
 		NON_CODE,NON_CODE,NON_CODE,NON_CODE,NON_CODE,NON_CODE,NON_CODE,NON_CODE,
 		23,NON_CODE,NON_CODE,NON_CODE,NON_CODE,NON_CODE,NON_CODE,NON_CODE,//21AF
+	};
+	unsigned char box_draw[] = {
+		196,NON_CODE,179,NON_CODE,NON_CODE,NON_CODE,NON_CODE,NON_CODE,//2507
+		NON_CODE,NON_CODE,NON_CODE,NON_CODE,218,NON_CODE,NON_CODE,NON_CODE,//250F
+		191,NON_CODE,NON_CODE,NON_CODE,192,NON_CODE,NON_CODE,NON_CODE,//2517
+		217,NON_CODE,NON_CODE,NON_CODE,195,NON_CODE,NON_CODE,NON_CODE,//251F
+		NON_CODE,NON_CODE,NON_CODE,NON_CODE,180,NON_CODE,NON_CODE,NON_CODE//2527
+		
 	};
 
 	void printc(ConsoleColor c,const char *glyph) {

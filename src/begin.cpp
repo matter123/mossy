@@ -33,6 +33,8 @@
 #include <tables/rsdp.h>
 #include <tables/sdt.h>
 #include <test.h>
+#include <sys/fb.h>
+#include <sys/text_render.h>
 namespace hal {
 	void setup_vga();
 }
@@ -47,6 +49,14 @@ namespace kernel {
 		#if TEST
 		test();
 		#endif
+		init_fb();
+		init_tr();
+		srand(BUILD_UNIX_TIME);
+		while(1) {
+			int x=(rand()%(get_w()-130))+20;
+			int y=(rand()%(get_h()-59))+20;
+			draw_string_at(x,y,"MOSSY!");
+		}
 		acpi::init_tables();
 		hal::print_boot_msg("Init ACPI",acpi::has_acpi(),false);
 		char test[9];

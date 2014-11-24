@@ -56,16 +56,18 @@ namespace hal {
 			asm("hlt");
 		}
 	}
-	static mem_type types[5];
+	static mem_type types[6];
 	void add_virt_mem_arch() {
 		types[0].userspace=true;
 		types[1].paging_struct=true;
 		types[2].heap=true;
 		types[3].kthread_stacks=true;
 		types[4].firmware=true;
-		add_virt_region(5);
+		types[5].videobuffer=true;
+		add_virt_region(6);
 		add_virt_region(0x0,0xB0FFFFFF,types[0]);
 		add_virt_region(0xB1000000,0x3FFFFF,types[4]);
+		add_virt_region(0xB1400000,0xFD2000,types[5]);
 		add_virt_region(0xFFC00000,0x3FFFFF,types[1]);
 		uint32_t pfa_end=(x86_64::get_end()&(0xFFF==0)?x86_64::get_end():(x86_64::get_end()&~
 		                  (0xFFF))+0x1000);
