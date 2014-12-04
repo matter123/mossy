@@ -41,23 +41,28 @@ link:
 
 -include $(CXXOBJECTS:.o.$(OBJ_SUFFIX)=.d.$(OBJ_SUFFIX))
 -include $(COBJECTS:.o.$(OBJ_SUFFIX)=.d.$(OBJ_SUFFIX))
+-include dummy
+
+dummy: Makefile32 Makefile
+	@touch $@
+	@$(MAKE) -f Makefile32 clean
 
 
-%.o.$(OBJ_SUFFIX): %.s
+%o.$(OBJ_SUFFIX): %s
 	@echo Assembling $(patsubst %.o.$(OBJ_SUFFIX), %.s, $@)
-	cpp $(DFLAGS) $(IFLAGS) -DASM -E -P$(patsubst %.o.$(OBJ_SUFFIX), %.s, $@) -o$(patsubst %.o.$(OBJ_SUFFIX), %.cpps, $@)
-	nasm $(ASFLAGS) $(patsubst %.o.$(OBJ_SUFFIX), %.cpps, $@) -o $@
+	@cpp $(DFLAGS) $(IFLAGS) -DASM -E -P$(patsubst %.o.$(OBJ_SUFFIX), %.s, $@) -o$(patsubst %.o.$(OBJ_SUFFIX), %.cpps, $@)
+	@nasm $(ASFLAGS) $(patsubst %.o.$(OBJ_SUFFIX), %.cpps, $@) -o $@
 	@rm $(patsubst %.o.$(OBJ_SUFFIX), %.cpps, $@)
 
-%.o.$(OBJ_SUFFIX): %.c
+%o.$(OBJ_SUFFIX): %c
 	@echo Compiling $<
 	@$(Clang) $(CFLAGS) -o $@ -c $<
 	@$(Clang) -MM $(CFLAGS) $< > $(patsubst %.o.$(OBJ_SUFFIX), %.d.$(OBJ_SUFFIX),$@)
 
-%.o.$(OBJ_SUFFIX): %.cpp
+%o.$(OBJ_SUFFIX): %cpp
 	@echo Compiling $<
 	@$(ClangXX) $(CXXFLAGS) -o $@ -c $<
-	@$(Clang) -MM $(CXXFLAGS) $< > $(patsubst %.o.$(OBJ_SUFFIX), %.d.$(OBJ_SUFFIX),$@)
+	@$(ClangXX) -MM $(CXXFLAGS) $< > $(patsubst %.o.$(OBJ_SUFFIX), %.d.$(OBJ_SUFFIX),$@)
 
 mkiso:
 	#@tools/packrd.py

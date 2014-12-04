@@ -16,7 +16,8 @@ kernelARM.sym
 *.o.64
 *.o.86_PC
 *.o.64_PC
+*.d.86_PC
+*.d.64_PC
 *.o.ARM.RPI
-*.o.ARM.STM
 *.a
 docs/html

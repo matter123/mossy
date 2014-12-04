@@ -1,2 +1,0 @@
-items that give me a nagging feeling something deep is wrong:
-2014-11-03 get_virt_phys returns mem that causes a triple fault original fault was a PF - fixed

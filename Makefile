@@ -4,8 +4,7 @@ WFLAGSON=-Wall -Wextra -Werror=return-type -Wshadow -Wundef -Wdeprecated \
 -Wredundant-decls -Werror=parentheses
 DFLAGS=-DTEST=0
 WFLAGSOFF=-Wno-unused-parameter -Wno-sign-compare
-IFLAGS=-Isrc/stdlib/include -Ilibs/clib/include -Ilibs/encode/include -Ilibs/acpi/include \
--Isrc/hal -Isrc/arch -Isrc/vendor -Isrc/sys -include src/stdlib/global.h
+IFLAGS=-Isrc/stdlib/include -Ilibs/clib/include -Ilibs/encode/include -Ilibs/acpi/include -Isrc/hal -Isrc/arch -Isrc/vendor -Isrc/sys -include src/stdlib/global.h
 
 build:
 	tools/gen_build_info.py

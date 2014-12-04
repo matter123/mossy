@@ -40,6 +40,7 @@ namespace hal {
 						}
 					}
 					if(cp&0x4000) {
+						//  hal::magic_break();
 						this->back_color=this->def_back_color;
 						this->color=this->def_color;
 						back=false;
@@ -57,6 +58,7 @@ namespace hal {
 						this->back_color=c;
 						back=false;
 					} else {
+						//  hal::magic_break();
 						this->color=c;
 					}
 				}

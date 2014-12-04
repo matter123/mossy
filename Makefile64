@@ -23,7 +23,7 @@ FFLAGS=-fno-omit-frame-pointer -ffreestanding -fno-stack-protector -fno-common
 DFLAGS:=$(DFLAGS) -DARCH=_x64 -DVENDOR=_PC -DDEBUG
 MFLAGS=-mcmodel=kernel -mno-red-zone -mno-3dnow
 CFLAGS=-O3 -std=c99 $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS) $(MFLAGS) $(IFLAGS)
-CXXFLAGS=-O0 -std=c++1y $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS) $(MFLAGS) $(IFLAGS) -fno-rtti \
+CXXFLAGS=-O3 -std=c++1y $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS) $(MFLAGS) $(IFLAGS) -fno-rtti \
 -fno-exceptions -fdiagnostics-color=auto
 LDFLAGS=-static -Tlinkx64.ld -ffreestanding -O2 -nostdlib $(FFLAGS) -Llibs -z max-page-size=0x1000
 ASFLAGS=-felf64
@@ -32,6 +32,7 @@ ASFLAGS=-felf64
 clean:
 	@echo Cleaning workspace
 	@find . -name '*.o.$(OBJ_SUFFIX)' -delete
+	@find . -name '*.d.$(OBJ_SUFFIX)' -delete
 	@rm -f kernel$(ARCH)
 
 check:
@@ -40,6 +41,14 @@ link:
 	@echo Linking
 	@g++ $(LDFLAGS) -o kernel$(OBJ_SUFFIX) $(SOBJECTS) $(COBJECTS) $(CXXOBJECTS) -lc$(OBJ_SUFFIX)\
 	 -lencode$(OBJ_SUFFIX) -lacpi$(OBJ_SUFFIX) -lgcc
+
+-include $(CXXOBJECTS:.o.$(OBJ_SUFFIX)=.d.$(OBJ_SUFFIX))
+-include $(COBJECTS:.o.$(OBJ_SUFFIX)=.d.$(OBJ_SUFFIX))
+-include dummy
+
+dummy: Makefile64 Makefile
+	@touch $@
+	@$(MAKE) -f Makefile64 clean
 
 %o.$(OBJ_SUFFIX): %s
 	@echo Assembling $(patsubst %.o.$(OBJ_SUFFIX), %.s, $@)
@@ -50,10 +59,12 @@ link:
 %o.$(OBJ_SUFFIX): %c
 	@echo Compiling $<
 	@$(Clang) $(CFLAGS) -o $@ -c $<
+	@$(Clang) -MM $(CFLAGS) $< > $(patsubst %.o.$(OBJ_SUFFIX), %.d.$(OBJ_SUFFIX),$@)
 
 %o.$(OBJ_SUFFIX): %cpp
 	@echo Compiling $<
 	@$(ClangXX) $(CXXFLAGS) -o $@ -c $<
+	@$(ClangXX) -MM $(CXXFLAGS) $< > $(patsubst %.o.$(OBJ_SUFFIX), %.d.$(OBJ_SUFFIX),$@)
 
 mkiso:
 	#@tools/packrd.py
