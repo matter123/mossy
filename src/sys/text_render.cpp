@@ -18,13 +18,14 @@
 #include <hal/multiboot.h>
 #include <struct.h>
 #include <utf8.h>
+#include <hal/console.h>
 namespace kernel {
 	struct glyph_int {
 		uint32_t codepoint;
 		uint8_t row[16];
 		uint8_t col[2];
 		uint16_t pad;
-	}PACKED *glyphs;
+	} PACKED *glyphs;
 	struct mbf_head {
 		uint32_t magic;
 		uint32_t num_glyphs;
@@ -44,6 +45,7 @@ namespace kernel {
 				continue;
 			}
 			module=reinterpret_cast<hal::multiboot_module *>(tag);
+			hal::cout<<module->mod_start;
 			if(*((uint32_t *)module->mod_start)==0x12345678) {
 				break;
 			} else {
@@ -55,12 +57,13 @@ namespace kernel {
 		}
 		head=(mbf_head *)(module->mod_start);
 		glyphs=(glyph_int *)(module->mod_start+sizeof(mbf_head));
+		hal::print_boot_msg("Init Text Render", true,true);
 	}
 	glyph_int *get_glyph(uint32_t codepoint) {
 		if(codepoint<head->min_cp||codepoint>head->max_cp) {
 			return glyphs+head->def_cp_idx;
 		}
-		for(int i=0;i<head->num_glyphs;i++) {
+		for(int i=0; i<head->num_glyphs; i++) {
 			if((glyphs+i)->codepoint==codepoint) {
 				return glyphs+i;
 			} else if((glyphs+i)->codepoint>codepoint) {
@@ -69,36 +72,36 @@ namespace kernel {
 		}
 		return glyphs+head->def_cp_idx;
 	}
-	void draw_char_at(int x,int y,uint32_t codepoint) {
+	void draw_char_at(int x,int y,uint32_t codepoint,uint32_t color) {
 		glyph_int *glyph=get_glyph(codepoint);
 		uint32_t buf[9*32];
-		for(int y=0;y<16;y++) {
-			uint8_t row=glyph->row[y];
-			for(int x=0;x<8;x++) {
-				buf[y*9+x]=(row&128?0xFFFFFF:0);
-				buf[(y+16)*9+x]=(row&128?0:0xFFFFFF);
+		for(int _y=0; _y<16; _y++) {
+			uint8_t row=glyph->row[_y];
+			for(int _x=0; _x<8; _x++) {
+				buf[_y*9+_x]=(row&128?color&0xFFFFFF:0);
+				buf[(_y+16)*9+_x]=(row&128?0:0xFFFFFF);
 				row=row<<1;
 			}
 		}
 		uint8_t colp1=glyph->col[0];
 		uint8_t colp2=glyph->col[1];
-		for(int y=0;y<8;y++) {
-			buf[y*9+8]=(colp1&128?0xFFFFFF:0);
-			buf[(y+8)*9+8]=(colp2&128?0xFFFFFF:0);
-			buf[(y+16)*9+8]=(colp1&128?0:0xFFFFFF);
-			buf[(y+24)*9+8]=(colp2&128?0:0xFFFFFF);
+		for(int _y=0; _y<8; _y++) {
+			buf[_y*9+8]=(colp1&128?color&0xFFFFFF:0);
+			buf[(_y+8)*9+8]=(colp2&128?color&0xFFFFFF:0);
+			buf[(_y+16)*9+8]=(colp1&128?0:0xFFFFFF);
+			buf[(_y+24)*9+8]=(colp2&128?0:0xFFFFFF);
 			colp1=colp1<<1;
 			colp2=colp2<<1;
 		}
 		bit_blit(x,y,9,16,buf+(9*16),AND);
 		bit_blit(x,y,9,16,buf,OR);
 	}
-	void draw_string_at(int x,int y,const char *s) {
+	void draw_string_at(int x,int y,const char *s,uint32_t color) {
 		if(s==NULL) {
-			return draw_string_at(x,y,"--NULL POINTER--");
+			return draw_string_at(x,y,"--NULL POINTER--",0xFFFFFF);
 		}
 		while(*s) {
-			draw_char_at(x,y,decode_char(s));
+			draw_char_at(x,y,decode_char(s),color);
 			x+=9;
 			s+=get_char_len(s);
 		}

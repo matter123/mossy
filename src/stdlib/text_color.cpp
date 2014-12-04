@@ -36,6 +36,8 @@ namespace std {
 		char DGRAY[6];
 		char LGRAY[6];
 		char BACKCOLOR[6];
+		char TRANSPARENT[6];
+		char RESET[6];
 
 		char *init_colors() {
 			static char b[6]= {0};
@@ -47,7 +49,6 @@ namespace std {
 			encode_five(0x80000|(0xF<<4)|0xF,CYAN);
 			encode_five(0x80000|(0xF<<8)|(0xF<<4)|0xF,WHITE);
 			encode_five(0x80000,BLACK);
-
 			encode_five(0x80000|(0x7<<8),DRED);
 			encode_five(0x80000|(0x7<<4),DGREEN);
 			encode_five(0x80000|0x7,DBLUE);
@@ -58,6 +59,8 @@ namespace std {
 			encode_five(0x80000|(0xA<<8)|(0xA<<4)|0xA,LGRAY);
 			encode_five(0x80000|(0xA<<8)|(0xA<<4)|0xA,LGRAY);
 			encode_five(0x81000,BACKCOLOR);
+			encode_five(0x82000,TRANSPARENT);
+			encode_five(0x84000,RESET);
 			return b;
 		}
 

@@ -38,6 +38,12 @@ namespace hal {
 		uintptr_t mod_end;
 		char string[];
 	} PACKED;
+	struct multiboot_module_int {
+		multiboot_tag head;
+		uint32_t mod_start;
+		uint32_t mod_end;
+		char string[];
+	} PACKED;
 	struct multiboot_mmap_ent {
 		uint64_t addr;
 		uint64_t len;

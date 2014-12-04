@@ -19,6 +19,7 @@
 #include <arch.h>
 #include <hal/mmap.h>
 #include <hal/hal.h>
+#include <hal/console.h>
 namespace kernel {
 	struct HEAD {
 		uint     magic:24;
@@ -53,9 +54,11 @@ namespace kernel {
 			start->len=UINT32_MAX-sizeof(HEAD);
 			len-=UINT32_MAX;
 			HEAD *cur=start;
+			hal::magic_break();
 			while(len>UINT32_MAX) {
 				pointer addr=(pointer)cur;
 				addr+=UINT32_MAX;
+				hal::cout<<hal::address<<addr<<hal::endl;
 				HEAD *next=(HEAD *)addr;
 				memset(next,0,sizeof(HEAD));
 				next->magic=0xC0FFEE;

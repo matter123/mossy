@@ -36,6 +36,8 @@ namespace std {
 		extern char DGRAY[];
 		extern char LGRAY[];
 		extern char BACKCOLOR[];
+		extern char TRANSPARENT[];
+		extern char RESET[];
 
 		char *getColor(uint8_t red, uint8_t green, uint8_t blue);
 	}

@@ -34,3 +34,14 @@ or in an implementation file sepration of varibles and functions.
 ![bad blank](http://matter123.github.io/mossy2/blank-bad.png "an unacceptable use of blank lines")  
 **ok:**  
 ![good blank](http://matter123.github.io/mossy2/blank-good.png "an acceptable use of blank lines")  
+Coding guidelines
+-----------------
+
+###symbol names
+All symbols are to be in _underscore\_case_.  
+Systems Hungarian is forbidden, Apps Hungarian is acceptable.  
+Symbol names in global, namespace, fille, class, struct, union, or function scope should be
+descriptive and only use full words and common acronyms and abbreviations.
+Symbols named tmp and its derivatives are only acceptable when in block scope.  
+One character symbols are resverd and not available for normal use. A list of uses for each
+letter is listed below.  

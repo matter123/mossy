@@ -19,12 +19,17 @@ namespace kernel {
 	void copy_rect(int dest_x,int dest_y,
 	               int w,int h,
 	               void *rect_buf);
+	void copy_rect(int src_x,int src_y,
+	               int w,int h,
+	               int dest_x, int dest_y);
 	enum bit_blit_op {
 		AND,
 		OR,
 		NOT,
 		XOR,
 	};
+	void put_pixel(int x, int y, uint32_t color);
+
 	void bit_blit(int dest_x,int dest_y,
 	              int w,int h,
 	              void *src_buf, bit_blit_op op);

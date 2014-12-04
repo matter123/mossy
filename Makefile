@@ -15,8 +15,11 @@ build:
 
 buildiso:
 	@cp fonts/default.mbf iso/fonts/
-	@grub2-mkrescue -o bootable.iso iso
+	@grub2-mkrescue --compress=gz -o bootable.iso iso
 
 run:
 	@bochs -f bochs.cfg -q
 	#@scripts/run_emulator64 `pwd`
+clean:
+	$(MAKE) -f Makefile32 clean
+	$(MAKE) -f Makefile64 clean

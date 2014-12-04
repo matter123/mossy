@@ -61,6 +61,22 @@ namespace hal {
 		uintptr_t start=((uint64_t) &k_start)-get_page_offset_addr();
 		uintptr_t end=(((uint64_t) &k_data_end)-start)-get_page_offset_addr();
 		add_phys_region(start,end,types[0]);
+		hal::multiboot_module *module=NULL;
+		for(int i=0; i<hal::get_tag_count(); i++) {
+			if(hal::get_tag(i)==NULL) {
+				break;
+			}
+			hal::multiboot_tag *tag=hal::get_tag(i);
+			if(tag->type!=3) {
+				continue;
+			}
+			module=reinterpret_cast<hal::multiboot_module *>(tag);
+			hal::cout<<hal::address<<module<<hal::endl;
+			if(module->mod_end-module->mod_start>=0x19000) {
+				add_phys_region(1);
+				add_phys_region(module->mod_start,(module->mod_end-module->mod_start),types[0]);
+			}
+		}
 		fix_mmap();
 		return true;
 	}

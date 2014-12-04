@@ -73,7 +73,7 @@
 		<pos x="1" y="1"/>
 	</glyph>
 	<glyph>
-		<codepoint>33</codepoint>
+		<codepoint>32</codepoint>
 		<pos x="2" y="1"/>
 	</glyph>
 	<glyph>
@@ -274,7 +274,7 @@
 	</glyph>
 	<glyph>
 		<codepoint>64</codepoint>
-		<pos x="6" y="4"/>
+		<pos x="4" y="4"/>
 	</glyph>
 	<glyph>
 		<codepoint>65</codepoint>

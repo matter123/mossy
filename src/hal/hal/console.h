@@ -32,23 +32,17 @@ namespace hal {
 			ios_base(int base);
 			void combine(ios_base b);
 	};
-	class ConsoleColor {
-		public:
-			uint8_t backcolor;
-			uint8_t color;
-			uint16_t getColor();
-			ConsoleColor(int foreground, int background);
-			ConsoleColor();
-	};
 
 	class ostream {
 		private:
-			ConsoleColor c;
+			uint32_t color;
+			uint32_t back_color;
+			uint32_t def_color;
+			uint32_t def_back_color;
 			ios_base b;
 			void print(const char *s);
 		public:
 			ostream();
-			ostream(ConsoleColor c);
 			ostream &operator<<(char c);
 			ostream &operator<<(const char *s);
 			ostream &operator<<(int i);
@@ -59,12 +53,14 @@ namespace hal {
 			ostream &operator<<(unsigned long long ull);
 			ostream &operator<<(const void *p);
 			ostream &operator<<(ios_base b);
-			ostream &operator<<(ConsoleColor c);
 	};
-	////////////////////////////////////////
-	// Scroll one line                    //
-	// Created on 2014-04-20              //
-	////////////////////////////////////////
+	/**
+	 * @brief scroll screen
+	 * @details scrolls the screen 1 line upward, and clears
+	 * the bottom most line
+	 *
+	 * @date created on 2014-04-20
+	 */
 	void scroll();
 
 	////////////////////////////////////////
@@ -80,7 +76,7 @@ namespace hal {
 	// Updated on 2014-06-13              //
 	// Vendor defined                     //
 	////////////////////////////////////////
-	void printc(ConsoleColor c,const char *glyph);
+	void printc(uint32_t back_color, uint32_t color, const char *glyph);
 
 	////////////////////////////////////////
 	// Clear the screen                   //
@@ -141,8 +137,6 @@ namespace hal {
 	extern ios_base oct;
 	extern ios_base bin;
 	extern ios_base address;
-
-	extern ConsoleColor ColorDef;
 
 	extern const char *endl;
 }

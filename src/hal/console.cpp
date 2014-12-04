@@ -21,6 +21,7 @@
 #include <stdlib.h>
 #include <utf8.h>
 #include <string.h>
+#include <text_color.h>
 namespace hal {
 	void ostream::print(const char *s) {
 		static bool back=false;
@@ -34,60 +35,35 @@ namespace hal {
 					if(!back) {
 						back=(cp&0x1000)==0x1000;
 						if(back) {
-							//magic_break();
 							s+=get_char_len(s);
 							continue;
 						}
 					}
-					uint16_t color=cp&0xFFF;
-					uint8_t red=(color>>8)&0xF;
-					uint8_t green=(color>>4)&0xF;
-					uint8_t blue=(color>>0)&0xF;
-					uint8_t fc=0;
-					if(red==0xF&&green==0x0&&blue==0) {
-						fc=12;
-					} else if(red==0x7&&green==0x0&&blue==0x0) {
-						fc=4;
-					} else if(red==0x0&&green==0xF&&blue==0x0) {
-						fc=10;
-					} else if(red==0x0&&green==0x7&&blue==0x0) {
-						fc=2;
-					} else if(red==0x0&&green==0x0&&blue==0xF) {
-						fc=9;
-					} else if(red==0x0&&green==0x0&&blue==0x7) {
-						fc=1;
-					} else if(red==0xF&&green==0xF&&blue==0x0) {
-						fc=14;
-					} else if(red==0x7&&green==0x7&&blue==0x0) {
-						fc=6;
-					} else if(red==0xF&&green==0x0&&blue==0xF) {
-						fc=13;
-					} else if(red==0x7&&green==0x0&&blue==0x7) {
-						fc=5;
-					} else if(red==0x0&&green==0xF&&blue==0xF) {
-						fc=11;
-					} else if(red==0x0&&green==0x7&&blue==0x7) {
-						fc=3;
-					} else if(red==0xF&&green==0xF&&blue==0xF) {
-						fc=15;
-					} else if(red==0x0&&green==0x0&&blue==0x0) {
-						fc=0;
-					} else if(red==0xA&&green==0xA&&blue==0xA) {
-						fc=7;
-					} else if(red==0x5&&green==0x5&&blue==0x5) {
-						fc=8;
+					if(cp&0x4000) {
+						this->back_color=this->def_back_color;
+						this->color=this->def_color;
+						back=false;
 					}
+					uint16_t tc=cp&0xFFF;
+					uint8_t red=(tc>>8)&0xF;
+					uint8_t green=(tc>>4)&0xF;
+					uint8_t blue=(tc>>0)&0xF;
+					red=red<<4|red;
+					green=green<<4|green;
+					blue=blue<<4|blue;
+					uint8_t alpha=(cp&0x2000)==0x2000;
+					uint32_t c=alpha<<24|red<<16|green<<8|blue;
 					if(back) {
-						this->c.backcolor=fc;
+						this->back_color=c;
 						back=false;
 					} else {
-						this->c.color=fc;
+						this->color=c;
 					}
 				}
 				s+=get_char_len(s);
 				continue;
 			}
-			printc(this->c,s);
+			printc(this->back_color,this->color,s);
 			s+=get_char_len(s);
 		}
 	}
@@ -114,17 +90,6 @@ namespace hal {
 		uppercase=u;
 		min_digits=d;
 	}
-	ConsoleColor::ConsoleColor(int foreground, int background) {
-		color=foreground;
-		backcolor=background;
-	}
-	ConsoleColor::ConsoleColor() {
-		color=0xF;
-		backcolor=0x0;
-	}
-	uint16_t ConsoleColor::getColor() {
-		return ((backcolor&0xF)<<4)|(color&0xF);
-	}
 	void ios_base::combine(ios_base b) {
 		if(b.base>0) {
 			this->base=b.base;
@@ -138,12 +103,12 @@ namespace hal {
 		this->min_digits=b.min_digits;
 	}
 	ostream::ostream() {
-		c=ColorDef;
+		this->color=0xFFCD00;
+		this->back_color=0x1000000;
+		this->def_color=color;
+		this->def_back_color=back_color;
 	}
 
-	ostream::ostream(ConsoleColor color) {
-		c=color;
-	}
 	ostream &ostream::operator<<(char s) {
 		static char buf[2]= {0,0};
 		buf[0]=s;
@@ -262,10 +227,6 @@ namespace hal {
 		b.combine(base);
 		return *this;
 	}
-	ostream &ostream::operator<<(ConsoleColor color) {
-		c=color;
-		return *this;
-	}
 	void scroll() {
 		scroll(1);
 	}
@@ -273,15 +234,15 @@ namespace hal {
 		if(get_x()!=0) {
 			cout<<endl;
 		}
-		ConsoleColor l(0xB,0x0);
+		const char *l=std::TC::BLUE;
 		if(strcmp(level,"WARN")==0) {
-			l=ConsoleColor(0x6,0x0);
-		}else if(strcmp(level,"INFO")==0) {
-			l=ConsoleColor(0x7,0x0);
+			l=std::TC::YELLOW;
+		} else if(strcmp(level,"INFO")==0) {
+			l=std::TC::LGRAY;
 		}
-		cout<<'['<<l<<level<<ColorDef<<']';
+		cout<<'['<<l<<level<<std::TC::RESET<<']';
 		if(app) {
-			cout<<" ["<<ConsoleColor(0xB,0x0)<<app<<ColorDef<<"]";
+			cout<<" ["<<std::TC::BLUE<<app<<std::TC::RESET<<"]";
 		}
 		cout<<" "<<msg<<endl;
 	}
@@ -295,11 +256,9 @@ namespace hal {
 		}
 		cout<<" [";
 		if(ok) {
-			ConsoleColor gr(0xA,0x0);
-			cout<<gr<<"OK"<<ColorDef;
+			cout<<std::TC::GREEN<<"OK"<<std::TC::RESET;
 		} else {
-			ConsoleColor r(0x4,0x0);
-			cout<<r<<"NO"<<ColorDef;
+			cout<<std::TC::RED<<"NO"<<std::TC::RESET;
 		}
 		cout<<"]"<<endl;
 		if(!ok&&hlt) {
@@ -365,7 +324,6 @@ namespace hal {
 		}
 		cout<<"end stack trace"<<endl;
 	}
-	ConsoleColor ColorDef(0xF,0x0);
 	ostream cout;
 	ios_base dec;
 	ios_base hex(16,2,2);

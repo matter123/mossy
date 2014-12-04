@@ -1,10 +1,3 @@
-CSOURCES:=$(shell find src -name *.c)
-COBJECTS:=$(patsubst %.c, %.o, $(CSOURCES))
-CXXSOURCES:=$(shell find src -name *.cpp)
-CXXOBJECTS:=$(patsubst %.cpp, %.o, $(CXXSOURCES))
-SSOURCES:=$(shell find src -name *.s)
-SOBJECTS:=$(patsubst %.s, %.o, $(SSOURCES))
-
 export
 ARCH=86
 VENDOR=PC
@@ -14,10 +7,17 @@ Clang:=clang --target=i686-elf -Wdocumentation
 CC:=$(Clang)
 CXX:=$(ClangXX)
 
+CSOURCES:=$(shell find src -name *.c)
+COBJECTS:=$(patsubst %.c, %.o.$(OBJ_SUFFIX), $(CSOURCES))
+CXXSOURCES:=$(shell find src -name *.cpp)
+CXXOBJECTS:=$(patsubst %.cpp, %.o.$(OBJ_SUFFIX), $(CXXSOURCES))
+SSOURCES:=$(shell find src -name *.s)
+SOBJECTS:=$(patsubst %.s, %.o.$(OBJ_SUFFIX), $(SSOURCES))
+
 
 all: build runem
 
-build: clean $(COBJECTS) $(CXXOBJECTS) $(SOBJECTS) build_libs link mkiso
+build: $(COBJECTS) $(CXXOBJECTS) $(SOBJECTS) build_libs link mkiso
 
 FFLAGS=-fno-omit-frame-pointer -ffreestanding -fno-stack-protector -fno-common
 DFLAGS:=$(DFLAGS) -DARCH=_x86 -DVENDOR=_PC -DDEBUG
@@ -30,7 +30,8 @@ ASFLAGS=-felf
 
 clean:
 	@echo Cleaning workspace
-	@find . -name '*.o' -delete
+	@find . -name '*.o.$(OBJ_SUFFIX)' -delete
+	@find . -name '*.d.$(OBJ_SUFFIX)' -delete
 	@rm -f kernel$(ARCH)
 
 link:
@@ -38,19 +39,25 @@ link:
 	@$(CXX) $(LDFLAGS) -o kernel$(OBJ_SUFFIX) $(SOBJECTS) $(COBJECTS) $(CXXOBJECTS) -lc$(OBJ_SUFFIX)\
 	 -lencode$(OBJ_SUFFIX) -lacpi$(OBJ_SUFFIX) -lgcc
 
-.s.o:
-	@echo Assembling $(patsubst %.o, %.s, $@)
-	@cpp $(DFLAGS) $(IFLAGS) -DASM -E -P$(patsubst %.o, %.s, $@) -o$(patsubst %.o, %.cpps, $@)
-	@nasm $(ASFLAGS) $(patsubst %.o, %.cpps, $@) -o $@
-	@rm $(patsubst %.o, %.cpps, $@)
+-include $(CXXOBJECTS:.o.$(OBJ_SUFFIX)=.d.$(OBJ_SUFFIX))
+-include $(COBJECTS:.o.$(OBJ_SUFFIX)=.d.$(OBJ_SUFFIX))
 
-%.o: %.c
+
+%.o.$(OBJ_SUFFIX): %.s
+	@echo Assembling $(patsubst %.o.$(OBJ_SUFFIX), %.s, $@)
+	cpp $(DFLAGS) $(IFLAGS) -DASM -E -P$(patsubst %.o.$(OBJ_SUFFIX), %.s, $@) -o$(patsubst %.o.$(OBJ_SUFFIX), %.cpps, $@)
+	nasm $(ASFLAGS) $(patsubst %.o.$(OBJ_SUFFIX), %.cpps, $@) -o $@
+	@rm $(patsubst %.o.$(OBJ_SUFFIX), %.cpps, $@)
+
+%.o.$(OBJ_SUFFIX): %.c
 	@echo Compiling $<
 	@$(Clang) $(CFLAGS) -o $@ -c $<
+	@$(Clang) -MM $(CFLAGS) $< > $(patsubst %.o.$(OBJ_SUFFIX), %.d.$(OBJ_SUFFIX),$@)
 
-%.o: %.cpp
+%.o.$(OBJ_SUFFIX): %.cpp
 	@echo Compiling $<
-	$(ClangXX) $(CXXFLAGS) -o $@ -c $<
+	@$(ClangXX) $(CXXFLAGS) -o $@ -c $<
+	@$(Clang) -MM $(CXXFLAGS) $< > $(patsubst %.o.$(OBJ_SUFFIX), %.d.$(OBJ_SUFFIX),$@)
 
 mkiso:
 	#@tools/packrd.py

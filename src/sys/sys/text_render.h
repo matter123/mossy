@@ -15,6 +15,6 @@
 */
 namespace kernel {
 	void init_tr();
-	void draw_char_at(int x,int y,uint32_t codepint);
-	void draw_string_at(int x,int y,const char *string);
+	void draw_char_at(int x,int y,uint32_t codepint, uint32_t color);
+	void draw_string_at(int x,int y,const char *string,uint32_t color);
 }
