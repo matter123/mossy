@@ -17,5 +17,4 @@ pci
 make sure heap always returns int aligned adresses - ok 2014-11-20
 uefi (grub setting? my own boot loader?)
 extend font
-add color to text renderer
 add unit tests

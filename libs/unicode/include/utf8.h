@@ -32,9 +32,8 @@
     - and a few others
 */
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+namespace unidoe {
+	namespace utf8 {
 /**
     @brief counts number of bytes in char
     @details counts the number of bytes in
@@ -178,7 +177,5 @@ size_t normalize(char *dest, const char *src);
     @sa normalize
 */
 size_t normalizen(char *dest, const char *src, size_t num);
-
-#ifdef __cplusplus
 }
-#endif
+}

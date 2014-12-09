@@ -37,13 +37,13 @@ clean:
 link:
 	@echo Linking
 	@$(CXX) $(LDFLAGS) -o kernel$(OBJ_SUFFIX) $(SOBJECTS) $(COBJECTS) $(CXXOBJECTS) -lc$(OBJ_SUFFIX)\
-	 -lencode$(OBJ_SUFFIX) -lacpi$(OBJ_SUFFIX) -lgcc
+	 -lunicode$(OBJ_SUFFIX) -lacpi$(OBJ_SUFFIX) -lgcc
 
 -include $(CXXOBJECTS:.o.$(OBJ_SUFFIX)=.d.$(OBJ_SUFFIX))
 -include $(COBJECTS:.o.$(OBJ_SUFFIX)=.d.$(OBJ_SUFFIX))
--include dummy
+-include dummy32
 
-dummy: Makefile32 Makefile
+dummy32: Makefile32 Makefile
 	@touch $@
 	@$(MAKE) -f Makefile32 clean
 
@@ -77,5 +77,5 @@ runem:
 
 build_libs:
 	cd libs/clib && $(MAKE) build
-	cd libs/encode && $(MAKE) build
+	cd libs/unicode && $(MAKE) build
 	cd libs/acpi && $(MAKE) build

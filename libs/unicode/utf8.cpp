@@ -25,6 +25,8 @@ void test_utf8() {
 }
 
 #endif
+namespace unicode {
+	namespace utf8 {
 size_t get_char_len(const char *str) {
 	unsigned char c=*str;
 	//if not a start of char return -1
@@ -246,4 +248,6 @@ size_t normalizen(char *dest, const char *src, size_t num) {
 	}
 	*dest='\0';
 	return tlen;
+}
+}
 }

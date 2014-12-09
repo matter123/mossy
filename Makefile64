@@ -40,13 +40,13 @@ check:
 link:
 	@echo Linking
 	@g++ $(LDFLAGS) -o kernel$(OBJ_SUFFIX) $(SOBJECTS) $(COBJECTS) $(CXXOBJECTS) -lc$(OBJ_SUFFIX)\
-	 -lencode$(OBJ_SUFFIX) -lacpi$(OBJ_SUFFIX) -lgcc
+	 -lunicode$(OBJ_SUFFIX) -lacpi$(OBJ_SUFFIX) -lgcc
 
 -include $(CXXOBJECTS:.o.$(OBJ_SUFFIX)=.d.$(OBJ_SUFFIX))
 -include $(COBJECTS:.o.$(OBJ_SUFFIX)=.d.$(OBJ_SUFFIX))
--include dummy
+-include dummy64
 
-dummy: Makefile64 Makefile
+dummy64: Makefile64 Makefile
 	@touch $@
 	@$(MAKE) -f Makefile64 clean
 
@@ -79,5 +79,5 @@ runem:
 
 build_libs:
 	cd libs/clib && $(MAKE) build
-	cd libs/encode && $(MAKE) build
+	cd libs/unicode && $(MAKE) build
 	cd libs/acpi && $(MAKE) build
