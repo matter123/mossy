@@ -18,3 +18,4 @@ make sure heap always returns int aligned adresses - ok 2014-11-20
 uefi (grub setting? my own boot loader?)
 extend font
 add unit tests
+switch over to using the unicode iterators

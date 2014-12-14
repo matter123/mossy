@@ -14,13 +14,14 @@
     limitations under the License.
 */
 
-#pragma once
 #include <stdint.h>
+#include <iterators.h>
+#include <utf8.h>
 namespace unicode {
-	codeunits::codeunits(char * string) {
+	codeunits::codeunits(char *string) {
 		this->data=string;
-		this->begin=string;
-		this->end=NULL;
+		this->_begin=string;
+		this->_end=NULL;
 	}
 	char *codeunits::next() {
 		data=utf8::next_char(data);
@@ -29,32 +30,34 @@ namespace unicode {
 	char *codeunits::prev() {
 		do {
 			data--;
-		}while((*data&11000000_b)==10000000_b);
+		} while((*data&0b11000000)==0b10000000);
 		return data;
 	}
 	char *codeunits::value() {
 		return data;
 	}
 	char *codeunits::begin() {
-		data=begin;
+		data=_begin;
 		return data;
 	}
 	char *codeunits::end() {
-		if(end==NULL) {
-			while(*data)data++;
-			end=data;
+		if(_end==NULL) {
+			while(*data) {
+				data++;
+			}
+			_end=data;
 		}
 		return data;
 	}
 
 	bool codeunits::has_next() {
-		if(*utf8::get_next_char(data)) {
+		if(*utf8::next_char(data)) {
 			return true;
 		}
-		end=data;
+		_end=data;
 		return false;
 	}
 	bool codeunits::has_prev() {
-		return data>begin;
+		return data>_begin;
 	}
 }

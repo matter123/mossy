@@ -98,7 +98,7 @@ char *strcpy(char *dest, const char *src);
     @sa strlcpy
     @sa mbsncpy
 */
-char *strncpy(char *dest, const char *src, size_t num);
+char *strncpy(char *dest, const char *src, size_t num) BAD_FOR_KERN;
 
 /**
     @brief copies upto \a num bytes from \a src to \a dest

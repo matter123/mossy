@@ -14,13 +14,13 @@
     limitations under the License.
 */
 
-#pragma once
 #include <stdint.h>
+#include <iterators.h>
 namespace unicode {
-	bytes::bytes(char * string) {
+	bytes::bytes(char *string) {
 		this->data=string;
-		this->begin=string;
-		this->end=NULL;
+		this->_begin=string;
+		this->_end=NULL;
 	}
 	uint8_t bytes::next() {
 		return (uint8_t)*++data;
@@ -32,14 +32,16 @@ namespace unicode {
 		return (uint8_t)*data;
 	}
 	uint8_t bytes::begin() {
-		data=begin;
+		data=_begin;
 		return (uint8_t)*data;
 	}
 	uint8_t bytes::end() {
-		if(end==NULL) {
-			while(*data)data++;
+		if(_end==NULL) {
+			while(*data) {
+				data++;
+			}
 			data--;
-			end=data;
+			_end=data;
 		}
 		return (uint8_t)*data;
 	}
@@ -48,10 +50,10 @@ namespace unicode {
 		if(*(data+1)) {
 			return true;
 		}
-		end=data;
+		_end=data;
 		return false;
 	}
 	bool bytes::has_prev() {
-		return data>begin;
+		return data>_begin;
 	}
 }

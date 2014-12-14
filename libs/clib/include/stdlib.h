@@ -48,6 +48,13 @@ void *calloc(size_t num, size_t size);
 void free(void *ptr);
 void *malloc(size_t size);
 void *realloc(void *ptr,size_t size);
+#ifdef MOSSY
+#define BAD_FOR_KERN __attribute((unavailable("you can't use this in kernel space")))
+#define BAD_FOR_USER
+#else
+#define BAD_FOR_KERN
+#define BAD_FOR_USER __attribute((unavailable("you can't use this in user space")))
+#endif
 #ifdef __cplusplus
 }
 #endif

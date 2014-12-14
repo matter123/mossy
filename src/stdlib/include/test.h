@@ -21,21 +21,21 @@
 namespace kernel {
 	void test();
 #define unit_test(name, res, exp)\
-	do{if((res)==(exp))hal::cout<<"  "<<(name)<<std::TC::GREEN<<" passed"<<std::TC::WHITE<<hal::endl;\
-		else {hal::cout<<"  "<<(name)<<std::TC::RED<<" failed"<<std::TC::WHITE\
+	do{if((res)==(exp))hal::cout<<"  "<<(name)<<std::TC::GREEN<<" passed"<<std::TC::RESET<<hal::endl;\
+		else {hal::cout<<"  "<<(name)<<std::TC::RED<<" failed"<<std::TC::RESET\
 			               <<" expected ("<<(exp)<<") got ("<<(res)<<")"<<hal::endl;\
-			if(abrt)kernel::panic((name));}}while(0)
+			kernel::panic((name));}}while(0)
 
 	class test_module {
-		const char *name;
-		const char *depends;
-		void (*test_func)();
-		test_module *next;
-		bool passed;
-	public:
-		test_module(const char *test_name, void (*test_function)());
-		test_module(const char *test_name, void (*test_function)(), const char *dependencies);
-		void set_passed();
-		void run_test();
+			const char *name;
+			const char *depends;
+			void (*test_func)();
+			test_module *next;
+			bool passed;
+		public:
+			test_module(const char *test_name, void (*test_function)());
+			test_module(const char *test_name, void (*test_function)(), const char *dependencies);
+			void run_test();
+			test_module *get_next();
 	};
 }

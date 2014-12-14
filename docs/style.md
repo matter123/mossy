@@ -45,3 +45,5 @@ descriptive and only use full words and common acronyms and abbreviations.
 Symbols named tmp and its derivatives are only acceptable when in block scope.  
 One character symbols are resverd and not available for normal use. A list of uses for each
 letter is listed below.  
+
+###explination of reseved varibiles names

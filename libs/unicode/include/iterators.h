@@ -18,50 +18,51 @@
 #include <stdint.h>
 namespace unicode {
 	class bytes {
-	private:
-		char *data;
-		char *begin;
-		char *end;
-	public:
-		bytes(char * string);
-		uint8_t next();
-		uint8_t prev();
-		uint8_t value();
-		uint8_t begin();
-		uint8_t end();
-		
-		bool has_next();
-		bool has_prev();
+		private:
+			char *data;
+			char *_begin;
+			char *_end;
+		public:
+			bytes(char *string);
+			uint8_t next();
+			uint8_t prev();
+			uint8_t value();
+			uint8_t begin();
+			uint8_t end();
+
+			bool has_next();
+			bool has_prev();
 	};
 	class codepoints {
-	private:
-		char *data;
-		char *begin;
-		char *end;
-	public:
-		codepoints(char * string);
-		uint32_t next();
-		uint32_t prev();
-		uint32_t value();
-		uint32_t begin();
-		uint32_t end();
+		private:
+			char *data;
+			char *_begin;
+			char *_end;
+		public:
+			codepoints(char *string);
+			uint32_t next();
+			uint32_t prev();
+			uint32_t value();
+			uint32_t begin();
+			uint32_t end();
 
-		bool has_next();
-		bool has_prev();
+			bool has_next();
+			bool has_prev();
 	};
 	class codeunits {
-	private:
-		char *data;
-		char *begin;
-		char *end;
-	public:
-		codeunits(char * string);
-		char *next();
-		char *prev();
-		char *value();
-		char *begin();
-		char *end();
+		private:
+			char *data;
+			char *_begin;
+			char *_end;
+		public:
+			codeunits(char *string);
+			char *next();
+			char *prev();
+			char *value();
+			char *begin();
+			char *end();
 
-		bool has_next();
+			bool has_next();
+			bool has_prev();
 	};
 }

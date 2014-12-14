@@ -17,6 +17,7 @@ import sys
 import os
 import os.path as path
 import time
+import datetime
 import getpass
 import subprocess
 
@@ -28,6 +29,26 @@ def combine(path1, path2):
 def gen(srcfolder):
 
     build_info = combine(srcfolder, "./src/stdlib/include/build_info.h")
+    build_numbert = combine(srcfolder, "./build_number")
+    try:
+        bn = open(build_numbert, "r")
+        build_number = bn.read().split(" ")
+        if int(build_number[0]) == int(datetime.date.today().toordinal()):
+            build_number = int(build_number[1]) + 1
+            bn.close()
+        else:
+            build_number = 1
+    except:
+        build_number = 1
+        try:
+            bn.close()
+        except:
+            pass
+    bn = open(build_numbert, "w")
+    bn.write(str(datetime.date.today().toordinal()) + " " + str(build_number))
+    print(build_number)
+    bn.close()
+
     bi = open(build_info, "w")
     bi.write(
         "/*temp file full of build info, " +
@@ -39,6 +60,8 @@ def gen(srcfolder):
     bi.write("#pragma once\n")
     bi.write("#define BUILD_UNIX_TIME ")
     bi.write(str(int(time.time())) + "L\n")
+    bi.write("#define BUILD_NUMBER ")
+    bi.write(str(int(build_number)) + "L\n")
     bi.write("#define BUILD_USERNAME \"")
     bi.write(str(getpass.getuser()) + "\"\n")
     bi.write("#define BUILD_GIT_BRANCH \"")

@@ -29,13 +29,13 @@ namespace hal {
 			return print("--NULL POINTER--");
 		}
 		while(*s) {
-			if(get_char_len(s)==5) {
-				uint32_t cp=decode_char(s);
+			if(unicode::utf8::get_char_len(s)==5) {
+				uint32_t cp=unicode::utf8::decode_char(s);
 				if((cp&0x80000)==0x80000) {
 					if(!back) {
 						back=(cp&0x1000)==0x1000;
 						if(back) {
-							s+=get_char_len(s);
+							s+=unicode::utf8::get_char_len(s);
 							continue;
 						}
 					}
@@ -44,6 +44,8 @@ namespace hal {
 						this->back_color=this->def_back_color;
 						this->color=this->def_color;
 						back=false;
+						s+=unicode::utf8::get_char_len(s);
+						continue;
 					}
 					uint16_t tc=cp&0xFFF;
 					uint8_t red=(tc>>8)&0xF;
@@ -62,11 +64,11 @@ namespace hal {
 						this->color=c;
 					}
 				}
-				s+=get_char_len(s);
+				s+=unicode::utf8::get_char_len(s);
 				continue;
 			}
 			printc(this->back_color,this->color,s);
-			s+=get_char_len(s);
+			s+=unicode::utf8::get_char_len(s);
 		}
 	}
 	ios_base::ios_base() {
@@ -105,7 +107,7 @@ namespace hal {
 		this->min_digits=b.min_digits;
 	}
 	ostream::ostream() {
-		this->color=0xFFCD00;
+		this->color=0xFFFFFF;
 		this->back_color=0x1000000;
 		this->def_color=color;
 		this->def_back_color=back_color;

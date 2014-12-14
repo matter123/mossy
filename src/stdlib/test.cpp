@@ -41,71 +41,44 @@ namespace kernel {
 		this->passed=false;
 		this->next=first;
 		first=this;
-
 	}
-	void test_module::set_passed() {
-		this->passed=true;
-	}
-	void test_module::run_test(){
+	void test_module::run_test() {
 		if(this->passed) {
 			return;
 		}
 		const char *dep=this->depends;
 		test_module *mod=first;
 		while(*dep!='\0') {
-			for(int i=0;i<8;i++) {
+			if(!mod) {
+				hal::cout<<std::TC::RED<<name<<std::TC::RESET<<hal::endl;
+				kernel::panic(dep);
+			}
+			for(int i=0; i<8; i++) {
 				if(mod->name[i]!=*(dep+i)) {
-					goto next;
+					mod=mod->next;
 				}
 			}
-			if(!mod->passed){
-				mod->run_test();
-				dep+=8;
-				mod=first;
-				continue;
-			}
-			next:
-			mod=mod->next;
+			mod->run_test();
+			dep+=8;
+			mod=first;
 		}
+		hal::cout<<name<<hal::endl;
 		this->test_func();
-		hal::cout<<std::TC::GREEN<<name<<std::TC::WHITE<<hal::endl;
+		this->passed=true;
+		hal::cout<<std::TC::GREEN<<"PASSED"<<std::TC::RESET<<hal::endl;
+	}
+	test_module *test_module::get_next() {
+		return this->next;
 	}
 	void test() {
-		if(first)first->run_test();
-		hal::cls();
-		bool abrt=false;
-		unit_test("unit test, pass  ", 7 ,7);
-		unit_test("unit test, fail  ", 7 ,77);
-		abrt=true;
-		unit_test("string compare #1",strcmp("apple","apple"),0);
-		unit_test("string compare #2",strcmp("apple","apples"),-115);
-		unit_test("string compare #3",strcmp("appleA","apples"),-50);
-		unit_test("string compare #4",strcmp("appleA","apple"),65);
-		unit_test("string compare #5",strcmp("appleA","apple "),33);
-		char foo[]="foo\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
-		unit_test("string copy    #1",strcmp(strcpy(foo,"bar"),"bar"),0);
-		unit_test("string cat     #1",strcmp(strcat(foo,"bar"),"barbar"),0);
-		unit_test("string cat     #2",strcmp(strncat(foo,"bar",1),"barbarb"),0);
+		test_module *cur=first;
+		while(cur) {
+			cur->run_test();
+			cur=cur->get_next();
+		}
+		/*
 		unit_test("unicode len    #1",strlen("Áﬃcion𝐚ḍ̇o"),20);
 		unit_test("unicode len    #2",mbslen("Áﬃcion𝐚ḍ̇o"),11);
-		unit_test("unicode len    #3",get_char_len("ﬃ"),3);
-		void *h1=malloc(4);
-		free(h1);
-		void *h2=malloc(4);
-		unit_test("heap merge     #1",h2,h1);
-		free(h2);
-		void *bar[20];
-		for(int i=0; i<20; i++) {
-			bar[i]=malloc(4*(i+1));
-		}
-		for(int i=1; i<20; i+=2) {
-			free(bar[i]);
-		}
-		for(int i=0; i<20; i+=2) {
-			free(bar[i]);
-		}
-		h1=malloc(840);
-		unit_test("heap merge     #2",h1,h2);
-		free(h1);
+		unit_test("unicode len    #3",get_char_len("ﬃ"),3);*/
 	}
 }

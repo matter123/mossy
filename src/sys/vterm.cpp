@@ -38,7 +38,7 @@ namespace hal {
 	}
 	void printc(uint32_t back_color,uint32_t text_color,const char *glyph) {
 		last_back=(back_color&(0xFF<<24))?0:back_color;
-		uint32_t cp = decode_char(glyph);
+		uint32_t cp = unicode::utf8::decode_char(glyph);
 		outb(0xE9,cp&0x7F);
 		if(wx>=width()) {
 			wx=0;

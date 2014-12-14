@@ -20,6 +20,32 @@
 #include <hal/mmap.h>
 #include <hal/hal.h>
 #include <hal/console.h>
+#if TEST
+#include <test.h>
+#include <stdlib.h>
+void test_heap()__attribute__((used));
+static kernel::test_module test_module=kernel::test_module("HEAP    ",&test_heap);
+void test_heap() {
+	void *h1=malloc(4);
+	free(h1);
+	void *h2=malloc(4);
+	unit_test("heap merge     #1",h2,h1);
+	free(h2);
+	void *bar[20];
+	for(int i=0; i<20; i++) {
+		bar[i]=malloc(4*(i+1));
+	}
+	for(int i=1; i<20; i+=2) {
+		free(bar[i]);
+	}
+	for(int i=0; i<20; i+=2) {
+		free(bar[i]);
+	}
+	h1=malloc(840);
+	unit_test("heap merge     #2",h1,h2);
+	free(h1);
+}
+#endif
 namespace kernel {
 	struct HEAD {
 		uint     magic:24;

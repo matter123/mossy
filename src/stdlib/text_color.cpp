@@ -41,26 +41,26 @@ namespace std {
 
 		char *init_colors() {
 			static char b[6]= {0};
-			encode_five(0x80000|(0xF<<8),RED);
-			encode_five(0x80000|(0xF<<4),GREEN);
-			encode_five(0x80000|0xF,BLUE);
-			encode_five(0x80000|(0xF<<8)|(0xF<<4),YELLOW);
-			encode_five(0x80000|(0xF<<8)|0xF,MAGENTA);
-			encode_five(0x80000|(0xF<<4)|0xF,CYAN);
-			encode_five(0x80000|(0xF<<8)|(0xF<<4)|0xF,WHITE);
-			encode_five(0x80000,BLACK);
-			encode_five(0x80000|(0x7<<8),DRED);
-			encode_five(0x80000|(0x7<<4),DGREEN);
-			encode_five(0x80000|0x7,DBLUE);
-			encode_five(0x80000|(0x7<<8)|(0x7<<4),DYELLOW);
-			encode_five(0x80000|(0x7<<8)|0x7,DMAGENTA);
-			encode_five(0x80000|(0x7<<4)|0x7,DCYAN);
-			encode_five(0x80000|(0x5<<8)|(0x5<<4)|0x5,DGRAY);
-			encode_five(0x80000|(0xA<<8)|(0xA<<4)|0xA,LGRAY);
-			encode_five(0x80000|(0xA<<8)|(0xA<<4)|0xA,LGRAY);
-			encode_five(0x81000,BACKCOLOR);
-			encode_five(0x82000,TRANSPARENT);
-			encode_five(0x84000,RESET);
+			unicode::utf8::encode_five(0x80000|(0xF<<8),RED);
+			unicode::utf8::encode_five(0x80000|(0xF<<4),GREEN);
+			unicode::utf8::encode_five(0x80000|0xF,BLUE);
+			unicode::utf8::encode_five(0x80000|(0xF<<8)|(0xF<<4),YELLOW);
+			unicode::utf8::encode_five(0x80000|(0xF<<8)|0xF,MAGENTA);
+			unicode::utf8::encode_five(0x80000|(0xF<<4)|0xF,CYAN);
+			unicode::utf8::encode_five(0x80000|(0xF<<8)|(0xF<<4)|0xF,WHITE);
+			unicode::utf8::encode_five(0x80000,BLACK);
+			unicode::utf8::encode_five(0x80000|(0x7<<8),DRED);
+			unicode::utf8::encode_five(0x80000|(0x7<<4),DGREEN);
+			unicode::utf8::encode_five(0x80000|0x7,DBLUE);
+			unicode::utf8::encode_five(0x80000|(0x7<<8)|(0x7<<4),DYELLOW);
+			unicode::utf8::encode_five(0x80000|(0x7<<8)|0x7,DMAGENTA);
+			unicode::utf8::encode_five(0x80000|(0x7<<4)|0x7,DCYAN);
+			unicode::utf8::encode_five(0x80000|(0x5<<8)|(0x5<<4)|0x5,DGRAY);
+			unicode::utf8::encode_five(0x80000|(0xA<<8)|(0xA<<4)|0xA,LGRAY);
+			unicode::utf8::encode_five(0x80000|(0xA<<8)|(0xA<<4)|0xA,LGRAY);
+			unicode::utf8::encode_five(0x81000,BACKCOLOR);
+			unicode::utf8::encode_five(0x82000,TRANSPARENT);
+			unicode::utf8::encode_five(0x84AFF,RESET);
 			return b;
 		}
 
@@ -68,7 +68,7 @@ namespace std {
 		//lazy trick to make an init function implicit
 		static char *buf=init_colors();
 		char *getColor(uint8_t red, uint8_t green, uint8_t blue) {
-			encode_five(0x80000|((red&0xF)<<8)|((green&0xF)<<4)|(blue&0xF),buf);
+			unicode::utf8::encode_five(0x80000|((red&0xF)<<8)|((green&0xF)<<4)|(blue&0xF),buf);
 			return buf;
 		}
 	}

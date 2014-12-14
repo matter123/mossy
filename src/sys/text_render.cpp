@@ -101,9 +101,9 @@ namespace kernel {
 			return draw_string_at(x,y,"--NULL POINTER--",0xFFFFFF);
 		}
 		while(*s) {
-			draw_char_at(x,y,decode_char(s),color);
+			draw_char_at(x,y,unicode::utf8::decode_char(s),color);
 			x+=9;
-			s+=get_char_len(s);
+			s+=unicode::utf8::get_char_len(s);
 		}
 	}
 }
