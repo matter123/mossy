@@ -20,8 +20,11 @@
 #include <sys/fb.h>
 #include <sys/text_render.h>
 #include <io.h>
+#define TEXT_HEIGHT 47
+#define TEXT_WIDTH 113
 namespace hal {
 	static int wx=0,wy=0;
+	int state_begin=0;
 	static bool is_ready=false;
 	uint32_t last_back=0;
 	void ready() {
@@ -29,23 +32,23 @@ namespace hal {
 		wx = 0;
 		wy = 0;
 		hal::print_boot_msg("Init vterm", true,true);
-		//cls();
 	}
 	void scroll(int lines) {
 		if(is_ready) {
-			kernel::copy_rect(2,2+lines*16,kernel::get_w()-4,(height()-lines)*16,2,2);
+			kernel::copy_rect(0,lines*16+2,kernel::get_w(),kernel::get_h()-(lines*16+2),0,2);
 		}
+		wy-=lines;
 	}
 	void printc(uint32_t back_color,uint32_t text_color,const char *glyph) {
 		last_back=(back_color&(0xFF<<24))?0:back_color;
 		uint32_t cp = unicode::utf8::decode_char(glyph);
 		outb(0xE9,cp&0x7F);
-		if(wx>=width()) {
+		if(wx>=TEXT_WIDTH) {
 			wx=0;
 			wy++;
 		}
-		if(wy>=height()) {
-			scroll(wy-(height()-1));
+		if(wy>=TEXT_HEIGHT) {
+			scroll(wy-(TEXT_HEIGHT-1));
 		}
 		if(cp=='\n') {
 			wx=0;
@@ -64,14 +67,15 @@ namespace hal {
 	}
 	void cls() {
 		if(is_ready) {
-			kernel::fill_rect(0,0,kernel::get_w(),kernel::get_h(),last_back);
+			kernel::reset_fb();
 		}
+		state_begin=0;
 	}
 	int width() {
-		return 113;
+		return TEXT_WIDTH;
 	}
 	int height() {
-		return 48;
+		return TEXT_WIDTH;
 	}
 	int get_x() {
 		return wx;

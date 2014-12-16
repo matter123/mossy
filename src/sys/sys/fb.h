@@ -43,6 +43,10 @@ namespace kernel {
 	void fill_hline(int x,int y,int w,uint32_t packed_color);
 	void fill_vline(int x,int y,int h,uint32_t packed_color);
 
+	void reset_fb();
+	void reset_fb(int x, int y, int w, int h);
+	void reset_fb(int x, int y, int w, int h, int img_x, int img_y);
+
 	int get_w();
 	int get_h();
 	int get_bpp();

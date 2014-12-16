@@ -40,7 +40,7 @@ SECTIONS
 		k_data_end = .;
 		. += 96K;
 		k_stack_end = .;
-		. += 4K;
+		. += 32;
 	}
 	/DISCARD/ :
 	{

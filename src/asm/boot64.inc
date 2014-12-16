@@ -95,8 +95,6 @@ pt:
 resb 0x1000
 pt_1:
 resb 0x1000
-pt_vga:
-resb 0x1000
 low_bss_end:
 
 LB_LEN equ (low_bss_end-low_bss_start)/4

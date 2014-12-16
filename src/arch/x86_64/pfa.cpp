@@ -20,11 +20,15 @@
 #include <string.h>
 #include <hal/mmap.h>
 #include <hal/hal.h>
+#include <hal/paging.h>
 #include <hal/console.h>
 #include <math.hpp>
+#include <x86/paging.h>
+#include <x64/paging.h>
 extern "C" uintptr_t k_data_end;
+extern "C" uintptr_t k_stack_end;
 namespace x86_64 {
-	static uintptr_t *stack=reinterpret_cast<uintptr_t *>(&k_data_end);
+	static uintptr_t *stack=&k_data_end;
 	static uintptr_t *end=0;
 	static uintptr_t count=0;
 	bool init_pfa() {
@@ -56,9 +60,27 @@ namespace x86_64 {
 	}
 	void add_free_page(uintptr_t page) {
 		if(((uintptr_t)stack&0xFFF)==(0x1000-sizeof(uintptr_t))) {
-			//hal::cout<<stack<<" ";
-			//hal::magic_break();
 			*(stack+1)=0; //poke it with a stick
+		}
+		if(stack==&k_stack_end) {
+			#ifdef X86
+			using namespace x86;
+			#elif defined X64
+			using namespace x64;
+			#endif
+			if(!paging_ready()) {
+				hal::print_boot_msg("Init paging",init_paging(),true);
+			}
+			uintptr_t _end=hal::get_page_offset_addr()+0x400000;
+			uintptr_t start=reinterpret_cast<uintptr_t>(&k_stack_end)+0x1000*8;
+			//hal::magic_break();
+			while(start<_end) {
+				stack++;
+				uintptr_t temp=hal::unmap_virt_phys_cur(start);
+				*stack = temp;
+				count++;
+				start+=0x1000;
+			}
 		}
 		stack++;
 		*stack=page;

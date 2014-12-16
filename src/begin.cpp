@@ -68,6 +68,9 @@ namespace kernel {
 		hal::cout<<"Built on: "<<std::TC::GREEN<<asctime(gmtime(&bt))<<std::TC::RESET
 		         <<" By: "     <<std::TC::GREEN<<BUILD_USERNAME      <<std::TC::RESET
 		         <<" From: "   <<std::TC::GREEN<<BUILD_GIT_BRANCH    <<std::TC::RESET<<hal::endl;
-		while(1);
+		int num=0;
+		while(1) {
+			hal::cout<<hal::dec<<num++<<hal::endl;
+		}
 	}
 }

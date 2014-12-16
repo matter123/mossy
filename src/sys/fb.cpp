@@ -29,6 +29,7 @@ namespace kernel {
 		uint32_t stride;
 		bool safe_memcpy;
 	} fb;
+	void *background_img;
 	void set_background(int x, int y,uintptr_t addr);
 	void init_fb() {
 		hal::multiboot_fb *fb_info=NULL;
@@ -110,9 +111,24 @@ namespace kernel {
 			map_addrp+=0x1000;
 			space_req-=0x1000;
 		}
-		copy_rect(0,0,1024,768,(void *)vaddr);
+		background_img=(void *)vaddr;
+		reset_fb();
 		hal::print_boot_msg("Init VGA", true,true);
 	}
+
+	void reset_fb() {
+		copy_rect(0,0,1024,768,background_img);
+	}
+	void reset_fb(int x, int y, int w, int h, int img_x, int img_y) {
+		uintptr_t src_addr=background_img+fb.stride*img_y+fb.bpp*img_x;
+		uintptr_t dest_addr=fb.addr+fb.stride*y+fb.bpp*x;
+		for(int i=0; i<h; i++) {
+			memcpy((void *)dest_addr,(void *)src_addr,fb.bpp*w);
+			src_addr+=fb.stride;
+			dest_addr+=fb.stride;
+		}
+	}
+
 	void put_pixel(int x, int y, uint32_t color) {
 		uint32_t *addr=(uint32_t *)(fb.addr+fb.stride*y+fb.bpp*x);
 		*addr=color;

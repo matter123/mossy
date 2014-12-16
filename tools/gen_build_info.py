@@ -46,7 +46,6 @@ def gen(srcfolder):
             pass
     bn = open(build_numbert, "w")
     bn.write(str(datetime.date.today().toordinal()) + " " + str(build_number))
-    print(build_number)
     bn.close()
 
     bi = open(build_info, "w")

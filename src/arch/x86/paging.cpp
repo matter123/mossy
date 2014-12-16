@@ -50,7 +50,9 @@ namespace x86 {
 		return init;
 	}
 	void pre_init_handle(cpu_state *s) {
-		hal::print_boot_msg("Init paging",init_paging(),true);
+		if(!init) {
+			hal::print_boot_msg("Init paging",init_paging(),true);
+		}
 		//cpu will resume executing, causing another page fault that will be
 		//handled by the real page fault handler
 	}
