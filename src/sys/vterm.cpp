@@ -35,7 +35,9 @@ namespace hal {
 	}
 	void scroll(int lines) {
 		if(is_ready) {
+			state_begin+=lines*16;
 			kernel::copy_rect(0,lines*16+2,kernel::get_w(),kernel::get_h()-(lines*16+2),0,2);
+			kernel::reset_fb(0,0,kernel::get_w(),2,0,state_begin);
 		}
 		wy-=lines;
 	}
