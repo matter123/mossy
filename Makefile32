@@ -22,7 +22,7 @@ build: $(COBJECTS) $(CXXOBJECTS) $(SOBJECTS) build_libs link mkiso
 FFLAGS=-fno-omit-frame-pointer -ffreestanding -fno-stack-protector -fno-common
 DFLAGS:=$(DFLAGS) -DARCH=_x86 -DVENDOR=_PC -DDEBUG
 CFLAGS=-O3 -std=c11 $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS) $(IFLAGS)
-CXXFLAGS=-O3 -std=gnu++11 $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS) $(IFLAGS) -fno-rtti \
+CXXFLAGS=-O3 -std=gnu++1y $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS) $(IFLAGS) -fno-rtti \
 -fno-exceptions -fdiagnostics-color=auto
 LDFLAGS=-static -Tlinkx86.ld  -ffreestanding -O2 -nostdlib $(FFLAGS) -Llibs
 ASFLAGS=-felf

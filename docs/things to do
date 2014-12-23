@@ -19,3 +19,4 @@ uefi (grub setting? my own boot loader?)
 extend font
 add unit tests
 switch over to using the unicode iterators
+in unique_ptr and shared_ptr allow type overload via template specialization

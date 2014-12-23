@@ -120,7 +120,8 @@ namespace kernel {
 		copy_rect(0,0,1024,768,background_img);
 	}
 	void reset_fb(int x, int y, int w, int h, int img_x, int img_y) {
-		uintptr_t src_addr=background_img+fb.stride*img_y+fb.bpp*img_x;
+		uintptr_t src_addr=reinterpret_cast<uintptr_t>(
+			(pointer)background_img+fb.stride*img_y+fb.bpp*img_x);
 		uintptr_t dest_addr=fb.addr+fb.stride*y+fb.bpp*x;
 		for(int i=0; i<h; i++) {
 			memcpy((void *)dest_addr,(void *)src_addr,fb.bpp*w);

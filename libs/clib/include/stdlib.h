@@ -57,4 +57,7 @@ void *realloc(void *ptr,size_t size);
 #endif
 #ifdef __cplusplus
 }
+namespace std {
+	typedef decltype(nullptr) nullptr_t;
+}
 #endif

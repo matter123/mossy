@@ -258,7 +258,7 @@
 	</glyph>
 	<glyph>
 		<codepoint>60</codepoint>
-		<pos x="0" y="2"/>
+		<pos x="0" y="4"/>
 	</glyph>
 	<glyph>
 		<codepoint>61</codepoint>
@@ -383,5 +383,139 @@
 	<glyph>
 		<codepoint>7f</codepoint>
 		<pos x="15" y="5"/>
+	</glyph>
+	<glyph>
+		<codepoint>91</codepoint>
+		<pos x="0" y="6"/>
+	</glyph>
+	<!-- 80-9F are non printing -->
+	<glyph>
+		<codepoint>a0</codepoint>
+		<pos x="0" y="0"/>
+		<!-- 0.6 is logo -->
+	</glyph>
+	<glyph>
+		<codepoint>a1</codepoint>
+		<pos x="1" y="6"/>
+	</glyph>
+	<glyph>
+		<codepoint>a2</codepoint>
+		<pos x="2" y="6"/>
+	</glyph>
+	<glyph>
+		<codepoint>a3</codepoint>
+		<pos x="3" y="6"/>
+	</glyph>
+	<glyph>
+		<codepoint>a4</codepoint>
+		<pos x="4" y="6"/>
+	</glyph>
+	<glyph>
+		<codepoint>a5</codepoint>
+		<pos x="5" y="6"/>
+	</glyph>
+	<glyph>
+		<codepoint>a6</codepoint>
+		<pos x="6" y="6"/>
+	</glyph>
+	<glyph>
+		<codepoint>a7</codepoint>
+		<pos x="7" y="6"/>
+	</glyph>
+	<glyph>
+		<codepoint>a8</codepoint>
+		<pos x="8" y="6"/>
+	</glyph>
+	<glyph>
+		<codepoint>a9</codepoint>
+		<pos x="9" y="6"/>
+	</glyph>
+	<glyph>
+		<codepoint>aa</codepoint>
+		<pos x="10" y="6"/>
+	</glyph>
+	<glyph>
+		<codepoint>ab</codepoint>
+		<pos x="11" y="6"/>
+	</glyph>
+	<glyph>
+		<codepoint>ac</codepoint>
+		<pos x="12" y="6"/>
+	</glyph>
+	<glyph>
+		<codepoint>ad</codepoint>
+		<pos x="13" y="6"/>
+	</glyph>
+	<glyph>
+		<codepoint>ae</codepoint>
+		<pos x="14" y="6"/>
+	</glyph>
+	<glyph>
+		<codepoint>af</codepoint>
+		<pos x="15" y="6"/>
+	</glyph>
+	<glyph>
+		<codepoint>b0</codepoint>
+		<pos x="0" y="7"/>
+	</glyph>
+	<glyph>
+		<codepoint>b1</codepoint>
+		<pos x="1" y="7"/>
+	</glyph>
+	<glyph>
+		<codepoint>b2</codepoint>
+		<pos x="2" y="7"/>
+	</glyph>
+	<glyph>
+		<codepoint>b3</codepoint>
+		<pos x="3" y="7"/>
+	</glyph>
+	<glyph>
+		<codepoint>b4</codepoint>
+		<pos x="4" y="7"/>
+	</glyph>
+	<glyph>
+		<codepoint>b5</codepoint>
+		<pos x="5" y="7"/>
+	</glyph>
+	<glyph>
+		<codepoint>b6</codepoint>
+		<pos x="6" y="7"/>
+	</glyph>
+	<glyph>
+		<codepoint>b7</codepoint>
+		<pos x="7" y="7"/>
+	</glyph>
+	<glyph>
+		<codepoint>b8</codepoint>
+		<pos x="8" y="7"/>
+	</glyph>
+	<glyph>
+		<codepoint>b9</codepoint>
+		<pos x="9" y="7"/>
+	</glyph>
+	<glyph>
+		<codepoint>ba</codepoint>
+		<pos x="10" y="7"/>
+	</glyph>
+	<glyph>
+		<codepoint>bb</codepoint>
+		<pos x="11" y="7"/>
+	</glyph>
+	<glyph>
+		<codepoint>bc</codepoint>
+		<pos x="12" y="7"/>
+	</glyph>
+	<glyph>
+		<codepoint>bd</codepoint>
+		<pos x="13" y="7"/>
+	</glyph>
+	<glyph>
+		<codepoint>be</codepoint>
+		<pos x="14" y="7"/>
+	</glyph>
+	<glyph>
+		<codepoint>bf</codepoint>
+		<pos x="15" y="7"/>
 	</glyph>
 </mbf>

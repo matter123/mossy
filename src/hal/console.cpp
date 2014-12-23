@@ -125,7 +125,7 @@ namespace hal {
 	}
 	ostream &ostream::operator<<(int i) {
 		char buf[50];
-		if(b.showbase) {
+		if(b.showbase==2) {
 			if(b.base==16) {
 				print("0x");
 			}
@@ -136,12 +136,12 @@ namespace hal {
 				print("0b");
 			}
 		}
-		print(std::numtostr(i,buf,b.base,b.uppercase,b.min_digits));
+		print(std::numtostr(i,buf,b.base,b.uppercase==2,b.min_digits));
 		return *this;
 	}
 	ostream &ostream::operator<<(unsigned int u) {
 		char buf[50];
-		if(b.showbase) {
+		if(b.showbase==2) {
 			if(b.base==16) {
 				print("0x");
 			}
@@ -152,12 +152,12 @@ namespace hal {
 				print("0b");
 			}
 		}
-		print(std::numtostr(u,buf,b.base,b.uppercase,b.min_digits));
+		print(std::numtostr(u,buf,b.base,b.uppercase==2,b.min_digits));
 		return *this;
 	}
 	ostream &ostream::operator<<(long l) {
 		char buf[50];
-		if(b.showbase) {
+		if(b.showbase==2) {
 			if(b.base==16) {
 				print("0x");
 			}
@@ -168,12 +168,12 @@ namespace hal {
 				print("0b");
 			}
 		}
-		print(std::numtostr(l,buf,b.base,b.uppercase,b.min_digits));
+		print(std::numtostr(l,buf,b.base,b.uppercase==2,b.min_digits));
 		return *this;
 	}
 	ostream &ostream::operator<<(unsigned long ul) {
 		char buf[50];
-		if(b.showbase) {
+		if(b.showbase==2) {
 			if(b.base==16) {
 				print("0x");
 			}
@@ -184,12 +184,12 @@ namespace hal {
 				print("0b");
 			}
 		}
-		print(std::numtostr(ul,buf,b.base,b.uppercase,b.min_digits));
+		print(std::numtostr(ul,buf,b.base,b.uppercase==2,b.min_digits));
 		return *this;
 	}
 	ostream &ostream::operator<<(long long ll) {
 		char buf[50];
-		if(b.showbase) {
+		if(b.showbase==2) {
 			if(b.base==16) {
 				print("0x");
 			}
@@ -200,12 +200,12 @@ namespace hal {
 				print("0b");
 			}
 		}
-		print(std::numtostr(ll,buf,b.base,b.uppercase,b.min_digits));
+		print(std::numtostr(ll,buf,b.base,b.uppercase==2,b.min_digits));
 		return *this;
 	}
 	ostream &ostream::operator<<(unsigned long long ull) {
 		char buf[50];
-		if(b.showbase) {
+		if(b.showbase==2) {
 			if(b.base==16) {
 				print("0x");
 			}
@@ -216,7 +216,7 @@ namespace hal {
 				print("0b");
 			}
 		}
-		print(std::numtostr(ull,buf,b.base,b.uppercase,b.min_digits));
+		print(std::numtostr(ull,buf,b.base,b.uppercase==2,b.min_digits));
 		return *this;
 	}
 	ostream &ostream::operator<<(const void *p) {
