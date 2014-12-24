@@ -51,19 +51,43 @@ namespace kernel {
 		init_fb();
 		init_tr();
 		hal::ready();
-		std::shared_ptr<int> t;
 		hal::cout<<std::TC::BACKCOLOR<<std::TC::BLACK<<
-		"    |00|01|02|03|04|05|06|07|08|09|0A|0B|0C|0D|0E|0F|10|11|12|13|14|15|16|17|18|19|1A|1B|1C|1D|1E|1F|"
-		<<hal::endl<<
-		"    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+"
-		<<hal::endl<<hal::ios_base(16,2,1,4);
-		char array[5]={0};
+		         "    |00|01|02|03|04|05|06|07|08|09|0A|0B|0C|0D|0E|0F|10|11|12|13|14|15|16|17|18|19|1A|1B|1C|1D|1E|1F|"
+		         <<hal::endl<<
+		         "    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+"
+		         <<hal::endl<<hal::ios_base(16,2,1,4)<<std::TC::GREEN;
+		char array[5]= {0};
 		uintptr_t line_start=0x0020;
 		while(line_start<=0x04E0) {
-			if(line_start==0x0080)hal::cout<<std::TC::RED;
-			if(line_start==0x00A0)hal::cout<<std::TC::WHITE;
+			if(line_start==0x0080) {
+				hal::cout<<std::TC::RED;
+			}
+			if(line_start==0x00A0) {
+				hal::cout<<std::TC::WHITE;
+			}
+			if(line_start==0x0100) {
+				hal::cout<<std::TC::YELLOW;
+			}
+			if(line_start==0x0180) {
+				hal::cout<<std::TC::BLUE;
+			}
+			if(line_start==0x0300) {
+				hal::cout<<std::TC::DCYAN;
+			}
+			if(line_start==0x0400) {
+				hal::cout<<std::TC::DMAGENTA;
+			}
 			hal::cout<<line_start<<"|";
-			for(int i=0;i<0x20;i++) {
+			for(int i=0; i<0x20; i++) {
+				if((line_start+i)==0x0250) {
+					hal::cout<<std::TC::CYAN;
+				}
+				if((line_start+i)==0x02B0) {
+					hal::cout<<std::TC::MAGENTA;
+				}
+				if((line_start+i)==0x02B0) {
+					hal::cout<<std::TC::LGRAY;
+				}
 				unicode::utf8::encode_char(line_start+i,array);
 				hal::cout<<" "<<array<<(i!=0x1F?" ":"|");
 			}

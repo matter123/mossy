@@ -3,7 +3,7 @@ export
 WFLAGSON=-Wall -Wextra -Werror=return-type -Wshadow -Wundef -Wdeprecated \
 -Wredundant-decls -Werror=parentheses
 DFLAGS=-DTEST=1 -DMOSSY
-WFLAGSOFF=-Wno-unused-parameter -Wno-sign-compare
+WFLAGSOFF=-Wno-unused-parameter -Wno-sign-compare -Wno-implicit-exception-spec-mismatch
 IFLAGS=-Isrc/stdlib/include -Ilibs/clib/include -Ilibs/unicode/include -Ilibs/acpi/include -Isrc/hal -Isrc/arch -Isrc/vendor -Isrc/sys -include src/stdlib/global.h
 
 build:

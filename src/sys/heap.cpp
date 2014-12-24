@@ -237,22 +237,16 @@ namespace kernel {
 		}
 	}
 }
-extern "C"
 void *operator new(size_t size) {
 	return kernel::malloc(size);
 }
 
-extern "C"
 void *operator new[](size_t size) {
 	return kernel::malloc(size);
 }
-
-extern "C"
 void operator delete(void *p) {
 	kernel::free(p);
 }
-
-extern "C"
 void operator delete[](void *p) {
 	kernel::free(p);
 }

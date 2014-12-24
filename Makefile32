@@ -15,16 +15,16 @@ SSOURCES:=$(shell find src -name *.s)
 SOBJECTS:=$(patsubst %.s, %.o.$(OBJ_SUFFIX), $(SSOURCES))
 
 
-all: build runem
+all: build
 
-build: $(COBJECTS) $(CXXOBJECTS) $(SOBJECTS) build_libs link mkiso
+build: $(COBJECTS) $(CXXOBJECTS) $(SOBJECTS) build_libs link
 
 FFLAGS=-fno-omit-frame-pointer -ffreestanding -fno-stack-protector -fno-common
 DFLAGS:=$(DFLAGS) -DARCH=_x86 -DVENDOR=_PC -DDEBUG
 CFLAGS=-O3 -std=c11 $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS) $(IFLAGS)
 CXXFLAGS=-O3 -std=gnu++1y $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS) $(IFLAGS) -fno-rtti \
 -fno-exceptions -fdiagnostics-color=auto
-LDFLAGS=-static -Tlinkx86.ld  -ffreestanding -O2 -nostdlib $(FFLAGS) -Llibs
+LDFLAGS=-static -Tbuild_files/linkx86.ld  -ffreestanding -O2 -nostdlib $(FFLAGS) -Llibs
 ASFLAGS=-felf
 
 
@@ -32,16 +32,16 @@ clean:
 	@echo Cleaning workspace
 	@find . -name '*.o.$(OBJ_SUFFIX)' -delete
 	@find . -name '*.d.$(OBJ_SUFFIX)' -delete
-	@rm -f kernel$(ARCH)
+	@rm -f build_files/kernel$(OBJ_SUFFIX)
 
 link:
 	@echo Linking
-	@$(CXX) $(LDFLAGS) -o kernel$(OBJ_SUFFIX) $(SOBJECTS) $(COBJECTS) $(CXXOBJECTS) -lc$(OBJ_SUFFIX)\
+	@$(CXX) $(LDFLAGS) -o build_files/kernel$(OBJ_SUFFIX) $(SOBJECTS) $(COBJECTS) $(CXXOBJECTS) -lc$(OBJ_SUFFIX)\
 	 -lunicode$(OBJ_SUFFIX) -lacpi$(OBJ_SUFFIX) -lgcc
 
 -include $(CXXOBJECTS:.o.$(OBJ_SUFFIX)=.d.$(OBJ_SUFFIX))
 -include $(COBJECTS:.o.$(OBJ_SUFFIX)=.d.$(OBJ_SUFFIX))
--include dummy32
+-include build_files/dummy32
 
 dummy32: Makefile32 Makefile
 	@touch $@
@@ -63,17 +63,6 @@ dummy32: Makefile32 Makefile
 	@echo Compiling $<
 	@$(ClangXX) $(CXXFLAGS) -o $@ -c $<
 	@$(ClangXX) -MM $(CXXFLAGS) $< > $(patsubst %.o.$(OBJ_SUFFIX), %.d.$(OBJ_SUFFIX),$@)
-
-mkiso:
-	#@tools/packrd.py
-	#@tools/symexport.py kernel$(OBJ_SUFFIX)
-	@cp -f kernel$(OBJ_SUFFIX) iso/kernel$(OBJ_SUFFIX)
-	@cp -f kernel$(OBJ_SUFFIX).sym iso/kernel$(OBJ_SUFFIX).sym
-	#@cp -f initrd.rd iso/initrd.rd
-
-runem:
-	@~/bochs-2.6.2/bochs -f bochs.rc -q
-	#@cd .&& bash scripts/run_emulator64 `pwd` &
 
 build_libs:
 	cd libs/clib && $(MAKE) build

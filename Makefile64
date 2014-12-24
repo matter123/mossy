@@ -15,9 +15,9 @@ SSOURCES:=$(shell find src -name *.s)
 SOBJECTS:=$(patsubst %.s, %.o.$(OBJ_SUFFIX), $(SSOURCES))
 
 
-all: build runem
+all: build
 
-build: check $(COBJECTS) $(CXXOBJECTS) $(SOBJECTS) build_libs link mkiso
+build: check $(COBJECTS) $(CXXOBJECTS) $(SOBJECTS) build_libs link
 
 FFLAGS=-fno-omit-frame-pointer -ffreestanding -fno-stack-protector -fno-common
 DFLAGS:=$(DFLAGS) -DARCH=_x64 -DVENDOR=_PC -DDEBUG
@@ -25,7 +25,7 @@ MFLAGS=-mcmodel=kernel -mno-red-zone -mno-3dnow
 CFLAGS=-O3 -std=c99 $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS) $(MFLAGS) $(IFLAGS)
 CXXFLAGS=-O3 -std=c++1y $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS) $(MFLAGS) $(IFLAGS) -fno-rtti \
 -fno-exceptions -fdiagnostics-color=auto
-LDFLAGS=-static -Tlinkx64.ld -ffreestanding -O2 -nostdlib $(FFLAGS) -Llibs -z max-page-size=0x1000
+LDFLAGS=-static -Tbuild_files/linkx64.ld -ffreestanding -O2 -nostdlib $(FFLAGS) -Llibs -z max-page-size=0x1000
 ASFLAGS=-felf64
 
 
@@ -33,18 +33,18 @@ clean:
 	@echo Cleaning workspace
 	@find . -name '*.o.$(OBJ_SUFFIX)' -delete
 	@find . -name '*.d.$(OBJ_SUFFIX)' -delete
-	@rm -f kernel$(ARCH)
+	@rm -f build_files/kernel$(OBJ_SUFFIX)
 
 check:
 	#@tools/doccheck.py kernel src
 link:
 	@echo Linking
-	@g++ $(LDFLAGS) -o kernel$(OBJ_SUFFIX) $(SOBJECTS) $(COBJECTS) $(CXXOBJECTS) -lc$(OBJ_SUFFIX)\
+	@g++ $(LDFLAGS) -o build_files/kernel$(OBJ_SUFFIX) $(SOBJECTS) $(COBJECTS) $(CXXOBJECTS) -lc$(OBJ_SUFFIX)\
 	 -lunicode$(OBJ_SUFFIX) -lacpi$(OBJ_SUFFIX) -lgcc
 
 -include $(CXXOBJECTS:.o.$(OBJ_SUFFIX)=.d.$(OBJ_SUFFIX))
 -include $(COBJECTS:.o.$(OBJ_SUFFIX)=.d.$(OBJ_SUFFIX))
--include dummy64
+-include build_files/dummy64
 
 dummy64: Makefile64 Makefile
 	@touch $@
@@ -65,17 +65,6 @@ dummy64: Makefile64 Makefile
 	@echo Compiling $<
 	@$(ClangXX) $(CXXFLAGS) -o $@ -c $<
 	@$(ClangXX) -MM $(CXXFLAGS) $< > $(patsubst %.o.$(OBJ_SUFFIX), %.d.$(OBJ_SUFFIX),$@)
-
-mkiso:
-	#@tools/packrd.py
-	#@tools/symexport.py kernel$(OBJ_SUFFIX)
-	@cp -f kernel$(OBJ_SUFFIX) iso/kernel$(OBJ_SUFFIX)
-	@cp -f kernel$(OBJ_SUFFIX).sym iso/kernel$(OBJ_SUFFIX).sym
-	#@cp -f initrd.rd iso/initrd.rd
-
-runem:
-	@~/bochs-2.6.2/bochs -f bochs.rc -q
-	#@cd .&& bash scripts/run_emulator64 `pwd` &
 
 build_libs:
 	cd libs/clib && $(MAKE) build

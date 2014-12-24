@@ -29,7 +29,7 @@ def combine(path1, path2):
 def gen(srcfolder):
 
     build_info = combine(srcfolder, "./src/stdlib/include/build_info.h")
-    build_numbert = combine(srcfolder, "./build_number")
+    build_numbert = combine(srcfolder, "./build_files/build_number")
     try:
         bn = open(build_numbert, "r")
         build_number = bn.read().split(" ")
