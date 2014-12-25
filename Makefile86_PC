@@ -1,0 +1,14 @@
+CC_86_PC?=clang --target=i686-elf -Wdocumentation
+CXX_86_PC?=clang++ --target=i686-elf -Wdocumentation
+
+OBJ_SUFFIX:=86_PC
+FFLAGS_86_PC?=-fno-omit-frame-pointer -fno-stack-protector
+FFLAGS_86_PC+=-ffreestanding -fno-common -fno-rtti -fno-exceptions
+CFLAGS+=$(FFLAGS_86_PC)
+CXXFLAGS+=$(FFLAGS_86_PC)
+ASFLAGS:=-felf
+
+prep:
+	$(MAKE) -f kernel/Makefile prep
+build:
+	$(MAKE) -f kernel/Makefile build

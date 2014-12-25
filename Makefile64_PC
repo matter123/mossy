@@ -1,0 +1,15 @@
+CC_64_PC?=clang --target=x86_64-elf -Wdocumentation
+CXX_64_PC?=clang++ --target=x86_64-elf -Wdocumentation
+
+OBJ_SUFFIX:=64_PC
+FFLAGS_64_PC?=-fno-omit-frame-pointer -fno-stack-protector
+FFLAGS_64_PC+=-ffreestanding -fno-common -fno-rtti -fno-exceptions
+MFLAGS_64_PC+=-mcmodel=kernel -mno-red-zone -mno3dnow
+CFLAGS+=$(FFLAGS_64_PC) $(MFLAGS_64_PC)
+CXXFLAGS+=$(FFLAGS_64_PC) $(MFLAGS_64_PC)
+ASFLAGS:=-felf64
+
+prep:
+	$(MAKE) -f kernel/Makefile prep
+build:
+	$(MAKE) -f kernel/Makefile build
