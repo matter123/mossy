@@ -16,7 +16,6 @@
 #include <acpi_os.h>
 #include <tables/rsdp.h>
 #include <tables/sdt.h>
-#include <hal/console.h>
 namespace acpi {
 	static bool h_acpi=false;
 	void init_tables() {
