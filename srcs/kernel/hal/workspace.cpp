@@ -1,5 +1,5 @@
 /*
-    Copyright 2013 Matthew Fosdick
+    Copyright 2014 Matthew Fosdick
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 */
-
 #include <hal/workspace.h>
 #include <hal/console.h>
 #include <stdlib.h>
@@ -22,7 +21,7 @@ namespace hal {
 	extern "C" uint32_t k_end;      /*we have 128kb after this reserved*/
 	extern "C" uint32_t k_data_end; /*end of working space, PFA and paging needs
                                 to be up by then so we don't run out of room*/
-	pointer wksp_ptr=(pointer)&k_end;
+	pointer wksp_ptr=(pointer) &k_end;
 	void *w_malloc(size_t s) {
 		if(s>sizeof(uintptr_t))wksp_ptr=
 			    (pointer)(((uintptr_t)wksp_ptr&~(sizeof(uintptr_t)-1))+sizeof(uintptr_t));

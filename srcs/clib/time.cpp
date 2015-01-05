@@ -162,23 +162,18 @@ char *asctime(const tm *timeptr) {
 	memset(&ptra,0,23);
 	std::numtostr(timeptr->tm_year+1900,tmpa,10,false,4);
 	strcat(ptra,tmpa);
-
 	strcat(ptra,"-");
 	std::numtostr(timeptr->tm_mon+1,tmpa,10,false,2);
 	strcat(ptra,tmpa);
-
 	strcat(ptra,"-");
 	std::numtostr(timeptr->tm_mday,tmpa,10,false,2);
 	strcat(ptra,tmpa);
-
 	strcat(ptra," ");
 	std::numtostr(timeptr->tm_hour,tmpa,10,false,2);
 	strcat(ptra,tmpa);
-
 	strcat(ptra,":");
 	std::numtostr(timeptr->tm_min,tmpa,10,false,2);
 	strcat(ptra,tmpa);
-
 	strcat(ptra,":");
 	std::numtostr(timeptr->tm_sec,tmpa,10,false,2);
 	strcat(ptra,tmpa);

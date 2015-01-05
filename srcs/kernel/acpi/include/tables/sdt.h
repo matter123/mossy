@@ -44,8 +44,8 @@ namespace acpi {
 		extern RSDT *rsdt;
 		extern XSDT *xsdt;
 
-		SDT *load_table(void * tbl_phys_base);
+		SDT *load_table(void *tbl_phys_base);
 
-		bool do_checksum(SDT * table);
+		bool do_checksum(SDT *table);
 	}
 }

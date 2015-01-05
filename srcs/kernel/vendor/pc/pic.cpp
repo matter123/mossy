@@ -1,11 +1,11 @@
 /*
-    Copyright 2013-2014 Matthew Fosdick
+    Copyright 2014 Matthew Fosdick
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+     http://www.apache.org/licenses/LICENSE-2.0
 
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
@@ -42,22 +42,18 @@ namespace pc {
 		io_wait();
 		outb(S_CMD,0x11);//init
 		io_wait();
-
 		outb(M_DAT,pic_range.start);
 		io_wait();
 		outb(S_DAT,pic_range.start+8);
 		io_wait();
-
 		outb(M_DAT,0x4);//slave at IRQ2
 		io_wait();
 		outb(S_DAT,0x2);//ITS A SLAVE
 		io_wait();
-
 		outb(M_DAT,0x1);//x86
 		io_wait();
 		outb(S_DAT,0x1);
 		io_wait();
-
 		outb(M_DAT,0xFF);//all masked
 		io_wait();
 		outb(S_DAT,0xFF);
@@ -90,7 +86,6 @@ namespace pc {
 	void unmask(int irq) {
 		uint16_t port;
 		uint8_t value;
-
 		if(irq < 8) {
 			port = M_DAT;
 		} else {

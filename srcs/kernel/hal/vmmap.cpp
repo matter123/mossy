@@ -28,10 +28,8 @@ namespace hal {
 		regs.tag_count=1;
 		regs.regions=reinterpret_cast<mem_region *>(
 		                 w_malloc(sizeof(mem_region) * regs.tag_count, 16));
-
 		add_virt_mem_arch();
 		add_virt_mem_vendor();
-
 		//add kernel
 		add_virt_region(1);
 		mem_type kern;
@@ -40,7 +38,6 @@ namespace hal {
 		uintptr_t start=((uint64_t) &k_start);
 		uintptr_t end=(((uint64_t) &k_data_end)-start);
 		add_virt_region(start,end,kern);
-
 		fix_mmap();
 		return true;
 	}

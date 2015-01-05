@@ -1,5 +1,5 @@
 /*
-    Copyright 2013-2014 Matthew Fosdick
+    Copyright 2014 Matthew Fosdick
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -52,7 +52,4 @@ extern "C" {
 	//long long stroll(const char *str, char **end_ptr); //NO-IMP
 	//unsigned long stroul(const char *str, char **end_ptr); //NO-IMP
 	//unsigned long long stroull(const char *str, char **end_ptr); //NO-IMP
-
-	//int rand(); //NO-IMP
-	//void srand(unsigned int seed); //NO-IMP
 }

@@ -1,16 +1,12 @@
 #! /usr/bin/env python3
-import os
 import sys
-import sqlite3
-import shutil
-
-abspath = os.path.abspath(__file__)
-dname = os.path.dirname(abspath)
-os.chdir(dname)
-
-argc = len(sys.argv)
-if argc == 2 and sys.argv[1] == "clean":
-    shutil.rmtree('objs', ignore_errors=True)
-
-print("checking source files")
-conn = sqlite3.connect('.build/main.db')
+import os.path as path
+if sys.hexversion < 0x03000000:
+    print("python 2 is not supported")
+    exit(1)
+sys.path.append(
+    path.normpath(path.join(path.dirname(path.realpath(__file__)),
+                            "./.build")))
+sys.dont_write_bytecode = True
+import start
+start.go(sys.argv)

@@ -1,5 +1,5 @@
 /*
-    Copyright 2013-2014 Matthew Fosdick
+    Copyright 2014 Matthew Fosdick
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -14,7 +14,5 @@
     limitations under the License.
 */
 
-#ifndef STRUT_H
-#define STRUT_H
+#pragma once
 #define PACKED __attribute((packed))
-#endif

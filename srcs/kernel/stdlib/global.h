@@ -14,6 +14,7 @@
     limitations under the License.
 */
 
+#pragma once
 
 /**
     @file
@@ -22,7 +23,6 @@
     that should be in every single file
     @note never manually include this file
 */
-#pragma once
 #ifndef ASM
 #include <stdint.h>
 

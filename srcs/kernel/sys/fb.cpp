@@ -5,7 +5,7 @@
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+     http://www.apache.org/licenses/LICENSE-2.0
 
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
@@ -121,7 +121,7 @@ namespace kernel {
 	}
 	void reset_fb(int x, int y, int w, int h, int img_x, int img_y) {
 		uintptr_t src_addr=reinterpret_cast<uintptr_t>(
-			(pointer)background_img+fb.stride*img_y+fb.bpp*img_x);
+		                       (pointer)background_img+fb.stride*img_y+fb.bpp*img_x);
 		uintptr_t dest_addr=fb.addr+fb.stride*y+fb.bpp*x;
 		for(int i=0; i<h; i++) {
 			memcpy((void *)dest_addr,(void *)src_addr,fb.bpp*w);

@@ -1,0 +1,59 @@
+overview of build system
+01. foreach arch
+01.  find any dirty files (files newer than last build)
+02.  add dirty files to queue
+03.  foreach module in the dirty queue run prep
+04.  while items in dirty queue
+05.   if current item in queue is not in processed list
+06.    get all depends for the file !TRICKY!
+07.    add each depend to the dirty queue
+08.    add file to processed list
+09.   remove file from dirty queue
+10.   add file to cleaning list
+12.  if cleaning list is not empty, tell build system, build is on
+12.  remove duplicates and sort cleaning list by type (.h->.c->.cpp->.s->.o->.a->no_ext->.iso)
+13.  recognize special files that arn't not sorted properly automaticly (new, memory, utility)
+14.  put special files in right place
+15.  using a state machince to recognize special files, run the cleaning rule on each file in list
+16.  run the freshly built iso
+
+get list of arches being built (command line?)
+add AGNOSTIC to list
+foreach arch
+	run check_if_build
+if any check_if_build returned yes
+	create build_info.h
+	foreach arch
+		run do_build
+	if all is good
+		build new iso
+		run sim
+	mark all modules as unprepped
+
+ARCHS:
+	x86_PC
+	x64_PC
+	AGNOSTIC
+
+check_if_build(main_db, arch)
+	find any dirty files (depends on arch)
+	add dirty files to queue
+	separate dirty files into modules, add modules to list
+	if a module in the list is unprepped(main_db)
+		run prep on that module
+		mark module as prepped (main_db)
+	while files in dirty queue
+		if the file has not been processed
+		get all depends for file (depends on arch)
+		add the depends to the dirty queue
+		mark file as processed
+		pop file of dirty queue
+		add file to cleaning list
+	store cleaning list in arch
+	return True if cleaning list is not empty
+
+do_build(main_db, arch)
+	remove duplicates and sort cleaning list by type (ask the arch to do this)
+	for each file in cleaning list ask arch to run the cleaning rule
+	if any rule failed return false
+	return true

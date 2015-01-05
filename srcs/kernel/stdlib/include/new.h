@@ -13,9 +13,15 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 */
-#pragma once
 
-inline void *operator new(size_t, void *p)     throw() { return p; }
-inline void *operator new[](size_t, void *p)   throw() { return p; }
-inline void  operator delete  (void *, void *) throw() { };
-inline void  operator delete[](void *, void *) throw() { };
+#pragma once
+inline void *operator new(size_t, void *p) throw() {
+	return p;
+}
+inline void *operator new[](size_t, void *p) throw() {
+	return p;
+}
+inline void operator delete(void *, void *) throw() {
+}
+inline void operator delete[](void *, void *) throw() {
+}

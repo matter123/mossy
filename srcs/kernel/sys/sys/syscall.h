@@ -13,16 +13,17 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 */
+
 #pragma once
 #include <arch.h>
 namespace kernel {
-#ifdef X86
+	#ifdef X86
 #define syscall_0_0(num) asm volatile("int %0"::"N"(num))
 #define syscall_1_0(num,arg1) asm volatile("int %0"::"N"(num),"a"(arg1))
 #define syscall_2_0(num,arg1,arg2) asm volatile("int %0"::"N"(num),"a"(arg1),"b"(arg2))
-#elif defined X64
+	#elif defined X64
 #define syscall_0_0(num) asm volatile("int %0"::"N"(num))
 #define syscall_1_0(num,arg1) asm volatile("int %0"::"N"(num),"a"(arg1))
 #define syscall_2_0(num,arg1,arg2) asm volatile("int %0"::"N"(num),"a"(arg1),"b"(arg2))
-#endif
+	#endif
 }
