@@ -54,8 +54,10 @@ for idx, glyph in enumerate(glyphs):
 if gdef == -1:
     print("error could not find def, aborting, nf")
     exit()
-
-f = open(path.join(fol, name + '.mbf'), 'wb')
+if not len(sys.argv) == 3:
+    f = open(path.join(fol, name + '.mbf'), 'wb')
+else:
+    f = open(sys.argv[2])
 f.write(struct.pack("<III", 0x12345678, len(glyphs), 0))
 f.write(struct.pack("<III", glyphs[0][0], glyphs[-1][0], gdef))
 for glyph in glyphs:

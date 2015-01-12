@@ -2,6 +2,8 @@ import os
 import fnmatch
 import util
 import xml.etree.ElementTree as ET
+import subprocess
+import message
 
 
 def get_db_name():
@@ -26,7 +28,11 @@ def check_mtime(cur, file):
                 (dbfile,))
     res = cur.fetchall()
     if len(res):
-        return res[0][0] < os.stat(file).st_mtime
+        if res[0][0] < os.stat(file).st_mtime:
+            message.info(file + ' is dirty')
+            return True
+        return False
+    message.info(file + ' is new')
     return True
 
 
@@ -35,12 +41,15 @@ def get_dirty_files(mossy_fol, db):
     dirty = []
     for root, dirs, files in os.walk(os.path.join(mossy_fol, 'srcs/fonts')):
         for file in fnmatch.filter(files, '*.xml'):
+            file = os.path.join(root, file)
             if check_mtime(cur, file):
                 dirty.append(file)
-                update_depends(file, cur)
+                update_depends(mossy_fol, cur, file)
         for file in fnmatch.filter(files, '*.png'):
+            file = os.path.join(root, file)
             if check_mtime(cur, file):
                 dirty.append(file)
+    return dirty
 
 
 def get_depends(mossy_fol, db, file):
@@ -55,7 +64,15 @@ def get_depends(mossy_fol, db, file):
     if file.endswith('xml'):
         fname = os.path.splitext(os.path.split(file)[1])[0]
         res.append('sysroot/usr/fonts/' + fname + ".mbf")
+    return res
 
 
 def clean_file(mossy_fol, db, file):
-    pass
+    if not file.endswith('mbf'):
+        return
+        fname = os.path.splitext(os.path.split(file)[1])[0]
+    os.chdir(mossy_fol)
+    subprocess.call([os.executable, os.path.join(mossy_fol,
+                                                 '.build/tools/make_mbf.py'),
+                    os.path.join(mossy_fol, 'srcs/fonts/' + fname + '.xml'),
+                    file])

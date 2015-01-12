@@ -1,8 +1,16 @@
+import util
+
 
 class module(object):
-    def __init__(self, cursor):
+    def __init__(self, name, cursor):
         self.cursor = cursor
-        self.name = 'None'
+        self.name = name
+
+    def __eq__(self, other):
+        return self.name == other.name
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
 
     def is_prepped(self):
         self.cursor.execute('SELECT prep FROM modules WHERE name = ?',
@@ -24,8 +32,16 @@ class module(object):
                 self.cursor.execute('INSERT INTO modules (name, prep) VALUES\
                     (?,?)', (self.name, value))
 
-    def add_compile_opt():
+    def add_compile_opt(self, compile_opt):
         pass
 
-    def prep():
+    def prep(self):
         pass
+
+    def is_in_module(self, file):
+        if self.name != 'None':
+            file = util.get_db_name(file)
+            if not 'srcs/' in file:
+                return False
+            return file[5:].index(self.name) == 0
+        return True

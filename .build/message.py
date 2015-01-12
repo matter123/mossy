@@ -1,3 +1,4 @@
+import sys
 #for windows
 try:
     import colorama
@@ -16,3 +17,12 @@ def warning(message):
 
 def error(message):
     print("[\033[1;31mERROR\033[0;0m]   " + message)
+
+
+def skip(message):
+    pass
+
+
+for arg in sys.argv:
+    if arg == '--no-print':
+        sys.modules[__name__].info = skip

@@ -28,7 +28,7 @@ if any check_if_build returned yes
 	if all is good
 		build new iso
 		run sim
-	mark all modules as unprepped
+mark all modules as unprepped
 
 ARCHS:
 	x86_PC
@@ -55,5 +55,5 @@ check_if_build(main_db, arch)
 do_build(main_db, arch)
 	remove duplicates and sort cleaning list by type (ask the arch to do this)
 	for each file in cleaning list ask arch to run the cleaning rule
-	if any rule failed return false
+	if any rule failed, try the module if still failed return false
 	return true
