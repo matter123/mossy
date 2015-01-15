@@ -1,25 +1,23 @@
 import os
+import sys
 import fnmatch
 import util
 import xml.etree.ElementTree as ET
 import subprocess
-import message
 import arch
 
 
 class agnostic(arch.arch):
     def clean_file(self, file):
         if file[0].endswith('mbf'):
-            fname = os.path.splitext(os.path.split(file[0])[1])[0]
             os.chdir(util.get_mossy_path())
-            subprocess.call([os.executable,
-                            os.path.join(mossy_fol,
-                                         '.build/tools/make_mbf.py'),
+            subprocess.call([sys.executable,
+                             os.path.join(util.get_mossy_path(),
+                                          '.build/tools/make_mbf.py'),
                             file[1],
                             file[0]])
         cur = self.db.cursor()
         dbfile = util.get_db_name(file[0])
-        print(file[0])
         mtime = os.stat(os.path.join(util.get_mossy_path(), dbfile)).st_mtime
         cur.execute('UPDATE files SET mtime = ? WHERE file = ?',
                     (mtime, file[0]))

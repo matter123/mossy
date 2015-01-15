@@ -26,8 +26,8 @@ def make_glyph(png, cp, _x, _y):
         row = row >> 1
         _bytes += struct.pack("<B", row)
     _bytes += struct.pack("<H", 0)
-    print(unichr(cp) + ";" + ":".join("{:02x}".format(ord(c)) for c in _bytes))
-    return (cp, unichr(cp), _bytes)
+    print(chr(cp) + ";" + ":".join("{:02x}".format(c) for c in _bytes))
+    return (cp, chr(cp), _bytes)
 
 tree = ET.parse(sys.argv[1])
 glyphs = []
@@ -57,7 +57,7 @@ if gdef == -1:
 if not len(sys.argv) == 3:
     f = open(path.join(fol, name + '.mbf'), 'wb')
 else:
-    f = open(sys.argv[2])
+    f = open(sys.argv[2], 'wb')
 f.write(struct.pack("<III", 0x12345678, len(glyphs), 0))
 f.write(struct.pack("<III", glyphs[0][0], glyphs[-1][0], gdef))
 for glyph in glyphs:
