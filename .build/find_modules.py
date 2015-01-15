@@ -22,7 +22,7 @@ def get_modules(db):
                                                         '.build_opt')
                                 .get_class(db.cursor()))
                 except:
-                    message.error('import of module ' + name + ' failed')
+                    message.warning('import of module ' + name + ' failed')
                     util.print_exc()
     os.chdir(old_cd)
     mods.append(module.module('None', db.cursor()))

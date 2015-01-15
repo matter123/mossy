@@ -1,0 +1,16 @@
+ARCH
+	stick your file in .build/arch/your_arch.py
+	subclass arch found in arch.py
+	your_arch.py should also contain get_class() taking a db and return an instance of the derived
+		class
+	your_arch.py contains a get_db_name()
+	get_dirty_files() and get_depends() return a list of tuples who first item is full path of file
+	clean_file() takes a tuple of the same kind
+	clean_file() should return True only if a clean actually happened 
+
+module
+	inside a folder in srcs add a file called build_opt.py
+	in build_opt.py subclass module found in module.py
+	add a method to build_opt.py called get_class() taking a cursor and returning a
+		instance of the derived class
+	clean_file() is the same as arch

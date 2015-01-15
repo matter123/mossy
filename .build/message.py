@@ -1,5 +1,5 @@
 import sys
-#for windows
+# for windows
 try:
     import colorama
     colorama.init()
@@ -17,6 +17,7 @@ def warning(message):
 
 def error(message):
     print("[\033[1;31mERROR\033[0;0m]   " + message)
+    sys.exit(1)
 
 
 def skip(message):

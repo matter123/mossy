@@ -1,0 +1,17 @@
+CAPS IS CLEAN
+.h.cpp.o.a: default
+.H.cpp.o.a: default
+.h.CPP.o.a: default
+.H.CPP.o.a: handled by all source files checking there .o's
+.h.cpp.O.a: default
+.H.cpp.O.a: default
+.h.CPP.O.a: default
+.H.CPP.O.a: ignore for now
+.h.cpp.o.A: default
+.H.cpp.o.A: default
+.h.CPP.o.A: default
+.H.CPP.o.A: handled by all source files checking there .o's
+.h.cpp.O.A: default
+.H.cpp.O.A: default
+.h.CPP.O.A: default
+.H.CPP.O.A: default

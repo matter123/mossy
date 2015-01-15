@@ -4,7 +4,9 @@ import os
 sys.dont_write_bytecode = False
 import message
 import build_cmd
+import reset_cmd
 import find_modules
+import get_arches
 import sqlite3
 
 
@@ -16,9 +18,10 @@ def go(argv):
         next = 1
         while (next + 1) < len(argv) and argv[next].startswith('-'):
             next += 1
-        if (next + 1) < len(argv):
+        if next < len(argv):
             command = argv[next]
     if command == "build":
         message.info("building")
-    message.info(command)
-    print(find_modules.get_modules(conn))
+        build_cmd.build(conn)
+    if command == "reset":
+        reset_cmd.reset()

@@ -14,7 +14,10 @@ def get_mossy_path():
 
 
 def get_db_name(file):
-    return os.path.abspath(file)[len(root_fol):]
+    old_cd = os.getcwd()
+    os.chdir(root_fol)
+    return os.path.abspath(file)[len(root_fol) + 1:]
+    os.chdir(old_cd)
 
 
 def print_exc():

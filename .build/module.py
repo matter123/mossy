@@ -14,7 +14,7 @@ class module(object):
 
     def is_prepped(self):
         self.cursor.execute('SELECT prep FROM modules WHERE name = ?',
-                            self.name)
+                            (self.name,))
         rows = self.cursor.fetchall()
         if(len(rows)):
             return rows[0][0] == 1
@@ -26,7 +26,7 @@ class module(object):
         else:
             value = 0
         if self.name != 'None':
-            self.cursor.execute('UPDATE modules SET prep = ? WHERE name= ?',
+            self.cursor.execute('UPDATE modules SET prep = ? WHERE name = ?',
                                 (value, self.name))
             if not self.cursor.rowcount:
                 self.cursor.execute('INSERT INTO modules (name, prep) VALUES\
@@ -41,7 +41,10 @@ class module(object):
     def is_in_module(self, file):
         if self.name != 'None':
             file = util.get_db_name(file)
-            if not 'srcs/' in file:
+            if 'srcs/' not in file:
                 return False
-            return file[5:].index(self.name) == 0
+            return self.name in file and file[5:].index(self.name) == 0
         return True
+
+    def clean_file(self, file):
+        return False
