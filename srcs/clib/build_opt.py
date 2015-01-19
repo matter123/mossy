@@ -12,16 +12,19 @@ class clib_module(module.module):
                  if os.path.isfile(os.path.join(inc, f))]
         install_path = os.path.abspath(os.path.join(mossy_main,
                                                     './sysroot/usr/include'))
+        try:
+            os.makedirs(os.path.join(install_path, 'clib'))
+        except:
+            pass
+        try:
+            os.makedirs(os.path.join(install_path, 'klib'))
+        except:
+            pass
         for file in files:
-            shutil.copyfile(file, os.path.join(install_path, 'clib'))
-            shutil.copyfile(file, os.path.join(install_path, 'klib'))
-
-        for file in [f for f in os.listdir(os.path.join(inc, 'k'))
-                     if os.path.isfile(os.path.join(inc, f))]:
-            shutil.copyfile(file, os.path.join(install_path, 'klib'))
-        for file in [f for f in os.listdir(os.path.join(inc, 'c'))
-                     if os.path.isfile(os.path.join(inc, f))]:
-            shutil.copyfile(file, os.path.join(install_path, 'clib'))
+            shutil.copyfile(os.path.join(inc, file),
+                            os.path.join(install_path, 'clib/' + file))
+            shutil.copyfile(os.path.join(inc, file),
+                            os.path.join(install_path, 'klib/' + file))
         self.set_prepped(True)
 
         def add_compile_opt(self, compile_opt):
