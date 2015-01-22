@@ -1,4 +1,4 @@
-#! /usr/bin/env python3
+#!/usr/bin/env python3
 import sys
 import os.path as path
 if sys.hexversion < 0x03000000:

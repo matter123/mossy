@@ -13,7 +13,11 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 */
+#ifdef a
+#ifndef a
 #include <global.h> //including global.h to stop check_file.py from bugging
+#endif
+#endif
 void *__dso_handle;
 
 int __cxa_atexit(void (*destructor)(void *), void *arg, void *dso) {

@@ -10,10 +10,12 @@ class kernel_module(module.module):
         compile_opt.append('./srcs/kernel/stdlib/global.h')
         compile_opt.append('-I./srcs/kernel/arch')
         compile_opt.append('-I./srcs/kernel/vendor')
-        compile_opt.append('-I/usr/include/klib')
 
     def prep(self):
         self.set_prepped(True)
+
+    def get_final(self):
+        return 'kernel'
 
 
 def get_class(cursor):

@@ -1,6 +1,7 @@
 import message
 import find_modules
 import get_arches
+import sys
 
 
 def build(conn):
@@ -15,5 +16,6 @@ def build(conn):
         for arch in arches:
             if not arch.do_build():
                 message.error('build failed')
+                sys.exit(1)
     else:
         message.info('all files are clean, no build needed')

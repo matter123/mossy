@@ -48,3 +48,6 @@ class module(object):
 
     def clean_file(self, file):
         return False
+
+    def get_final(self):
+        return ''

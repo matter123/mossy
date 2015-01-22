@@ -34,9 +34,11 @@ class arch(object):
         self.fix_build_order()
         while len(self.clean) > 0:
             file = self.clean.pop(0)
+            message.info('building ' + file[0])
             if not self.clean_file(file):
                 mod = find_modules.get_module(file[0])
                 if not mod.clean_file(file):
+                    message.error(file[0] + ' has no valid cleaning target')
                     return False
         return True
 

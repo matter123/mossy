@@ -16,10 +16,11 @@ def go(argv):
     command = 'build'
     if len(argv) > 1:
         next = 1
-        while (next + 1) < len(argv) and argv[next].startswith('-'):
+        while next < len(argv) and argv[next].startswith('-'):
             next += 1
         if next < len(argv):
             command = argv[next]
+    print(command)
     if command == "build":
         message.info("building")
         build_cmd.build(conn)

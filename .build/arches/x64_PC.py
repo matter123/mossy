@@ -4,7 +4,6 @@ import fnmatch
 import util
 import subprocess
 import arch
-#import tools.s_parse as s_parse
 import compile_opt
 import find_modules
 
@@ -33,32 +32,40 @@ def run_compiler(c, opts):
     comp = subprocess.Popen(opts, stdout=subprocess.PIPE)
     stdout = comp.communicate()[0]
     os.chdir(old_cd)
-    return (comp.returncode is 0, stdout)
+    return (comp.returncode is 0, stdout.decode('unicode_escape'))
 
 
 class x64_pc(arch.arch):
     def get_compile_opts(self, c, file):
         opt = compile_opt.get_global_compile_opt(c).strip()
-        opt += compiler_opt.strip()
+        opt += ' ' + compiler_opt.strip()
         opt = opt.split(' ')
         find_modules.get_module(file).add_compile_opt(opt)
         return ' '.join(opt)
 
-    def update_depend(self, cur, file):
+    def update_depend(self, file):
         depends = []
         ext = os.path.splitext(file)[1]
+        cur = self.db.cursor()
+        out = None
         if ext == '.s':
-            pass  # depends = s_parse.get_depends(file)
+            with open(file, 'r') as f:
+                for line in f:
+                    if line.startswith('%include'):
+                        depends.append(line.split(' ')[1][1:-1])
         elif ext == '.c':
-            out = run_compiler(True, '-MM -MG -MP ' +
+            out = run_compiler(True, '-M -MG ' +
                                self.get_compile_opts(True, file) + ' ' + file)
-            if out[0]:
-                print(out[1])
         elif ext == '.cpp':
-            out = run_compiler(False, '-MM -MG -MP ' +
+            out = run_compiler(False, '-M -MG ' +
                                self.get_compile_opts(False, file) + ' ' + file)
-            if out[0]:
-                print(out[1])
+        if out is not None and out[0]:
+            depends = [f.strip() for f in out[1].split()[2:] if 'bin' not in f]
+        cur.execute('DELETE FROM depends WHERE file = ?', (file,))
+        for depend in depends:
+            cur.execute('INSERT INTO depends (file, depend) VALUES (?, ?)',
+                        (file, depend))
+        self.db.commit()
 
     def check_mtime(self, cur, file):
         if not os.path.isfile(file):
@@ -95,21 +102,10 @@ class x64_pc(arch.arch):
         dirty = []
         for root, dirs, files in os.walk(os.path.join(util.get_mossy_path(),
                                                       'srcs')):
-            for file in fnmatch.filter(files, '*.h'):
-                file = os.path.join(root, file)
-                if self.check_mtime(cur, file):
-                    dirty.append((util.get_db_name(file), ))
-
-            for file in fnmatch.filter(files, '*.cpp'):
-                file = os.path.join(root, file)
-                if self.check_mtime(cur, file):
-                    dirty.append((util.get_db_name(file), ))
-                # get resultant o file
-                ofile = self.get_objfile(file)
-                if self.check_mtime(cur, ofile):
-                    dirty.append((util.get_db_name(ofile), file))
-
-            for file in fnmatch.filter(files, '*.c'):
+            for file in (fnmatch.filter(files, '*.cpp') +
+                         fnmatch.filter(files, '*.c') +
+                         fnmatch.filter(files, '*.s')):
+                # .cpp, .c and .s files make .o files
                 file = os.path.join(root, file)
                 if self.check_mtime(cur, file):
                     dirty.append((util.get_db_name(file), ))
@@ -118,18 +114,10 @@ class x64_pc(arch.arch):
                 if self.check_mtime(cur, ofile):
                     dirty.append((util.get_db_name(ofile), file))
 
-            for file in fnmatch.filter(files, '*.s'):
-                file = os.path.join(root, file)
-                if self.check_mtime(cur, file):
-                    self.update_depend(cur, file)
-                    dirty.append((util.get_db_name(file), ))
-                # get resultant o file
-                ofile = self.get_objfile(file)
-                if self.check_mtime(cur, ofile):
-                    self.update_depend(cur, file)
-                    dirty.append((util.get_db_name(ofile), file))
-
-            for file in fnmatch.filter(files, '*.inc'):
+            for file in (fnmatch.filter(files, '*.h') +
+                         fnmatch.filter(files, '*.hpp') +
+                         fnmatch.filter(files, '*.inc')):
+                # .h and .inc files do not make .o files
                 file = os.path.join(root, file)
                 if self.check_mtime(cur, file):
                     dirty.append((util.get_db_name(file), ))
@@ -139,9 +127,72 @@ class x64_pc(arch.arch):
         if file[0].endswith('.c') or file[0].endswith('.cpp') or\
                 file[0].endswith('.s'):
             self.update_depend(file[0])
-            return (self.get_objfile(file[0]), file[0])
+            return [(self.get_objfile(file[0]), file[0])]
         if file[0].endswith('.o'):
-            return (find_modules.get_module(file[1]).get_final(),)
+            return [('objs/x64_PC/' +
+                     find_modules.get_module(file[1]).get_final(),)]
+        if file[0].endswith('.h'):
+            if find_modules.get_module(file[0]).name is not 'kernel' and\
+                    'include' in file[0]:
+                return [('sysroot/usr/include/' + os.path.basename(file[0]),)]
+        cur = self.db.cursor()
+        dbfile = util.get_db_name(file[0])
+        cur.execute('SELECT file FROM depends WHERE depend = ?',
+                    (dbfile, ))
+        res = []
+        for row in cur:
+            res.append((row[0],))
+        return res
+
+    def fix_build_order(self):
+        headers = []
+        sources = []
+        objects = []
+        archives = []
+        kernels = []
+        for file in self.clean:
+            ext = os.path.splitext(file[0])[1]
+            if ext == '.h' or ext == '.hpp' or ext == '.inc':
+                headers.append(file)
+            if ext == '.c' or ext == '.cpp' or ext == '.s':
+                sources.append(file)
+            if ext == '.o':
+                objects.append(file)
+            if ext == '.a':
+                archives.append(file)
+            if ext == '':
+                kernels.append(file)
+        self.clean = headers + sources + objects + archives + kernels
+
+    def clean_file(self, file):
+        ext = os.path.splitext(file[0])[1]
+        if ext == '.h' or ext == '.hpp' or ext == '.inc' or\
+                ext == '.c' or ext == '.cpp' or ext == '.s':
+            self.update_mtime(file)
+            return True
+        if ext == '.o':
+            os.makedirs(os.path.dirname(file[0]), exist_ok=True)
+            ext = os.path.splitext(file[1])[1]
+            if ext == '.c':
+                out = run_compiler(True, '-c -o ' + file[0] + ' ' +
+                                   self.get_compile_opts(True, file[1]) +
+                                   ' ' + file[1])
+            if ext == '.cpp':
+                out = run_compiler(False, '-c -o ' + file[0] + ' ' +
+                                   self.get_compile_opts(False, file[1]) +
+                                   ' ' + file[1])
+            if ext == '.s':
+                pass  # skipping nasm for now
+            if out[0]:
+                self.update_mtime(file)
+                return True
+            return False
+
+        if ext == '.a':
+            return False
+        if ext == '':
+            return False
+        return True
 
 
 def get_db_name():

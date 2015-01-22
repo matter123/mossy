@@ -4,10 +4,11 @@ import module
 import util
 
 
-class clib_module(module.module):
+class unicode_module(module.module):
     def prep(self):
         mossy_main = util.get_mossy_path()
-        inc = os.path.abspath(os.path.join(mossy_main, './srcs/clib/include'))
+        inc = os.path.abspath(os.path.join(mossy_main,
+                                           './srcs/unicode/include'))
         files = [f for f in os.listdir(inc)
                  if os.path.isfile(os.path.join(inc, f))]
         install_path = os.path.abspath(os.path.join(mossy_main,
@@ -18,8 +19,11 @@ class clib_module(module.module):
         self.set_prepped(True)
 
         def add_compile_opt(self, compile_opt):
-            compile_opt.append('-I./srcs/clib/include')
+            compile_opt.append('-I./srcs/unicode/include')
+
+        def get_final(self):
+            return 'libunicode.a'
 
 
 def get_class(cursor):
-    return clib_module('clib', cursor)
+    return unicode_module('unicode', cursor)
