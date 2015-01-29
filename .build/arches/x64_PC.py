@@ -6,10 +6,12 @@ import subprocess
 import arch
 import compile_opt
 import find_modules
+import tools.check_file
 
 compiler_cpp = 'clang++ --target=x86_64-elf -Wdocumentation'
 compiler_c = 'clang --target=x86_64-elf -Wdocumentation'
 compiler_opt = '-fno-omit-frame-pointer -fno-stack-protector'
+skip_check = False
 for arg in sys.argv:
     if arg.startswith('--c++-x64_PC='):
         compiler_cpp = arg[len('--c++-x64_PC='):]
@@ -17,6 +19,8 @@ for arg in sys.argv:
         compiler_c = arg[len('--c-x64_PC='):]
     if arg.startswith('--x64_PC-opt='):
         compiler_opt = arg[len('--x64_PC-opt='):]
+    if arg == '--skip-file-check':
+        skip_check = True
 compiler_opt += ' -ffreestanding -fno-common -fno-rtti -fno-exceptions'
 compiler_opt += ' -mcmodel=kernel -mno-red-zone -mno-3dnow -DVENDOR=_PC'
 compiler_opt += ' -DARCH=_x64'
@@ -36,6 +40,18 @@ def run_compiler(c, opts):
 
 
 class x64_pc(arch.arch):
+    def run_nasm(self, file):
+        temp = file[0].replace('.o', '.sp')
+        run_compiler(False, '-DASM -E -P -o ' + temp + ' -x c++ ' +
+                     self.get_compile_opts(False, file[1]) + ' ' + file[1])
+        comp = subprocess.Popen(['nasm', '-felf64', '-o',
+                                 file[0], temp])
+        comp.communicate()
+        old_cd = os.getcwd()
+        os.chdir(util.get_mossy_path())
+        os.chdir(old_cd)
+        return (comp.returncode is 0,)
+
     def get_compile_opts(self, c, file):
         opt = compile_opt.get_global_compile_opt(c).strip()
         opt += ' ' + compiler_opt.strip()
@@ -65,7 +81,7 @@ class x64_pc(arch.arch):
         for depend in depends:
             cur.execute('INSERT INTO depends (file, depend) VALUES (?, ?)',
                         (file, depend))
-        self.db.commit()
+        self.db_dirty = True
 
     def check_mtime(self, cur, file):
         if not os.path.isfile(file):
@@ -95,7 +111,6 @@ class x64_pc(arch.arch):
         if not cur.rowcount:
             cur.execute('INSERT INTO files (mtime, file) VALUES (?,?)',
                         (mtime, file[0]))
-        self.db.commit()
 
     def get_dirty_files(self):
         cur = self.db.cursor()
@@ -129,17 +144,22 @@ class x64_pc(arch.arch):
             self.update_depend(file[0])
             return [(self.get_objfile(file[0]), file[0])]
         if file[0].endswith('.o'):
-            return [('objs/x64_PC/' +
-                     find_modules.get_module(file[1]).get_final(),)]
+            return [('sysroot/usr/lib/' +
+                     find_modules.get_module(file[1]).get_final() + '.x64_PC',
+                     'objs/x64_PC')]
+        res = []
         if file[0].endswith('.h'):
             if find_modules.get_module(file[0]).name is not 'kernel' and\
                     'include' in file[0]:
-                return [('sysroot/usr/include/' + os.path.basename(file[0]),)]
+                res.append(('sysroot/usr/include/' +
+                            os.path.basename(file[0]),))
+        if self.db_dirty:
+            self.db.commit()
+            self.db_dirty = False
         cur = self.db.cursor()
         dbfile = util.get_db_name(file[0])
         cur.execute('SELECT file FROM depends WHERE depend = ?',
                     (dbfile, ))
-        res = []
         for row in cur:
             res.append((row[0],))
         return res
@@ -158,16 +178,21 @@ class x64_pc(arch.arch):
                 sources.append(file)
             if ext == '.o':
                 objects.append(file)
-            if ext == '.a':
+            if ext == '.a.x64_PC':
                 archives.append(file)
-            if ext == '':
+            if ext == '.x64_PC':
                 kernels.append(file)
         self.clean = headers + sources + objects + archives + kernels
 
     def clean_file(self, file):
         ext = os.path.splitext(file[0])[1]
-        if ext == '.h' or ext == '.hpp' or ext == '.inc' or\
-                ext == '.c' or ext == '.cpp' or ext == '.s':
+        if ext == '.h' or ext == '.hpp' or ext == '.c' or\
+                ext == '.cpp':
+            if skip_check and not tools.check_file.check_file(file[0]):
+                return False
+            self.update_mtime(file)
+            return True
+        if ext == '.s' or ext == '.inc':
             self.update_mtime(file)
             return True
         if ext == '.o':
@@ -182,15 +207,16 @@ class x64_pc(arch.arch):
                                    self.get_compile_opts(False, file[1]) +
                                    ' ' + file[1])
             if ext == '.s':
-                pass  # skipping nasm for now
+                out = self.run_nasm(file)
+
             if out[0]:
                 self.update_mtime(file)
                 return True
             return False
 
-        if ext == '.a':
+        if ext == '.a.x64_PC':
             return False
-        if ext == '':
+        if ext == '.x64_PC':
             return False
         return True
 

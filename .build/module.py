@@ -50,4 +50,4 @@ class module(object):
         return False
 
     def get_final(self):
-        return ''
+        return 'BAD: ' + self.name

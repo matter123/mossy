@@ -15,9 +15,9 @@
 #include <arch.h>
 
 #ifdef X86
-%include "src/asm/gen86.inc"
+%include "srcs/kernel/asm/gen86.inc"
 #endif
 
 #ifdef X64
-%include "src/asm/gen64.inc"
+%include "srcs/kernel/asm/gen64.inc"
 #endif

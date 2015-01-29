@@ -13,9 +13,9 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 */
-#include <acpi_os.h>
-#include <tables/rsdp.h>
-#include <tables/sdt.h>
+#include <acpi/acpi_os.h>
+#include <acpi/tables/rsdp.h>
+#include <acpi/tables/sdt.h>
 namespace acpi {
 	static bool h_acpi=false;
 	void init_tables() {
@@ -29,7 +29,6 @@ namespace acpi {
 		if(tables::rsdp_ptr->begin.revision==0) {
 			tables::rsdt=(tables::RSDT *)tables::load_table(
 			                 (void *)(uintptr_t)tables::rsdp_ptr->begin.RSDTaddr);
-			hal::cout<<sizeof(tables::SDT)<<" "<<sizeof(tables::RSDT);
 			uint32_t *tables=(uint32_t *)(((pointer)tables::rsdt)+sizeof(tables::RSDT));
 			size_t table_count=(tables::rsdt->header.length-sizeof(tables::RSDT))/4;
 			for(size_t s=0; s<table_count; s++) {

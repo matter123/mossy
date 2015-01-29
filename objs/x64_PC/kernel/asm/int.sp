@@ -1,48 +1,54 @@
-;  Copyright 2013 Matthew Fosdick
 
-;  Licensed under the Apache License, Version 2.0 (the "License");
-;  you may not use this file except in compliance with the License.
-;  You may obtain a copy of the License at
 
-;    http://www.apache.org/licenses/LICENSE-2.0
 
-;  Unless required by applicable law or agreed to in writing, software
-;  distributed under the License is distributed on an "AS IS" BASIS,
-;  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-;  See the License for the specific language governing permissions and
-;  limitations under the License.
-#ifdef DEBUG
-#undef DEBUG
+
+
+
+; Copyright 2013 Matthew Fosdick
+
+; Licensed under the Apache License, Version 2.0 (the "License");
+; you may not use this file except in compliance with the License.
+; You may obtain a copy of the License at
+
+; http:
+
+; Unless required by applicable law or agreed to in writing, software
+; distributed under the License is distributed on an "AS IS" BASIS,
+; WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+; See the License for the specific language governing permissions and
+; limitations under the License.
+
+
 %define DEBUG
-#endif
-#define asm
-#include "../arch/arch.h"
-#ifdef X86
-%include "srcs/kernel/asm/int86.inc"
-#endif
 
-#ifdef X64
+
+
+
+
+
+
+
 %include "srcs/kernel/asm/int64.inc"
-#endif
 
-#include "../vendor/vendor.h"
-#ifdef PC
+
+
+
 [SECTION .text]
-EXCEPT_NC 0,  e00
-EXCEPT_NC 1,  e01
-EXCEPT_NC 2,  e02
-EXCEPT_NC 3,  e03
-EXCEPT_NC 4,  e04
-EXCEPT_NC 5,  e05
-EXCEPT_NC 6,  e06
-EXCEPT_NC 7,  e07
-EXCEPT_C  8,  e08
-EXCEPT_NC 9,  e09
-EXCEPT_C  10, e0A
-EXCEPT_C  11, e0B
-EXCEPT_C  12, e0C
-EXCEPT_C  13, e0D
-EXCEPT_C  14, e0E
+EXCEPT_NC 0, e00
+EXCEPT_NC 1, e01
+EXCEPT_NC 2, e02
+EXCEPT_NC 3, e03
+EXCEPT_NC 4, e04
+EXCEPT_NC 5, e05
+EXCEPT_NC 6, e06
+EXCEPT_NC 7, e07
+EXCEPT_C 8, e08
+EXCEPT_NC 9, e09
+EXCEPT_C 10, e0A
+EXCEPT_C 11, e0B
+EXCEPT_C 12, e0C
+EXCEPT_C 13, e0D
+EXCEPT_C 14, e0E
 EXCEPT_NC 15, e0F
 EXCEPT_NC 16, e10
 EXCEPT_NC 17, e11
@@ -541,4 +547,3 @@ eFC: db "#ISRFC",0x0
 eFD: db "#ISRFD",0x0
 eFE: db "#ISRFE",0x0
 eFF: db "#ISRFF",0x0
-#endif

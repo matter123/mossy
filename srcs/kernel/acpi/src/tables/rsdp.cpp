@@ -14,8 +14,8 @@
     limitations under the License.
 */
 
-#include <tables/rsdp.h>
-#include <acpi_os.h>
+#include <acpi/tables/rsdp.h>
+#include <acpi/acpi_os.h>
 #include <string.h>
 #include <stdlib.h>
 namespace acpi {

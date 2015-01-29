@@ -1,12 +1,36 @@
 import message
 import find_modules
+from io import StringIO
+import sqlite3
 
 
 class arch(object):
     def __init__(self, db):
-        self.db = db
+        self.backup = db
+        self.db = sqlite3.connect(':memory:')
+        tempfile = StringIO()
+        for line in self.backup.iterdump():
+            tempfile.write('%s\n' % line)
+        tempfile.seek(0)
+        self.db.cursor().executescript(tempfile.read())
+        self.db.commit()
+        self.db.row_factory = sqlite3.Row
+
+    def save_db(self):
+        tempfile = StringIO()
+        for line in self.db.iterdump():
+            tempfile.write('%s\n' % line)
+        tempfile.seek(0)
+        self.backup.cursor().execute('DROP TABLE files')
+        self.backup.cursor().execute('DROP TABLE depends')
+        self.backup.commit()
+        self.backup.cursor().executescript(tempfile.read())
+        self.backup.commit()
+        self.backup.row_factory = sqlite3.Row
+        self.backup.close()
 
     def check_if_build(self, main_db):
+        self.db_dirty = False
         self.clean = []
         dirty = self.get_dirty_files()
         modules = []
@@ -30,7 +54,7 @@ class arch(object):
 
     def do_build(self):
         if len(self.clean) == 0:
-            return
+            return True
         self.fix_build_order()
         while len(self.clean) > 0:
             file = self.clean.pop(0)

@@ -13,11 +13,11 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 */
-#include <tables/sdt.h>
+#include <acpi/tables/sdt.h>
 #include <stdint.h>
 #include <stddef.h>
 #include <stdlib.h>
-#include <acpi_os.h>
+#include <acpi/acpi_os.h>
 #include <hal/console.h>
 #include <string.h>
 namespace acpi {

@@ -29,9 +29,9 @@
 #include <string.h>
 #include <ctype.h>
 #include <acpi.h>
-#include <acpi_os.h>
-#include <tables/rsdp.h>
-#include <tables/sdt.h>
+#include <acpi/acpi_os.h>
+#include <acpi/tables/rsdp.h>
+#include <acpi/tables/sdt.h>
 #include <test.h>
 #include <sys/fb.h>
 #include <sys/text_render.h>

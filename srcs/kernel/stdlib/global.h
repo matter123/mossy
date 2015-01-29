@@ -27,7 +27,7 @@
 #include <stdint.h>
 
 #ifdef __cplusplus
-#include <panic.h>
+#include "include/panic.h"
 #endif
 typedef uint8_t *pointer;
 #endif
