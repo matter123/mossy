@@ -35,7 +35,7 @@ if not check_dot():
     exit(1)
 host = path.dirname(path.realpath(__file__))
 if 'tools' in host:
-    host = path.dirname(host)
+    host = path.dirname(path.dirname(host))
 print('deleting old documentation')
 shutil.rmtree(path.join(host, 'docs/html'), ignore_errors=True)
 os.chdir(host)

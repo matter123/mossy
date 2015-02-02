@@ -14,15 +14,15 @@ def go(argv):
     os.chdir(os.path.dirname(__file__))
     conn = sqlite3.connect('db/main.db')
     command = 'build'
+    next = -1
     if len(argv) > 1:
         next = 1
         while next < len(argv) and argv[next].startswith('-'):
             next += 1
         if next < len(argv):
             command = argv[next]
-    print(command)
     if command == "build":
         message.info("building")
-        build_cmd.build(conn)
+        build_cmd.build(conn, next)
     if command == "reset":
         reset_cmd.reset()

@@ -25,13 +25,13 @@ class clib_module(module.module):
         return 'libk.a'
 
     def is_in_module(self, file):
-        if self.get_final() in os.path.split(file)[1]:
+        if os.path.splitext(self.get_final())[0] in os.path.split(file)[1]:
             return True
         return super(clib_module, self).is_in_module(file)
 
     def clean_file(self, file):
         objects = []
-        if self.get_final() in os.path.split(file[0])[1]:
+        if os.path.splitext(self.get_final())[0] in os.path.split(file[0])[1]:
             for root,\
                 dirs,\
                 files in os.walk(os.path.join(util.get_mossy_path(),

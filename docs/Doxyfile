@@ -4,7 +4,7 @@
 # Project related configuration options
 #---------------------------------------------------------------------------
 DOXYFILE_ENCODING      = UTF-8
-PROJECT_NAME           = "MOSSY 2"
+PROJECT_NAME           = "MOSSY"
 PROJECT_NUMBER         =
 PROJECT_BRIEF          =
 PROJECT_LOGO           =
@@ -99,11 +99,11 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 INPUT                  =
 INPUT_ENCODING         = UTF-8
-FILE_PATTERNS          =
+FILE_PATTERNS          = *.c *.cpp *.h *.hpp *.md *.doc
 RECURSIVE              = YES
 EXCLUDE                =
 EXCLUDE_SYMLINKS       = NO
-EXCLUDE_PATTERNS       = *.py
+EXCLUDE_PATTERNS       =
 EXCLUDE_SYMBOLS        =
 EXAMPLE_PATH           =
 EXAMPLE_PATTERNS       =

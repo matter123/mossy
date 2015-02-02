@@ -4,9 +4,10 @@ import get_arches
 import sys
 import tools.build_info
 import util
+import subprocess
 
 
-def build(conn):
+def build(conn, build_arg):
     find_modules.get_modules(conn)
     arches = get_arches.get_arches()
     do_build = False
@@ -28,5 +29,6 @@ def build(conn):
             tools.build_info.delete(util.get_mossy_path())
         except:
             pass
+        subprocess.Popen(['grub2-mkrescue', '--compress=gz', '-o', 'bootable.iso', 'sysroot'])
     else:
         message.info('all files are clean, no build needed')

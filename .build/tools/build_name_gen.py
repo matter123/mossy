@@ -56,7 +56,7 @@ cations = [
     ('Holmium',		'Ho', (3,),			2),
     ('Erbium',		'Er', (3,),			2),
     ('Thulium',		'Tm', (3, 2),		2),
-    ('Ytterbium',	'Gd', (3, 2),		2),
+    ('Gadolinium',	'Gd', (3, 2),		2),
     ('Lutetium',	'Lu', (3,),			2),
     ('Hafnium',		'Hf', (4,),			4),
     ('Tantalum',	'Ta', (5,),			4),
@@ -169,5 +169,5 @@ def get_cation(sha_hash):
     if len(cation[2]) > 1:
         roman = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII']
         charge = cation[2][int(sha_hash[15:], 16) % len(cation[2])]
-        return (cation[0] + '(' + roman + ')', cation[1], charge)
+        return (cation[0] + '(' + roman[charge-1] + ')', cation[1], charge)
     return (cation[0], cation[1], cation[2][0])

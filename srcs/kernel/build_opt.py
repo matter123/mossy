@@ -1,7 +1,7 @@
 import module
 import os
 import util
-import subprocess
+import compile_opt
 
 
 class kernel_module(module.module):
@@ -20,30 +20,34 @@ class kernel_module(module.module):
         return 'kernel'
 
     def is_in_module(self, file):
-        if self.get_final() in os.path.split(file)[1]:
+        if os.path.splitext(self.get_final())[0] in os.path.split(file)[1]:
             return True
         return super(kernel_module, self).is_in_module(file)
 
     def clean_file(self, file):
-        while(1):
-            pass
         objects = []
-        if self.get_final() in os.path.split(file[0])[1]:
-            for root,\
-                dirs,\
-                files in os.walk(os.path.join(util.get_mossy_path(),
-                                              file[1] + '/unicode')):
-                for ofile in files:
-                    objects.append(os.path.join(root, ofile))
-            old_cd = os.getcwd()
-            os.chdir(util.get_mossy_path())
-            opts = ['ar', 'r', file[0]]
-            opts += objects
-            comp = subprocess.Popen(opts)
-            os.chdir(old_cd)
-            stdout = comp.communicate()[0]
-            return comp.returncode is 0
-        return False
+        linker_options = [ '-static', '-ffreestanding', '-nostdlib',
+                  '-Wl,-z,max-page-size=0x1000']
+        for root,\
+            dirs,\
+            files in os.walk(os.path.join(util.get_mossy_path(),
+                                          file[1] + '/kernel')):
+            for ofile in files:
+                objects.append(os.path.join(root, ofile))
+        old_cd = os.getcwd()
+        linker_options.append('-Tsrcs/kernel/link.ld.' + file[2])
+        linker_options.append('-o')
+        linker_options.append(file[0])
+        linker_options += objects
+        linker_options.append('-lk' + file[2])
+        linker_options.append('-lunicode' + file[2])
+        linker_options.append('-lgcc')
+        os.chdir(util.get_mossy_path())
+        res = file[3](False, (compile_opt.get_global_compile_opt(False).strip() +
+            ' ' + ' '.join(linker_options)).replace('--sysroot=./sysroot',
+                                                    '-L./sysroot/usr/lib'))
+        os.chdir(old_cd)
+        return res[0]
 
 
 def get_class(cursor):

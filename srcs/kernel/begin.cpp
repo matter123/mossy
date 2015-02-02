@@ -94,7 +94,7 @@ namespace kernel {
 			line_start+=0x20;
 			hal::cout<<hal::endl;
 		}
-		while(true);
+		//while(true);
 		//heap
 		hal::print_boot_msg("Init heap",heap_init(),true);
 		//testing
@@ -110,6 +110,7 @@ namespace kernel {
 		//hal::print_boot_msg("Init scheduler",init_scheduler((thread_info *)sys_stack),true);
 		//done with setup
 		time_t bt=BUILD_UNIX_TIME;
+		hal::cout<<"Mossy build: "<<BUILD_FULL_NAME<<hal::endl;
 		hal::cout<<"Built on: "<<std::TC::GREEN<<asctime(gmtime(&bt))<<std::TC::RESET
 		         <<" By: "     <<std::TC::GREEN<<BUILD_USERNAME      <<std::TC::RESET
 		         <<" From: "   <<std::TC::GREEN<<BUILD_GIT_BRANCH    <<std::TC::RESET<<hal::endl;

@@ -41,14 +41,15 @@ def run_compiler(c, opts):
 
 class x64_pc(arch.arch):
     def run_nasm(self, file):
+        old_cd = os.getcwd()
+        os.chdir(util.get_mossy_path())
         temp = file[0].replace('.o', '.sp')
         run_compiler(False, '-DASM -E -P -o ' + temp + ' -x c++ ' +
                      self.get_compile_opts(False, file[1]) + ' ' + file[1])
         comp = subprocess.Popen(['nasm', '-felf64', '-o',
                                  file[0], temp])
         comp.communicate()
-        old_cd = os.getcwd()
-        os.chdir(util.get_mossy_path())
+        os.remove(temp)
         os.chdir(old_cd)
         return (comp.returncode is 0,)
 
@@ -145,8 +146,10 @@ class x64_pc(arch.arch):
             return [(self.get_objfile(file[0]), file[0])]
         if file[0].endswith('.o'):
             return [('sysroot/usr/lib/' +
-                     find_modules.get_module(file[1]).get_final() + '.x64_PC',
-                     'objs/x64_PC')]
+                     os.path.splitext(find_modules.get_module(file[1]).get_final())[0] +
+                    'x64_PC' + os.path.splitext(find_modules.get_module(file[1])\
+                        .get_final())[1],
+                     'objs/x64_PC', 'x64_PC', run_compiler)]
         res = []
         if file[0].endswith('.h'):
             if find_modules.get_module(file[0]).name is not 'kernel' and\
@@ -174,13 +177,13 @@ class x64_pc(arch.arch):
             ext = os.path.splitext(file[0])[1]
             if ext == '.h' or ext == '.hpp' or ext == '.inc':
                 headers.append(file)
-            if ext == '.c' or ext == '.cpp' or ext == '.s':
+            elif ext == '.c' or ext == '.cpp' or ext == '.s':
                 sources.append(file)
-            if ext == '.o':
+            elif ext == '.o':
                 objects.append(file)
-            if ext == '.a.x64_PC':
+            elif ext == '.a':
                 archives.append(file)
-            if ext == '.x64_PC':
+            elif ext == '':
                 kernels.append(file)
         self.clean = headers + sources + objects + archives + kernels
 
@@ -214,9 +217,9 @@ class x64_pc(arch.arch):
                 return True
             return False
 
-        if ext == '.a.x64_PC':
+        if ext == '.a':
             return False
-        if ext == '.x64_PC':
+        if ext == '':
             return False
         return True
 

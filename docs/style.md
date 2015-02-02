@@ -40,10 +40,67 @@ Coding guidelines
 ###symbol names
 All symbols are to be in _underscore\_case_.  
 Systems Hungarian is forbidden, Apps Hungarian is acceptable.  
-Symbol names in global, namespace, fille, class, struct, union, or function scope should be
+Symbol names in global, namespace, file, class, struct, union, or function scope should be
 descriptive and only use full words and common acronyms and abbreviations.
 Symbols named tmp and its derivatives are only acceptable when in block scope.  
-One character symbols are resverd and not available for normal use. A list of uses for each
+One character symbols are reserved and not available for normal use. A list of uses for each
 letter is listed below.  
 
-###explination of reseved varibiles names
+###explanation of reserved variables names
+####a
+an accumulator, acceleration  
+####b
+a byte  
+####c
+a color, or a count, or a single UTF-8 character  
+####d
+time delta (td is preferred)  
+####e
+no known use at this time  
+####f
+a function pointer  
+####g
+no known use at this time  
+####h
+a hash  
+####i
+index the first  
+####j
+index the second  
+####k
+index the third  
+####l
+a location, a lambada  
+####m
+no known use at this time  
+####n
+no known use at this time  
+####o
+no known use at this time  
+####p
+a pointer  
+####q
+no known use at this time  
+####r
+rotation  
+####s
+speed, size_t index  
+####t
+time, a token  
+####u
+no known use at this time  
+####v
+version  
+####w
+no known use at this time  
+####x
+axis the first  
+####y
+axis the second  
+####y
+axis the third  
+  
+One character symbols should only be used in a minimized scope. You may not suffix a one character
+symbol with a number to notate another symbol representing a similar concept, for example you may
+not have p and p2 together. You may have a one character symbol suffixed with a number in a scope
+but it must consume the allowance for said symbol

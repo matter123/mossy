@@ -17,6 +17,8 @@ class arch(object):
         self.db.row_factory = sqlite3.Row
 
     def save_db(self):
+        if self.backup is None:
+            return
         tempfile = StringIO()
         for line in self.db.iterdump():
             tempfile.write('%s\n' % line)
@@ -28,6 +30,7 @@ class arch(object):
         self.backup.commit()
         self.backup.row_factory = sqlite3.Row
         self.backup.close()
+        self.backup = None
 
     def check_if_build(self, main_db):
         self.db_dirty = False

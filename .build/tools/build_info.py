@@ -68,8 +68,9 @@ def gen(srcfolder):
     bi.write("#define BUILD_USERNAME \"")
     bi.write(str(getpass.getuser()) + "\"\n")
     bi.write("#define BUILD_GIT_BRANCH \"")
-    out = str(subprocess.Popen(
-        ["git", "status", "-sb"], stdout=subprocess.PIPE).communicate()[0])
+    out = subprocess.Popen(
+        ["git", "status", "-sb"], stdout=subprocess.PIPE).communicate()[0]\
+            .decode('unicode_escape')
     bi.write(out.splitlines()[0].split(" ")[1].split("...")[0] + "\"\n")
     salt = None
     if len(out.splitlines()) is 1:
@@ -81,7 +82,7 @@ def gen(srcfolder):
         salt = (build_name_gen.get_cation(git_hash),
                 build_name_gen.get_anion(git_hash))
     else:
-        time_hash = hashlib.sha1(str(time.time()))
+        time_hash = hashlib.sha1(str(time.time()).encode('UTF-8')).hexdigest()
         print(time_hash)
         salt = (build_name_gen.get_cation(time_hash),
                 build_name_gen.get_anion(time_hash))
