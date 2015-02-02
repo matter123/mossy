@@ -29,6 +29,6 @@ def build(conn, build_arg):
             tools.build_info.delete(util.get_mossy_path())
         except:
             pass
-        subprocess.Popen(['grub2-mkrescue', '--compress=gz', '-o', 'bootable.iso', 'sysroot'])
+        subprocess.call(['grub2-mkrescue', '--compress=gz', '-o', 'bootable.iso', 'sysroot'])
     else:
         message.info('all files are clean, no build needed')

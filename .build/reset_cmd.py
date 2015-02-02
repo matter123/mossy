@@ -11,6 +11,8 @@ def reset():
     shutil.rmtree(os.path.join(util.get_mossy_path(), '.build/db'),
                   ignore_errors=True)
     os.makedirs(os.path.join(util.get_mossy_path(), '.build/db'))
+    open(os.path.join(util.get_mossy_path(),
+                      '.build/db/.keep_folder'), 'w').close() 
     shutil.rmtree(os.path.join(util.get_mossy_path(), 'objs'),
                   ignore_errors=True)
     os.makedirs(os.path.join(util.get_mossy_path(), 'objs'))

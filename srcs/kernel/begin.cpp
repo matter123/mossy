@@ -116,7 +116,7 @@ namespace kernel {
 		         <<" From: "   <<std::TC::GREEN<<BUILD_GIT_BRANCH    <<std::TC::RESET<<hal::endl;
 		int num=0;
 		while(1) {
-			hal::cout<<hal::dec<<num++<<hal::endl;
+			//hal::cout<<hal::dec<<num++<<hal::endl;
 		}
 	}
 }

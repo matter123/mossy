@@ -10,7 +10,7 @@ cations = [
     ('Magnesium',	'Mg', (2,),			1),
     ('Aluminum',	'Al', (3,), 		5),
     ('Silicon',		'Si', (4,),			5),
-    ('Potassium',	'K',  (1),			0),
+    ('Potassium',	'K',  (1,),			0),
     ('Calcium',		'Ca', (2,),			1),
     ('Scandium',	'Sc', (3,),			4),
     ('Titanium',	'Ti', (3, 4),		4),

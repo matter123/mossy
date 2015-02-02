@@ -9,3 +9,5 @@ sysroot/usr/include/*
 *.a
 docs/html
 /*.bmp
+*.db
+*build_number
