@@ -86,7 +86,7 @@ cations = [
     ('Californium',	'Cf', (3,),			3),
     ('Einsteinium',	'Es', (3,),			3),
     ('Fermium',		'Fm', (3,),			3),
-    ('Mendelevium',	'Md', (3),			3),
+    ('Mendelevium',	'Md', (3,),			3),
     ('Nobelium',	'No', (3, 2),		3),
     ('Lawrencium',	'Lr', (3,),			3),
     ('Rutherfordium', 'Rf', (4,),		4),

@@ -12,3 +12,6 @@ Building The Mossy Operating System requires a few runtime dependencies on the h
   * grub 1.99 or later, grub 1.98 and earlier have difficulty executing elf64 binaries need for X64
   * nasm 2.10 or later
   * optionally PIL or Pillow if the font was modified
+If this is a your first time building from this particular source tree you need to run
+`./build.py reset`
+To build all possiable arches run `.build.py`, a particular arch can be built by running `./build.py <arch>`

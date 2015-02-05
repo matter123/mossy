@@ -112,6 +112,7 @@ class x64_pc(arch.arch):
         if not cur.rowcount:
             cur.execute('INSERT INTO files (mtime, file) VALUES (?,?)',
                         (mtime, file[0]))
+        self.db_dirty = True
 
     def get_dirty_files(self):
         cur = self.db.cursor()
@@ -122,21 +123,21 @@ class x64_pc(arch.arch):
                          fnmatch.filter(files, '*.c') +
                          fnmatch.filter(files, '*.s')):
                 # .cpp, .c and .s files make .o files
-                file = os.path.join(root, file)
+                file = util.get_db_name(os.path.join(root, file))
                 if self.check_mtime(cur, file):
-                    dirty.append((util.get_db_name(file), ))
+                    dirty.append((file, ))
                 # get resultant o file
-                ofile = self.get_objfile(file)
+                ofile = util.get_db_name(self.get_objfile(file))
                 if self.check_mtime(cur, ofile):
-                    dirty.append((util.get_db_name(ofile), file))
+                    dirty.append((ofile, file))
 
             for file in (fnmatch.filter(files, '*.h') +
                          fnmatch.filter(files, '*.hpp') +
                          fnmatch.filter(files, '*.inc')):
                 # .h and .inc files do not make .o files
-                file = os.path.join(root, file)
+                file = util.get_db_name(os.path.join(root, file))
                 if self.check_mtime(cur, file):
-                    dirty.append((util.get_db_name(file), ))
+                    dirty.append((file, ))
         return dirty
 
     def get_depends(self, file):
@@ -146,9 +147,11 @@ class x64_pc(arch.arch):
             return [(self.get_objfile(file[0]), file[0])]
         if file[0].endswith('.o'):
             return [('sysroot/usr/lib/' +
-                     os.path.splitext(find_modules.get_module(file[1]).get_final())[0] +
-                    'x64_PC' + os.path.splitext(find_modules.get_module(file[1])\
-                        .get_final())[1],
+                     os.path.splitext(find_modules.get_module(file[1])
+                                      .get_final())[0] +
+                    'x64_PC' + os.path.splitext(find_modules
+                                                .get_module(file[1])
+                                                .get_final())[1],
                      'objs/x64_PC', 'x64_PC', run_compiler)]
         res = []
         if file[0].endswith('.h'):
@@ -191,7 +194,7 @@ class x64_pc(arch.arch):
         ext = os.path.splitext(file[0])[1]
         if ext == '.h' or ext == '.hpp' or ext == '.c' or\
                 ext == '.cpp':
-            if skip_check and not tools.check_file.check_file(file[0]):
+            if not skip_check and not tools.check_file.check_file(file[0]):
                 return False
             self.update_mtime(file)
             return True

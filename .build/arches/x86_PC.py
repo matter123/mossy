@@ -122,21 +122,21 @@ class x86_pc(arch.arch):
                          fnmatch.filter(files, '*.c') +
                          fnmatch.filter(files, '*.s')):
                 # .cpp, .c and .s files make .o files
-                file = os.path.join(root, file)
+                file = util.get_db_name(os.path.join(root, file))
                 if self.check_mtime(cur, file):
-                    dirty.append((util.get_db_name(file), ))
+                    dirty.append((file, ))
                 # get resultant o file
-                ofile = self.get_objfile(file)
+                ofile = util.get_db_name(self.get_objfile(file))
                 if self.check_mtime(cur, ofile):
-                    dirty.append((util.get_db_name(ofile), file))
+                    dirty.append((ofile, file))
 
             for file in (fnmatch.filter(files, '*.h') +
                          fnmatch.filter(files, '*.hpp') +
                          fnmatch.filter(files, '*.inc')):
                 # .h and .inc files do not make .o files
-                file = os.path.join(root, file)
+                file = util.get_db_name(os.path.join(root, file))
                 if self.check_mtime(cur, file):
-                    dirty.append((util.get_db_name(file), ))
+                    dirty.append((file, ))
         return dirty
 
     def get_depends(self, file):
@@ -146,9 +146,11 @@ class x86_pc(arch.arch):
             return [(self.get_objfile(file[0]), file[0])]
         if file[0].endswith('.o'):
             return [('sysroot/usr/lib/' +
-                     os.path.splitext(find_modules.get_module(file[1]).get_final())[0] +
-                    'x86_PC' + os.path.splitext(find_modules.get_module(file[1])\
-                        .get_final())[1],
+                     os.path.splitext(find_modules.get_module(file[1])
+                                      .get_final())[0] +
+                    'x86_PC' + os.path.splitext(find_modules
+                                                .get_module(file[1])
+                                                .get_final())[1],
                      'objs/x86_PC', 'x86_PC', run_compiler)]
         res = []
         if file[0].endswith('.h'):

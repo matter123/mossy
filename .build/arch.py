@@ -17,6 +17,8 @@ class arch(object):
         self.db.row_factory = sqlite3.Row
 
     def save_db(self):
+        if self.db_dirty:
+            self.db.commit()
         if self.backup is None:
             return
         tempfile = StringIO()
