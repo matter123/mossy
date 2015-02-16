@@ -85,6 +85,12 @@ class agnostic(arch.arch):
     def fix_build_order(self):
         pass
 
+    def get_name(self):
+        return 'agnostic'
+
+    def get_standard():
+        return True
+
 
 def get_db_name():
     return 'agnostic.db'

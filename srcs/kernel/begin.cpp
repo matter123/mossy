@@ -36,6 +36,8 @@
 #include <sys/fb.h>
 #include <sys/text_render.h>
 #include <memory>
+#include "sys/sys/heap.h"
+
 namespace hal {
 	void ready();
 }

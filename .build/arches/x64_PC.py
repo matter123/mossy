@@ -226,6 +226,12 @@ class x64_pc(arch.arch):
             return False
         return True
 
+    def get_name(self):
+        return 'x64_PC'
+
+    def get_standard():
+        return True
+
 
 def get_db_name():
     return 'x64_PC.db'
