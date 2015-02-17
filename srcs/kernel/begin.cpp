@@ -35,7 +35,7 @@
 #include <test.h>
 #include <sys/fb.h>
 #include <sys/text_render.h>
-#include <memory>
+#include <memory.h>
 namespace hal {
 	void ready();
 }
@@ -92,7 +92,7 @@ namespace kernel {
 				hal::cout<<" "<<array<<(i!=0x1F?" ":"|");
 			}
 			line_start+=0x20;
-			hal::cout<<hal::endl;
+			hal::cout<<hal::endl<<std::TC::RESET;
 		}
 		//while(true);
 		//heap
@@ -114,7 +114,6 @@ namespace kernel {
 		hal::cout<<"Built on: "<<std::TC::GREEN<<asctime(gmtime(&bt))<<std::TC::RESET
 		         <<" By: "     <<std::TC::GREEN<<BUILD_USERNAME      <<std::TC::RESET
 		         <<" From: "   <<std::TC::GREEN<<BUILD_GIT_BRANCH    <<std::TC::RESET<<hal::endl;
-		int num=0;
 		while(1) {
 			//hal::cout<<hal::dec<<num++<<hal::endl;
 		}

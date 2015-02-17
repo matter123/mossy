@@ -13,6 +13,7 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 */
+
 //implementation of all xtoa functions ie itoa, ltoa, ...
 #include <ctype.h>
 namespace std {
@@ -20,19 +21,23 @@ namespace std {
 	    "ZYXWVUTSRQPONMLKJIHGFEDCBA9876543210123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	static const char *chars_low=
 	    "zyxwvutsrqponmlkjihgfedcba9876543210123456789abcdefghijklmnopqrstuvwxyz";
-
-	////////////////////////////////////////
-	// Converts 'value' into a string and //
-	//   copies the string onto 'str'     //
-	// 'Base' what base (2,8,10,26,etc)   //
-	//   to use when converting           //
-	// 'Uppercase' if the base used has   //
-	//   letters, should uppercase?       //
-	// 'Min_digits' minimum number of     //
-	//   digits to have in the string     //
-	// Returns 'str'                      //
-	// Created on 2014-05-30              //
-	////////////////////////////////////////
+	/**
+	 * @brief turns a number into a string
+	 * @details using the various paramaters turn \a value into a string and
+	 * store the string in \
+	 *
+	 * @param value the value to convert into a string
+	 * @param str the location to store the string
+	 * @param base which base to use, limited to 2-36
+	 * @param uppercase on bases greater than 10, should the letters be uppercase
+	 * or lowercase
+	 * @param min_digits minimum number of digits to store in str, if the representation
+	 * is less than \a min_digits then it will be left padded with '0'
+	 * @return \a str
+	 *
+	 * @sa strtonum
+	 * @date created on 2014-05-30
+	 */
 	template<class T>
 	char *numtostr(T value,char *str,int base,bool uppercase,int min_digits = 0) {
 		char *rc;
@@ -72,16 +77,19 @@ namespace std {
 		}
 		return rc;
 	}
-	////////////////////////////////////////
-	// Converts 'str' into a base 10      //
-	//   number, or 'def' if can't find   //
-	//   a digit in the 'str'             //
-	// 'Def' number used when no match    //
-	//   was found                        //
-	// Returns the converted number or    //
-	//   'def' if no match was found      //
-	// Created on 2014-05-30              //
-	////////////////////////////////////////
+	/**
+	 * @brief converts a string into a number
+	 * @details converts \a str into a number
+	 * if no numerals are found return \a def
+	 *
+	 * @param str the string to search
+	 * @param def the default value if no numerals
+	 * are found
+	 * @return the number or \a def
+	 *
+	 * @sa numtostr
+	 * @date created on 2014-05-30
+	 */
 	template<class T>
 	T strtonum(const char *str, T def) {
 		T accum=0;

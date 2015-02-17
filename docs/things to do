@@ -13,7 +13,7 @@ scheduler
 ->driver api (cdi? udi? my own?)
 pci
 ->plug n play
-
+font speed up using linked-list of arrays
 make sure heap always returns int aligned adresses - ok 2014-11-20
 uefi (grub setting? my own boot loader?)
 extend font

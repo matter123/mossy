@@ -16,7 +16,7 @@ import message
 
 cur_head = [
     "/*",
-    "    Copyright 2014 Matthew Fosdick",
+    "    Copyright 2015 Matthew Fosdick",
     "",
     "    Licensed under the Apache License, Version 2.0 (the \"License\");",
     "    you may not use this file except in compliance with the License.",
@@ -31,13 +31,13 @@ cur_head = [
     "    limitations under the License.",
     "*/"]
 alt_year = [
-    "    Copyright 2013 Matthew Fosdick",
-    "    Copyright 2013-14 Matthew Fosdick",
-    "    Copyright 2013-2014 Matthew Fosdick",
+    "    Copyright 2013-15 Matthew Fosdick",
+    "    Copyright 2014-15 Matthew Fosdick",
 ]
 
 
 def check_file(file):
+    pas = True
     header = not (file.endswith(".c") or file.endswith(".cpp"))
     c_line = 0
     headers = []
@@ -58,8 +58,6 @@ def check_file(file):
                             for a_line in alt_year:
                                 if a_line == line:
                                     c_line += 1
-                                    message.warning(file +
-                                                    " has an outdated legal")
                                     raise Exception
                         except:
                             continue

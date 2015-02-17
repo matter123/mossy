@@ -5,10 +5,11 @@ import util
 import subprocess
 
 
-class clib_module(module.module):
+class module(module.module):
     def prep(self):
         mossy_main = util.get_mossy_path()
-        inc = os.path.abspath(os.path.join(mossy_main, './srcs/clib/include'))
+        inc = os.path.abspath(os.path.join(mossy_main,
+                                           './srcs/' + self.name + '/include'))
         files = [f for f in os.listdir(inc)
                  if os.path.isfile(os.path.join(inc, f))]
         install_path = os.path.abspath(os.path.join(mossy_main,
@@ -19,15 +20,15 @@ class clib_module(module.module):
         self.set_prepped(True)
 
     def add_compile_opt(self, compile_opt):
-        compile_opt.append('-I./srcs/clib/include')
+        compile_opt.append('-I./srcs/' + self.name + '/include')
 
     def get_final(self):
-        return 'libk.a'
+        return 'lib' + self.name + '.a'
 
     def is_in_module(self, file):
         if os.path.splitext(self.get_final())[0] in os.path.split(file)[1]:
             return True
-        return super(clib_module, self).is_in_module(file)
+        return super(module, self).is_in_module(file)
 
     def clean_file(self, file):
         objects = []
@@ -35,7 +36,7 @@ class clib_module(module.module):
             for root,\
                 dirs,\
                 files in os.walk(os.path.join(util.get_mossy_path(),
-                                              file[1] + '/clib')):
+                                              file[1] + '/' + self.name)):
                 for ofile in files:
                     objects.append(os.path.join(root, ofile))
             old_cd = os.getcwd()
@@ -47,7 +48,3 @@ class clib_module(module.module):
             stdout = comp.communicate()[0]
             return comp.returncode is 0
         return False
-
-
-def get_class(cursor):
-    return clib_module('clib', cursor)

@@ -42,22 +42,28 @@ namespace unicode {
 	bool isascii(char c) {
 		return c>32&&c<127;
 	}
-
+	/**
+	 * @brief detects encoding of the byte stream \a s
+	 * @details uses heuristics to try to detect
+	 *
+	 */
 	enum encoding detect_encoding(char *s, size_t len) {
 		uint8_t *stream=reinterpret_cast<uint8_t *>(s);
 		bool big_endian;
 		int u8_weight=0,u16_weight=0,u32_weight=0,swap_weight=0;
 		if(len<4) {
-			u32_weight=-1;    //u32 is out of running
+			u32_weight=-1;//u32 is out of running
 		}
 		if(*stream!=0xFF) {
 			big_endian=true;
 		}
+		//check the string alignment
 		if((uintptr_t)stream%2) {
 			u8_weight+=10;
 		} else if((uintptr_t)stream%4) {
 			u16_weight+=10;
 		}
+		//bom check
 		if(*stream==0x00&&u32_weight!=-1) {
 			u32_weight+=100;//if the first byte is zero it is most likely u32 big endian
 		} else if(*stream==0xEF) {
@@ -89,6 +95,7 @@ namespace unicode {
 					big_endian=true;
 				}
 				if(stream[i]==0x00) {
+					//zeros are probaly UTF-16/UTF-32
 					u8_weight--;
 					if(stream[i+1]==0x00) {
 						u32_weight++;
@@ -111,7 +118,6 @@ namespace unicode {
 					}
 				} else if(isascii(stream[i])&&isascii(stream[i-1])&&isascii(stream[i+1])) {
 					u8_weight+=5;
-					//}
 				}
 			}
 		}

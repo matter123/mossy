@@ -1,5 +1,13 @@
 #!/usr/bin/env python3
 no_img = False
+try:
+    import message
+except:
+    class message:
+        pass
+    message.warn = lambda x: print(x)
+    message.info = lambda x: print(x)
+    message.error = lambda x: print(x)
 import xml.etree.ElementTree as ET
 try:
     from PIL import Image
@@ -7,12 +15,17 @@ except ImportError:
     try:
         import Image
     except ImportError:
-        print('PIL or Pillow not installed')
+        message.warn('PIL or Pillow not installed')
         no_img = True
 
 import sys
 import struct
 import os.path as path
+
+show_font = False
+for arg in sys.argv:
+    if arg.startswith('--show-font'):
+        show_font = True
 
 
 def make_glyph(png, cp, _x, _y):
@@ -36,7 +49,9 @@ def make_glyph(png, cp, _x, _y):
         row = row >> 1
         _bytes += struct.pack("<B", row)
     _bytes += struct.pack("<H", 0)
-    print(chr(cp) + ";" + ":".join("{:02x}".format(c) for c in _bytes))
+    if show_font:
+        message.info(chr(cp) + ";" +
+                     ":".join("{:02x}".format(c) for c in _bytes))
     return (cp, chr(cp), _bytes)
 
 
@@ -64,10 +79,10 @@ def make_mbf(infile, outfile):
                 gdef = idx
                 break
             elif glyph[0] > xdef:
-                print("error could not find def, aborting, max")
+                message.error("could not find def, aborting, max")
                 exit()
         if gdef == -1:
-            print("error could not find def, aborting, nf")
+            message.error("error could not find def, aborting, nf")
             exit()
         with open(outfile, 'wb') as f:
             f.write(struct.pack("<III", 0x12345678, len(glyphs), 0))

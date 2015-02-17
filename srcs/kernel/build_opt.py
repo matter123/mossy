@@ -25,9 +25,12 @@ class kernel_module(module.module):
         return super(kernel_module, self).is_in_module(file)
 
     def clean_file(self, file):
+        if not os.path.splitext(self.get_final())[0] in\
+                os.path.split(file[0])[1]:
+            return False
         objects = []
-        linker_options = [ '-static', '-ffreestanding', '-nostdlib',
-                  '-Wl,-z,max-page-size=0x1000']
+        linker_options = ['-static', '-ffreestanding', '-nostdlib',
+                          '-Wl,-z,max-page-size=0x1000']
         for root,\
             dirs,\
             files in os.walk(os.path.join(util.get_mossy_path(),
@@ -43,9 +46,10 @@ class kernel_module(module.module):
         linker_options.append('-lunicode' + file[2])
         linker_options.append('-lgcc')
         os.chdir(util.get_mossy_path())
-        res = file[3](False, (compile_opt.get_global_compile_opt(False).strip() +
-            ' ' + ' '.join(linker_options)).replace('--sysroot=./sysroot',
-                                                    '-L./sysroot/usr/lib'))
+        res = file[3](False, (compile_opt.get_global_compile_opt(False)
+                              .strip() + ' ' + ' '.join(linker_options))
+                      .replace('--sysroot=./sysroot',
+                      '-L./sysroot/usr/lib'))
         os.chdir(old_cd)
         return res[0]
 

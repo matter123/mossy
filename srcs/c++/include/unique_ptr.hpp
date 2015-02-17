@@ -1,5 +1,5 @@
 /*
-    Copyright 2014 Matthew Fosdick
+    Copyright 2015 Matthew Fosdick
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
 */
 
 #pragma once
-#include <stdlib.h>
 namespace std {
 	template<class T>
 	class unique_ptr {
@@ -45,7 +44,18 @@ namespace std {
 					delete p;
 				}
 			}
-			unique_ptr &operator=(unique_ptr<T>&& rhs) {
+			unique_ptr &operator=(unique_ptr&& r) {
+				if(this==r) {
+					return;
+				}
+				if(p) {
+					delete p;
+				}
+				p=r.p;
+				r.p=nullptr;
+			}
+			template<class U>
+			unique_ptr &operator=(unique_ptr<U>&& rhs) {
 				if(this==rhs) {
 					return;
 				}
@@ -73,7 +83,7 @@ namespace std {
 					delete op;
 				}
 			}
-			void swap(unique_ptr<T> &other) {
+			void swap(unique_ptr &other) {
 				T *temp=other.p; //style violation approved by Matthew Fosdick on 2014-12-22
 				other.p=p;
 				p=temp;
@@ -104,7 +114,8 @@ namespace std {
 			explicit unique_ptr(T *ptr) {
 				p=ptr;
 			}
-			unique_ptr(unique_ptr<T> &&u) {
+			template<class U>
+			unique_ptr(unique_ptr<U> &&u) {
 				if(this==u) {
 					return;
 				}
@@ -153,7 +164,7 @@ namespace std {
 				}
 				p=nullptr;
 			}
-			void swap(unique_ptr<T> &other) {
+			void swap(unique_ptr &other) {
 				T *temp=other.p; //style violation approved by Matthew Fosdick on 2014-12-22
 				other.p=p;
 				p=temp;
@@ -168,4 +179,76 @@ namespace std {
 				return p[i];
 			}
 	};
+	template<class T1, class T2>
+	bool operator==(const unique_ptr<T1> &x, const unique_ptr<T2> &y) {
+		return x.get()==y.get();
+	}
+	template<class T1, class T2>
+	bool operator!=(const unique_ptr<T1> &x, const unique_ptr<T2> &y) {
+		return x.get()!=y.get();
+	}
+	template<class T1, class T2>
+	bool operator<(const unique_ptr<T1> &x, const unique_ptr<T2> &y) {
+		return x.get()<y.get();
+	}
+	template<class T1, class T2>
+	bool operator<=(const unique_ptr<T1> &x, const unique_ptr<T2> &y) {
+		return x.get()<=y.get();
+	}
+	template<class T1, class T2>
+	bool operator>(const unique_ptr<T1> &x, const unique_ptr<T2> &y) {
+		return x.get()>y.get();
+	}
+	template<class T1, class T2>
+	bool operator>=(const unique_ptr<T1> &x, const unique_ptr<T2> &y) {
+		return x.get()>=y.get();
+	}
+	template <class T>
+	bool operator==(const unique_ptr<T> &x, nullptr_t) {
+		return x.get()==nullptr;
+	}
+	template <class T>
+	bool operator==(nullptr_t, const unique_ptr<T> &x) {
+		return x.get()==nullptr;
+	}
+	template <class T>
+	bool operator!=(const unique_ptr<T> &x, nullptr_t) {
+		return x.get()!=nullptr;
+	}
+	template <class T>
+	bool operator!=(nullptr_t, const unique_ptr<T> &x) {
+		return x.get()!=nullptr;
+	}
+	template <class T>
+	bool operator<(const unique_ptr<T> &x, nullptr_t) {
+		return x.get()<nullptr;
+	}
+	template <class T>
+	bool operator<(nullptr_t, const unique_ptr<T> &y) {
+		return nullptr<y.get();
+	}
+	template <class T>
+	bool operator<=(const unique_ptr<T> &x, nullptr_t) {
+		return x.get()<=nullptr;
+	}
+	template <class T>
+	bool operator<=(nullptr_t, const unique_ptr<T> &y) {
+		return nullptr<=y.get();
+	}
+	template <class T>
+	bool operator>(const unique_ptr<T> &x, nullptr_t) {
+		return x.get()>nullptr;
+	}
+	template <class T>
+	bool operator>(nullptr_t, const unique_ptr<T> &y) {
+		return nullptr>y.get();
+	}
+	template <class T>
+	bool operator>=(const unique_ptr<T> &x, nullptr_t) {
+		return x.get()>=nullptr;
+	}
+	template <class T>
+	bool operator>=(nullptr_t, const unique_ptr<T> &y) {
+		return nullptr>=y.get();
+	}
 }

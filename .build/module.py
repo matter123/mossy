@@ -43,7 +43,8 @@ class module(object):
             file = util.get_db_name(file)
             if 'srcs/' not in file:
                 return False
-            return self.name in file and file[5:].index(self.name) == 0
+            return self.name in file[5:] and file[5:].index(self.name) == 0\
+                and file[5 + len(self.name):][0] == '/'
         return True
 
     def clean_file(self, file):

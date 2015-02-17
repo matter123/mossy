@@ -68,6 +68,7 @@ namespace unicode {
 	enum encoding detect_encoding(char *stream, size_t len);
 
 	/**
+	 * @note currently not implemented
 	 * @brief general purpose encoding conversion
 	 * @details converts a stream between two different encodings
 	 *

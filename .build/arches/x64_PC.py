@@ -194,8 +194,6 @@ class x64_pc(arch.arch):
         ext = os.path.splitext(file[0])[1]
         if ext == '.h' or ext == '.hpp' or ext == '.c' or\
                 ext == '.cpp':
-            if not skip_check and not tools.check_file.check_file(file[0]):
-                return False
             self.update_mtime(file)
             return True
         if ext == '.s' or ext == '.inc':

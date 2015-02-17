@@ -1,6 +1,9 @@
 import arch
 import tools.check_file
 import util
+import sys
+import fnmatch
+import os
 
 skip_check = False
 for arg in sys.argv:

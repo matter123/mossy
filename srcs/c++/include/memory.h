@@ -1,5 +1,5 @@
 /*
-    Copyright 2014 Matthew Fosdick
+    Copyright 2015 Matthew Fosdick
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,5 +15,6 @@
 */
 
 #pragma once
-#include "unique_ptr.h"
-#include "shared_ptr.h"
+namespace std {
+}
+#include <unique_ptr.hpp>
