@@ -83,3 +83,9 @@ class arch(object):
 
     def fix_build_order(self):
         pass
+
+    def get_name(self):
+        return None
+
+    def get_standard():
+        return False

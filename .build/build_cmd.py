@@ -8,8 +8,14 @@ import subprocess
 
 
 def build(conn, build_arg):
+    if len(sys.argv) - 1 is build_arg:
+        arches = get_arches.get_arches()
+    else:
+        arches = []
+        for arg in sys.argv[build_arg:]:
+            if arg[0] is not '-':
+                arches.append(get_arches.get_arch(arg))
     find_modules.get_modules(conn)
-    arches = get_arches.get_arches()
     do_build = False
     for arch in arches:
         if arch.check_if_build(conn):

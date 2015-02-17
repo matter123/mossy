@@ -35,7 +35,13 @@
 #include <test.h>
 #include <sys/fb.h>
 #include <sys/text_render.h>
+<<<<<<< HEAD
 #include <memory.h>
+=======
+#include <memory>
+#include "sys/sys/heap.h"
+
+>>>>>>> 6421331fa4c83e11b54c3eb52b08a2082f4bb7ae
 namespace hal {
 	void ready();
 }
