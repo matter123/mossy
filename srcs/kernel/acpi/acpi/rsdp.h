@@ -18,24 +18,21 @@
 #include <stdint.h>
 #include <struct.h>
 namespace acpi {
-	namespace tables {
-		struct RSDP {
-			char sig[8];
-			uint8_t checksum;
-			char OEMID[6];
-			uint8_t revision;
-			uint32_t RSDTaddr;
-		} PACKED;
+	struct RSDP {
+		char sig[8];
+		uint8_t checksum;
+		char OEMID[6];
+		uint8_t revision;
+		uint32_t RSDTaddr;
+	} PACKED;
 
-		struct RSDP20 {
-			RSDP begin;
-			uint32_t length;
-			uint64_t XSDTaddr;
-			uint8_t ext_checksum;
-			uint8_t resv[3];
-		} PACKED;
+	struct RSDP20 {
+		RSDP begin;
+		uint32_t length;
+		uint64_t XSDTaddr;
+		uint8_t ext_checksum;
+		uint8_t resv[3];
+	} PACKED;
 
-		extern RSDP20 *rsdp_ptr;
-		bool find_rsdp();
-	}
+	RSDP20 *find_rsdp();
 }

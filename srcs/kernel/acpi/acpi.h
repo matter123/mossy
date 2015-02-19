@@ -15,23 +15,36 @@
 */
 
 #pragma once
+#include <acpi/tables/SDT.h>
+#include <acpi/tables/FADT.h>
+#include <acpi/tables/MADT.h>
+#include <acpi/tables/DSDT.h>
 namespace acpi {
 	/**
 	    @brief initalizes the static table portion of acpi
 	    @details finds parses and extracts all tables found in the firmware
 	    without executing and aml or enabling acpi mode
+		fills out the acpi struct
+		@param fail_on_4GB if set, the OSPM will not load the acpi struct,
+		 if required to access an address larger than 4GB
 
 	    @date created on 2014-11-03
 	*/
-	void init_tables();
+	void init_tables(bool fail_on_4GB);
 
 	/**
-	 * @brief determines if acpi exists
-	 * @details should be called after \a init_tables and before
-	 * attempting to use any acpi feature
-	 *
-	 * @return true is acpi support was found
-	 * @date created on 2014-11-19
+	 * @brief struct of acpi tables
+	 * a struct of acpi tables for import types
 	 */
-	bool has_acpi();
+	struct acpi {
+		bool available;
+		FADT *FADT;
+		MADT *MADT;
+		DSDT *DSDT;
+		SSDT **SSDTs;
+		int SSDT_length;
+		SDT **SDTs;
+		int SDT_length;
+	};
+	extern acpi acpi;
 }

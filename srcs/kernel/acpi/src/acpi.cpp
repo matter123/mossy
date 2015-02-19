@@ -1,5 +1,5 @@
 /*
-    Copyright 2014 Matthew Fosdick
+    Copyright 2015 Matthew Fosdick
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -14,38 +14,57 @@
     limitations under the License.
 */
 #include <acpi/acpi_os.h>
-#include <acpi/tables/rsdp.h>
-#include <acpi/tables/sdt.h>
+#include <acpi/rsdp.h>
+#include <acpi/sdt.h>
+#include <struct.h>
 namespace acpi {
+	struct RSDT {
+		sdt header;
+		uint32_t tables[0];
+	} PACKED *rsdt;
+	struct XSDT {
+		sdt header;
+		uint64_t tables[0];
+	} PACKED *xsdt;
+
+	static bool do_checksum(sdt *table) {
+		pointer bytes=reinterpret_cast<pointer>(table);
+		uint8_t checksum=0;
+		for(int i=0; i<table->length; i++) {
+			checksum+=bytes[i];
+		}
+		return !checksum;
+	}
+	static sdt *load_table(void *tbl_phys_base) {
+		uintptr_t alloc_size=0;
+		sdt *table=(sdt *)os::get_virt_phys((uintptr_t)tbl_phys_base,sizeof(sdt),&alloc_size);
+		int needed_length=table->length-sizeof(sdt);
+		if(needed_length>alloc_size) {
+			os::unget_phys((uintptr_t)tbl_phys_base,sizeof(sdt),(uintptr_t)table);
+			table=(sdt *)os::get_virt_phys((uintptr_t)tbl_phys_base,sizeof(sdt)+needed_length,NULL);
+		}
+		if(!do_checksum(table)) {
+			return NULL;
+		}
+		return table;
+	}
+
 	static bool h_acpi=false;
+	bool has_acpi() {
+		return h_acpi;
+	}
 	void init_tables() {
 		os::init_acpi_os();
-		tables::find_rsdp();
-		if(tables::rsdp_ptr) {
+		RSDP20 *rsdp_ptr=find_rsdp();
+		if(rsdp_ptr) {
 			h_acpi=true;
 		} else {
 			return;
 		}
-		if(tables::rsdp_ptr->begin.revision==0) {
-			tables::rsdt=(tables::RSDT *)tables::load_table(
-			                 (void *)(uintptr_t)tables::rsdp_ptr->begin.RSDTaddr);
-			uint32_t *tables=(uint32_t *)(((pointer)tables::rsdt)+sizeof(tables::RSDT));
-			size_t table_count=(tables::rsdt->header.length-sizeof(tables::RSDT))/4;
-			for(size_t s=0; s<table_count; s++) {
-				tables::load_table((void *)(uintptr_t)tables[s]);
-			}
+		if(rsdp_ptr->begin.revision==0) {
+			rsdt=(RSDT *)load_table((void *)(uintptr_t)rsdp_ptr->begin.RSDTaddr);
 		} else {
-			tables::xsdt=(tables::XSDT *)tables::load_table(
-			                 (void *)(uintptr_t)tables::rsdp_ptr->XSDTaddr);
-			uint64_t *tables=(uint64_t *)(((pointer)tables::xsdt)+sizeof(tables::XSDT));
-			size_t table_count=(tables::xsdt->header.length-sizeof(tables::XSDT))/8;
-			for(size_t s=0; s<table_count; s++) {
-				tables::load_table((void *)(uintptr_t)tables[s]);
-			}
+			xsdt=(XSDT *)load_table((void *)(uintptr_t)rsdp_ptr->XSDTaddr);
 		}
-	}
-
-	bool has_acpi() {
-		return h_acpi;
 	}
 }

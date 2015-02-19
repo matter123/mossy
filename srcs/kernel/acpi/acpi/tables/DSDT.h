@@ -1,5 +1,5 @@
 /*
-    Copyright 2014 Matthew Fosdick
+    Copyright 2014-15 Matthew Fosdick
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -16,36 +16,14 @@
 
 #pragma once
 #include <stdint.h>
-#include <struct.h>
+#include <acpi/tables/SDT.h>
 namespace acpi {
-	namespace tables {
-		struct SDT {
-			char Signature[4];
-			uint32_t length;
-			uint8_t revision;
-			uint8_t checksum;
-			char OEMID[6];
-			char OEMTableID[8];
-			uint32_t OEMrevision;
-			uint32_t creatorID;
-			uint32_t creator_revision;
-		} PACKED;
-
-		struct RSDT {
-			SDT header;
-			uint32_t tables[0];
-		};
-
-		struct XSDT {
-			SDT header;
-			uint64_t tables[0];
-		};
-
-		extern RSDT *rsdt;
-		extern XSDT *xsdt;
-
-		SDT *load_table(void *tbl_phys_base);
-
-		bool do_checksum(SDT *table);
-	}
+	struct DSDT:SDT {
+		void *aml_location;
+		void *aml_length;
+	};
+	struct SSDT:SDT {
+		void *aml_location;
+		void *aml_length;
+	};
 }

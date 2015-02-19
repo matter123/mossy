@@ -8,6 +8,8 @@ import subprocess
 
 
 def build(conn, build_arg):
+    print(len(sys.argv) - 1)
+    print(build_arg)
     if len(sys.argv) - 1 is build_arg:
         arches = get_arches.get_arches()
     else:
@@ -35,6 +37,7 @@ def build(conn, build_arg):
             tools.build_info.delete(util.get_mossy_path())
         except:
             pass
-        subprocess.call(['grub2-mkrescue', '--compress=gz', '-o', 'bootable.iso', 'sysroot'])
+        subprocess.call(['grub2-mkrescue', '--compress=gz',
+                         '-o', 'bootable.iso', 'sysroot'])
     else:
         message.info('all files are clean, no build needed')

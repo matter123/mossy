@@ -1,5 +1,5 @@
 /*
-    Copyright 2014 Matthew Fosdick
+    Copyright 2014-15 Matthew Fosdick
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -30,18 +30,10 @@
 #include <ctype.h>
 #include <acpi.h>
 #include <acpi/acpi_os.h>
-#include <acpi/tables/rsdp.h>
-#include <acpi/tables/sdt.h>
 #include <test.h>
 #include <sys/fb.h>
 #include <sys/text_render.h>
-<<<<<<< HEAD
 #include <memory.h>
-=======
-#include <memory>
-#include "sys/sys/heap.h"
-
->>>>>>> 6421331fa4c83e11b54c3eb52b08a2082f4bb7ae
 namespace hal {
 	void ready();
 }

@@ -21,6 +21,10 @@ def go(argv):
             next += 1
         if next < len(argv):
             command = argv[next]
+        else:
+            next = len(argv) - 1
+    if next is -1:
+        next = 0
     if command == "build":
         message.info("building")
         build_cmd.build(conn, next)
