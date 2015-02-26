@@ -16,8 +16,11 @@
 #include <acpi/acpi_os.h>
 #include <acpi/rsdp.h>
 #include <acpi/sdt.h>
+#include <acpi.h>
+#include <acpi/tables/SDT.h>
 #include <struct.h>
 namespace acpi {
+	ACPI acpi;
 	struct RSDT {
 		sdt header;
 		uint32_t tables[0];
@@ -49,22 +52,34 @@ namespace acpi {
 		return table;
 	}
 
-	static bool h_acpi=false;
-	bool has_acpi() {
-		return h_acpi;
-	}
 	void init_tables() {
 		os::init_acpi_os();
 		RSDP20 *rsdp_ptr=find_rsdp();
 		if(rsdp_ptr) {
-			h_acpi=true;
+			acpi.available=true;
 		} else {
 			return;
 		}
+		size_t table_count;
+		pointer SDT_start_pointer;
+		size_t next_size;
 		if(rsdp_ptr->begin.revision==0) {
 			rsdt=(RSDT *)load_table((void *)(uintptr_t)rsdp_ptr->begin.RSDTaddr);
+			table_count=(rsdt->header.length-sizeof(RSDT))/sizeof(uint32_t);
+			SDT_start_pointer=(pointer)&rsdt->tables;
+			next_size=4;
 		} else {
 			xsdt=(XSDT *)load_table((void *)(uintptr_t)rsdp_ptr->XSDTaddr);
+			table_count=(xsdt->header.length-sizeof(XSDT))/sizeof(uint64_t);
+			SDT_start_pointer=(pointer)&xsdt->tables;
+			next_size=8;
+		}
+		acpi.SDT_length=table_count;
+		acpi.SDTs=(SDT **)malloc(sizeof(SDT *)*table_count);
+		for(size_t s=0; s<table_count;s++) {
+			SDT *table=new SDT(SDT_start_pointer);
+			acpi.SDTs[s]=table;
+			SDT_start_pointer+=next_size;
 		}
 	}
 }

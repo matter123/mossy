@@ -18,6 +18,7 @@
 #include <stdint.h>
 namespace acpi {
 	struct SDT {
+		SDT(pointer table);
 		char signature[5];
 		uint8_t revision;
 		char OEM_ID[7];
@@ -25,5 +26,6 @@ namespace acpi {
 		uint32_t OEM_revision;
 		uint32_t creator_ID;
 		uint32_t creator_revision;
+		void *phys_table_addr;
 	};
 }

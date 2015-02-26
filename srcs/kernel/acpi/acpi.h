@@ -25,18 +25,16 @@ namespace acpi {
 	    @details finds parses and extracts all tables found in the firmware
 	    without executing and aml or enabling acpi mode
 		fills out the acpi struct
-		@param fail_on_4GB if set, the OSPM will not load the acpi struct,
-		 if required to access an address larger than 4GB
 
 	    @date created on 2014-11-03
 	*/
-	void init_tables(bool fail_on_4GB);
+	void init_tables();
 
 	/**
 	 * @brief struct of acpi tables
 	 * a struct of acpi tables for import types
 	 */
-	struct acpi {
+	struct ACPI {
 		bool available;
 		FADT *FADT;
 		MADT *MADT;
@@ -46,5 +44,5 @@ namespace acpi {
 		SDT **SDTs;
 		int SDT_length;
 	};
-	extern acpi acpi;
+	extern ACPI acpi;
 }

@@ -48,6 +48,24 @@ namespace kernel {
 		//framebuffer and vterm
 		init_fb();
 		init_tr();
+		//munching squares, im bored
+		void *spot=malloc(4);
+		memset(spot,0xAA,4);
+		while(1) {
+
+			int t1=rand()%1024;
+			int t=t1;
+			while((t-t1)<2000) {
+				for(int x=0;x<1024;x++) {
+					int y=x^t;
+					if(y<768) {
+						bit_blit(x,y,1,1,spot,OR);
+					}
+				}
+				t++;
+			}
+			reset_fb();
+		}
 		hal::ready();
 		hal::cout<<std::TC::BACKCOLOR<<std::TC::BLACK<<
 		         "    |00|01|02|03|04|05|06|07|08|09|0A|0B|0C|0D|0E|0F|10|11|12|13|14|15|16|17|18|19|1A|1B|1C|1D|1E|1F|"
@@ -100,7 +118,12 @@ namespace kernel {
 		test();
 		#endif
 		//acpi
-		//acpi::init_tables();
+		acpi::init_tables();
+		hal::cout<<acpi::acpi.SDT_length<<hal::endl;
+		for(int i=0;i<acpi::acpi.SDT_length;i++) {
+			acpi::SDT *table=acpi::acpi.SDTs[i];
+			hal::cout<<table->signature<<hal::endl;
+		}
 		//hal::print_boot_msg("Init ACPI",acpi::has_acpi(),false);
 		//
 		hal::init_vendor();
