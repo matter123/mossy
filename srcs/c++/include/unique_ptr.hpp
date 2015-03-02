@@ -13,7 +13,9 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 */
-
+#ifndef __MEM
+#pragma error this file should only be included by memory.h
+#endif
 #pragma once
 namespace std {
 	template<class T>

@@ -13,10 +13,26 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 */
-
+#ifndef __UTIL
+#pragma error this file should only be included by utility.h
+#endif
 #pragma once
 namespace std {
+	template<class T1, class T2>
+	struct pair {
+		T1 first;
+		T2 second;
+		constexpr pair() {
+			first {} {};
+			second {} {};
+		}
+		constexpr pair(const T1 &first, const T2 &second) {
+			this->first=first;
+			this->second=second;
+		}
+		template<class U1, class U2>
+		constexpr pair(U1 &&x, U2 &&) {
+			
+		}
+	};
 }
-#define __MEM
-#include <unique_ptr.hpp>
-#undef __MEM

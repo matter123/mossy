@@ -91,9 +91,9 @@ def gen(srcfolder):
             paren[0] = True
         if sub in salt[1][1]:
             paren[1] = True
-    if sum(1 for c in salt[0][1] if c.isupper()) is not 1:
+    if sum(1 for c in salt[0][1] if c in subscript) is not 1:
         paren[0] = True
-    if sum(1 for c in salt[1][1] if c.isupper()) is not 1:
+    if sum(1 for c in salt[1][1] if c in subscript) is not 1:
         paren[1] = True
     name = salt[0][0] + " " + salt[1][0]
     formula_parts = [salt[0][1], salt[1][1], salt[1][2], salt[0][2]]
