@@ -8,13 +8,14 @@ violations rationales _MUST_ be provided so maintainers can recognize when a rul
 violation is either not relevant and can be ignored or a rule that no longer serves a purpose
 so the rule can be rewritten/evicted.
 
+
 File Guidelines
 ===============
 File names and directories should always be written so they they can be typed on a
 standard US-104 keyboard without any modifiers with the exception of shift.
 
-Legal Header {#LegalHeader}
-------------
+##Legal Header
+
 All files should start off with Apache 2.0 license header. The name field should contain
 the full name of the appropriate person, the appropriate person depends on the file type, If
 the file is a header the name field should be filled in with the maintainer, otherwise the
@@ -31,8 +32,8 @@ without context to be aware of the license of the file without having to find to
 original file project. It also allows an easy place to put who to contact about an inquiries
 about the file.
 
-Header Files {#HeaderFiles}
-------------
+##Header Files
+
 Header files meant for inclusion by arbitrary files should use an extension of `.h` or `.hpp`
 The correct extension to use depends on weather there is code in the header file. If there is
 code in the header file use `.hpp` otherwise use `.h`. If you are unsure if your header contains
@@ -55,24 +56,24 @@ intentional. ex
 As the comment is parsed by the style checker the comment should be in that format.
 
 ####rationale
-Partial Include Headers improve the maintainability of a complex codebase. As most often they 
+Partial Include Headers improve the maintainability of a complex codebase. As most often they
 will be used in the standard library an exemption to the documented inclusion helps keep the
 noise down while still providing security against accidental inclusion in most cases.
 
-After the [Legal Header](#LeaglHeader) A header file should contain exactly one blank line
+After the Legal Header a header file should contain exactly one blank line
 then `#pragma once`, then the headers includes and macros,
-see [Include Ordering](#IncludeOrdering) for guidelines on ordering includes and macros.
+see Include Ordering for guidelines on ordering includes and macros.
 If the header has a namespace there should be another blank line then the namespace deceleration.
 
 ####rationale
 Consistent Header beginnings create a more uniform and familiar working environment
 
-Source Files {#SourceFiles}
-------------
+##Source Files
+
 C source files should always have the extension `.c` and C++ source files should always have
 the extension `.cpp`. Source files should usually have an associated header file.
-After the [Legal Header](#LeaglHeader) A source file should contain exactly one blank line
-then the headers includes and macros, see [Include Ordering](#IncludeOrdering) for guidelines
+After the Legal Header a source file should contain exactly one blank line
+then the headers includes and macros, see Include Ordering for guidelines
 on ordering includes and macros. If the header has a namespace there should be another
 blank line then the namespace deceleration. C++ source files are required to be in a namespace
 
@@ -80,8 +81,7 @@ blank line then the namespace deceleration. C++ source files are required to be 
 Consistent file beginnings create a more uniform and familiar working environment. Namespaced
 Source files reduce the chance of symbol collisions
 
-Include Ordering {#IncludeOrdering}
-----------------
+##Include Ordering
 Includes in files should follow the 'Include What You Use' principle, in that if you require the
 definition of function or type, you should include the header that exports that. One exception
 to the principle is that a source file that includes an associated header file does not need
@@ -92,17 +92,17 @@ By removing extraneous includes, compile time can be kept to a minimum, and by n
 headers to have a particular file included, refactors can happen smoother and quicker.
 
 The ordering of includes should be as follows
-1. associated header file
-2. libc headers (math.h, string.h, ...)
-3. libc++ headers (memory.h, utility.h, ...)
-4. unicode headers (unicode.h, iterators.h, ...)
-5. test headers (test.h, ...)
-6. hal headers (hal/hal.h, hal/paging.h, ...)
-7. sys headers (sys/fb.h, sys/scheduler.h, ...)
-8. arch headers (x86/idt.h, x64/idt.h, ...)
-9. vendor headers (pc/pit.h, ...)
-10. acpi headers (acpi.h, acpi/tables/MADT.h, ...)
-11. other includes ("blah.h", ...)
+  1. associated header file
+  2. libc headers (math.h, string.h, ...)
+  3. libc++ headers (memory.h, utility.h, ...)
+  4. unicode headers (unicode.h, iterators.h, ...)
+  5. test headers (test.h, ...)
+  6. hal headers (hal/hal.h, hal/paging.h, ...)
+  7. sys headers (sys/fb.h, sys/scheduler.h, ...)
+  8. arch headers (x86/idt.h, x64/idt.h, ...)
+  9. vendor headers (pc/pit.h, ...)
+  10. acpi headers (acpi.h, acpi/tables/MADT.h, ...)
+  11. other includes ("blah.h", ...)
 When you have two or more includes from the same group they should be in alphabetical order.
 Macros should, whenever possible, follow the includes, and should not be intermixed.
 
@@ -110,3 +110,8 @@ Macros should, whenever possible, follow the includes, and should not be intermi
 ####rationale
 Having a consistent location for each header allows you to quickly determine if a header is
 or is not present, much like a dictionary.
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Style Guidelines
+================
+This portion is for changes that should, after symbol renaming, result in no changes to the
+resulat object files.
