@@ -15,8 +15,7 @@
 */
 
 #pragma once
-#include <stdint.h>
-#include <arch.h>
+
 namespace hal {
 	class ios_base {
 		public:
@@ -113,13 +112,6 @@ namespace hal {
 	// Vendor defined                     //
 	////////////////////////////////////////
 	int get_y();
-
-	////////////////////////////////////////
-	// Dump cpu registers                 //
-	// DOES NOT RETURN                    //
-	// Created on 2014-04-26              //
-	////////////////////////////////////////
-	void dump_regs(cpu_state *s);
 
 	////////////////////////////////////////
 	// print a boot time message with an  //

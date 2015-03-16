@@ -13,6 +13,7 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 */
+#include <arch.h>
 #include <hal/console.h>
 #include <conv.hpp>
 #include <limits.h>
@@ -21,7 +22,7 @@
 #include <stdlib.h>
 #include <utf8.h>
 #include <string.h>
-#include <text_color.h>
+#include <sys/text_color.h>
 namespace hal {
 	void ostream::print(const char *s) {
 		static bool back=false;

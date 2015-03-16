@@ -18,8 +18,6 @@
 #include <hal/int.h>
 #include <hal/hal.h>
 #include <hal/int.h>
-#include <hal/console.h>
-#include <text_color.h>
 namespace kernel {
 	//static std::vector<thread_info *> *blocked;
 	//static std::vector<thread_info *> *active;

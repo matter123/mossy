@@ -24,7 +24,7 @@
  */
 #include <stdint.h>
 #include <hal/console.h>
-#include <text_color.h>
+#include <sys/text_color.h>
 namespace kernel {
 	/**
 	 * @brief runs all tests
@@ -45,6 +45,13 @@ namespace kernel {
 	 * @date created on 2015-02-07
 	 */
 #define unit_test(name, res, exp)\
+	 do {\
+	 	auto __name=name;\
+	 	auto __res=res;\
+	 	auto __exp=exp;\
+	 	__unit_test(__name, __res, __exp);\
+	 } while(0)
+#define __unit_test(name, res, exp)\
 	do{if((res)==(exp))hal::cout<<"  "<<(name)<<std::TC::GREEN<<" passed"<<std::TC::RESET<<hal::endl;\
 		else {hal::cout<<"  "<<(name)<<std::TC::RED<<" failed"<<std::TC::RESET\
 			               <<" expected ("<<(exp)<<") got ("<<(res)<<")"<<hal::endl;\

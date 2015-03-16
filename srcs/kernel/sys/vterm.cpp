@@ -13,6 +13,7 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 */
+#include <arch.h>
 #include <hal/console.h>
 #include <string.h>
 #include <hal/hal.h>
@@ -24,9 +25,9 @@
 #define TEXT_WIDTH 113
 namespace hal {
 	static int wx=0,wy=0;
-	int state_begin=0;
 	static bool is_ready=false;
 	uint32_t last_back=0;
+	int state_begin=0;
 	void ready() {
 		is_ready=true;
 		wx = 0;

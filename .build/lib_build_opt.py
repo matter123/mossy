@@ -21,6 +21,8 @@ class module(module.module):
 
     def add_compile_opt(self, compile_opt):
         compile_opt.append('-I./srcs/' + self.name + '/include')
+        compile_opt.append('-I./srcs/kernel/hal')
+        compile_opt.append('-I./srcs/kernel/sys')
 
     def get_final(self):
         return 'lib' + self.name + '.a'

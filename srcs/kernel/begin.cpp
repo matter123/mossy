@@ -19,7 +19,7 @@
 #include <hal/console.h>
 #include <build_info.h>
 #include <time.h>
-#include <text_color.h>
+#include <sys/text_color.h>
 #include <sys/kstacks.h>
 #include <sys/heap.h>
 #include <sys/tasks.h>
@@ -45,6 +45,7 @@ namespace kernel {
 		srand(BUILD_UNIX_TIME);
 		hal::init_mboot(mboot);
 		hal::init_arch();
+		hal::print_boot_msg("Init heap",heap_init(),true);
 		//framebuffer and vterm
 		init_fb();
 		init_tr();
@@ -110,9 +111,6 @@ namespace kernel {
 			line_start+=0x20;
 			hal::cout<<hal::endl<<std::TC::RESET;
 		}
-		//while(true);
-		//heap
-		hal::print_boot_msg("Init heap",heap_init(),true);
 		//testing
 		#if TEST
 		test();

@@ -16,10 +16,8 @@
 #include <vendor.h>
 #ifdef PC
 #include <hal/timer.h>
-#include <hal/console.h>
 #include <io.h>
 #include <arch.h>
-#include <text_color.h>
 #include "pic.h"
 namespace hal {
 #define CHAN_BP 0x40
