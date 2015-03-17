@@ -48,11 +48,11 @@ namespace kernel {
 		//framebuffer and vterm
 		init_fb();
 		init_tr();
+		hal::print_boot_msg("Init heap",heap_init(),true);
 		//munching squares, im bored
 		void *spot=malloc(4);
 		memset(spot,0xAA,4);
 		while(1) {
-
 			int t1=rand()%1024;
 			int t=t1;
 			while((t-t1)<2000) {
@@ -112,7 +112,6 @@ namespace kernel {
 		}
 		//while(true);
 		//heap
-		hal::print_boot_msg("Init heap",heap_init(),true);
 		//testing
 		#if TEST
 		test();
