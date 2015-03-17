@@ -18,7 +18,7 @@
 #include <string.h>
 #include <conv.hpp>
 #include <hal/console.h>
-#include <text_color.h>
+#include <sys/text_color.h>
 
 namespace kernel {
 	void panic() {

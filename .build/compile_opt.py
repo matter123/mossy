@@ -3,6 +3,8 @@ import sys
 cpp_opt = '-O3 -DDEBUG'
 c_opt = '-O3 -DDEBUG'
 
+do_test = False
+
 for arg in sys.argv:
     if arg.startswith('--c++-opt='):
         cpp_opt = arg[len('--c++-opt='):]
@@ -17,8 +19,9 @@ cpp_opt += ' -include ./srcs/kernel/stdlib/global.h'
 c_opt += ' -include ./srcs/kernel/stdlib/global.h'
 for arg in sys.argv:
     if arg.startswith('--test'):
-        cpp_opt += ' -DTEST=1'
-        c_opt += ' -DTEST=1'
+        cpp_opt += ' -UTEST -DTEST=1'
+        c_opt += ' -UTEST -DTEST=1'
+        do_test = True
 
 
 def get_global_compile_opt(c):

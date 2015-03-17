@@ -28,6 +28,7 @@ extern "C" void lidt(x64::IDTR *idtr);
 extern "C" void exc_stub_sched();
 
 namespace hal {
+	void dump_regs(cpu_state *s);
 #define IS_SET(a,i)    (a[(i)/8]&(1<<(i)%8))
 #define SET(a,i)    do {a[(i)/8]|= (1<<((i)%8));}while(0)
 #define UN_SET(a,i) do {a[(i)/8]&=~(1<<((i)%8));}while(0)

@@ -42,8 +42,10 @@ class kernel_module(module.module):
         linker_options.append('-o')
         linker_options.append(file[0])
         linker_options += objects
-        linker_options.append('-lk' + file[2])
+        linker_options.append('-lc' + file[2])
         linker_options.append('-lunicode' + file[2])
+        if compile_opt.do_test:
+            linker_options.append('-ltest' + file[2])
         linker_options.append('-lgcc')
         os.chdir(util.get_mossy_path())
         res = file[3](False, (compile_opt.get_global_compile_opt(False)

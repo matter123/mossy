@@ -87,10 +87,6 @@ definition of function or type, you should include the header that exports that.
 to the principle is that a source file that includes an associated header file does not need
 to re include the headers included by the associated header.
 
-####rationale
-By removing extraneous includes, compile time can be kept to a minimum, and by not relying on
-headers to have a particular file included, refactors can happen smoother and quicker.
-
 The ordering of includes should be as follows
   1. associated header file
   2. libc headers (math.h, string.h, ...)
@@ -106,12 +102,66 @@ The ordering of includes should be as follows
 When you have two or more includes from the same group they should be in alphabetical order.
 Macros should, whenever possible, follow the includes, and should not be intermixed.
 
-
 ####rationale
+By removing extraneous includes, compile time can be kept to a minimum, and by not relying on
+headers to have a particular file included, refactors can happen smoother and quicker.  
+
 Having a consistent location for each header allows you to quickly determine if a header is
 or is not present, much like a dictionary.
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Style Guidelines
 ================
 This portion is for changes that should, after symbol renaming, result in no changes to the
-resulat object files.
+resultant object files. So enforcement of this section is mandatory.
+
+##Indentation and Alignment
+Indentation to the current Indent level _MUST_ be done with tabs. Alignment to other lines
+_MUST_ be done with spaces. ex
+~~~
+--->if(...) {
+--->--->some_code(a,
+--->--->··········b);
+--->}
+~~~
+
+####rationale
+The combination of Indentation using tabs and Alignment using spaces, often called smart tabs,
+offer a superior editing experience, than either a tab only solution, or a space only solution.
+Both tab only and space only, require that the editor use the indent size that was chosen by the
+file author. However smart tabs allow the editor to use whatever indent size they prefer. ex
+~~~
+//2 space indent size
+->if(...) {
+->->some_code(a,
+->->··········b);
+->}
+//4 space indent size
+--->if(...) {
+--->--->some_code(a,
+--->--->··········b);
+--->}
+//7 space indent size
+------>if(...) {
+------>------>some_code(a,
+------>------>··········b);
+------>}
+~~~
+###Determining Indent Level
+Determining Indent Level is a necessary skill when using smart tabs, as you must precisely
+determine when the indentation stops and the alignment begins. The Indentation level for a
+file starts at 0 at the top and increases by 1 at the start of a block and decreases bu 1
+at the end of a block with a few exceptions. Most blocks start with `{` and end with `}`
+however not all blocks do. An exception to the Indentation Level is that access modifiers
+such as `public:` or `private:` are at 1 less Indentation Level than the blocks normal
+Indentation Level ex.
+~~~{.cpp}
+class foo {
+    int bar;
+public:
+    int foobar;
+}
+~~~
+
+####rationale
+Having a definite method for determining Indent level is critical to making sure code is consistant
+across revisions and editors.
