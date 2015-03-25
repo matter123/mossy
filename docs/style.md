@@ -151,6 +151,15 @@ _MUST_ be done with spaces. ex
 ------>}
 ~~~
 
+##Line Length
+Lines should be no more than 120 characters long when viewed using 4 spaces per tab. And no more
+than 144 characters long when using 8 spaces per tab.
+
+####rationale
+> By ensuring a maximum line length, the time nessiscary to develop editing tools on mossy can be shortened.
+> 120 characters can currently fit comfortable on the 800x600 screen. The limit to 144 characters when using
+> 8 spaces per tab ensures that the indent level never exceeds 6. An overly large indent level makes it
+> difficult to view code, and is indicative that a refactoring is needed.
 ###Determining Indent Level
 Determining Indent Level is a necessary skill when using smart tabs, as you must precisely
 determine when the indentation stops and the alignment begins. The Indentation level for a
@@ -226,3 +235,7 @@ Closing curly braces should be indented to new indent level, that they signify. 
 Trivial functions that are both declared and implement at the same time, can be written as a single line.
 This is an exception to the requirment that nothing follows an open curly brace, and
 that a closing curly brace is on its own line
+
+####rationale
+> By keeping the size of trivial functions small, you can create a more inline experince for viewing
+> the function with minimal disruption when checking signatures.
