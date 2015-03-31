@@ -11,8 +11,14 @@ so the rule can be rewritten/evicted.
 
 File Guidelines
 ===============
-File names and directories should always be written so they they can be typed on a
-standard US-104 keyboard without any modifiers with the exception of shift.
+File names and directories should always be written so that they can be written with the minimal
+of difficulty on most keyboards. This means you should almost always use only charcters from the
+following list
+
+    a b c d e f g h i j k l m n o p q r s t u v w x y z
+    A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
+    ` 0 1 2 3 4 5 6 7 8 9 - = [ ] \ ; ' , . /
+    ~ ) ! @ # $ % ^ & * ( _ + { } | : " < > ?
 
 ##Legal Header
 
@@ -101,6 +107,7 @@ The ordering of includes should be as follows
   9. vendor headers (pc/pit.h, ...)
   10. acpi headers (acpi.h, acpi/tables/MADT.h, ...)
   11. other includes ("blah.h", ...)
+
 When you have two or more includes from the same group they should be in alphabetical order.
 Macros should, whenever possible, follow the includes, and should not be intermixed.
 
