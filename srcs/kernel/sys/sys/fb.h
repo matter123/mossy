@@ -5,7 +5,7 @@
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+    	http://www.apache.org/licenses/LICENSE-2.0
 
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,84 +16,85 @@
 
 #pragma once
 namespace kernel {
-	void init_fb();
-	/**
-	 * @brief copies rect_buf onto the screen at x, y
-	 * copies the pixels from src_buf onto the screen at x, y
-	 * src_buf must be packed pixels and in R1R1R1R1R2R2R2R2R3R3R3R3 form
-	 * @param dest_x   destionation x location
-	 * @param dest_y   destionation y location
-	 * @param w        width of rectangle
-	 * @param h        height of rectangle
-	 * @param rect_buf location of start of source buffer x*y*bpp bytes big
-	 */
-	void copy_rect(int dest_x,int dest_y,
-	               int w,int h,
-	               void *rect_buf);
-	/**
-	 * @brief copies one part of the screen to another
-	 * copies video memory from \a src_x, \a src_y to \a dest_x, \a dest_y
-	 * in a rectangle the size of \a w x \a h
-	 * @param src_x  x of the source rectangle
-	 * @param src_y  y of the source rectangle
-	 * @param w      width of the rectangle being copied
-	 * @param h      height of the rectangle being copied
-	 * @param dest_x x of the destionation rectangle
-	 * @param dest_y y of the destionation rectangle
-	 */
-	void copy_rect(int src_x,int src_y,
-	               int w,int h,
-	               int dest_x, int dest_y);
+	enum packing {
+		BGRX,
+		XRGB,
+		BGR,
+		RGB,
+		BGRX_16,
+		BGR_16,
+		XRGB_16,
+		RGB_16,
+		SCREEN,
+	};
+	enum write_policy {
+		READ_ONLY,
+		READ_WRITE,
+		WRITE_ONLY,
+	};
+	enum copy_mode {
+		PASSTHROUGH,
+		TILE,
+		STRETCH,
+		IGNORE,
+		FAST,
+	};
 	enum bit_blit_op {
 		AND,
 		OR,
-		NOT,
 		XOR,
+		ADD,
+		SUB,
+		MUL,
+		DIV,
+		MOD,
+	}
+	struct color {
+		const int red;
+		const int green;
+		const int blue;
+		bool transparent;
+		color whiten();
+		color darken();
+		color(int red, int green, int blue, bool transparent = false) {
+			this->red=red;
+			this->green=green;
+			this->blue=blue;
+			this->transparent=transparent;
+		}
+		color pastel(color c);
+		color pure(color c);
 	};
-	/**
-	 * put a single pixel onto the screen, not reccomended for normal operation
-	 * @param x     x coordinate of pixel
-	 * @param y     y coordinate of pixel
-	 * @param color packed color for pixel
-	 */
-	void put_pixel(int x, int y, uint32_t color);
-	/**
-	 * performs a bit blit operation over a rectangle onto the screen
-	 * src_buf must be packed pixels and in R1R1R1R1R2R2R2R2R3R3R3R3 form
-	 * @param dest_x  x of the destionation rectangle
-	 * @param dest_y  y of the destionation rectangle
-	 * @param w       width of rectangle
-	 * @param h       height of rectangle
-	 * @param src_buf location of start of source buffer x*y*bpp bytes big
-	 * @param op      bit_blit operation to perform
-	 */
-	void bit_blit(int dest_x,int dest_y,
-	              int w,int h,
-	              void *src_buf, bit_blit_op op);
-	/**
-	 * perorms a bit blit operation over a rectangle and onto another
-	 * src_buf and dest_buf must be packed pixels and in R1R1R1R1R2R2R2R2R3R3R3R3 form
-	 * @param w        width of rectangle
-	 * @param h        height of rectangle
-	 * @param dest_buf location of start of destionation buffer x*y*bpp bytes big
-	 * @param src_buf  location of start of source buffer x*y*bpp bytes big
-	 * @param op       bit blit operation to perform
-	 */
-	void bit_blit(int w,int h,
-	              void *dest_buf,void *src_buf,
-	              bit_blit_op op);
+	namespace colors {
+		extern color white;
+		extern color black;
+		extern color red;
+		extern color green;
+		extern color blue;
+		extern color yellow;
+		extern color cyan;
+		extern color magenta;
+	}
 
-	uint32_t pack_rgb(uint8_t r,uint8_t g,uint8_t b);
+	class buffer {
+		int stride;
+		int buffer_addr;
+		write_policy wp;
+		packing pack;
+		bool cow;
+	public:
+		int width;
+		int height;
+		buffer(int width, int height, packing pack=SCREEN, write_policy write=READ_WRITE);
+		buffer(buffer b);
+		~buffer();
+		void fill(color c);
+		void copy_from(buffer b, int x=0, int y=0, copy_mode=PASSTHROUGH);
+		void bit_blit(buffer b);
+	};
 
-	void fill_rect(int x,int y,int w,int h, uint32_t packed_color);
-	void fill_hline(int x,int y,int w,uint32_t packed_color);
-	void fill_vline(int x,int y,int h,uint32_t packed_color);
-
-	void reset_fb();
-	void reset_fb(int x, int y, int w, int h);
-	void reset_fb(int x, int y, int w, int h, int img_x, int img_y);
-
-	int get_w();
-	int get_h();
-	int get_bpp();
+	buffer *get_screen();
+	buffer *get_front_buffer();
+	buffer *get_background();
+	buffer *get_background_orig();
 }

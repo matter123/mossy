@@ -42,9 +42,9 @@ ALIGN 8
 
 	dw 6,0
 	dd 12
-	
+
 	dq 0
-	
+
 	dw 5,0
 	dd 20
 	dd 1024
@@ -94,6 +94,7 @@ no_mboot:
 ;entry point
 start:
 	cli
+	xchg bx, bx
 	cmp eax, 0x36D76289
 	jne no_mboot
 	;mask PIC
@@ -135,11 +136,15 @@ flush:
 	mov gs, ax
 	mov ss, ax
 
+setup_low_bss:
 	mov edi, low_bss_start
 	mov ecx, LB_LEN
 	mov eax, 0
 	rep stosd
+	jmp setup_fb
 
+setup_paging:
+	hlt
 	mov edi, pt
 	xor ecx, ecx
 	mov esi, 1024
@@ -224,7 +229,7 @@ higherhalf:
 	mov eax, [esp+4]
 	lidt [eax]
 	ret
-
+;TODO investagate if pt_vga is still needed
 [SECTION .low_bss alloc noexec write nobits align=4096]
 [GLOBAL pd]
 [GLOBAL pt_vga]

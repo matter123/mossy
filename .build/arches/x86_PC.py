@@ -69,7 +69,7 @@ class x86_pc(arch.arch):
             with open(file, 'r') as f:
                 for line in f:
                     if line.startswith('%include'):
-                        depends.append(line.split(' ')[1][1:-1])
+                        depends.append(line.split(' ')[1][1:-2])
         elif ext == '.c':
             out = run_compiler(True, '-M -MG ' +
                                self.get_compile_opts(True, file) + ' ' + file)

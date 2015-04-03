@@ -39,6 +39,7 @@ def check_file(file):
     header = not (file.endswith(".c") or file.endswith(".cpp"))
     c_line = 0
     headers = []
+    indent = "    "
     with open(file, "r") as f:
         if "srcs/" in file:
             file = file[file.index('srcs/') + 5:]
@@ -50,32 +51,29 @@ def check_file(file):
             line = line.rstrip('\n')
             pas = True
             if c_line <= 14:
-                indent = "    "
                 if line != legal_head[c_line].replace('·', indent):
                     if c_line == 1:
                         line = re.match(
                             r"(\s*)Copyright (201[3-5](-1[45])?) (\w+ (\w+ )?\w+)",
                             line)
-                        if line is not None:
-                            line = line.group()
-                        else:
+                        if line is None:
                             message.error(file + " failed legal check on\
  line " + str(c_line + 1))
                             message.error('copyright line does not match\
  expected output')
-                        if line[1] is not None:
-                            indent = line[1]
+                        if line.group(1) is not None:
+                            indent = line.group(1)
                         else:
                             message.error(file + " failed legal check on \
                                           line " + str(c_line + 1))
                             message.error('copyright line does not have \
                                            leading whitespace')
-                        if line[2] is None:
+                        if line.group(2) is None:
                             message.error(file + " failed legal check on \
                                           line " + str(c_line + 1))
                             message.error('copyright line does not have valid \
                                            year')
-                        if line[4] is None:
+                        if line.group(4) is None:
                             message.error(file + " failed legal check on \
                                           line " + str(c_line + 1))
                             message.error('copyright line does not have valid \
