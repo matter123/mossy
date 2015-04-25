@@ -12,7 +12,7 @@ so the rule can be rewritten/evicted.
 File Guidelines
 ===============
 File names and directories should always be written so that they can be written with the minimal
-of difficulty on most keyboards. This means you should almost always use only charcters from the
+of difficulty on most keyboards. This means you should almost always use only characters from the
 following list
 
     a b c d e f g h i j k l m n o p q r s t u v w x y z
@@ -87,7 +87,7 @@ blank line then the namespace deceleration. C++ source files are required to be 
 
 ####rationale
 > Consistent file beginnings create a more uniform and familiar working environment. Namespaced
-> Source files reduce the chance of symbol collisions, and create a seperation of concerns across many files. 
+> Source files reduce the chance of symbol collisions, and create a seperation of concerns across many files.
 
 ##Include Ordering
 Includes in files should follow the 'Include What You Use' principle, in that if you require the

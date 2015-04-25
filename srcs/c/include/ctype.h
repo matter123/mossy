@@ -5,7 +5,7 @@
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+        http://www.apache.org/licenses/LICENSE-2.0
 
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
@@ -26,7 +26,6 @@ extern "C" {
  * @param c an ascii char
  *
  * @return 1 if alphanumeric, 0 otherwise
- * @date created on 2014-05-30
  * @sa isalpha
  * @sa isdigit
  * @sa isxdigit
@@ -44,6 +43,15 @@ int isalnum(int c);
  * @sa isxdigit
  */
 int isalpha(int c);
+/**
+ * @brief checks if character is blank
+ * @detils determines if a chracter is
+ * blank, as in ` ` or `\t`
+ *
+ * @param c an ascii character
+ *
+ * @return 1 if blank, 0 otherwise
+ */
 int isblank(int c);
 int iscntrl(int c);
 int isdigit(int c);
