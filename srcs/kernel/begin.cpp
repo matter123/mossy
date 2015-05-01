@@ -47,26 +47,10 @@ namespace kernel {
 		hal::init_arch();
 		hal::print_boot_msg("Init heap",heap_init(),true);
 		//framebuffer and vterm
-		init_fb();
+		init_system_fb();
+		hal::magic_break();
 		init_tr();
 		hal::print_boot_msg("Init heap",heap_init(),true);
-		//munching squares, im bored
-		void *spot=malloc(4);
-		memset(spot,0xAA,4);
-		while(1) {
-			int t1=rand()%1024;
-			int t=t1;
-			while((t-t1)<2000) {
-				for(int x=0;x<1024;x++) {
-					int y=x^t;
-					if(y<768) {
-						bit_blit(x,y,1,1,spot,OR);
-					}
-				}
-				t++;
-			}
-			reset_fb();
-		}
 		hal::ready();
 		hal::cout<<std::TC::BACKCOLOR<<std::TC::BLACK<<
 		         "    |00|01|02|03|04|05|06|07|08|09|0A|0B|0C|0D|0E|0F|10|11|12|13|14|15|16|17|18|19|1A|1B|1C|1D|1E|1F|"

@@ -18,30 +18,30 @@
 #include <sys/fb.h>
 namespace kernel {
 	void color::lighten() {
-		int red=this->red+(this->red/2);
-		int green=this->green+(this->green/2);
-		int blue=this->blue+(this->blue/2);
-		this->red=(blue&(~0xFF)?255:blue);
-		this->green=(green&(~0xFF)?255:green);
-		this->blue=(blue&(~0xFF)?255:blue);
+		int r=this->red+(this->red/2);
+		int g=this->green+(this->green/2);
+		int b=this->blue+(this->blue/2);
+		this->red=(r&(~0xFF)?255:r);
+		this->green=(g&(~0xFF)?255:g);
+		this->blue=(b&(~0xFF)?255:b);
 	}
 	void color::darken() {
-		int red=this->red-(this->red/2);
-		int green=this->green-(this->green/2);
-		int blue=this->blue-(this->blue/2);
-		this->red=(blue<0?255:blue);
-		this->green=(green<0?255:green);
-		this->blue=(blue&(?255:blue);
+		int r=this->red-(this->red/2);
+		int g=this->green-(this->green/2);
+		int b=this->blue-(this->blue/2);
+		this->red=(r<0?2:0x00);
+		this->green=(g<0?g:0x00);
+		this->blue=(b<0?b:0x00);
 	}
 	void color::super_light() {
-		big=max(this->red,max(this->green,this->blue));
+		int big=std::max(this->red,std::max(this->green,this->blue));
 		double mul=255.0/big;
 		this->red=(int)(this->red*mul)+0.5;
 		this->green=(int)(this->green*mul)+0.5;
 		this->blue=(int)(this->blue*mul)+0.5;
 	}
 	void color::super_dark() {
-		small=min(this->red,min(this->green,this->blue));
+		int small=std::min(this->red,std::min(this->green,this->blue));
 		double mul=small/255.0;
 		this->red=(int)(this->red*mul)+0.5;
 		this->green=(int)(this->green*mul)+0.5;
@@ -53,24 +53,25 @@ namespace kernel {
 		this->blue=(this->blue+0xCC)/2;
 	}
 	void color::pure() {
-		big=max(this->red,max(this->green,this->blue));
+		int big=std::max(this->red,std::max(this->green,this->blue));
 		double mul=255.0/big;
-		switch(big) {
-			case this->red:
-				this->red=(int)(this->red*mul)+0.5;
-				this->green=(int)(this->green*mul*0.5)+0.5;
-				this->blue=(int)(this->blue*mul*0.5)+0.5;
-				return;
-			case this->green:
-				this->red=(int)(this->red*mul*0.5)+0.5;
-				this->green=(int)(this->green*mul)+0.5;
-				this->blue=(int)(this->blue*mul*0.5)+0.5;
-				return;
-			case this->blue:
-				this->red=(int)(this->red*mul*0.5)+0.5;
-				this->green=(int)(this->green*mul*0.5)+0.5;
-				this->blue=(int)(this->blue*mul)+0.5;
-				return;
+		if(big==this->red) {
+			this->red=(int)(this->red*mul)+0.5;
+			this->green=(int)(this->green*mul*0.5)+0.5;
+			this->blue=(int)(this->blue*mul*0.5)+0.5;
+			return;
+		}
+		if(big==this->green) {
+			this->red=(int)(this->red*mul*0.5)+0.5;
+			this->green=(int)(this->green*mul)+0.5;
+			this->blue=(int)(this->blue*mul*0.5)+0.5;
+			return;
+		}
+		if(big==this->blue) {
+			this->red=(int)(this->red*mul*0.5)+0.5;
+			this->green=(int)(this->green*mul*0.5)+0.5;
+			this->blue=(int)(this->blue*mul)+0.5;
+			return;
 		}
 	}
 	void color::invert() {
@@ -78,7 +79,7 @@ namespace kernel {
 		this->green=(255-this->green);
 		this->blue=(255-this->blue);
 	}
-	namespace color {
+	namespace colors {
 		color white(0xFF, 0xFF, 0xFF);
 		color black(0x00, 0x00, 0x00);
 		color red(0xFF, 0x00, 0x00);

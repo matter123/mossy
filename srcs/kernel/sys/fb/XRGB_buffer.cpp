@@ -15,16 +15,18 @@
 */
 
 #include <sys/fb.h>
-class XRGB_buffer:buffer {
+namespace kernel {
+	class XRGB_buffer:buffer {
+		void fill(color c);
+	};
 
-};
-void XRGB_buffer::fill(color c) {
-	uintptr_t addr=this->buffer;
-	for(int i=0;i<this->height;i++) {
-		for(int w=0;w<this->width;j++) {
-			*static_cast<uint32_t *>(addr+w*4)=c.red<<16|c.green<<8|c.blue;
-		}
-		addr+=this->stride;
+	void XRGB_buffer::fill(color c) {
+		uintptr_t baddr=(uintptr_t)this->addr;
+		for(int i=0;i<this->height;i++) {
+			for(int w=0;w<this->width;w++) {
+				*reinterpret_cast<uint32_t *>(baddr+w*4)=c.red<<16|c.green<<8|c.blue;
+			}
+			addr+=this->stride;
+		}	
 	}
-	
 }

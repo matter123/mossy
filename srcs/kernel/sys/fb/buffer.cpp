@@ -15,36 +15,38 @@
 */
 
 #include <sys/fb.h>
+#include <string.h>
+
 namespace kernel {
-	buffer::buffer(int w, int h, packing p, write_policy w) {
+	buffer::buffer(int w, int h, packing p, write_policy write) {
 		this->width=w;
 		this->height=h;
 		this->pack=p;
-		this->wp=w;
+		this->wp=write;
 		this->cow=nullptr;
 		this->stride=4*width;
 		if (p==BGRX_16||p==BGR_16||
 		    p==XRGB_16||p==RGB_16) {
 			stride=2*width;
 		}
-		this->buffer=malloc(this->stride*h);
-		memset(this->buffer, 0, this->stride*h);
+		this->addr=(pointer)malloc(this->stride*h);
+		memset(this->addr, 0, this->stride*h);
 	}
 
-	buffer::buffer(buffer b) {
-		this->width=b->width;
-		this->height=b->height;
-		this->stride=b->stride;
+	buffer::buffer(buffer &b) {
+		this->width=b.width;
+		this->height=b.height;
+		this->stride=b.stride;
 		this->wp=READ_WRITE;
-		this->packing=b->packing;
-		if(b->cow) {
-			this->buffer=malloc(this->stride*h);
-			memcpy(this->buffer, b->buffer, this->stride*h);
+		this->pack=b.pack;
+		if(b.cow) {
+			this->addr=(pointer)malloc(this->stride*this->height);
+			memcpy(this->addr, b.addr, this->stride*this->height);
 			return;
 		}
-		this->buffer=b->buffer;
-		this->cow=b;
-		b->cow=this;
+		this->addr=b.addr;
+		this->cow=&b;
+		b.cow=this;
 	}
 
 	buffer::~buffer() {
@@ -52,7 +54,7 @@ namespace kernel {
 			this->cow->cow=nullptr;
 			return;
 		}
-		free(this->buffer);
-		this->buffer=nullptr;
+		free(this->addr);
+		this->addr=nullptr;
 	}
 }

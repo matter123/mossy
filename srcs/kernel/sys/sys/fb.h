@@ -50,24 +50,24 @@ namespace kernel {
 		MOD,
 	};
 	struct color {
-		const uint8_t red;
-		const uint8_t green;
-		const uin8_t blue;
+		uint8_t red;
+		uint8_t green;
+		uint8_t blue;
 		bool transparent;
 
-		void whiten();
+		void lighten();
 		void super_light();
 		void darken();
 		void super_dark();
 		void pastel();
 		void pure();
 		void invert();
-		color(int red, int green, int blue, bool transparent = false) {
-			this->red=red;
-			this->green=green;
-			this->blue=blue;
-			this->transparent=transparent;
-		}
+		color(int _red, int _green, int _blue, bool _transparent = false)
+			: red(_red)
+			, green(_green)
+			, blue(_blue)
+			, transparent(_transparent)
+			{}
 	};
 
 	namespace colors {
@@ -84,7 +84,7 @@ namespace kernel {
 	class buffer {
 	protected:
 		int stride;
-		uintptr_t buffer;
+		pointer addr;
 		write_policy wp;
 		packing pack;
 		buffer *cow;
@@ -92,11 +92,11 @@ namespace kernel {
 	public:
 		int width;
 		int height;
-		buffer(buffer b);
+		buffer(buffer &b);
 		~buffer();
-		void fill(color c)=0;
-		void copy_from(buffer b, int x=0, int y=0, copy_mode=PASSTHROUGH)=0;
-		void bit_blit(buffer b, bit_blit_op, operation)=0;
+		virtual void fill(color c)=0;
+		virtual void copy_from(buffer &b, int x=0, int y=0, copy_mode=PASSTHROUGH)=0;
+		virtual void bit_blit(buffer &b, bit_blit_op operation)=0;
 	};
 
 	buffer *get_screen();
