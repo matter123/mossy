@@ -101,15 +101,6 @@ def check_file(file):
                         pas = False
                         break
                 c_line += 1
-            else:
-                if line != "" and len(headers) == 0:
-                    if not line.startswith("#include"):
-                        print(line)
-                        message.error(file + " is missing a #include")
-                        pas = False
-                        break
-                    else:
-                        break
         if not pas:
             message.error(file + " failed a mandatory check")
         return pas

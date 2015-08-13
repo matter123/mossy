@@ -5,7 +5,7 @@
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+        http://www.apache.org/licenses/LICENSE-2.0
 
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,9 +13,9 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 */
-#include <stdint.h>
+
+#pragma once
 #include <graphics/shape.h>
-#include <memory.h>
 namespace kernel {
 	namespace graphics {
 		enum bit_blit_op {
@@ -40,7 +40,7 @@ namespace kernel {
 			FrameBuffer(const FrameBuffer &) {}
 			FrameBuffer & operator=(const FrameBuffer &) {return *this;}
 		public:
-			virtual ~FrameBuffer() {};
+			virtual ~FrameBuffer() {}
 			virtual uint32_t *buffer()=0;
 			virtual void fill(uint32_t color)=0;
 			//TODO make shared pointer and make that a non pointer
@@ -52,8 +52,8 @@ namespace kernel {
 			virtual void height()=0;
 		};
 		class framebuffer::FrameBuffer {
-			uint32_t *buffer;
-			int width, height
+			uint32_t *buf;
+			int width, height;
 		public:
 			framebuffer(int width, int height);
 		};

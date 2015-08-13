@@ -22,7 +22,6 @@
  *
  * @note it is recommended to wrap your testing implementation in #ifdef TEST ... #endif
  */
-#include <stdint.h>
 #include <hal/console.h>
 #include <sys/text_color.h>
 namespace kernel {
