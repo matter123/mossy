@@ -9,6 +9,7 @@ class kernel_module(module.module):
         compile_opt.append('-I./srcs/kernel/hal')
         compile_opt.append('-I./srcs/kernel/sys')
         compile_opt.append('-I./srcs/kernel/acpi')
+        compile_opt.append('-I./srcs/kernel/graphics')
         compile_opt.append('-I./srcs/kernel/stdlib/include')
         compile_opt.append('-I./srcs/kernel/arch')
         compile_opt.append('-I./srcs/kernel/vendor')

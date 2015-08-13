@@ -45,7 +45,7 @@ int isalnum(int c);
 int isalpha(int c);
 /**
  * @brief checks if character is blank
- * @detils determines if a chracter is
+ * @details determines if a chracter is
  * blank, as in ` ` or `\t`
  *
  * @param c an ascii character
