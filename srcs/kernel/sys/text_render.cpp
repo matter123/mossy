@@ -14,9 +14,8 @@
     limitations under the License.
 */
 #include <sys/text_render.h>
-#include <sys/fb.h>
+#include <sys/vesa.h>
 #include <hal/multiboot.h>
-#include <struct.h>
 #include <utf8.h>
 #include <hal/console.h>
 namespace kernel {
@@ -73,6 +72,7 @@ namespace kernel {
 		return glyphs+head->def_cp_idx;
 	}
 	void draw_char_at(int x,int y,uint32_t codepoint,uint32_t color) {
+		static graphics::wraparrayFB fb=graphics::wraparrayFB(nullptr,0,0);
 		glyph_int *glyph=get_glyph(codepoint);
 		uint32_t buf[9*32];
 		for(int _y=0; _y<16; _y++) {
@@ -93,8 +93,10 @@ namespace kernel {
 			colp1=colp1<<1;
 			colp2=colp2<<1;
 		}
-		bit_blit(x,y,9,16,buf+(9*16),AND);
-		bit_blit(x,y,9,16,buf,OR);
+		fb.usenew(buf,9,16);
+		screen->bit_blit(&fb,x,y,graphics::BB_AND);
+		fb.usenew(buf+(9*16),9,16);
+		screen->bit_blit(&fb,x,y,graphics::BB_OR);
 	}
 	void draw_string_at(int x,int y,const char *s,uint32_t color) {
 		if(s==NULL) {

@@ -31,8 +31,8 @@
 #include <acpi.h>
 #include <acpi/acpi_os.h>
 #include <test.h>
-#include <sys/fb.h>
 #include <sys/text_render.h>
+#include <sys/vesa.h>
 #include <memory.h>
 namespace hal {
 	void ready();
@@ -47,10 +47,12 @@ namespace kernel {
 		hal::init_arch();
 		hal::print_boot_msg("Init heap",heap_init(),true);
 		//framebuffer and vterm
-		init_system_fb();
-		hal::magic_break();
+		init_vesa();
 		init_tr();
-		hal::print_boot_msg("Init heap",heap_init(),true);
+		while (1) {
+			draw_string_at(rand()%1024,rand()%768,"PERF TEST!!!",0x0);
+			screen->flush();
+		}
 		hal::ready();
 		hal::cout<<std::TC::BACKCOLOR<<std::TC::BLACK<<
 		         "    |00|01|02|03|04|05|06|07|08|09|0A|0B|0C|0D|0E|0F|10|11|12|13|14|15|16|17|18|19|1A|1B|1C|1D|1E|1F|"

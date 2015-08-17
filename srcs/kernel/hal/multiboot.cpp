@@ -55,8 +55,7 @@ namespace hal {
 			tags[i]=reinterpret_cast<multiboot_tag *>(temp_ptr);
 			temp_ptr+=tags[i]->size;
 			if(tags[i]->type==3) {
-				multiboot_module *tmp=reinterpret_cast<multiboot_module *>
-				                      (w_malloc(sizeof(multiboot_module)));
+				multiboot_module *tmp=reinterpret_cast<multiboot_module *>(w_malloc(sizeof(multiboot_module)));
 				multiboot_module_int *mmi=reinterpret_cast<multiboot_module_int *>(tags[i]);
 				tmp->head.type=3;
 				tmp->mod_start=static_cast<uintptr_t>(mmi->mod_start);
@@ -74,12 +73,9 @@ namespace hal {
 			}
 			if(get_tag(i)->type==3) {
 				//relocate this module
-				multiboot_module *module=reinterpret_cast<multiboot_module *>
-				                         (get_tag(i));
+				multiboot_module *module=reinterpret_cast<multiboot_module *>(get_tag(i));
 				void *start;
 				if(module->mod_end-module->mod_start>=0x19000) {
-					hal::cout<<hal::address<<module->mod_start;
-					//hal::magic_break();
 					//skip over big modules
 					continue;
 				}

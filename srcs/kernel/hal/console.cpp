@@ -23,6 +23,7 @@
 #include <utf8.h>
 #include <string.h>
 #include <sys/text_color.h>
+#include <sys/vesa.h>
 namespace hal {
 	void ostream::print(const char *s) {
 		static bool back=false;
@@ -71,6 +72,7 @@ namespace hal {
 			printc(this->back_color,this->color,s);
 			s+=unicode::utf8::get_char_len(s);
 		}
+		if(kernel::screen)kernel::screen->flush();
 	}
 	ios_base::ios_base() {
 		base=10;

@@ -25,6 +25,7 @@
 */
 #ifndef ASM
 #include <stdint.h>
+#include "include/struct.h"
 
 #ifdef __cplusplus
 #include "include/panic.h"

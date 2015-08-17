@@ -17,8 +17,15 @@
 #pragma once
 namespace kernel {
 	namespace graphics {
+		class FrameBuffer;
 		class Shape {
-
+		protected:
+			Shape() {}
+			Shape(const Shape &) {}
+			Shape & operator=(const Shape &) {return *this;}
+		public:
+			~Shape() {}
+			virtual void draw(FrameBuffer *fb, int x, int y)=0;
 		};
 	}
 }

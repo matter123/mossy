@@ -18,7 +18,6 @@
 #include <string.h>
 #include <hal/hal.h>
 #include <utf8.h>
-#include <sys/fb.h>
 #include <sys/text_render.h>
 #include <io.h>
 #define TEXT_HEIGHT 47
@@ -37,8 +36,8 @@ namespace hal {
 	void scroll(int lines) {
 		if(is_ready) {
 			state_begin+=lines*16;
-			kernel::copy_rect(0,lines*16+2,kernel::get_w(),kernel::get_h()-(lines*16+2),0,2);
-			kernel::reset_fb(0,0,kernel::get_w(),2,0,state_begin);
+			//kernel::copy_rect(0,lines*16+2,kernel::get_w(),kernel::get_h()-(lines*16+2),0,2);
+			//kernel::reset_fb(0,0,kernel::get_w(),2,0,state_begin);
 		}
 		wy-=lines;
 	}
@@ -61,7 +60,7 @@ namespace hal {
 		} else {
 			if(is_ready) {
 				if(!(back_color&(0xFF<<24))) {
-					kernel::fill_rect(wx*9+2,wy*16+2,9,16,back_color);
+					//kernel::fill_rect(wx*9+2,wy*16+2,9,16,back_color);
 				}
 				kernel::draw_char_at(wx*9+2,wy*16+2,cp,text_color&0xFFFFFF);
 			}
@@ -70,7 +69,7 @@ namespace hal {
 	}
 	void cls() {
 		if(is_ready) {
-			kernel::reset_fb();
+			//kernel::reset_fb();
 		}
 		state_begin=0;
 	}

@@ -94,7 +94,6 @@ no_mboot:
 ;entry point
 start:
 	cli
-	xchg bx, bx
 	cmp eax, 0x36D76289
 	jne no_mboot
 	;mask PIC
@@ -141,10 +140,9 @@ setup_low_bss:
 	mov ecx, LB_LEN
 	mov eax, 0
 	rep stosd
-	jmp setup_fb
+	jmp setup_paging
 
 setup_paging:
-	hlt
 	mov edi, pt
 	xor ecx, ecx
 	mov esi, 1024
