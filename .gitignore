@@ -1,0 +1,8 @@
+*.o
+*.iso
+bin
+sysroot/boot/kernel
+sysroot/usr/include/*
+!sysroot/usr/include/.keep_folder
+*.a
+docs/html
