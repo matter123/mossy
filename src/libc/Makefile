@@ -10,17 +10,17 @@ CPP=clang++ --target=x86_64-elf
 AS=nasm
 
 CSOURCES:=$(shell find . -name '*.c')
-COBJECTS:=$(patsubst %.c, %.o, $(CSOURCES))
+COBJECTS:=$(patsubst %.c, %.c.o, $(CSOURCES))
 LC_COBJECTS:=$(patsubst ./%, $(LIBC_BIN_PATH)/%, $(COBJECTS))
 LK_COBJECTS:=$(patsubst ./%, $(LIBK_BIN_PATH)/%, $(COBJECTS))
 
 CXXSOURCES:=$(shell find . -name '*.cpp')
-CXXOBJECTS:=$(patsubst %.cpp, %.o, $(CXXSOURCES))
+CXXOBJECTS:=$(patsubst %.cpp, %.cpp.o, $(CXXSOURCES))
 LC_CXXOBJECTS:=$(patsubst ./%, $(LIBC_BIN_PATH)/%, $(CXXOBJECTS))
 LK_CXXOBJECTS:=$(patsubst ./%, $(LIBK_BIN_PATH)/%, $(CXXOBJECTS))
 
-SSOURCES:=$(shell find . -name '*.s')
-SOBJECTS:=$(patsubst %.s, %.o, $(SSOURCES))
+SSOURCES:=$(shell find . -name '*.asm')
+SOBJECTS:=$(patsubst %.asm, %.asm.o, $(SSOURCES))
 LC_SOBJECTS:=$(patsubst ./%, $(LIBC_BIN_PATH)/%, $(SOBJECTS))
 LK_SOBJECTS:=$(patsubst ./%, $(LIBK_BIN_PATH)/%, $(SOBJECTS))
 
@@ -31,7 +31,7 @@ HEADSYSROOT:=$(patsubst ./%, $(SYSROOT_PATH)/usr/include/libc/%, $(HEADSRC))
 WFLAGSON=-Wall -Wextra -Werror=return-type -Wshadow -Wundef -Wdeprecated -Wredundant-decls -Werror=parentheses
 WFLAGSOFF=-Wno-unused-parameter -Wno-sign-compare -Wno-implicit-exception-spec-mismatch
 FFLAGS=-ffreestanding -fstack-protector -fno-common
-DFLAGS:=-DMOSSY
+DFLAGS:=-DMOSSY $(BUILD_INFO)
 MFLAGS=-mcmodel=kernel -mno-red-zone
 IFLAGS=--sysroot=$(SYSROOT_PATH) -I$(SYSROOT_PATH)/usr/include/libc/include -include $(SYSROOT_PATH)/usr/include/kernel/stdlib/include/global.h
 CFLAGS=-O3 -std=c11 $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS) $(MFLAGS) $(IFLAGS)
@@ -53,24 +53,24 @@ $(LIBK): $(LK_CXXOBJECTS) $(LK_COBJECTS) $(LK_SOBJECTS)
 	@mkdir -p $(dir $@)
 	$(AR) rcs $@ $^
 
-$(LIBC_BIN_PATH)/%.o: ./%.cpp $(HEADSYSROOT)
+$(LIBC_BIN_PATH)/%.cpp.o: ./%.cpp $(HEADSYSROOT)
 	@mkdir -p $(dir $@)
 	$(CPP) -DLIBC $(CXXFLAGS) -o $@ -c $<
-$(LIBK_BIN_PATH)/%.o: ./%.cpp $(HEADSYSROOT)
+$(LIBK_BIN_PATH)/%.cpp.o: ./%.cpp $(HEADSYSROOT)
 	@mkdir -p $(dir $@)
 	$(CPP) -DLIBK $(CXXFLAGS) -o $@ -c $<
 
-$(LIBC_BIN_PATH)/%.o: ./%.c $(HEADSYSROOT)
+$(LIBC_BIN_PATH)/%.c.o: ./%.c $(HEADSYSROOT)
 	@mkdir -p $(dir $@)
 	$(CC) -DLIBC $(CFLAGS) -o $@ -c $<
-$(LIBK_BIN_PATH)/%.o: ./%.c $(HEADSYSROOT)
+$(LIBK_BIN_PATH)/%.c.o: ./%.c $(HEADSYSROOT)
 	@mkdir -p $(dir $@)
 	$(CC) -DLIBK $(CFLAGS) -o $@ -c $<
 
-$(LIBC_BIN_PATH)/%.o: ./%.s
+$(LIBC_BIN_PATH)/%.asm.o: ./%.asm
 	@mkdir -p $(dir $@)
 	$(AS) -dLIBC $(ASFLAGS) $< -o $@
-$(LIBK_BIN_PATH)/%.o: ./%.s
+$(LIBK_BIN_PATH)/%.asm.o: ./%.asm
 	@mkdir -p $(dir $@)
 	$(AS) -dLIBK $(ASFLAGS) $< -o $@
 

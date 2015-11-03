@@ -1,9 +1,17 @@
 all: iso
-.PHONY: all headers libs kernel iso clean
+.PHONY: all headers libs kernel iso clean build_info
+
+build_info:
+	python3 gen_buildinfo.py
+
+-include build_info
+
 clean:
 	$(MAKE) -C src/kernel clean
 	$(MAKE) -C src/libc clean
 	@-rm mossy.iso 2> /dev/null
+	@-rm .build_number
+
 headers:
 	$(MAKE) -C src/kernel headers
 	$(MAKE) -C src/libc headers

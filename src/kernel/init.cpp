@@ -15,6 +15,5 @@
 */
 extern "C"
 void init_exec() {
-	volatile uint16_t *vga_mem=reinterpret_cast<uint16_t *>(0xB8000);
-	vga_mem[0]=0xC0<<8|'!';
+	assert(1,0,"1==0");
 }

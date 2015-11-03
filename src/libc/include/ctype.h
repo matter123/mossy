@@ -13,11 +13,25 @@
 	See the License for the specific language governing permissions and
 	limitations under the License.
 */
-#include <stdlib.h>
-NORETURN void __stack_chk_fail() {
-#if IN_LIBC
-	abort();
-#elif IN_LIBK
-	panic("Stack smashing detected");
+#pragma once
+#ifdef __cplusplus
+extern "C" {
 #endif
+int isalnum(int c);
+int isalpha(int c);
+int isblank(int c);
+int iscntrl(int c);
+int isdigit(int c);
+int isgraph(int c);
+int islower(int c);
+int isprint(int c);
+int ispunct(int c);
+int isspace(int c);
+int isupper(int c);
+int isxdigit(int c);
+
+int tolower(int c);
+int toupper(int c);
+#ifdef __cplusplus
 }
+#endif

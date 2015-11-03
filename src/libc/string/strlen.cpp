@@ -14,10 +14,11 @@
 	limitations under the License.
 */
 #include <stdlib.h>
-NORETURN void __stack_chk_fail() {
-#if IN_LIBC
-	abort();
-#elif IN_LIBK
-	panic("Stack smashing detected");
-#endif
+#include <string.h>
+
+extern "C"
+size_t strlen(const char *string) {
+	size_t len=0;
+	while(*string++)len++;
+	return len;
 }

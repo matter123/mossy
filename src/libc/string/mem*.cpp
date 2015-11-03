@@ -14,10 +14,12 @@
 	limitations under the License.
 */
 #include <stdlib.h>
-NORETURN void __stack_chk_fail() {
-#if IN_LIBC
-	abort();
-#elif IN_LIBK
-	panic("Stack smashing detected");
-#endif
+#include <string.h>
+
+extern "C"
+void *memcpy(void *dest,const void *src,size_t size) {
+	pointer pdest=(pointer)dest;
+	const_pointer psrc=(const_pointer)src;
+	while(size--)*pdest++=*psrc++;
+	return dest;
 }

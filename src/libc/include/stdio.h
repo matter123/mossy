@@ -13,11 +13,16 @@
 	See the License for the specific language governing permissions and
 	limitations under the License.
 */
-#include <stdlib.h>
-NORETURN void __stack_chk_fail() {
-#if IN_LIBC
-	abort();
-#elif IN_LIBK
-	panic("Stack smashing detected");
+#pragma once
+#include <stdarg.h>
+
+#ifdef __cplusplus
+extern "C" {
 #endif
+
+int sprintf(char *str,const char *fmt, ...);
+int vsprintf(char *str,const char *fmt, va_list args);
+
+#ifdef __cplusplus
 }
+#endif

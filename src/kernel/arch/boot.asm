@@ -59,6 +59,10 @@ multiboot_header_end:
 	dw 0xFFFF,0x0000
 	db 0x00, 10011010b
 	db 11001111b, 0x00
+	code_64_user_gdt:
+	dd 0
+	db 0x0, 10011010b
+	db 0x0, 10011010b
 	gdt_end:
 ALIGN 8
 	gdtr_64_low:
