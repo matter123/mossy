@@ -14,7 +14,6 @@
 	limitations under the License.
 */
 #pragma once
-#define INT_CALL_GATE 0xC
 #define INT_INT_GATE  0xE
 #define INT_TRAP_GATE 0xF
 
@@ -35,9 +34,20 @@ struct idt_entry {
 void set_entry(int int_num,idt_entry *);
 void set_entry(int int_num, void *addr,int type,bool userspace);
 
+struct cpu_state {
+	uint64_t cr4, cr3, cr2, cr0;
+	uint64_t r15, r14, r13, r12, r11, r10, r9, r8;
+	uint64_t rdi, rsi, rdx, rcx, rbx, rax, rbp;
+	uint64_t fs, gs;
+	uint64_t dbg, int_num, err_code;
+	uint64_t rip, cs, rflags, rsp, ss;
+};
 struct def_interrupt {
-//	bool (*default_interrupt)(cpu_state *);
+	bool (*default_interrupt)(cpu_state *,void *sse_save,bool *in_use);
 	def_interrupt * next;
 };
-
+void install_JT1(int int_num,void *target);
+void install_JT2(int int_num,void *target);
+void install_single_interrupt(int int_num,void (*default_interrupt)(cpu_state *,void *sse_save,bool *in_use));
+void install_interrupt(int int_num,def_interrupt *);
 void install_interrupts();

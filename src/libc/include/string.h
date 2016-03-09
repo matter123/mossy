@@ -20,6 +20,8 @@ extern "C" {
 #endif
 size_t strlen(const char *);
 void *memcpy(void *dest,const void *src,size_t size);
+char *strcat(char *dest,const char *src);
+char *strcpy(char *dest,const char *src);
 #ifdef __cplusplus
 }
 #endif

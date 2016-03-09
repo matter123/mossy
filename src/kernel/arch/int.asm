@@ -22,6 +22,7 @@ resb 1
 [GLOBAL jump_table]
 [GLOBAL jump_table2]
 [GLOBAL IDT]
+[GLOBAL IDTR]
 ALIGN 4096
 IDT:
 times 256*16 db 0
@@ -30,13 +31,14 @@ times 256 dq fail_fast
 jump_table2:
 times 256 dq fail_fast
 IDTR:
-dw 256*16
+dw (256*16) - 1
 dq IDT
 [section .text]
 ;global execption handlers need to call pop rax as first instruction
 %macro EXCEPT_C 2
 [GLOBAL exc%1]
 exc%1:
+	;CPL change forces ss to be zero check later if an issue
 	push qword %1
 	push qword %2
 	push rax
@@ -104,20 +106,26 @@ pop  rbp
 pop  fs
 pop  gs
 %endmacro
+[GLOBAL lidtr]
+lidtr:
+	mov rax, IDTR
+	lidt [rax]
+	ret
 
 [GLOBAL fail_fast]
 fail_fast:
+xchg bx, bx
 jmp .past
-	.lidtr:
+	.flidtr:
 	dw 0
 	dq 0
 	.past:
-	mov rax, .lidtr ;load fake lidt
+	mov rax, .flidtr ;load fake lidt
 	lidt [rax]
 	xchg bx, bx ;magic break
 	mov bx, 0
 	div bx ;div by 0 - triple fault
-	iret ;dont drop off
+	iretq ;dont drop off
 
 [GLOBAL def_handler]
 def_handler:
@@ -138,7 +146,8 @@ def_handler:
 	fxrstor [sse_save]
 	mov byte [in_use], 0
 	pop_x64
-	iret
+	add rsp, 24
+	iretq
 
 EXCEPT_NC 0,  e00
 EXCEPT_NC 1,  e01

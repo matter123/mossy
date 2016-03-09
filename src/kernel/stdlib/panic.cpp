@@ -28,21 +28,20 @@ void panic(const char *message) {
 	while(*message) vga_mem[i++]|=*message++;
 	while(1);
 }
+char alloc[512];
 NORETURN
 extern "C"
 void panic_fn(const char *message,const char *func,const char *file, int line) {
 	const char *fmt = "panic in function '%s' on line %d in file '%s': %s";
-	int size = strlen(fmt)+strlen(message)+strlen(func)+strlen(file)+5;
-	char *alloc = (char *)__alloca(size);
 	sprintf(alloc,fmt,func,line,file,message);
 	panic(alloc);
 }
 NORETURN
 extern "C"
 void assertf(const char *message) {
-	const char *fmt = "assertion failed: %s";
-	int size = strlen(fmt)+strlen(message)+5;
-	char *alloc = (char *)__alloca(size);
-	sprintf(alloc,fmt,message);
+	const char *fmt = "assertion failed: ";
+	alloc[0]='\0'; //sprintf fails in interrupts, sse alignments
+	strcpy(alloc,fmt);
+	strcat(alloc,message);
 	panic(alloc);
 }

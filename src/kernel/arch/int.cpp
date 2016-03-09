@@ -125,8 +125,45 @@ void set_entry(int int_num, void *target,int type,bool userspace) {
 }
 extern "C" uintptr_t jump_table[256];
 extern "C" uintptr_t jump_table2[256];
+void install_JT1(int int_num,void *target) {
+	jump_table[int_num]=(uintptr_t)target;
+}
+void install_JT2(int int_num,void *target) {
+	jump_table2[int_num]=(uintptr_t)target;
+}
+extern "C" int lidtr();
 void install_interrupts() {
 	for(int i=0;i<256;i++) {
 		set_entry(i,exc_arr[i],INT_INT_GATE,false);
 	}
+	lidtr();
+}
+def_interrupt *handles[256];
+void default_handler(cpu_state * cpu,void *sse,bool *use) {
+	if(handles[cpu->int_num]!=nullptr) {
+		def_interrupt *handle=handles[cpu->int_num];
+		bool resolved = handle->default_interrupt(cpu,sse,use);
+		if(resolved)return;
+		while(handle->next!=nullptr) {
+			handle=handle->next;
+			resolved = handle->default_interrupt(cpu,sse,use);
+			if(resolved)return;
+		}
+	}
+}
+extern "C" void def_handler();
+void install_single_interrupt(int int_num,void (*handler)(cpu_state *,void *sse_save,bool *in_use)) {
+	install_JT1(int_num,(void *)def_handler);
+	install_JT2(int_num,(void *)handler);
+}
+void install_interrupt(int int_num,def_interrupt *new_handle) {
+	install_JT1(int_num,(void *)def_handler);
+	install_JT2(int_num,(void *)default_handler);
+	def_interrupt *handle = handles[int_num];
+	if(handle==nullptr) {
+		handles[int_num]=new_handle;
+		return;
+	}
+	while(handle->next!=nullptr)handle=handle->next;
+	handle->next=new_handle;
 }

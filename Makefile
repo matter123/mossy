@@ -1,5 +1,5 @@
 all: iso
-.PHONY: all headers libs kernel iso clean build_info
+.PHONY: all headers libs kernel iso clean build_info run
 
 build_info:
 	python3 gen_buildinfo.py
@@ -27,3 +27,6 @@ sysroot/boot/kernel: sysroot/usr/lib/libk
 iso: mossy.iso
 mossy.iso: sysroot/boot/kernel sysroot/boot/grub/grub.cfg
 	grub2-mkrescue --compress=gz -o mossy.iso sysroot
+
+run: iso
+	~/src/bochs/bochs -f bochs.rc -q

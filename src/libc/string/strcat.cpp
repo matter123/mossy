@@ -13,17 +13,13 @@
 	See the License for the specific language governing permissions and
 	limitations under the License.
 */
-#include <arch/int.h>
-void test (cpu_state *cpu, void *sse_save,bool *in_use) {
-	assert(cpu->int_num,40,"not handler for 40");
-}
+#include <stdlib.h>
+#include <string.h>
+
 extern "C"
-void init_exec() {
-	install_interrupts();
-	install_single_interrupt(40,test);
-	install_single_interrupt(50,test);
-	asm("xchg %bx, %bx");
-	asm("int $40");
-	asm("int $50");
-	panic("reached end");
+char *strcat(char *dest,const char *src) {
+	char *d=dest;
+	while(*dest)dest++;
+	while(*src)*dest++=*src++;
+	return d;
 }
