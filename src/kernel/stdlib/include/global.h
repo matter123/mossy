@@ -9,9 +9,12 @@ extern "C" {
 #define PACKED __attribute__((packed))
 #include <stdint.h>
 typedef uint8_t* pointer;
+typedef const uint8_t* const_pointer;
 NORETURN void panic_fn(const char *message,const char *func,const char *file, int line);
 NORETURN void panic(const char *message);
+NORETURN void assertf(const char *message);
 #define PANIC(m) panic_fn(m,__func__,__FILE__,__LINE__)
+#define assert(a,b,m) do {if((a) != (b))assertf((m));}while(0);
 #ifdef __cplusplus
 }
 #endif

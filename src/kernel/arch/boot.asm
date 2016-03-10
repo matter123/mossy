@@ -24,8 +24,8 @@ MULTIBOOT_CHECKSUM	equ 0xFFFFFFFF-(MULTIBOOT_HEADER_MAGIC + MULTIBOOT_HEADER_LEN
 
 ALIGN 8
 multiboot_header:
-	dd	MULTIBOOT_HEADER_MAGIC
-	dd	MULTIBOOT_HEADER_ARCH
+	dd  MULTIBOOT_HEADER_MAGIC
+	dd  MULTIBOOT_HEADER_ARCH
 	dd  MULTIBOOT_HEADER_LENGTH
 	dd  (MULTIBOOT_CHECKSUM)+1
 ALIGN 8
@@ -59,6 +59,10 @@ multiboot_header_end:
 	dw 0xFFFF,0x0000
 	db 0x00, 10011010b
 	db 11001111b, 0x00
+	code_64_user_gdt:
+	dd 0
+	db 0x0, 10011010b
+	db 0x0, 10011010b
 	gdt_end:
 ALIGN 8
 	gdtr_64_low:
@@ -243,6 +247,7 @@ lidt:
 	lidt [rdi]
 	ret
 [SECTION .bss]
+ALIGN 16
 resb 0x4000
 [GLOBAL sys_stack]
 sys_stack:

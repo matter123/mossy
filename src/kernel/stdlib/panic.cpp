@@ -23,11 +23,12 @@ void panic(const char *message) {
 	for(int i=0;i<80*25;i++)vga_mem[i]=0x4F00;
 	const char *panic="PANIC PANIC PANIC PANIC PANIC PANIC PANIC PANIC PANIC PANIC PANIC PANIC PANIC PA";
 	int i=0;
-	while(*panic) vga_mem[i++]|=*panic++;
+	while(*panic) vga_mem[i++]=0xF400|*panic++;
 	i=80*2+2;
 	while(*message) vga_mem[i++]|=*message++;
 	while(1);
 }
+char alloc[512];
 NORETURN
 extern "C"
 void panic_fn(const char *message,const char *func,const char *file, int line) {
@@ -35,5 +36,14 @@ void panic_fn(const char *message,const char *func,const char *file, int line) {
 	int size = strlen(fmt)+strlen(message)+strlen(func)+strlen(file)+5;
 	char *alloc = (char *)__alloca(size);
 	sprintf(alloc,fmt,func,line,file,message);
+	panic(alloc);
+}
+NORETURN
+extern "C"
+void assertf(const char *message) {
+	const char *fmt = "assertion failed: ";
+	alloc[0]='\0'; //sprintf fails in interrupts, sse alignments
+	strcpy(alloc,fmt);
+	strcat(alloc,message);
 	panic(alloc);
 }
