@@ -13,7 +13,12 @@
 	See the License for the specific language governing permissions and
 	limitations under the License.
 */
+#include <stdlib.h>
+#include <string.h>
+
 extern "C"
-void init_exec() {
-	PANIC("test");
+size_t strlen(const char *string) {
+	size_t len=0;
+	while(*string++)len++;
+	return len;
 }

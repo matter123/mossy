@@ -13,7 +13,16 @@
 	See the License for the specific language governing permissions and
 	limitations under the License.
 */
-extern "C"
-void init_exec() {
-	PANIC("test");
+#pragma once
+#include <stdarg.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+int sprintf(char *str,const char *fmt, ...);
+int vsprintf(char *str,const char *fmt, va_list args);
+
+#ifdef __cplusplus
 }
+#endif

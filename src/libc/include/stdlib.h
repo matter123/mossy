@@ -13,9 +13,27 @@
 	See the License for the specific language governing permissions and
 	limitations under the License.
 */
+#pragma once
+#ifdef __cplusplus
+extern "C" {
+#endif
+#include <stddef.h>
 #if IN_LIBC
 NORETURN void abort();
 #endif
 #if IN_KERNEL
 #define __alloca(size) __builtin_alloca (size)
+#endif
+int atoi(const char *str);
+long atol(const char *str);
+long long atoll(const char *str);
+
+char *itoa(int value,char *str, int base);
+char *utoa(unsigned int value,char *str, int base);
+char *ltoa(long value,char *str, int base);
+char *ultoa(unsigned long value,char *str, int base);
+char *lltoa(long long value,char *str, int base);
+char *ulltoa(unsigned long long value,char *str, int base);
+#ifdef __cplusplus
+}
 #endif
