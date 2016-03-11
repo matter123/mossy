@@ -83,11 +83,12 @@ mov rax, cr3
 push  rax
 mov rax, cr4
 push  rax
+push 0
 
 %endmacro
 
 %macro pop_x64 0
-add rsp, 32
+add rsp, 40
 pop  r15
 pop  r14
 pop  r13
@@ -142,9 +143,20 @@ def_handler:
 	mov rsi, sse_save
 	mov rdx, in_use
 	call rax
-	;mov rsp, rax ;switch process maybe
 	fxrstor [sse_save]
 	mov byte [in_use], 0
+	pop_x64
+	add rsp, 24
+	iretq
+
+[GLOBAL C0_handler]
+[EXTERN get_next]
+C0_handler:
+	pop rax
+	push_x64
+	mov rdi, rsp
+	call get_next
+	mov rsp, rax
 	pop_x64
 	add rsp, 24
 	iretq
@@ -598,7 +610,7 @@ eBC: db "#ISRBC",0x0
 eBD: db "#ISRBD",0x0
 eBE: db "#ISRBE",0x0
 eBF: db "#ISRBF",0x0
-eC0: db "#ISRC0",0x0
+eC0: db "#YIELD",0x0
 eC1: db "#ISRC1",0x0
 eC2: db "#ISRC2",0x0
 eC3: db "#ISRC3",0x0

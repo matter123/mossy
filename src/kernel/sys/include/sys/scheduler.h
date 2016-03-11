@@ -14,32 +14,6 @@
 	limitations under the License.
 */
 #include <arch/int.h>
-#include <sys/scheduler.h>
-#include <vga_text.h>
-cpu_state *task;
-extern pointer sys_stack2;
-void task_b() {
-	putc('B');
-	yield();
-	putc('b');
-	asm("xchg %bx, %bx");
-	yield();
-}
-extern "C"
-void init_exec() {
-	task = reinterpret_cast<cpu_state *>(&sys_stack2-sizeof(cpu_state));
-	task->rip=reinterpret_cast<uint64_t>(&task_b);
-	task->rsp=reinterpret_cast<uint64_t>(&sys_stack2);
-	task->rflags=0x200086;
-	task->cs=0x8;
-	task->ss=0x10;
-	asm("xchg %bx, %bx");
-	install_interrupts();
-	init_scheduler();
-	add_task(task);
-	putc('A');
-	yield();
-	putc('a');
-	yield();
-	panic("reached end");
-}
+void init_scheduler();
+void yield();
+void add_task(cpu_state *);

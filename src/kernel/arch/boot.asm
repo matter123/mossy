@@ -248,9 +248,12 @@ lidt:
 	ret
 [SECTION .bss]
 ALIGN 16
-resb 0x4000
+resb 0x2000
 [GLOBAL sys_stack]
 sys_stack:
+resb 0x2000
+[GLOBAL sys_stack2]
+sys_stack2:
 [SECTION .data]
 [GLOBAL __stack_chk_guard]
 __stack_chk_guard DQ 0xD5000AFF0DCD12D5
