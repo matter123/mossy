@@ -5,3 +5,6 @@ uint16_t index=0;
 void putc(char c) {
 	vga_mem[index++]=15<<8|c;
 }
+void puts(char *s) {
+	while(*s)vga_mem[index++]=15<<8|*s++;
+}
