@@ -25,6 +25,12 @@ extern "C" {
 	long long atoll(const char *str) {
 		return std::strtonum(str,(long long)0);
 	}
+	float atof(const char *str) {
+		return std::strtofloat(str,(float)0);
+	}
+	double atod(const char *str) {
+		return std::strtofloat(str,(double)0);
+	}
 
 	char *itoa(int value,char *str, int base) {
 		return std::numtostr(value,str,base,true);
@@ -43,5 +49,11 @@ extern "C" {
 	}
 	char *ulltoa(unsigned long long value,char *str, int base) {
 		return std::numtostr(value,str,base,true);
+	}
+	char *ftoa(float value,char *str, int base) {
+		return std::floattostr(value,str,base,true);
+	}
+	char *dtoa(double value,char *str, int base) {
+		return std::floattostr(value,str,base,true);
 	}
 }

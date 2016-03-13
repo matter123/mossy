@@ -24,19 +24,19 @@ namespace hal {
 	} PACKED;
 	struct multiboot_command {
 		multiboot_tag head;
-		char string[];
+		char string[1]; //extends past end
 	} PACKED;
 	struct multiboot_module {
 		multiboot_tag head;
 		uintptr_t mod_start;
 		uintptr_t mod_end;
-		char string[];
+		char string[1];
 	} PACKED;
 	struct multiboot_module_int {
 		multiboot_tag head;
 		uint32_t mod_start;
 		uint32_t mod_end;
-		char string[];
+		char string[1];
 	} PACKED;
 	struct multiboot_mmap_ent {
 		uint64_t addr;
@@ -80,14 +80,14 @@ namespace hal {
 		multiboot_tag head;
 		uint32_t entry_size;
 		uint32_t entry_version;
-		multiboot_mmap_ent entries[];
+		multiboot_mmap_ent entries[1];
 	} PACKED;
 	struct multiboot_ci_0 {
 		uint32_t num_color;
-		multiboot_palette palette[];
+		multiboot_palette palette[1];
 	} PACKED;
 	void init_mboot(multiboot_header *mboot);
-	multiboot_header *get_header();
+	//multiboot_header *get_header(); //not sure if relevant
 	int get_tag_count();
 	multiboot_tag *get_tag(int count);
 }

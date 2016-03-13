@@ -9,16 +9,19 @@ build_info:
 clean:
 	$(MAKE) -C src/kernel clean
 	$(MAKE) -C src/libc clean
+	$(MAKE) -C src/libm clean
 	@-rm mossy.iso 2> /dev/null
 	@-rm .build_number
 
 headers:
 	$(MAKE) -C src/kernel headers
 	$(MAKE) -C src/libc headers
+	$(MAKE) -C src/libm headers
 
 sysroot/usr/lib/libk: libs
 libs: headers
 	$(MAKE) -C src/libc
+	$(MAKE) -C src/libm
 
 kernel: sysroot/boot/kernel
 sysroot/boot/kernel: sysroot/usr/lib/libk

@@ -65,7 +65,7 @@ namespace hal {
 				//be safe, enforce 16 byte alignment
 				void *start=w_malloc(module_size,16);
 				if(!start) {
-					PANIC("could not allocate memory for module")
+					PANIC("could not allocate memory for module");
 				}
 				memmove(start,reinterpret_cast<void *>(module->mod_start),module_size);
 				module->mod_start=reinterpret_cast<uintptr_t>(start);

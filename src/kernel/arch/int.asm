@@ -10,22 +10,22 @@
 ;  distributed under the License is distributed on an "AS IS" BASIS,
 ;  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 ;  See the License for the specific
-
 [section .bss]
+[GLOBAL IDT]
+ALIGN 4096
+IDT:
+resb 256*16
 ALIGN 16
 sse_save:
 resb 512
 in_use:
-resb 1
+resb 4
+
 
 [section .data]
 [GLOBAL jump_table]
 [GLOBAL jump_table2]
-[GLOBAL IDT]
 [GLOBAL IDTR]
-ALIGN 4096
-IDT:
-times 256*16 db 0
 jump_table:
 times 256 dq fail_fast
 jump_table2:
@@ -33,6 +33,7 @@ times 256 dq fail_fast
 IDTR:
 dw (256*16) - 1
 dq IDT
+
 [section .text]
 ;global execption handlers need to call pop rax as first instruction
 %macro EXCEPT_C 2
@@ -132,9 +133,9 @@ jmp .past
 def_handler:
 	pop rax
 	push_x64
-	cmp byte [in_use], 0
+	cmp dword [in_use], 0
 	jne .cont
-	mov byte [in_use], 1
+	mov dword [in_use], 1
 	fxsave [sse_save]
 	.cont:
 	mov rbx, [rsp + 22 * 8]
@@ -144,7 +145,7 @@ def_handler:
 	mov rdx, in_use
 	call rax
 	fxrstor [sse_save]
-	mov byte [in_use], 0
+	mov dword [in_use], 0
 	pop_x64
 	add rsp, 24
 	iretq
@@ -160,7 +161,6 @@ C0_handler:
 	pop_x64
 	add rsp, 24
 	iretq
-
 EXCEPT_NC 0,  e00
 EXCEPT_NC 1,  e01
 EXCEPT_NC 2,  e02

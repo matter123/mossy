@@ -14,7 +14,7 @@
 namespace hal {
 	extern "C" uint32_t k_end;      /*we have 128kb after this reserved*/
 	extern "C" uint32_t k_data_end;
-	pointer wksp_ptr=(pointer) &k_end;P
+	pointer wksp_ptr=(pointer) &k_end;
 	void *w_malloc(size_t s,size_t align=1) {
 		if(s>=sizeof(uintptr_t)) { //ensure alignment for large types
 			align=sizeof(uintptr_t);

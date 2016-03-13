@@ -32,7 +32,7 @@ INCLUDEPATHS=$(wildcard $(SYSROOT_PATH)/usr/include/kernel/*/include)
 IFLAGS=--sysroot=$(SYSROOT_PATH) $(addprefix -I, $(INCLUDEPATHS)) -I$(SYSROOT_PATH)/usr/include/libc/include -include $(SYSROOT_PATH)/usr/include/kernel/stdlib/include/global.h
 CFLAGS=-O3 -std=c11 $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS) $(MFLAGS) $(IFLAGS)
 CXXFLAGS=-O3 -std=c++1y $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS) $(MFLAGS) $(IFLAGS) -fno-rtti -fno-exceptions -fdiagnostics-color=auto
-LDFLAGS=-static -T../link.ld -nostdlib $(FFLAGS) -Wl,-z,max-page-size=0x1000
+LDFLAGS=-static -T../link.ld -nostdlib $(FFLAGS) -Wl,-z,max-page-size=0x1000 -mcmodel=kernel
 ASFLAGS ?=-felf64
 
 all: $(KERNEL)
@@ -44,7 +44,7 @@ clean:
 
 $(KERNEL): $(CXXOBJECTS) $(COBJECTS) $(SOBJECTS)
 	@mkdir -p $(dir $@)
-	$(CPP) $(LDFLAGS) -o $@ $^ -L $(SYSROOT_PATH)/usr/lib -lk -lgcc
+	$(CPP) $(LDFLAGS) -o $@ $^ -L $(SYSROOT_PATH)/usr/lib -lk -lm -lgcc
 
 $(BIN_PATH)/%.cpp.o: ./%.cpp $(HEADSYSROOT)
 	@mkdir -p $(dir $@)

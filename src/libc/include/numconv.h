@@ -79,19 +79,65 @@ namespace std {
 				startmatch=true;
 				accum*=10;
 				accum+=(c-'0');
-				if(neg) {
-					accum*=-1;
-					neg=false;
+			} else {
+				if(c=='+'&&!startmatch) {
+					continue;
+				} else if(c=='-'&&!startmatch) {
+					neg=true;
+				} else break;
+			}
+		}
+		if(neg) {
+			accum*=-1;
+		}
+		return (startmatch?accum:def);
+	}
+	//doesnt use e notation
+	template<class T>
+	char *floattostr(T value,char *str,int base,bool uppercase,int min_digits = 0) {
+		PANIC("NOT IMPLEMENTED");
+		return str;
+	}
+	//doesn't handle e notation
+	template<class T>
+	T strtofloat(const char *str,T def) {
+		T integerPart=0;
+		T fractionPart=0;
+		int divisor=0;
+		bool startmatch;
+		bool neg;
+		while(*str) {
+			char c=*str++;
+			if(isspace(c)) {
+				if(startmatch) {
+					break;
+				}
+				continue;
+			}
+			if(isdigit(c)) {
+				startmatch=true;
+				if(divisor==0) {
+					integerPart*=10;
+					integerPart+=(c-'0');
+				} else {
+					fractionPart*=10;
+					fractionPart+=(c-'0');
+					divisor *=10;
 				}
 			} else {
 				if(c=='+'&&!startmatch) {
 					continue;
-				}
-				if(c=='-'&&!startmatch) {
+				} else if(c=='-'&&!startmatch) {
 					neg=true;
-				}
-				break;
+				} else if(c=='.'&&divisor==0) {
+					divisor=1;
+				} else break;
 			}
+		}
+		if(divisor==0)divisor=1;
+		T accum=integerPart + fractionPart / divisor;
+		if(neg) {
+			accum*=-1;
 		}
 		return (startmatch?accum:def);
 	}

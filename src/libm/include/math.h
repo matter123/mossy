@@ -1,5 +1,5 @@
 /*
-	Copyright 2015 Matthew Fosdick
+	Copyright 2016 Matthew Fosdick
 
 	Licensed under the Apache License, Version 2.0 (the "License");
 	you may not use this file except in compliance with the License.
@@ -14,15 +14,17 @@
 	limitations under the License.
 */
 #pragma once
-#include <stdlib.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
-size_t strlen(const char *);
-void *memcpy(void *dest,const void *src,size_t size);
-void *memmove(void *dest,const void *src,size_t size);
-char *strcat(char *dest,const char *src);
-char *strcpy(char *dest,const char *src);
+#include <stddef.h>
+//good chance implementation of most of these functions is going to be under a diffrent copyright
+//i am not by any stretch of the imagination a mathmatician
+int abs(int value);
+long labs(long value);
+long long llabs(long long value);
+float fabs(float value);
+double dabs(double value);
 #ifdef __cplusplus
 }
 #endif

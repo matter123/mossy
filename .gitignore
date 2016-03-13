@@ -6,3 +6,5 @@ sysroot/usr/include/*
 !sysroot/usr/include/.keep_folder
 *.a
 docs/html
+.build_number
+build_info

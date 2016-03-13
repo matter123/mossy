@@ -33,7 +33,7 @@ int vsprintf(char *s, const char *format, va_list arg) {
 	double d;
 
 	unsigned int u;
-	char buf[64] = {0};
+	char buf[32] = {0};
 	while (*format) {
 		char *bufcp=buf;
 		char c=*format++;
@@ -82,8 +82,6 @@ int vsprintf(char *s, const char *format, va_list arg) {
 					break;
 				case 'u':
 					u=va_arg(arg,unsigned int);
-					itoa(u,buf,10);
-					while(*bufcp)*s++=*bufcp++;
 					break;
 				case 'x':
 				case 'X':
