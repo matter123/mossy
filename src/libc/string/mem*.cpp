@@ -23,3 +23,14 @@ void *memcpy(void *dest,const void *src,size_t size) {
 	while(size--)*pdest++=*psrc++;
 	return dest;
 }
+void *memmove(void *dest,const void *src,size_t size) {
+	pointer pdest=(pointer)dest;
+	const_pointer psrc=(const_pointer)src;
+	if(pdest < psrc) {
+		while(size--)*pdest++=*psrc++;
+	} else {
+		while(size)*(pdest+(size-1))=*(psrc+(size-1));
+		size--;
+	}
+	return dest;
+}
