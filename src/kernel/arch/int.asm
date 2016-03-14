@@ -42,7 +42,12 @@ exc%1:
 	;CPL change forces ss to be zero check later if an issue
 	push qword %1
 	;push qword %2
+	;push friendly name
+	push qword 0
 	push rax
+	mov rax, %2
+	mov [rsp+8], rax
+	;call JT1 handler
 	mov rax, [qword jump_table + %1 * 8]
 	jmp rax
 %endmacro
@@ -53,7 +58,12 @@ exc%1:
 	push qword 0
 	push qword %1
 	;push qword %2
+	;push friendly name
+	push qword 0
 	push rax
+	mov rax, %2
+	mov [rsp+8], rax
+	;call JT1 handler
 	mov rax, [qword jump_table + %1 * 8]
 	jmp rax
 %endmacro
@@ -133,6 +143,7 @@ jmp .past
 def_handler:
 	pop rax
 	push_x64
+	;save sse registers
 	mov rax, [qword in_use]
 	test rax, rax
 	jnz .cont
@@ -140,6 +151,7 @@ def_handler:
 	mov [qword in_use], rax
 	mov rax, qword sse_save
 	fxsave [rax]
+	;call handler in JT2
 	.cont:
 	mov rax, [rsp + 22 * 8]
 	mov rcx, 8
@@ -150,8 +162,12 @@ def_handler:
 	mov rsi, sse_save
 	mov rdx, in_use
 	call [rax]
-	;fxrstor [sse_save]
-	;mov dword [in_use], 0
+	;restore sse registers
+	mov rax, qword sse_save
+	fxrstor [rax]
+	mov rax, 0
+	mov [qword in_use], rax
+	;return from interrupt here is where we would call get_next if so desired
 	pop_x64
 	add rsp, 24
 	iretq

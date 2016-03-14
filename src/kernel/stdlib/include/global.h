@@ -11,6 +11,7 @@ extern "C" {
 #define PACKED __attribute__((packed))
 typedef uint8_t* pointer;
 typedef const uint8_t* const_pointer;
+typedef unsigned int uint;
 NORETURN void panic_fn(const char *message,const char *func,const char *file, int line);
 NORETURN void panic(const char *message);
 NORETURN void assertf(const char *message);

@@ -1,4 +1,3 @@
-//#include <hal/hal.h>
 #include <hal/multiboot.h>
 #include <hal/workspace.h>
 //#include <hal/mmap.h>

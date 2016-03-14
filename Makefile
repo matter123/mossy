@@ -29,7 +29,7 @@ sysroot/boot/kernel: sysroot/usr/lib/libk
 
 iso: mossy.iso
 mossy.iso: sysroot/boot/kernel sysroot/boot/grub/grub.cfg
-	grub2-mkrescue --compress=gz -o mossy.iso sysroot
+	grub2-mkrescue --compress=gz -o mossy.iso sysroot || grub-mkrescue --compress=gz -o mossy.iso sysroot
 
 run: iso
 	~/src/bochs/bochs -f bochs.rc -q
