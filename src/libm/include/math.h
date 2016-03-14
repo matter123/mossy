@@ -18,13 +18,16 @@
 extern "C" {
 #endif
 #include <stddef.h>
-//good chance implementation of most of these functions is going to be under a diffrent copyright
+//good chance implementation of most of these functions is going to be under a different copyright
 //i am not by any stretch of the imagination a mathmatician
 int abs(int value);
 long labs(long value);
 long long llabs(long long value);
 float fabs(float value);
 double dabs(double value);
+
+double cos(double value); //NO-IMP
+double sin(double value); //NO-IMP
 #ifdef __cplusplus
 }
 #endif

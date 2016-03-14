@@ -43,7 +43,7 @@ exc%1:
 	push qword %1
 	push qword %2
 	push rax
-	mov rax, qword [jump_table + %1 * 8]
+	mov rax, [jump_table + %1 * 8]
 	jmp rax
 %endmacro
 
@@ -54,7 +54,7 @@ exc%1:
 	push qword %1
 	push qword %2
 	push rax
-	mov rax, qword [jump_table + %1 * 8]
+	mov rax, [jump_table + %1 * 8]
 	jmp rax
 %endmacro
 

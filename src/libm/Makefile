@@ -7,8 +7,8 @@ LIB=$(SYSROOT_PATH)/usr/lib/$(LIB_NAME).a
 LIB_BIN_PATH=../../bin/$(ARCH)/$(LIB_NAME)
 
 
-CC=clang --target=x86_64-elf
-CPP=clang++ --target=x86_64-elf
+CC=x86_64-elf-gcc
+CPP=x86_64-elf-g++
 AS=nasm
 
 CSOURCES:=$(shell find . -name '*.c')

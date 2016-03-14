@@ -3,8 +3,8 @@ BIN_PATH=../../bin/$(ARCH)/kernel
 SYSROOT_PATH=../../sysroot
 KERNEL=../../sysroot/boot/kernel
 
-CC=clang --target=x86_64-elf
-CPP=clang++ --target=x86_64-elf
+CC=x86_64-elf-gcc
+CPP=x86_64-elf-g++
 AS= nasm
 
 CSOURCES:=$(shell find . -name '*.c')

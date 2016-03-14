@@ -65,8 +65,8 @@ namespace std {
 	template<class T>
 	T strtonum(const char *str, T def) {
 		T accum=0;
-		bool startmatch;
-		bool neg;
+		bool startmatch=false;
+		bool neg=false;
 		while(*str) {
 			char c=*str++;
 			if(isspace(c)) {
@@ -93,10 +93,35 @@ namespace std {
 		return (startmatch?accum:def);
 	}
 	//doesnt use e notation
+	//not perfectly accurate, does not use big number so cant be perfectly accurate
 	template<class T>
 	char *floattostr(T value,char *str,int base,bool uppercase,int min_digits = 0) {
-		PANIC("NOT IMPLEMENTED");
-		return str;
+		PANIC("math functions needed for foattostr dont exist yet");
+		char *retc=str;
+		int firstExp=0;
+		bool havePrinted=false;
+		T digit=0;
+		if(value < 0) {
+			*str++='-';
+			value*=-1;
+		}
+		//firstExp=(int)floor(log10(value));
+		//value/=pow(10,firstExp);
+		while(value>0) {
+			if(firstExp==0) {
+				if(!havePrinted) {
+					*str++='0';
+				}
+				*str++='.';
+			}
+			havePrinted=true;
+			firstExp--;
+			//digit=floor(value);
+			*str++='0'+(char)digit;
+			value-=digit;
+			value*=10;
+		}
+		return retc;
 	}
 	//doesn't handle e notation
 	template<class T>
@@ -104,8 +129,8 @@ namespace std {
 		T integerPart=0;
 		T fractionPart=0;
 		int divisor=0;
-		bool startmatch;
-		bool neg;
+		bool startmatch=false;
+		bool neg=false;
 		while(*str) {
 			char c=*str++;
 			if(isspace(c)) {

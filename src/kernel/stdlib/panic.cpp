@@ -17,7 +17,7 @@
 #include <string.h>
 #include <stdio.h>
 NORETURN
-extern "C"
+//extern "C"
 void panic(const char *message) {
 	volatile uint16_t *vga_mem=reinterpret_cast<uint16_t *>(0xB8000);
 	for(int i=0;i<80*25;i++)vga_mem[i]=0x4F00;
@@ -29,7 +29,7 @@ void panic(const char *message) {
 	while(1);
 }
 NORETURN
-extern "C"
+//extern "C"
 void panic_fn(const char *message,const char *func,const char *file, int line) {
 	const char *fmt = "panic in function '%s' on line %d in file '%s': %s";
 	int size = strlen(fmt)+strlen(message)+strlen(func)+strlen(file)+5;
@@ -38,7 +38,7 @@ void panic_fn(const char *message,const char *func,const char *file, int line) {
 	panic(alloc);
 }
 NORETURN
-extern "C"
+//extern "C"
 void assertf(const char *message) {
 	const char *fmt = "assertion failed: %s";
 	int size = strlen(fmt)+strlen(message)+5;
