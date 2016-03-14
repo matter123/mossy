@@ -41,9 +41,9 @@ dq IDT
 exc%1:
 	;CPL change forces ss to be zero check later if an issue
 	push qword %1
-	push qword %2
+	;push qword %2
 	push rax
-	mov rax, [jump_table + %1 * 8]
+	mov rax, [qword jump_table + %1 * 8]
 	jmp rax
 %endmacro
 
@@ -52,9 +52,9 @@ exc%1:
 exc%1:
 	push qword 0
 	push qword %1
-	push qword %2
+	;push qword %2
 	push rax
-	mov rax, [jump_table + %1 * 8]
+	mov rax, [qword jump_table + %1 * 8]
 	jmp rax
 %endmacro
 
@@ -133,19 +133,25 @@ jmp .past
 def_handler:
 	pop rax
 	push_x64
-	cmp dword [in_use], 0
-	jne .cont
-	mov dword [in_use], 1
-	fxsave [sse_save]
+	mov rax, [qword in_use]
+	test rax, rax
+	jnz .cont
+	mov rax, 1
+	mov [qword in_use], rax
+	mov rax, qword sse_save
+	fxsave [rax]
 	.cont:
-	mov rbx, [rsp + 22 * 8]
-	mov rax, qword [jump_table2 + rbx * 8] ; load function call
+	mov rax, [rsp + 22 * 8]
+	mov rcx, 8
+	mul rcx
+	mov rbx, qword jump_table2 ; load function call
+	add rax, rbx
 	mov rdi, rsp
 	mov rsi, sse_save
 	mov rdx, in_use
-	call rax
-	fxrstor [sse_save]
-	mov dword [in_use], 0
+	call [rax]
+	;fxrstor [sse_save]
+	;mov dword [in_use], 0
 	pop_x64
 	add rsp, 24
 	iretq
