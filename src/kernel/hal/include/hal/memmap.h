@@ -1,5 +1,5 @@
 /*
-	Copyright 2014 Matthew Fosdick
+	Copyright 2016 Matthew Fosdick
 	Licensed under the Apache License, Version 2.0 (the "License");
 	you may not use this file except in compliance with the License.
 	You may obtain a copy of the License at
@@ -14,20 +14,25 @@
 */
 
 #pragma once
-#include <hal/memtype.h>
+#include <hal/memregion.h>
 namespace hal {
-	struct mem_region {
-		uint64_t start;
-		uint64_t end;
-		mem_type type;
-	} PACKED;
-	struct mem_regs {
-		mem_region *regions;
-		uint64_t tag_count;
+	class memmap;
+	struct region_hook{
+		void (*add_region_hook)(memmap *mmap);
+		region_hook* next;
 	};
-	mem_regs *remove_invalid(mem_regs *regs);
-	mem_regs *sort(mem_regs *regs);
-	mem_regs *split(mem_regs *regs);
-	mem_regs *page_align(mem_regs *regs);
-	mem_regs *fill(mem_regs *regs);
+	class memmap {
+		mem_regs regs;
+		int add_count;
+		region_hook *next;
+	public:
+		int region_count();
+		mem_region *get_region(int index);
+		void add_regions(int count);
+		bool add_region(uint64_t start, uint64_t end,mem_type type);
+		void add_region_hook(region_hook * rhook);
+		bool init();
+	};
+	extern memmap virtmem;
+	extern memmap physmem;
 }

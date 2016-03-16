@@ -9,6 +9,7 @@ extern "C" {
 #define IN_LIBC   defined(LIBC)
 #define NORETURN __attribute__((noreturn))
 #define PACKED __attribute__((packed))
+#define BEFORE_INIT __attribute__((constructor))
 typedef uint8_t* pointer;
 typedef const uint8_t* const_pointer;
 typedef unsigned int uint;

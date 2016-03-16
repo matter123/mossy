@@ -24,6 +24,7 @@ NORETURN void abort();
 #if IN_KERNEL //TODO: see if we want in userspace
 #define __alloca(size) __builtin_alloca (size)
 #endif
+long strtol(const char * str, char ** endptr,int base);
 int atoi(const char *str);
 long atol(const char *str);
 long long atoll(const char *str);

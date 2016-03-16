@@ -5,6 +5,7 @@ build_info:
 	python3 gen_buildinfo.py
 
 -include build_info
+-include env_info
 
 clean:
 	$(MAKE) -C src/kernel clean

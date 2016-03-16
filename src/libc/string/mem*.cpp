@@ -23,6 +23,11 @@ void *memcpy(void *dest,const void *src,size_t size) {
 	while(size--)*pdest++=*psrc++;
 	return dest;
 }
+void *memset(void *dest,int value,size_t size) {
+	pointer pdest=(pointer)dest;
+	while(size--)*pdest++=value;
+	return dest;
+}
 void *memmove(void *dest,const void *src,size_t size) {
 	pointer pdest=(pointer)dest;
 	const_pointer psrc=(const_pointer)src;

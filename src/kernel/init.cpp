@@ -15,7 +15,11 @@
 */
 #include <arch/int.h>
 #include <sys/scheduler.h>
+#include <hal/multiboot.h>
+#include <hal/memmap.h>
 #include <vga_text.h>
+#include <stdlib.h>
+
 cpu_state *task;
 extern pointer sys_stack2;
 void task_b() {
@@ -25,16 +29,28 @@ void task_b() {
 	asm("xchg %bx, %bx");
 	yield();
 }
+void foo(cpu_state *s, void *sse_save, bool *in_use) {
+	asm("xchg %bx, %bx");
+	printf("hey its a terminal: %x",0x40);
+	while(true){}
+}
+char buf[20];
 extern "C"
-void init_exec() {
+void init_exec(hal::multiboot_header *mboot) {
+	init_mboot(mboot);
+	hal::physmem.init();
+	hal::virtmem.init();
 	task = reinterpret_cast<cpu_state *>(&sys_stack2-sizeof(cpu_state));
 	task->rip=reinterpret_cast<uint64_t>(&task_b);
 	task->rsp=reinterpret_cast<uint64_t>(&sys_stack2);
 	task->rflags=0x200086;
 	task->cs=0x8;
 	task->ss=0x10;
-	asm("xchg %bx, %bx");
+	itoa(40,buf,10);
+	puts(buf);
 	install_interrupts();
+	install_single_interrupt(0x40,foo);
+	asm("int $0x40");
 	init_scheduler();
 	add_task(task);
 	putc('A');

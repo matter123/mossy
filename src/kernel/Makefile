@@ -3,10 +3,6 @@ BIN_PATH=../../bin/$(ARCH)/kernel
 SYSROOT_PATH=../../sysroot
 KERNEL=../../sysroot/boot/kernel
 
-CC=x86_64-elf-gcc
-CPP=x86_64-elf-g++
-AS= nasm
-
 CSOURCES:=$(shell find . -name '*.c')
 COBJECTS:=$(patsubst %.c, %.c.o, $(CSOURCES))
 COBJECTS:=$(patsubst ./%, $(BIN_PATH)/%, $(COBJECTS))

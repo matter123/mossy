@@ -153,7 +153,7 @@ def_handler:
 	fxsave [rax]
 	;call handler in JT2
 	.cont:
-	mov rax, [rsp + 22 * 8]
+	mov rax, [rsp + 23 * 8]
 	mov rcx, 8
 	mul rcx
 	mov rbx, qword jump_table2 ; load function call

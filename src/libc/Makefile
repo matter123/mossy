@@ -5,9 +5,6 @@ SYSROOT_PATH=../../sysroot
 LIBC=../../sysroot/usr/lib/libc.a
 LIBK=../../sysroot/usr/lib/libk.a
 
-CC=x86_64-elf-gcc
-CPP=x86_64-elf-g++
-AS=nasm
 
 CSOURCES:=$(shell find . -name '*.c')
 COBJECTS:=$(patsubst %.c, %.c.o, $(CSOURCES))

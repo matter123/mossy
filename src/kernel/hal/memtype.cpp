@@ -137,13 +137,14 @@ namespace hal {
 	}
 
 	bool mem_type::can_grow() const {
-		if(this->no_exist||this->resv_mem||this->kernel|this->heap|this->kthread_stacks) {
+		if(this->no_exist||this->resv_mem||this->kernel||this->heap||
+		   this->kthread_stacks||this->videobuffer||this->pci_mmap||this->dma) {
 			return true;
 		}
 		return false;
 	}
 	bool mem_type::can_shrink() const {
-		if(this->avil) {
+		if(this->avil||this->kthread_stacks) {
 			return true;
 		}
 		return false;

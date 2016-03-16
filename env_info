@@ -1,0 +1,3 @@
+export CC:=clang --target=x86_64-elf
+export CPP:=clang++ --target=x86_64-elf
+export AS:=nasm

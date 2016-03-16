@@ -1,11 +1,12 @@
 #include <hal/multiboot.h>
 #include <hal/workspace.h>
-//#include <hal/mmap.h>
+#include <hal/memmap.h>
 #include <string.h>
 namespace hal {
-	multiboot_header *head;
-	multiboot_tag **tags;
-	int tag_count;
+	static multiboot_header *head;
+	static multiboot_tag **tags;
+	static int tag_count;
+	static region_hook rhookP, rhookV;
 	void init_mboot(multiboot_header *mboot) {
 		//make sure multiboot header is in high memory (after kernel)
 		head=reinterpret_cast<multiboot_header *>(w_malloc(mboot->size,8));
@@ -17,7 +18,7 @@ namespace hal {
 		pointer temp_ptr=reinterpret_cast<pointer>(head)+sizeof(multiboot_header);
 		while(true) {
 			multiboot_tag *tag=reinterpret_cast<multiboot_tag *>(temp_ptr);
-			if(tag->type==0&&tag->size==8) {
+			if(tag->type==t_end_marker&&tag->size==8) {
 				break;
 			} else {
 				tag_count++;
@@ -38,10 +39,10 @@ namespace hal {
 			tags[i]=reinterpret_cast<multiboot_tag *>(temp_ptr);
 			temp_ptr+=tags[i]->size;
 			//change 32 bit addresses into correct type
-			if(tags[i]->type==3) {
+			if(tags[i]->type==t_module) {
 				multiboot_module *tmp=reinterpret_cast<multiboot_module *>(w_malloc(sizeof(multiboot_module)));
 				multiboot_module_int *mmi=reinterpret_cast<multiboot_module_int *>(tags[i]);
-				tmp->head.type=3;
+				tmp->head.type=t_module;
 				tmp->head.size=mmi->head.size;
 				tmp->mod_start=static_cast<uintptr_t>(mmi->mod_start);
 				tmp->mod_end=static_cast<uintptr_t>(mmi->mod_end);
@@ -54,7 +55,7 @@ namespace hal {
 		//copy the modules that we can into higher memory
 		//too big ones should already be in the higher memory
 		for(int i=0; i<tag_count; i++) {
-			if(get_tag(i)->type==3) {
+			if(get_tag(i)->type==t_module) {
 				multiboot_module *module=reinterpret_cast<multiboot_module *>(get_tag(i));
 				size_t module_size=module->mod_end-module->mod_start;
 				//cannot be safely copied into the workspace
@@ -80,5 +81,34 @@ namespace hal {
 			return tags[count];
 		}
 		return nullptr;
+	}
+	extern "C" uintptr_t KERNEL_VMA;
+	static void multiboot_hook(memmap *mem) {
+		multiboot_module *module=NULL;
+		for(int i=0; i<get_tag_count(); i++) {
+			hal::multiboot_tag *tag=get_tag(i);
+			if(tag->type!=t_module) {
+				continue;
+			}
+			module=reinterpret_cast<hal::multiboot_module *>(tag);
+			if(module->mod_end-module->mod_start>=0x19000) {
+				mem->add_regions(1);
+				mem_type mod_type;
+				mod_type.kernel=true;
+				mod_type.resv_mem=true;
+				if(mem==&physmem) {
+					mem->add_region(module->mod_start,module->mod_end,mod_type);
+				} else {
+					mem->add_region(module->mod_start+KERNEL_VMA,module->mod_end+KERNEL_VMA,mod_type);
+				}
+			}
+		}
+	}
+	BEFORE_INIT
+	void add_multiboot_hook() {
+		rhookP.add_region_hook=&multiboot_hook;
+		rhookV.add_region_hook=&multiboot_hook;
+		physmem.add_region_hook(&rhookP);
+		virtmem.add_region_hook(&rhookV);
 	}
 }

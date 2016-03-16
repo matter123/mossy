@@ -7,10 +7,6 @@ LIB=$(SYSROOT_PATH)/usr/lib/$(LIB_NAME).a
 LIB_BIN_PATH=../../bin/$(ARCH)/$(LIB_NAME)
 
 
-CC=x86_64-elf-gcc
-CPP=x86_64-elf-g++
-AS=nasm
-
 CSOURCES:=$(shell find . -name '*.c')
 COBJECTS:=$(patsubst %.c, %.c.o, $(CSOURCES))
 COBJECTS:=$(patsubst ./%, $(LIB_BIN_PATH)/%, $(COBJECTS))

@@ -19,6 +19,8 @@
 extern "C" {
 #endif
 size_t strlen(const char *);
+size_t strnlen(const char *, int maxlen);
+void *memset(void *dest,int value,size_t size);
 void *memcpy(void *dest,const void *src,size_t size);
 void *memmove(void *dest,const void *src,size_t size);
 char *strcat(char *dest,const char *src);

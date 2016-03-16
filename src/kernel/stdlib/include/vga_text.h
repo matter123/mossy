@@ -14,4 +14,5 @@
 	limitations under the License.
 */
 void putc(char c);
-void puts(char *s);
+void puts(const char *s);
+void printf(const char *fmt,...);

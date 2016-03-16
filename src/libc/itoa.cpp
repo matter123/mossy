@@ -22,6 +22,14 @@ extern "C" {
 	long atol(const char *str) {
 		return std::strtonum(str,(long)0);
 	}
+	long strtol(const char *str, char **endptr,int base) {
+		while(isspace(*str))str++;
+		long ret=std::strtonum(str,(long)0);
+		if(*str=='+'||*str=='-')str++;
+		while(isdigit(*str))str++;
+		if(endptr)*endptr=(char *)str;
+		return ret;
+	}
 	long long atoll(const char *str) {
 		return std::strtonum(str,(long long)0);
 	}

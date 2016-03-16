@@ -1,0 +1,5 @@
+multiboot 1.6: http://nongnu.askapache.com/grub/phcoder/multiboot.pdf
+AMD64 Vol 2: http://developer.amd.com/wordpress/media/2012/10/24593_APM_v21.pdf
+SYSV AMD64 ABI: http://www.x86-64.org/documentation/abi.pdf
+Itanium c++ ABI: https://mentorembedded.github.io/cxx-abi/abi.html
+ACPI v5.0a: https://www.acpi.info/DOWNLOADS/ACPI_5_Errata%20A.pdf

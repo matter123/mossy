@@ -16,9 +16,14 @@
 #include <stdlib.h>
 #include <string.h>
 
-extern "C"
 size_t strlen(const char *string) {
 	size_t len=0;
 	while(*string++)len++;
+	return len;
+}
+
+size_t strnlen(const char *string, int maxlen) {
+	size_t len=0;
+	while(*string++&&maxlen--)len++;
 	return len;
 }

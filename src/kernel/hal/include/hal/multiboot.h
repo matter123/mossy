@@ -90,4 +90,16 @@ namespace hal {
 	//multiboot_header *get_header(); //not sure if relevant
 	int get_tag_count();
 	multiboot_tag *get_tag(int count);
+
+	const int t_end_marker  = 0;
+	const int t_cmd_line    = 1;
+	const int t_bootloader  = 2;
+	const int t_module      = 3;
+	const int t_basic_mem   = 4;
+	const int t_boot_device = 5;
+	const int t_memory_map  = 6;
+	const int t_vbe_info    = 7;
+	const int t_framebuffer = 8;
+	const int t_elf_symbols = 9;
+	const int t_apm_table   = 10;
 }

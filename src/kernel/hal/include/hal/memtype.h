@@ -14,8 +14,6 @@
 */
 
 #pragma once
-#include <arch.h>
-#include <struct.h>
 namespace hal {
 	class mem_type {
 		public:
