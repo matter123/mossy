@@ -182,7 +182,8 @@ static bool int2base( uintmax_t value, struct print_status_t * status )
                 break;
             case 16:
                 // No prefix if zero
-                if ( value == 0 ) break;
+                //breaks spec but spec is ugly
+                //if ( value == 0 ) break;
 
                 written += padding < 2 ? 2 - padding : 0;
                 outend[-written    ] = '0';

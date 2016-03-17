@@ -2,19 +2,26 @@
 #include <stdarg.h>
 #include <stdio.h>
 volatile uint16_t *vga_mem=reinterpret_cast<uint16_t *>(0xB8000);
-uint16_t index=0;
+uint16_t x=0,y=0;
 
 void putc(char c) {
-	vga_mem[index++]=15<<8|c;
+	vga_mem[y*80+x]=15<<8|c;
 }
 void puts(const char *s) {
 	while(*s) {
-		if(*s=='\n') {
-			index += 80-index%80;
-			continue;
+		if(x>=80||*s=='\n') {
+			x=0;
+			y++;
+			if(*s=='\n') {
+				s++;
+				continue;
+			}
 		}
-		if(index>=80*25)index=0;
-		vga_mem[index++]=15<<8|*s++;
+		if(y>25) {
+			y=0;
+			x=0;
+		}
+		vga_mem[y*80+x++]=15<<8|*s++;
 	}
 }
 void printf(const char *fmt,...) {
@@ -24,7 +31,7 @@ void printf(const char *fmt,...) {
 	int len=vsnprintf(nullptr,0,fmt,l2);
 	va_end(l2);
 	char* buf=(char *)__alloca(len+1);
-	vsprintf(buf,fmt,list);
+	vsnprintf(buf,len+1,fmt,list);
 	puts(buf);
 	va_end(list);
 }

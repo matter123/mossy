@@ -99,7 +99,8 @@ namespace hal {
 				if(mem==&physmem) {
 					mem->add_region(module->mod_start,module->mod_end,mod_type);
 				} else {
-					mem->add_region(module->mod_start+KERNEL_VMA,module->mod_end+KERNEL_VMA,mod_type);
+					uintptr_t vma=reinterpret_cast<uintptr_t>(&KERNEL_VMA);
+					mem->add_region(module->mod_start+vma,module->mod_end+KERNEL_VMA,mod_type);
 				}
 			}
 		}
