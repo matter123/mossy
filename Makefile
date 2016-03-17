@@ -20,12 +20,13 @@ headers:
 	$(MAKE) -C src/libm headers
 
 sysroot/usr/lib/libk: libs
+sysroot/usr/lib/libm: libs
 libs: headers
 	$(MAKE) -C src/libc
 	$(MAKE) -C src/libm
 
 kernel: sysroot/boot/kernel
-sysroot/boot/kernel: sysroot/usr/lib/libk
+sysroot/boot/kernel: sysroot/usr/lib/libk sysroot/usr/lib/libm
 	$(MAKE) -C src/kernel
 
 iso: mossy.iso

@@ -1,5 +1,5 @@
 ARCH=x86_64
-LIB_NAME=libm
+LIB_NAME:=$(notdir $(shell pwd))
 LIB_DEFINE:=$(shell echo $(LIB_NAME)|tr [:lower:] [:upper:])
 SYSROOT_PATH=../../sysroot
 
@@ -22,13 +22,13 @@ SOBJECTS:=$(patsubst ./%, $(LIB_BIN_PATH)/%, $(SOBJECTS))
 HEADSRC:=$(shell find . -name '*.h'|grep include)
 HEADSYSROOT:=$(patsubst ./%, $(SYSROOT_PATH)/usr/include/$(LIB_NAME)/%, $(HEADSRC))
 
-
 WFLAGSON=-Wall -Wextra -Werror=return-type -Wshadow -Wundef -Wdeprecated -Wredundant-decls -Werror=parentheses
 WFLAGSOFF=-Wno-unused-parameter -Wno-sign-compare -Wno-implicit-exception-spec-mismatch
 FFLAGS=-ffreestanding -fstack-protector -fno-common
 DFLAGS:=-DMOSSY $(BUILD_INFO)
 MFLAGS=-mcmodel=kernel -mno-red-zone
-IFLAGS=--sysroot=$(SYSROOT_PATH) -I$(SYSROOT_PATH)/usr/include/libc/include -include $(SYSROOT_PATH)/usr/include/kernel/stdlib/include/global.h
+INCLUDEPATHS=$(wildcard $(SYSROOT_PATH)/usr/include/*/include)
+IFLAGS=--sysroot=$(SYSROOT_PATH) $(addprefix -I, $(INCLUDEPATHS)) -include $(SYSROOT_PATH)/usr/include/kernel/stdlib/include/global.h
 CFLAGS=-O3 -std=c11 $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS) $(MFLAGS) $(IFLAGS)
 CXXFLAGS=-O3 -std=c++1y $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS) $(MFLAGS) $(IFLAGS) -fno-rtti -fno-exceptions -fdiagnostics-color=auto
 ASFLAGS=-felf64

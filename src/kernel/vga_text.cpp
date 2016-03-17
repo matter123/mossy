@@ -18,10 +18,12 @@ void puts(const char *s) {
 	}
 }
 void printf(const char *fmt,...) {
-	va_list list;
+	va_list list,l2;
 	va_start(list,fmt);
-	int len=vsprintf(nullptr,fmt,list);
-	char* buf=(char *)__alloca(len);
+	va_copy(l2,list);
+	int len=vsnprintf(nullptr,0,fmt,l2);
+	va_end(l2);
+	char* buf=(char *)__alloca(len+1);
 	vsprintf(buf,fmt,list);
 	puts(buf);
 	va_end(list);

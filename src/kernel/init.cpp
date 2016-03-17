@@ -30,11 +30,9 @@ void task_b() {
 	yield();
 }
 void foo(cpu_state *s, void *sse_save, bool *in_use) {
-	asm("xchg %bx, %bx");
-	printf("hey its a terminal: %x",0x40);
+	printf("hey its a terminal: %#X",s->int_num);
 	while(true){}
 }
-char buf[20];
 extern "C"
 void init_exec(hal::multiboot_header *mboot) {
 	init_mboot(mboot);
@@ -46,8 +44,6 @@ void init_exec(hal::multiboot_header *mboot) {
 	task->rflags=0x200086;
 	task->cs=0x8;
 	task->ss=0x10;
-	itoa(40,buf,10);
-	puts(buf);
 	install_interrupts();
 	install_single_interrupt(0x40,foo);
 	asm("int $0x40");

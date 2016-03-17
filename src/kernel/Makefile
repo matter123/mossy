@@ -3,6 +3,10 @@ BIN_PATH=../../bin/$(ARCH)/kernel
 SYSROOT_PATH=../../sysroot
 KERNEL=../../sysroot/boot/kernel
 
+LIBS:=$(wildcard ../lib*)
+LIBS:=$(subst ../lib,-l,$(LIBS))
+LIBS:=$(subst -lc,-lk,$(LIBS))
+
 CSOURCES:=$(shell find . -name '*.c')
 COBJECTS:=$(patsubst %.c, %.c.o, $(CSOURCES))
 COBJECTS:=$(patsubst ./%, $(BIN_PATH)/%, $(COBJECTS))
@@ -40,7 +44,7 @@ clean:
 
 $(KERNEL): $(CXXOBJECTS) $(COBJECTS) $(SOBJECTS)
 	@mkdir -p $(dir $@)
-	$(CPP) $(LDFLAGS) -o $@ $^ -L $(SYSROOT_PATH)/usr/lib -lk -lm -lgcc
+	$(CPP) $(LDFLAGS) -o $@ $^ -L $(SYSROOT_PATH)/usr/lib $(LIBS) $(LIBS) -lgcc
 
 $(BIN_PATH)/%.cpp.o: ./%.cpp $(HEADSYSROOT)
 	@mkdir -p $(dir $@)

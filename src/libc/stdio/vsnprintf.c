@@ -18,16 +18,16 @@ static size_t strout(void *p, const char *buf, size_t sz) {
 }
 
 int vsnprintf(char * s,
-               size_t n,
-               const char * format,
-               va_list arg) {
-    struct state st;
-    st.bufrem = n;
-    st.bufp   = s;
-    int r = vcbprintf(&st, strout, format, arg);
-    if (!st.bufrem) {
-        *(s+n-1)='\0';
-    }
+              size_t n,
+              const char * format,
+              va_list arg) {
+	struct state st;
+	st.bufrem = n;
+	st.bufp   = s;
+	int r = vcbprintf(&st, strout, format, arg);
+	if(st.bufrem) {
+		*st.bufp = 0;
+	}
     return r;
 }
 int snprintf(char *s,size_t max, const char *format, ...) {

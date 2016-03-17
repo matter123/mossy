@@ -13,13 +13,10 @@
 #include <stdbool.h>
 #include <limits.h>
 #include "vcbprintf.h"
+#include <math.h>
 
 char _PDCLIB_digits[] = "0123456789abcdefghijklmnopqrstuvwxyz";
 char _PDCLIB_Xdigits[] = "0123456789ABCDEF";
-static inline int abs(int a) {
-    if(a<0)a*=-1;
-    return a;
-}
 #define EOF -1
 
 #define E_minus    (1<<0)
@@ -189,7 +186,7 @@ static bool int2base( uintmax_t value, struct print_status_t * status )
 
                 written += padding < 2 ? 2 - padding : 0;
                 outend[-written    ] = '0';
-                outend[-written + 1] = (status->flags & E_lower) ? 'x' : 'X';
+                outend[-written + 1] = 'x';// spec says that actually should be a X for upper bit i think it looks ugly
                 break;
             default:
                 break;
