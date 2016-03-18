@@ -479,7 +479,7 @@ int read_formatted( const char * spec, struct print_status_t * status )
             }
         case 'p':
             status->base = 16;
-            status->flags |= ( E_lower | E_unsigned | E_alt | E_intptr );
+            status->flags |= ( E_unsigned | E_alt | E_intptr );
             break;
         case 'n':
            {

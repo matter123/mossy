@@ -13,6 +13,7 @@
 	limitations under the License.
 */
 #include <hal/memtype.h>
+#include <string.h>
 namespace hal {
 
 	bool mem_type::operator==(const mem_type &other) const {
@@ -59,6 +60,7 @@ namespace hal {
 	}
 
 	mem_type::mem_type() {
+		memset(this,0,sizeof(mem_type));
 	}
 
 	mem_type::mem_type(mem_type &other) {
@@ -87,11 +89,11 @@ namespace hal {
 		if(this->no_exist|other.no_exist) {
 			return this->no_exist;
 		}
-		if(this->resv_mem^other.resv_mem) {
-			return this->resv_mem;
-		}
 		if(this->kernel^other.kernel) {
 			return this->kernel;
+		}
+		if(this->resv_mem^other.resv_mem) {
+			return this->resv_mem;
 		}
 		if(this->videobuffer^other.videobuffer) {
 			return this->videobuffer;

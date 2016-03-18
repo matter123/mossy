@@ -31,6 +31,7 @@ void *memset(void *dest,int value,size_t size) {
 void *memmove(void *dest,const void *src,size_t size) {
 	pointer pdest=(pointer)dest;
 	const_pointer psrc=(const_pointer)src;
+	if(dest==src)return dest;
 	if(pdest < psrc) {
 		while(size--)*pdest++=*psrc++;
 	} else {

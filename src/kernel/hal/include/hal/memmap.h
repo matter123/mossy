@@ -18,14 +18,15 @@
 namespace hal {
 	class memmap;
 	struct region_hook{
-		void (*add_region_hook)(memmap *mmap);
 		region_hook* next;
+		void (*add_region_hook)(memmap *mmap);
+		region_hook(memmap &map, void (add_region_hook)(memmap *mmap));
 	};
 	class memmap {
-		mem_regs regs;
 		int add_count;
 		region_hook *next;
 	public:
+		mem_regs regs;
 		int region_count();
 		mem_region *get_region(int index);
 		void add_regions(int count);

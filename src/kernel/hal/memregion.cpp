@@ -47,6 +47,7 @@ namespace hal {
 		return regs;
 	}
 	mem_regs *sort(mem_regs *regs) {
+		if(regs->tag_count<=1) return regs;
 		mem_region temp;
 		bool has_swap;
 		do {
@@ -71,6 +72,7 @@ namespace hal {
 		return regs;
 	}
 	mem_regs *split(mem_regs *regs) {
+		if(regs->tag_count<=1) return regs;
 		mem_region *t_regions=(mem_region *)w_malloc(sizeof(mem_region));
 		int ecount=0;
 		for(int i=1; i<regs->tag_count; i++) {
@@ -164,6 +166,7 @@ namespace hal {
 	}
 	mem_type ne;
 	mem_regs *fill(mem_regs *regs) {
+		if(regs->tag_count<=1) return regs;
 		ne.no_exist=true;
 		mem_region *t_regions=(mem_region *)w_malloc(sizeof(mem_region));
 		int ecount=0;

@@ -10,10 +10,9 @@
 	See the License for the specific language governing permissions and
 	limitations under the License.
 */
+#include <linker.h>
 //workspace is for when you need memory pre heap, cannot de allocate so be careful
 namespace hal {
-	extern "C" uint32_t k_end;      /*we have 128kb after this reserved*/
-	extern "C" uint32_t k_data_end;
 	static pointer wksp_ptr=(pointer) &k_end;
 	void *w_malloc(size_t s,size_t align=1) {
 		if(s>=sizeof(uintptr_t)) { //ensure alignment for large types

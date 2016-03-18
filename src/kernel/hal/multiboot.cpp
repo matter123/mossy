@@ -2,11 +2,11 @@
 #include <hal/workspace.h>
 #include <hal/memmap.h>
 #include <string.h>
+#include <linker.h>
 namespace hal {
 	static multiboot_header *head;
 	static multiboot_tag **tags;
 	static int tag_count;
-	static region_hook rhookP, rhookV;
 	void init_mboot(multiboot_header *mboot) {
 		//make sure multiboot header is in high memory (after kernel)
 		head=reinterpret_cast<multiboot_header *>(w_malloc(mboot->size,8));
@@ -82,7 +82,6 @@ namespace hal {
 		}
 		return nullptr;
 	}
-	extern "C" uintptr_t KERNEL_VMA;
 	static void multiboot_hook(memmap *mem) {
 		multiboot_module *module=NULL;
 		for(int i=0; i<get_tag_count(); i++) {
@@ -99,17 +98,10 @@ namespace hal {
 				if(mem==&physmem) {
 					mem->add_region(module->mod_start,module->mod_end,mod_type);
 				} else {
-					uintptr_t vma=reinterpret_cast<uintptr_t>(&KERNEL_VMA);
-					mem->add_region(module->mod_start+vma,module->mod_end+KERNEL_VMA,mod_type);
+					mem->add_region(module->mod_start+KERNEL_VMA,module->mod_end+KERNEL_VMA,mod_type);
 				}
 			}
 		}
 	}
-	BEFORE_INIT
-	void add_multiboot_hook() {
-		rhookP.add_region_hook=&multiboot_hook;
-		rhookV.add_region_hook=&multiboot_hook;
-		physmem.add_region_hook(&rhookP);
-		virtmem.add_region_hook(&rhookV);
-	}
+	static region_hook rhookP(physmem, &multiboot_hook), rhookV(virtmem, &multiboot_hook);
 }

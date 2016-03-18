@@ -17,6 +17,8 @@
 #include <hal/memmap.h>
 #include <hal/multiboot.h>
 #include <hal/workspace.h>
+#include <linker.h>
+#include <vga_text.h>
 namespace hal {
 	memmap virtmem;
 	memmap physmem;
@@ -31,34 +33,24 @@ namespace hal {
 		if(!mmap_tag) {
 			return false;
 		}
-		//multiboot_mmap has a single entry in by default now
-		size_t total_size = mmap_tag->head.size-(sizeof(multiboot_mmap)-mmap_tag->entry_size);
-		this->regs.tag_count= total_size / mmap_tag->entry_size;
-		this->regs.regions=reinterpret_cast<mem_region *>(w_malloc(sizeof(mem_region)
-		                                                           *this->regs.tag_count,16));
+		//for the kernel
+		this->regs.tag_count=1;
+		this->regs.regions=reinterpret_cast<mem_region *>(w_malloc(sizeof(mem_region),16));
+		mem_type kmem;
+		kmem.kernel=true;
+		this->regs.regions[0].start=K_START;
+		this->regs.regions[0].end=K_STACK_END;
+		this->regs.regions[0].type=kmem;
 		if(this==&physmem) {
-			mem_type types[6];
-			types[0].kernel=true;
-			types[0].resv_mem=true;
-			types[1].avil=true;
-			types[2].resv_mem=true;
-			types[3].avil=true;
-			types[3].firmware=true;
-			types[4].save_on_hib=true;
-			types[5].no_exist=true;
-			//convert from multiboot_mmap_ent to mem_region
-			for(size_t s=0; s<regs.tag_count; s++) {
-				multiboot_mmap_ent ent=mmap_tag->entries[s];
-				this->regs.regions[s].start=ent.addr;
-				this->regs.regions[s].end=ent.addr + ent.len;
-				this->regs.regions[s].type=types[ent.type];
-			}
+			this->regs.regions[0].start=0x100000;
+			this->regs.regions[0].end-=KERNEL_VMA;
 		}
 		region_hook *current=this->next;
 		while(current) {
 			current->add_region_hook(this);
 			current=current->next;
 		}
+		printf("START               END                 TYPE\n");
 		uintptr_t old = reinterpret_cast<uintptr_t>(this->regs.regions);
 		//preliminary sanity check
 		//make address ordered
@@ -66,7 +58,16 @@ namespace hal {
 		//page align new regions
 		//remove any 0 sized entries
 		//fill remianing address space
-		this->regs=*fill(remove_invalid(page_align(split(sort(remove_invalid(&this->regs))))));
+		this->regs=*remove_invalid(&this->regs);
+		this->regs=*sort(&this->regs);
+		this->regs=*split(&this->regs);
+		this->regs=*page_align(&this->regs);
+		this->regs=*remove_invalid(&this->regs);
+		this->regs=*fill(&this->regs);
+		for(size_t s=0;s<this->regs.tag_count;s++) {
+			hal::mem_region *r=&this->regs.regions[s];
+			printf("%.16p  %.16p  %#.4X\n",r->start,r->end,r->type.to_u64());
+		}
 		//reclaim space used by the fixiing
 		memmove((void *)old,this->regs.regions,sizeof(mem_region)*this->regs.tag_count);
 		this->regs.regions=reinterpret_cast<mem_region *>(old);
@@ -105,4 +106,37 @@ namespace hal {
 		}
 		return false;
 	}
+
+	region_hook::region_hook(memmap &mmap, void (*rhook)(memmap *mem)) {
+		this->add_region_hook=rhook;
+		mmap.add_region_hook(this);
+	}
+
+	void add_phys_multiboot(memmap *mem) {
+		multiboot_mmap *mmap_tag=nullptr;
+		for(size_t s=0; s<get_tag_count(); s++) {
+			if(get_tag(s)->type == t_memory_map) {
+				mmap_tag = reinterpret_cast<multiboot_mmap *>(get_tag(s));
+				break;
+			}
+		}
+		size_t total_size = mmap_tag->head.size-(sizeof(multiboot_mmap)-mmap_tag->entry_size);
+		size_t tag_count = total_size / mmap_tag->entry_size;
+		mem_type types[6]={};
+		types[0].kernel=true;
+		types[0].resv_mem=true;
+		types[1].avil=true;
+		types[2].resv_mem=true;
+		types[3].avil=true;
+		types[3].firmware=true;
+		types[4].save_on_hib=true;
+		types[5].no_exist=true;
+		mem->add_regions(tag_count);
+		//convert from multiboot_mmap_ent to mem_region
+		for(size_t s=0; s<tag_count; s++) {
+			multiboot_mmap_ent ent=mmap_tag->entries[s];
+			mem->add_region(ent.addr,ent.addr + ent.len,types[ent.type]);
+		}
+	}
+	region_hook rhook(physmem, &add_phys_multiboot);
 }
