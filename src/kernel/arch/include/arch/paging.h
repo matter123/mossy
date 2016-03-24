@@ -14,6 +14,14 @@
 	limitations under the License.
 */
 #pragma once
-void putc(char c);
-void puts(const char *s);
-void printf(const char *fmt,...);
+void pre_paging_init();
+void paging_init();
+const uint PAGE_WRITE = 1<<1;
+const uint PAGE_USER  = 1<<2;
+const uint PAGE_WT    = 1<<3;
+const uint PAGE_NC    = 1<<4;
+const uint PAGE_EXEC  = 1;
+
+void map(uintptr_t phys,uintptr_t virt,uint flags);
+bool ismapped(uintptr_t virt);
+uintptr_t getphys(uintptr_t virt);

@@ -13,7 +13,14 @@
 	See the License for the specific language governing permissions and
 	limitations under the License.
 */
+
 #pragma once
-void putc(char c);
-void puts(const char *s);
-void printf(const char *fmt,...);
+void logger_init();
+enum LogLevel {
+	LOG_DEBUG,
+	LOG_INFO,
+	LOG_WARNING,
+	LOG_ERROR,
+};
+void setLogLevel(LogLevel level);
+void Log(LogLevel level, const char *service, const char *fmt,...);

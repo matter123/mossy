@@ -18,6 +18,7 @@
 #error C++ only header
 #endif
 #include <ctype.h>
+#include <math.h>
 namespace std {
 	static const char *chars =
 	    "ZYXWVUTSRQPONMLKJIHGFEDCBA9876543210123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -105,7 +106,7 @@ namespace std {
 			*str++='-';
 			value*=-1;
 		}
-		//firstExp=(int)floor(log10(value));
+		firstExp=(int)floor(log10f(value));
 		//value/=pow(10,firstExp);
 		while(value>0) {
 			if(firstExp==0) {

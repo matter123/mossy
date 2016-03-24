@@ -102,6 +102,19 @@ namespace hal {
 				}
 			}
 		}
+		if(mem==&physmem) {
+			for(int i=0; i<get_tag_count(); i++) {
+				hal::multiboot_tag *tag=get_tag(i);
+				if(tag->type!=t_framebuffer) {
+					continue;
+				}
+				multiboot_fb *fb=reinterpret_cast<hal::multiboot_fb *>(tag);
+				mem->add_regions(1);
+				mem_type fb_type;
+				fb_type.videobuffer=true;
+				mem->add_region(fb->addr,fb->addr+fb->pitch*fb->height,fb_type);
+			}
+		}
 	}
 	static region_hook rhookP(physmem, &multiboot_hook), rhookV(virtmem, &multiboot_hook);
 }

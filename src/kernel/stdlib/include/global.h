@@ -5,11 +5,15 @@
 extern "C" {
 #endif
 #define IN_KERNEL defined(KERNEL)
+#if IN_KERNEL && defined(__cplusplus)
+#include <logger.h>
+#endif
 #define IN_LIBK   defined(LIBK)
 #define IN_LIBC   defined(LIBC)
 #define NORETURN __attribute__((noreturn))
 #define PACKED __attribute__((packed))
 #define BEFORE_INIT __attribute__((constructor))
+#define PRINTF_LIKE(arg_fmt,arg_chk)  __attribute__((__format__(__printf__, arg_fmt, arg_chk)))
 typedef uint8_t* pointer;
 typedef const uint8_t* const_pointer;
 typedef unsigned int uint;

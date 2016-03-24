@@ -26,16 +26,18 @@ HEADSYSROOT:=$(patsubst ./%, $(SYSROOT_PATH)/usr/include/kernel/%, $(HEADSRC))
 WFLAGSON=-Wall -Wextra -Werror=return-type -Wshadow -Wundef -Wdeprecated -Wredundant-decls -Werror=parentheses -pedantic
 WFLAGSOFF=-Wno-unused-parameter -Wno-sign-compare -Wno-implicit-exception-spec-mismatch
 FFLAGS=-ffreestanding -fstack-protector -fno-common
-DFLAGS:=-DMOSSY $(BUILD_INFO)
+DFLAGS:=-DKERNEL -DMOSSY $(BUILD_INFO)
 MFLAGS=-mcmodel=kernel -mno-red-zone
-INCLUDEPATHS=$(wildcard $(SYSROOT_PATH)/usr/include/kernel/*/include)
-IFLAGS=--sysroot=$(SYSROOT_PATH) $(addprefix -I, $(INCLUDEPATHS)) -I$(SYSROOT_PATH)/usr/include/libc/include -include $(SYSROOT_PATH)/usr/include/kernel/stdlib/include/global.h
+INCLUDEPATHS:=$(wildcard $(SYSROOT_PATH)/usr/include/kernel/*/include)
+INCLUDEPATHS:=$(INCLUDEPATHS) $(wildcard $(SYSROOT_PATH)/usr/include/*/include)
+INCLUDEPATHS:=$(addprefix -I, $(INCLUDEPATHS))
+IFLAGS=--sysroot=$(SYSROOT_PATH) $(INCLUDEPATHS) -include $(SYSROOT_PATH)/usr/include/kernel/stdlib/include/global.h
 CFLAGS=-O3 -std=c11 $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS) $(MFLAGS) $(IFLAGS)
 CXXFLAGS=-O3 -std=c++1y $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS) $(MFLAGS) $(IFLAGS) -fno-rtti -fno-exceptions -fdiagnostics-color=auto
 LDFLAGS=-static -T../link.ld -nostdlib $(FFLAGS) -Wl,-z,max-page-size=0x1000 -mcmodel=kernel
 ASFLAGS ?=-felf64
 
-all: $(KERNEL)
+all: ../.clang_complete $(KERNEL)
 .PHONY: all headers clean
 headers: $(HEADSYSROOT)
 clean:
@@ -48,18 +50,23 @@ $(KERNEL): $(CXXOBJECTS) $(COBJECTS) $(SOBJECTS)
 
 $(BIN_PATH)/%.cpp.o: ./%.cpp $(HEADSYSROOT)
 	@mkdir -p $(dir $@)
-	$(CPP) -DKERNEL $(CXXFLAGS) -o $@ -c $<
+	$(CPP) $(CXXFLAGS) -o $@ -c $<
 
 $(BIN_PATH)/%.c.o: ./%.c $(HEADSYSROOT)
 	@mkdir -p $(dir $@)
-	$(CC) -DKERNEL $(CFLAGS) -o $@ -c $<
+	$(CC) $(CFLAGS) -o $@ -c $<
 
 $(BIN_PATH)/%.asm.o: ./%.asm
 	@mkdir -p $(dir $@)
-	$(AS) -DKERNEL $(ASFLAGS) -o $@ $<
+	$(AS) $(ASFLAGS) -o $@ $<
 
 .PRECIOUS: $(HEADSYSROOT)
 $(SYSROOT_PATH)/usr/include/kernel/%.h: ./%.h
 	@mkdir -p $(dir $@)
 	@cp $< $@
 	@echo $@ $<
+
+../.clang_complete: $(HEADSYSROOT)
+	@echo $(DFLAGS) | tr " " "\n" > ../.clang_complete
+	@echo $(subst ../../,../,$(IFLAGS)) | tr " " "\n" >> ../.clang_complete
+	@echo -ffreestanding $(WFLAGSON) $(WFLAGSOFF) | tr " " "\n" >> ../.clang_complete

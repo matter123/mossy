@@ -28,6 +28,14 @@ double dabs(double value);
 
 double cos(double value); //NO-IMP
 double sin(double value); //NO-IMP
+
+double      log10(double value);
+float       log10f(float value);
+long double log10l(long double value);
+
+double      floor(double value);
+float       floorf(float value);
+long double floorl(long double value);
 #ifdef __cplusplus
 }
 #endif

@@ -31,6 +31,7 @@ namespace hal {
 			}
 		}
 		if(!mmap_tag) {
+			Log(LOG_ERROR,"[MEMMAP]","could not find memory map");
 			return false;
 		}
 		//for the kernel
@@ -38,11 +39,11 @@ namespace hal {
 		this->regs.regions=reinterpret_cast<mem_region *>(w_malloc(sizeof(mem_region),16));
 		mem_type kmem;
 		kmem.kernel=true;
-		this->regs.regions[0].start=K_START;
+		this->regs.regions[0].start=KERNEL_VMA+KERNEL_LMA;
 		this->regs.regions[0].end=K_STACK_END;
 		this->regs.regions[0].type=kmem;
 		if(this==&physmem) {
-			this->regs.regions[0].start=0x100000;
+			this->regs.regions[0].start=KERNEL_LMA;
 			this->regs.regions[0].end-=KERNEL_VMA;
 		}
 		region_hook *current=this->next;
@@ -50,7 +51,10 @@ namespace hal {
 			current->add_region_hook(this);
 			current=current->next;
 		}
-		printf("START               END                 TYPE\n");
+		for(size_t s=0;s<this->region_count();s++) {
+			hal::mem_region *r=this->get_region(s);
+			printf("%.16p  %.16p  %#.4X\n",r->start,r->end,r->type.to_u64());
+		}
 		uintptr_t old = reinterpret_cast<uintptr_t>(this->regs.regions);
 		//preliminary sanity check
 		//make address ordered
@@ -64,10 +68,6 @@ namespace hal {
 		this->regs=*page_align(&this->regs);
 		this->regs=*remove_invalid(&this->regs);
 		this->regs=*fill(&this->regs);
-		for(size_t s=0;s<this->regs.tag_count;s++) {
-			hal::mem_region *r=&this->regs.regions[s];
-			printf("%.16p  %.16p  %#.4X\n",r->start,r->end,r->type.to_u64());
-		}
 		//reclaim space used by the fixiing
 		memmove((void *)old,this->regs.regions,sizeof(mem_region)*this->regs.tag_count);
 		this->regs.regions=reinterpret_cast<mem_region *>(old);
@@ -113,6 +113,7 @@ namespace hal {
 	}
 
 	void add_phys_multiboot(memmap *mem) {
+		Log(LOG_DEBUG,"[MEMMAP]","adding physical memory regions");
 		multiboot_mmap *mmap_tag=nullptr;
 		for(size_t s=0; s<get_tag_count(); s++) {
 			if(get_tag(s)->type == t_memory_map) {
@@ -122,7 +123,7 @@ namespace hal {
 		}
 		size_t total_size = mmap_tag->head.size-(sizeof(multiboot_mmap)-mmap_tag->entry_size);
 		size_t tag_count = total_size / mmap_tag->entry_size;
-		mem_type types[6]={};
+		mem_type types[5]={};
 		types[0].kernel=true;
 		types[0].resv_mem=true;
 		types[1].avil=true;
@@ -130,12 +131,12 @@ namespace hal {
 		types[3].avil=true;
 		types[3].firmware=true;
 		types[4].save_on_hib=true;
-		types[5].no_exist=true;
 		mem->add_regions(tag_count);
 		//convert from multiboot_mmap_ent to mem_region
 		for(size_t s=0; s<tag_count; s++) {
 			multiboot_mmap_ent ent=mmap_tag->entries[s];
-			mem->add_region(ent.addr,ent.addr + ent.len,types[ent.type]);
+			Log(LOG_DEBUG, "[MEMMAP]", "region %.16p %.16p %d",ent.addr,ent.addr + ent.len,ent.type);
+			mem->add_region(ent.addr,ent.addr + ent.len,types[ent.type>4?2:ent.type]);
 		}
 	}
 	region_hook rhook(physmem, &add_phys_multiboot);

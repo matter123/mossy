@@ -1,5 +1,5 @@
 /*
-	Copyright 2016 Matthew Fosdick
+	Copyright 2015 Matthew Fosdick
 
 	Licensed under the Apache License, Version 2.0 (the "License");
 	you may not use this file except in compliance with the License.
@@ -14,6 +14,8 @@
 	limitations under the License.
 */
 #pragma once
-void putc(char c);
-void puts(const char *s);
-void printf(const char *fmt,...);
+void pfa_init();
+
+uintptr_t get_page();
+
+void add_free_page(uintptr_t );

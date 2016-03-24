@@ -126,6 +126,7 @@ lidtr:
 
 [GLOBAL fail_fast]
 fail_fast:
+hlt
 xchg bx, bx
 jmp .past
 	.flidtr:

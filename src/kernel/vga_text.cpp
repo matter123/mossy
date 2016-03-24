@@ -5,7 +5,14 @@ volatile uint16_t *vga_mem=reinterpret_cast<uint16_t *>(0xB8000);
 uint16_t x=0,y=0;
 
 void putc(char c) {
-	vga_mem[y*80+x]=15<<8|c;
+	if(x>=80||c=='\n') {
+		x=0;
+		y++;
+		if(c=='\n') {
+			return;
+		}
+	}
+	vga_mem[y*80+x++]=15<<8|c;
 }
 void puts(const char *s) {
 	while(*s) {
@@ -20,6 +27,9 @@ void puts(const char *s) {
 		if(y>25) {
 			y=0;
 			x=0;
+			for(int i=0;i<80;i++) {
+				vga_mem[0*80+i]=15<<8|' ';
+			}
 		}
 		vga_mem[y*80+x++]=15<<8|*s++;
 	}

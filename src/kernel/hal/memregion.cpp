@@ -131,10 +131,10 @@ namespace hal {
 					regs->regions[i].start&=START_MASK;
 				} else {
 					if(!regs->regions[i].type.can_shrink()) {
-						PANIC("region cannot shrink nor grow and start is not page aligned");
+						Log(LOG_ERROR,"[MEMMAP]","region cannot shrink nor grow and start is not page aligned %d",regs->regions[i].type.to_u64());
 					}
 					if(!regs->regions[i].type.can_adjust_start()) {
-						PANIC("region cannot have start adjusted, but start is not page aligned");
+						Log(LOG_ERROR,"[MEMMAP]","region cannot have start adjusted, but start is not page aligned %d",regs->regions[i].type.to_u64());
 					}
 					regs->regions[i].start&=START_MASK;
 					regs->regions[i].start+=0x1000;
@@ -147,6 +147,7 @@ namespace hal {
 				regs->regions[i].end-=1;
 			}
 			if((regs->regions[i].end & 0xFFF) != 0xFFF) {
+				uintptr_t old_end=regs->regions[i].end;
 				if(regs->regions[i].type.can_grow()) {
 					regs->regions[i].end=regs->regions[i].end|0xFFF;
 				} else {
@@ -157,7 +158,7 @@ namespace hal {
 					regs->regions[i].end&=START_MASK;
 					regs->regions[i].end-=1;
 				}
-				if((i+1)<regs->tag_count && regs->regions[i+1].start<regs->regions[i].end) {
+				if((i+1)<regs->tag_count && regs->regions[i+1].start-old_end == 1) {
 					regs->regions[i+1].start=regs->regions[i].end+1;
 				}
 			}
