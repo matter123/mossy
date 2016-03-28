@@ -135,7 +135,7 @@ namespace hal {
 		//convert from multiboot_mmap_ent to mem_region
 		for(size_t s=0; s<tag_count; s++) {
 			multiboot_mmap_ent ent=mmap_tag->entries[s];
-			Log(LOG_DEBUG, "[MEMMAP]", "region %.16p %.16p %d",ent.addr,ent.addr + ent.len,ent.type);
+			//Log(LOG_DEBUG, "[MEMMAP]", "region %.16p %.16p %d",ent.addr,ent.addr + ent.len,ent.type);
 			mem->add_region(ent.addr,ent.addr + ent.len,types[ent.type>4?2:ent.type]);
 		}
 	}

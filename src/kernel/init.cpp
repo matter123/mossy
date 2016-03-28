@@ -17,6 +17,7 @@
 #include <arch/paging.h>
 #include <sys/pfa.h>
 #include <sys/scheduler.h>
+#include <sys/malloc.h>
 #include <hal/multiboot.h>
 #include <hal/memmap.h>
 #include <hal/memregion.h>
@@ -43,7 +44,6 @@ void init_exec(hal::multiboot_header *mboot) {
 	logger_init();
 	hal::physmem.init();
 	hal::virtmem.init();
-	while("true");
 	install_interrupts();
 	install_single_interrupt(0xD, &foo);
 	pre_paging_init();
@@ -51,6 +51,13 @@ void init_exec(hal::multiboot_header *mboot) {
 	uintptr_t addr=get_page();
 	printf("%d %p\n",addr/1024/1024,addr);
 	paging_init();
+	malloc_init();
+	void *a=malloc(12);
+	void *b=malloc(8);
+	printf("%p %p ",a,b);
+	free(a);
+	void *c=malloc(16);
+	printf("%p\n", c);
 	task = reinterpret_cast<cpu_state *>(&sys_stack2-sizeof(cpu_state));
 	task->rip=reinterpret_cast<uint64_t>(&task_b);
 	task->rsp=reinterpret_cast<uint64_t>(&sys_stack2);

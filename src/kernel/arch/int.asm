@@ -134,7 +134,7 @@ jmp .past
 	dq 0
 	.past:
 	mov rax, .flidtr ;load fake lidt
-	lidt [rax]
+	;lidt [rax]
 	xchg bx, bx ;magic break
 	mov bx, 0
 	div bx ;div by 0 - triple fault

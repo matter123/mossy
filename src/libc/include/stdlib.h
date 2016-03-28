@@ -39,6 +39,11 @@ char *lltoa(long long value,char *str, int base);
 char *ulltoa(unsigned long long value,char *str, int base);
 char *ftoa(float value,char *str, int base); //NO-IMP
 char *dtoa(double value,char *str, int base); //NO-IMP
+
+void *malloc(size_t size);
+void free(void *addr);
+void *realloc(void *addr,size_t size);
+void *calloc(size_t num, size_t size);
 #ifdef __cplusplus
 }
 #endif

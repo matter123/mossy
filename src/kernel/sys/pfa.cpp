@@ -30,6 +30,7 @@ void pfa_init() {
 			}
 		}
 	}
+	Log(LOG_INFO, "[PFA   ]", "%p",stack);
 }
 
 uintptr_t get_page() {

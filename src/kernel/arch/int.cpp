@@ -113,9 +113,9 @@ void set_entry(int int_num,idt_entry *entry) {
 }
 void set_entry(int int_num, void *target,int type,bool userspace) {
 	idt_entry entry;
+	memset(&entry,0,sizeof(idt_entry));
 	entry.type=type;
 	entry.present=true;
-	entry.ist=0;
 	entry.dpl=userspace?0x3:0x0;
 	entry.target_cs=0x8;
 	entry.target_low=(uintptr_t)target&0xFFFF;
