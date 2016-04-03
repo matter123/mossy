@@ -51,10 +51,6 @@ namespace hal {
 			current->add_region_hook(this);
 			current=current->next;
 		}
-		for(size_t s=0;s<this->region_count();s++) {
-			hal::mem_region *r=this->get_region(s);
-			printf("%.16p  %.16p  %#.4X\n",r->start,r->end,r->type.to_u64());
-		}
 		uintptr_t old = reinterpret_cast<uintptr_t>(this->regs.regions);
 		//preliminary sanity check
 		//make address ordered

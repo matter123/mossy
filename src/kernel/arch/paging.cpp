@@ -24,7 +24,6 @@ void paging_init() {
 static void paging_handler(cpu_state *s,void *sse,bool *in_use) {
 	Log(LOG_DEBUG,"[PAGING]","page fault virt addr:%.16p rip:%.16p",s->cr2,s->rip);
 	rp.map(get_page(),s->cr2,PAGE_WRITE|PAGE_EXEC);
-	while(true);
 }
 void map(uintptr_t phys, uintptr_t virt, uint flags) {
 	rp.map(phys, virt, flags);

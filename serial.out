@@ -1,0 +1,20 @@
+[INFO ] [LOGGER] Log level is [INFO ]
+[INFO ] [PAGING] pre paging initalized
+[INFO ] [PFA   ] end pfa stack addr: 0xFFFFFFFF80239A18
+[INFO ] [PAGING] paging initalized
+[INFO ] [HEAP  ] heap initalized
+[INFO ] [HEAP  ] allocating for size 16
+[INFO ] [HEAP  ] MALLOC using size=16
+[INFO ] [HEAP  ] MALLOC next: 32
+0xFFFFFEDFE0000040
+[INFO ] [HEAP  ] FREE size=16
+[INFO ] [HEAP  ] FREE inserting size=80
+[INFO ] [HEAP  ] allocating for size 16
+[INFO ] [HEAP  ] MALLOC using size=64
+[INFO ] [HEAP  ] MALLOC next: 128
+0xFFFFFEDFE00000B0
+[INFO ] [HEAP  ] allocating for size 80
+[INFO ] [HEAP  ] MALLOC using size=80
+[INFO ] [HEAP  ] MALLOC next: 64
+0xFFFFFEDFE0000040
+ABab

@@ -84,6 +84,7 @@ void recursive_paging::init(uint idx) {
 		Log(LOG_DEBUG,"[PAGING]","base addr: %.16p index: %d",this->base,this->index);
 }
 void recursive_paging::map(uintptr_t phys,uintptr_t virt,uint flags) {
+	bool log=virt&2;
 	virt&=~0xFFF;
 	phys&=~0xFFF;
 	uint pml4i=(virt>>39)&0x1FF;
@@ -91,15 +92,18 @@ void recursive_paging::map(uintptr_t phys,uintptr_t virt,uint flags) {
 	uint pdi=(virt>>21)&0x1FF;
 	uint pti=(virt>>12)&0x1FF;
 	if(pml4i==this->index) {
+		Log(LOG_WARNING, "[PAGING]", "page addr %.16p",virt);
 		Log(LOG_ERROR,"[PAGING]","map called in internal paging address");
 	}
 	pml4 *PML4 = (pml4 *)(this->base+PDP_OFF(this->index)+PD_OFF(this->index)+PT_OFF(this->index));
 	pdp  *PDP  = (pdp  *)(this->base+PDP_OFF(this->index)+PD_OFF(this->index)+PT_OFF(pml4i));
 	pd   *PD   = (pd   *)(this->base+PDP_OFF(this->index)+PD_OFF(pml4i)+PT_OFF(pdpi));
 	pt   *PT   = (pt   *)(this->base+PDP_OFF(pml4i)+PD_OFF(pdpi)+PT_OFF(pdi));
-	//Log(LOG_DEBUG,"[PAGING]","PDP: %.16p",PDP);
-	//Log(LOG_DEBUG,"[PAGING]","PD:  %.16p",PD);
-	//Log(LOG_DEBUG,"[PAGING]","PT:  %.16p",PT);
+	if(log) {
+		Log(LOG_DEBUG,"[PAGING]","PDP: %.16p",PDP);
+		Log(LOG_DEBUG,"[PAGING]","PD:  %.16p",PD);
+		Log(LOG_DEBUG,"[PAGING]","PT:  %.16p",PT);
+	}
 	if(!PML4->entries[pml4i].present) {
 		uint64_t address=get_page()&0x0000FFFFFFFFF000;
 		PML4->entriesi[pml4i]=address|PAGE_WRITE|PAGE_USER|0x1;

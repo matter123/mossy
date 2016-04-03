@@ -1,4 +1,4 @@
-all: iso
+all: run
 .PHONY: all headers libs kernel iso clean build_info run
 
 build_info:

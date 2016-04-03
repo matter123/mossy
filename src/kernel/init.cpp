@@ -24,22 +24,37 @@
 #include <logger.h>
 #include <vga_text.h>
 #include <stdlib.h>
+#include <cpuid.h>
 cpu_state *task;
 extern pointer sys_stack2;
 void task_b() {
 	putc('B');
 	yield();
 	putc('b');
-	asm("xchg %bx, %bx");
 	yield();
 }
 void foo(cpu_state *s, void *sse_save, bool *in_use) {
-	printf("%d(%s) err: %d rflags: %x cs: %x",s->int_num,s->dbg,s->err_code,s->rflags,s->cs);
-	printf("rip:%.16p rsp:%.16p",s->rip,s->rsp);
+	printf("%d(%s) err: %d rflags: %x cs: %x\n",s->int_num,s->dbg,s->err_code,s->rflags,s->cs);
+	printf("rip:%.16p rsp:%.16p\n",s->rip,s->rsp);
+	printf("rax:%.16p rbx:%.16p\n",s->rax,s->rbx);
+	printf("rcx:%.16p rdx:%.16p\n",s->rcx,s->rdx);
+	printf("rsi:%.16p rdi:%.16p\n",s->rsi,s->rdi);
+	printf("r8 :%.16p r9 :%.16p\n",s->r8, s->r9);
+	printf("r10:%.16p r11:%.16p\n",s->r10,s->r11);
+	printf("r12:%.16p r13:%.16p\n",s->r12,s->r13);
+	printf("r14:%.16p r15:%.16p\n",s->r14,s->r15);
 	while("true");
 }
 extern "C"
 void init_exec(hal::multiboot_header *mboot) {
+	#define PORT 0x3f8   /* COM1 */
+	outb(PORT + 1, 0x00);    // Disable all interrupts
+	outb(PORT + 3, 0x80);    // Enable DLAB (set baud rate divisor)
+	outb(PORT + 0, 0x03);    // Set divisor to 3 (lo byte) 38400 baud
+	outb(PORT + 1, 0x00);    //                  (hi byte)
+	outb(PORT + 3, 0x03);    // 8 bits, no parity, one stop bit
+	outb(PORT + 2, 0xC7);    // Enable FIFO, clear them, with 14-byte threshold
+	outb(PORT + 4, 0x0B);    // IRQs enabled, RTS/DSR set
 	init_mboot(mboot);
 	logger_init();
 	hal::physmem.init();
@@ -48,16 +63,15 @@ void init_exec(hal::multiboot_header *mboot) {
 	install_single_interrupt(0xD, &foo);
 	pre_paging_init();
 	pfa_init();
-	uintptr_t addr=get_page();
-	printf("%d %p\n",addr/1024/1024,addr);
 	paging_init();
 	malloc_init();
 	void *a=malloc(12);
-	void *b=malloc(8);
-	printf("%p %p ",a,b);
+	printf("%p\n",a);
 	free(a);
-	void *c=malloc(16);
+	void *c=malloc(12);
 	printf("%p\n", c);
+	a=malloc(80);
+	printf("%p\n",a);
 	task = reinterpret_cast<cpu_state *>(&sys_stack2-sizeof(cpu_state));
 	task->rip=reinterpret_cast<uint64_t>(&task_b);
 	task->rsp=reinterpret_cast<uint64_t>(&sys_stack2);
@@ -70,6 +84,6 @@ void init_exec(hal::multiboot_header *mboot) {
 	yield();
 	putc('a');
 	yield();
-	while("true");
+	while(true);
 	panic("reached end");
 }

@@ -30,7 +30,7 @@ void pfa_init() {
 			}
 		}
 	}
-	Log(LOG_INFO, "[PFA   ]", "%p",stack);
+	Log(LOG_INFO, "[PFA   ]", "end pfa stack addr: %p",stack);
 }
 
 uintptr_t get_page() {
@@ -45,7 +45,9 @@ uintptr_t get_page() {
 void add_free_page(uintptr_t page) {
 	if(((uintptr_t)stack&0xFFF)==0x1000-sizeof(uintptr_t)) {
 		if(!ismapped(reinterpret_cast<uintptr_t>(stack+1))) {
-			map(get_page(),reinterpret_cast<uintptr_t>(stack+1),PAGE_WRITE|PAGE_EXEC);
+			map(*stack,reinterpret_cast<uintptr_t>(stack+1),PAGE_WRITE|PAGE_EXEC);
+			stack--;
+			count--;
 		}
 	}
 	stack++;

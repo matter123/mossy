@@ -2,7 +2,7 @@
 plugin_ctrl: unmapped=1, biosdev=1, speaker=1, extfpuirq=1, parallel=1, serial=1, iodebug=1
 config_interface: textconfig
 display_library: x, options="gui_debug"
-memory: host=128, guest=1024
+memory: host=128, guest=512
 romimage: file="/usr/local/share/bochs/BIOS-bochs-latest"
 vgaromimage: file="/usr/local/share/bochs/VGABIOS-lgpl-latest"
 boot: cdrom
@@ -43,7 +43,7 @@ mouse: type=ps2, enabled=0, toggle=ctrl+mbutton
 speaker: enabled=1, mode=system
 parport1: enabled=1, file=none
 parport2: enabled=0
-com1: enabled=1, mode=null
+com1: enabled=1, mode=file, dev=serial.out
 com2: enabled=0
 com3: enabled=0
 com4: enabled=0

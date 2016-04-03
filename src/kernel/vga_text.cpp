@@ -1,10 +1,21 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <stdio.h>
+#include <cpuid.h>
 volatile uint16_t *vga_mem=reinterpret_cast<uint16_t *>(0xB8000);
+#define PORT 0x3f8
 uint16_t x=0,y=0;
+int is_transmit_empty() {
+   return inb(PORT + 5) & 0x20;
+}
 
+void write_serial(char a) {
+   while (is_transmit_empty() == 0);
+
+   outb(PORT,a);
+}
 void putc(char c) {
+	write_serial(c);
 	if(x>=80||c=='\n') {
 		x=0;
 		y++;
@@ -20,6 +31,7 @@ void puts(const char *s) {
 			x=0;
 			y++;
 			if(*s=='\n') {
+				write_serial(*s);
 				s++;
 				continue;
 			}
@@ -31,6 +43,7 @@ void puts(const char *s) {
 				vga_mem[0*80+i]=15<<8|' ';
 			}
 		}
+		write_serial(*s);
 		vga_mem[y*80+x++]=15<<8|*s++;
 	}
 }
