@@ -30,6 +30,14 @@ extern "C" {
 		if(endptr)*endptr=(char *)str;
 		return ret;
 	}
+	unsigned long strtoul(const char *str, char **endptr,int base) {
+		while(isspace(*str))str++;
+		unsigned long ret=std::strtonum(str,(unsigned long)0);
+		if(*str=='+'||*str=='-')str++;
+		while(isdigit(*str))str++;
+		if(endptr)*endptr=(char *)str;
+		return ret;
+	}
 	long long atoll(const char *str) {
 		return std::strtonum(str,(long long)0);
 	}

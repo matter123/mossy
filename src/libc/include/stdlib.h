@@ -25,6 +25,7 @@ NORETURN void abort();
 #define __alloca(size) __builtin_alloca (size)
 #endif
 long strtol(const char * str, char ** endptr,int base);
+unsigned long strtoul(const char * str, char ** endptr,int base);
 int atoi(const char *str);
 long atol(const char *str);
 long long atoll(const char *str);
