@@ -22,3 +22,19 @@ char *strcpy(char *dest,const char *src) {
 	while(*src)*dest++=*src++;
 	return d;
 }
+
+char *strncpy(char *dest, const char *src, size_t num) {
+	bool zero=false;
+	char *d=dest;
+	while(num--) {
+		if(!zero) {
+			*dest=*src++;
+			if(!*dest++) {
+				zero=true;
+			}
+			continue;
+		}
+		*dest='\0';
+	}
+	return d;
+}

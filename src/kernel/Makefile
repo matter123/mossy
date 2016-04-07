@@ -67,6 +67,7 @@ $(SYSROOT_PATH)/usr/include/kernel/%.h: ./%.h
 	@echo $@ $<
 
 ../.clang_complete: $(HEADSYSROOT)
-	@echo $(DFLAGS) | tr " " "\n" > ../.clang_complete
+	@echo --target=x86_64-elf > ../.clang_complete
+	@echo $(DFLAGS) | tr " " "\n" >> ../.clang_complete
 	@echo $(subst ../../,../,$(IFLAGS)) | tr " " "\n" >> ../.clang_complete
 	@echo -ffreestanding $(WFLAGSON) $(WFLAGSOFF) | tr " " "\n" >> ../.clang_complete

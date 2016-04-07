@@ -28,6 +28,9 @@ static void paging_handler(cpu_state *s,void *sse,bool *in_use) {
 void map(uintptr_t phys, uintptr_t virt, uint flags) {
 	rp.map(phys, virt, flags);
 }
+uintptr_t unmap(uintptr_t virt) {
+	return rp.unmap(virt);
+}
 bool ismapped(uintptr_t virt) {
 	return rp.locate(virt)!=0x1;
 }

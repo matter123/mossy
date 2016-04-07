@@ -63,8 +63,11 @@
 #define ACPI_MACHINE_WIDTH          64
 #define ACPI_UINTPTR_T              uintptr_t
 #define ACPI_CPU_FLAGS              uintptr_t
+#define ACPI_CACHE_T                ACPI_MEMORY_LIST
 
 #define ACPI_USE_NATIVE_DIVIDE
+#define ACPI_USE_LOCAL_CACHE 1
+#define ACPI_MUTEX_TYPE ACPI_BINARY_SEMAPHORE
 
 
 #include "acgcc.h"

@@ -23,6 +23,18 @@ void *memcpy(void *dest,const void *src,size_t size) {
 	while(size--)*pdest++=*psrc++;
 	return dest;
 }
+int memcmp(const void *mem1,const void *mem2,size_t num) {
+	const_pointer p1=(const_pointer)mem1;
+	const_pointer p2=(const_pointer)mem2;
+		while(num--) {
+			if(*p1!=*p2) {
+				return *p1-*p2;
+			}
+			p1++;
+			p2++;
+		}
+		return 0;
+}
 void *memset(void *dest,int value,size_t size) {
 	pointer pdest=(pointer)dest;
 	while(size--)*pdest++=value;

@@ -13,6 +13,7 @@
 	See the License for the specific language governing permissions and
 	limitations under the License.
 */
+#include <acpi/acpi.h>
 #include <arch/int.h>
 #include <arch/paging.h>
 #include <sys/pfa.h>
@@ -65,13 +66,7 @@ void init_exec(hal::multiboot_header *mboot) {
 	pfa_init();
 	paging_init();
 	malloc_init();
-	void *a=malloc(12);
-	printf("%p\n",a);
-	free(a);
-	void *c=malloc(12);
-	printf("%p\n", c);
-	a=malloc(80);
-	printf("%p\n",a);
+	AcpiInitializeTables(nullptr, 0, true);
 	task = reinterpret_cast<cpu_state *>(&sys_stack2-sizeof(cpu_state));
 	task->rip=reinterpret_cast<uint64_t>(&task_b);
 	task->rsp=reinterpret_cast<uint64_t>(&sys_stack2);

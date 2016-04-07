@@ -149,3 +149,54 @@ uintptr_t recursive_paging::locate(uintptr_t virt) {
 	//Log(LOG_DEBUG,"[PAGING]","L PT:  %.16p",PT);
 	return PT->entriesi[pti]&0x0000FFFFFFFFF000;
 }
+
+uintptr_t recursive_paging::unmap(uintptr_t virt) {
+	virt&=~0xFFF;
+	uint pml4i=(virt>>39)&0x1FF;
+	uint pdpi=(virt>>30)&0x1FF;
+	uint pdi=(virt>>21)&0x1FF;
+	uint pti=(virt>>12)&0x1FF;
+	pml4 *PML4 = (pml4 *)(this->base+PDP_OFF(this->index)+PD_OFF(this->index)+PT_OFF(this->index));
+	pdp  *PDP  = (pdp  *)(this->base+PDP_OFF(this->index)+PD_OFF(this->index)+PT_OFF(pml4i));
+	pd   *PD   = (pd   *)(this->base+PDP_OFF(this->index)+PD_OFF(pml4i)+PT_OFF(pdpi));
+	pt   *PT   = (pt   *)(this->base+PDP_OFF(pml4i)+PD_OFF(pdpi)+PT_OFF(pdi));
+	if(!PML4->entries[pml4i].present)return 0x1;
+	//Log(LOG_DEBUG,"[PAGING]","L PML4:%.16p",PML4);
+	if(!PDP->entries[pdpi].present)return 0x1;
+	//Log(LOG_DEBUG,"[PAGING]","L PDP: %.16p",PDP);
+	if(!PD->entries[pdi].present)return 0x1;
+	//Log(LOG_DEBUG,"[PAGING]","L PD:  %.16p",PD);
+	if(!PT->entries[pti].present)return 0x1;
+	//Log(LOG_DEBUG,"[PAGING]","L PT:  %.16p",PT);
+	PT->entries[pti].present=false;
+	uintptr_t addr=PT->entriesi[pti]&0x0000FFFFFFFFF000;
+	invlpage((uintptr_t)virt);
+	for(int i=0;i<512;i++) {
+		if(PT->entries[i].present) {
+			return addr;
+		}
+	}
+	//dealloc PT
+	PD->entries[pdi].present=false;
+	add_free_page(PD->entriesi[pdi]&0x0000FFFFFFFFF000);
+	invlpage((uintptr_t)PT);
+	for(int i=0;i<512;i++) {
+		if(PD->entries[i].present) {
+			return addr;
+		}
+	}
+	//dealloc PD
+	PDP->entries[pdpi].present=false;
+	add_free_page(PDP->entriesi[pdpi]&0x0000FFFFFFFFF000);
+	invlpage((uintptr_t)PD);
+	for(int i=0;i<512;i++) {
+		if(PDP->entries[i].present) {
+			return addr;
+		}
+	}
+	//dealloc PDP
+	PML4->entries[pml4i].present=false;
+	add_free_page(PML4->entriesi[pml4i]&0x0000FFFFFFFFF000);
+	invlpage((uintptr_t)PDP);
+	return addr;
+}

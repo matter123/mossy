@@ -1,5 +1,5 @@
 /*
-	Copyright 2016 Matthew Fosdick
+	Copyright 2015 Matthew Fosdick
 
 	Licensed under the Apache License, Version 2.0 (the "License");
 	you may not use this file except in compliance with the License.
@@ -13,16 +13,30 @@
 	See the License for the specific language governing permissions and
 	limitations under the License.
 */
-#pragma once
-void pre_paging_init();
-void paging_init();
-const uint PAGE_WRITE = 1<<1;
-const uint PAGE_USER  = 1<<2;
-const uint PAGE_WT    = 1<<3;
-const uint PAGE_NC    = 1<<4;
-const uint PAGE_EXEC  = 1;
+#include <stdlib.h>
+#include <string.h>
 
-void map(uintptr_t phys,uintptr_t virt,uint flags);
-uintptr_t unmap(uintptr_t virt);
-bool ismapped(uintptr_t virt);
-uintptr_t getphys(uintptr_t virt);
+int strcmp(const char *str1, const char *str2) {
+	while(*str1&&*str1==*str2) {
+		str1++;
+		str2++;
+	}
+	if(*str1==*str2) {
+		return 0;
+	}
+	return *str1-*str2;
+}
+int strncmp(const char *str1, const char *str2, size_t num) {
+	while(num--) {
+		if(*str1&&*str1==*str2) {
+			if(!*str1) {
+				return 0;
+			}
+			str1++;
+			str2++;
+		} else {
+			return *str1-*str2;
+		}
+	}
+	return 0;
+}
