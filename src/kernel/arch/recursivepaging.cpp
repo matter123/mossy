@@ -84,7 +84,6 @@ void recursive_paging::init(uint idx) {
 		Log(LOG_DEBUG,"[PAGING]","base addr: %.16p index: %d",this->base,this->index);
 }
 void recursive_paging::map(uintptr_t phys,uintptr_t virt,uint flags) {
-	bool log=virt&2;
 	virt&=~0xFFF;
 	phys&=~0xFFF;
 	uint pml4i=(virt>>39)&0x1FF;
@@ -99,11 +98,6 @@ void recursive_paging::map(uintptr_t phys,uintptr_t virt,uint flags) {
 	pdp  *PDP  = (pdp  *)(this->base+PDP_OFF(this->index)+PD_OFF(this->index)+PT_OFF(pml4i));
 	pd   *PD   = (pd   *)(this->base+PDP_OFF(this->index)+PD_OFF(pml4i)+PT_OFF(pdpi));
 	pt   *PT   = (pt   *)(this->base+PDP_OFF(pml4i)+PD_OFF(pdpi)+PT_OFF(pdi));
-	if(log) {
-		Log(LOG_DEBUG,"[PAGING]","PDP: %.16p",PDP);
-		Log(LOG_DEBUG,"[PAGING]","PD:  %.16p",PD);
-		Log(LOG_DEBUG,"[PAGING]","PT:  %.16p",PT);
-	}
 	if(!PML4->entries[pml4i].present) {
 		uint64_t address=get_page()&0x0000FFFFFFFFF000;
 		PML4->entriesi[pml4i]=address|PAGE_WRITE|PAGE_USER|0x1;
