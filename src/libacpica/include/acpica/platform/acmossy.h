@@ -64,6 +64,7 @@
 #define ACPI_UINTPTR_T              uintptr_t
 #define ACPI_CPU_FLAGS              uintptr_t
 #define ACPI_CACHE_T                ACPI_MEMORY_LIST
+#define ACPI_SPINLOCK               void *
 
 #define ACPI_USE_NATIVE_DIVIDE
 #define ACPI_USE_LOCAL_CACHE 1

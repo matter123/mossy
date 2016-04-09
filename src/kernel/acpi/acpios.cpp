@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <cpuid.h>
 #include <hal/memmap.h>
+#include <sys/spinlock.h>
 static uint8_t *bitmap;
 static uintptr_t start;
 static uintptr_t len;
@@ -242,20 +243,24 @@ ACPI_STATUS AcpiOsWaitSemaphore(ACPI_SEMAPHORE Handle, UINT32 Units, UINT16 Time
 ACPI_STATUS AcpiOsSignalSemaphore(ACPI_SEMAPHORE Handle, UINT32 Units) {
 	return AE_BAD_VALUE;
 }
-//STUB
+//GOOD
 ACPI_STATUS AcpiOsCreateLock(ACPI_SPINLOCK *OutHandle) {
-	OutHandle=nullptr;
-	return AE_NO_MEMORY;
+	spinlock *spin=new spinlock();
+	*OutHandle=(ACPI_SPINLOCK)spin;
+	return AE_OK;
 }
-//STUB
+//GOOD
 void AcpiOsDeleteLock(ACPI_SPINLOCK Handle) {
+	delete (spinlock *)Handle;
 }
-//STUB
+//GOOD
 ACPI_CPU_FLAGS AcpiOsAcquireLock(ACPI_SPINLOCK Handle) {
+	((spinlock *)Handle)->aquire();
 	return 0;
 }
-//STUB
+//GOOD
 void AcpiOsReleaseLock(ACPI_SPINLOCK Handle, ACPI_CPU_FLAGS Flags) {
+	((spinlock *)Handle)->release();
 }
 //STUB
 ACPI_STATUS AcpiOsInstallInterruptHandler(UINT32 InterruptLevel, ACPI_OSD_HANDLER Handler, void *Context) {

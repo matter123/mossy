@@ -66,7 +66,7 @@ void init_exec(hal::multiboot_header *mboot) {
 	pfa_init();
 	paging_init();
 	malloc_init();
-	AcpiOsInitialize();
+	AcpiInitializeSubsystem();
 	AcpiInitializeTables(nullptr, 0, true);
 	task = reinterpret_cast<cpu_state *>(&sys_stack2-sizeof(cpu_state));
 	task->rip=reinterpret_cast<uint64_t>(&task_b);
