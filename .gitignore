@@ -8,3 +8,5 @@ sysroot/usr/include/*
 docs/html
 .build_number
 build_info
+*.out
+.clang_complete
