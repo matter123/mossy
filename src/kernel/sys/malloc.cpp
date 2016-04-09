@@ -96,18 +96,15 @@ void *malloc(size_t size) {
 		size|=(min_alloc_size-1);
 		size++;
 	}
-	Log(LOG_INFO,"[HEAP  ]","allocating for size %d",size);
 	malloc_header *cur, *prev=head;
 	cur=prev->sorted_next;
 	while(cur!=nullptr&&cur->size<size) {
-		Log(LOG_INFO, "[HEAP  ]", "MALLOC not using size=%d",cur->size);
 		prev=cur;
 		cur=cur->sorted_next;
 	}
 	if(cur==nullptr) {
 		Log(LOG_ERROR,"[HEAP  ]","ran out of heap space for %d bytes",size);
 	}
-	Log(LOG_INFO, "[HEAP  ]", "MALLOC using size=%d",cur->size);
 	try_split(cur, size);
 	sorted_remove(cur);
 	cur->inuse=true;
@@ -128,12 +125,10 @@ void free(void *vaddr) {
 			Log(LOG_ERROR,"[HEAP  ]","malloc header corrupted");
 		}
 	}
-	Log(LOG_INFO, "[HEAP  ]", "FREE size=%d",fhead->size);
 	fhead=try_merge_left(fhead);
 	try_merge_right(fhead);
 	fhead->magic=0xC0FFEE;
 	fhead->inuse=false;
-	Log(LOG_INFO, "[HEAP  ]", "FREE inserting size=%d",fhead->size);
 	sorted_insert(fhead);
 }
 

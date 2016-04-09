@@ -11,6 +11,7 @@ static bool initalized=false;
 #define IS_SET(a,i)    (a[(i)/8]&(1<<(i)%8))
 #define SET(a,i)    do {a[(i)/8]|= (1<<((i)%8));}while(0)
 #define UN_SET(a,i) do {a[(i)/8]&=~(1<<((i)%8));}while(0)
+//GOOD
 ACPI_STATUS AcpiOsInitialize() {
 	if(initalized) {
 		return AE_OK;
@@ -38,34 +39,36 @@ ACPI_STATUS AcpiOsInitialize() {
 	initalized=true;
 	return AE_OK;
 }
-
+//GOOD
 ACPI_STATUS AcpiOsTerminate() {
 	return AE_OK;
 }
-
+//GOOD
 ACPI_PHYSICAL_ADDRESS AcpiOsGetRootPointer() {
 	ACPI_PHYSICAL_ADDRESS ret;
 	AcpiFindRootPointer(&ret);
 	return ret;
 }
-
+//GOOD
 ACPI_STATUS AcpiOsPredefinedOverride(const ACPI_PREDEFINED_NAMES *PredefinedObject, ACPI_STRING *NewValue) {
 	*NewValue=nullptr;
 	return AE_OK;
 }
-
+//GOOD
 ACPI_STATUS AcpiOsTableOverride(ACPI_TABLE_HEADER *ExistingTable, ACPI_TABLE_HEADER **NewTable) {
 	*NewTable=nullptr;
 	return AE_OK;
 }
-
+//GOOD
 ACPI_STATUS AcpiOsPhysicalTableOverride(
 		ACPI_TABLE_HEADER *ExistingTable,
 		ACPI_PHYSICAL_ADDRESS *NewAddress,
 		UINT32 *NewTableLength) {
-	NewAddress=nullptr;
+	*NewAddress=(ACPI_PHYSICAL_ADDRESS)NULL;
+	*NewTableLength=0;
 	return AE_OK;
 }
+//GOOD
 void *AcpiOsMapMemory(ACPI_PHYSICAL_ADDRESS phys, ACPI_SIZE length) {
 	uintptr_t pa_phys=phys&~(0xFFF);
 	uintptr_t pa_len=(length+(0x1000-length%0x1000))/0x1000+(phys%0x1000+length%0x1000)/0x1000;
@@ -85,7 +88,7 @@ void *AcpiOsMapMemory(ACPI_PHYSICAL_ADDRESS phys, ACPI_SIZE length) {
 	}
 	return nullptr;
 }
-
+//GOOD
 void AcpiOsUnmapMemory(void *where, ACPI_SIZE length) {
 	uintptr_t virt=(uintptr_t)where;
 	virt&=~0xFFF;
@@ -96,7 +99,7 @@ void AcpiOsUnmapMemory(void *where, ACPI_SIZE length) {
 		UN_SET(bitmap,s+i);
 	}
 }
-
+//GOOD
 ACPI_STATUS AcpiOsReadMemory(ACPI_PHYSICAL_ADDRESS Address,UINT64 *Value, UINT32 Width) {
 	void *addr=AcpiOsMapMemory(Address, Width/8);
 	switch(Width) {
@@ -124,7 +127,7 @@ ACPI_STATUS AcpiOsReadMemory(ACPI_PHYSICAL_ADDRESS Address,UINT64 *Value, UINT32
 	AcpiOsUnmapMemory(addr, Width/8);
 	return AE_OK;
 }
-
+//GOOD
 ACPI_STATUS AcpiOsWriteMemory(ACPI_PHYSICAL_ADDRESS Address,UINT64 Value, UINT32 Width) {
 	void *addr=AcpiOsMapMemory(Address, Width/8);
 	switch(Width) {
@@ -152,7 +155,7 @@ ACPI_STATUS AcpiOsWriteMemory(ACPI_PHYSICAL_ADDRESS Address,UINT64 Value, UINT32
 	AcpiOsUnmapMemory(addr, Width/8);
 	return AE_OK;
 }
-
+//GOOD
 ACPI_STATUS AcpiOsGetPhysicalAddress(void *LogicalAddress, ACPI_PHYSICAL_ADDRESS *PhysicalAddress) {
 	uintptr_t l=(uintptr_t)LogicalAddress;
 	uintptr_t offset=l&0xFFF;
@@ -162,15 +165,15 @@ ACPI_STATUS AcpiOsGetPhysicalAddress(void *LogicalAddress, ACPI_PHYSICAL_ADDRESS
 	*PhysicalAddress=(ACPI_PHYSICAL_ADDRESS)physical;
 	return AE_OK;
 }
-
+//GOOD
 void *AcpiOsAllocate(ACPI_SIZE size) {
 	return malloc((size_t)size);
 }
-
+//GOOD
 void AcpiOsFree(void *memory) {
 	free(memory);
 }
-
+//GOOD
 BOOLEAN AcpiOsReadable(void *memory,ACPI_SIZE length) {
 	size_t Len=(length|0xFFF)+1;
 	uintptr_t mem=(uintptr_t)memory&~0xFFF;
@@ -183,28 +186,27 @@ BOOLEAN AcpiOsReadable(void *memory,ACPI_SIZE length) {
 	}
 	return true;
 }
-
+//HALF STUB
 BOOLEAN AcpiOsWritable(void *memory,ACPI_SIZE length) {
 	return AcpiOsReadable(memory, length);
 }
-
+//STUB
 ACPI_THREAD_ID AcpiOsGetThreadId() {
 	return 1;
 }
-
+//STUB
 ACPI_STATUS AcpiOsExecute(ACPI_EXECUTE_TYPE Type, ACPI_OSD_EXEC_CALLBACK Function, void *Context) {
 	PANIC("can not execute");
 	return AE_OK;
 }
-
+//STUB
 void AcpiOsWaitEventsComplete() {
 }
-
+//STUB
 void AcpiOsSleep(UINT64 ms) {
 	AcpiOsStall(ms*1000);
 }
-
-//stall some amount of time
+//HALF STUB
 void AcpiOsStall(UINT32 us) {
 	while(us--) {
 		asm (
@@ -212,54 +214,58 @@ void AcpiOsStall(UINT32 us) {
 		);
 	}
 }
-
+//GOOD
 void AcpiOsPrintf(const char *fmt,...) {
-	Log(LOG_INFO,"[ACPICA]",fmt);
+	va_list list;
+	va_start(list, fmt);
+	AcpiOsVprintf(fmt, list);
+	va_end(list);
 }
-
+//GOOD
 void AcpiOsVprintf(const char *fmt,va_list vlist) {
-	Log(LOG_INFO,"[ACPICA]",fmt);
+	Logv(LOG_DEBUG,"[ACPICA]",fmt,vlist);
 }
-
+//STUB
 ACPI_STATUS AcpiOsCreateSemaphore(UINT32 MaxUnits, UINT32 InitalUnits, ACPI_SEMAPHORE *OutHandle) {
 	OutHandle=nullptr;
 	return AE_NO_MEMORY;
 }
-
+//STUB
 ACPI_STATUS AcpiOsDeleteSemaphore(ACPI_SEMAPHORE Handle) {
 	return AE_BAD_VALUE;
 }
-
+//STUB
 ACPI_STATUS AcpiOsWaitSemaphore(ACPI_SEMAPHORE Handle, UINT32 Units, UINT16 Timeout) {
 	return AE_BAD_VALUE;
 }
+//STUB
 ACPI_STATUS AcpiOsSignalSemaphore(ACPI_SEMAPHORE Handle, UINT32 Units) {
 	return AE_BAD_VALUE;
 }
-
+//STUB
 ACPI_STATUS AcpiOsCreateLock(ACPI_SPINLOCK *OutHandle) {
 	OutHandle=nullptr;
 	return AE_NO_MEMORY;
 }
-
+//STUB
 void AcpiOsDeleteLock(ACPI_SPINLOCK Handle) {
 }
-
+//STUB
 ACPI_CPU_FLAGS AcpiOsAcquireLock(ACPI_SPINLOCK Handle) {
 	return 0;
 }
-
+//STUB
 void AcpiOsReleaseLock(ACPI_SPINLOCK Handle, ACPI_CPU_FLAGS Flags) {
 }
-
+//STUB
 ACPI_STATUS AcpiOsInstallInterruptHandler(UINT32 InterruptLevel, ACPI_OSD_HANDLER Handler, void *Context) {
 	return AE_BAD_VALUE;
 }
-
+//STUB
 ACPI_STATUS AcpiOsRemoveInterruptHandler(UINT32 InterruptLevel, ACPI_OSD_HANDLER Handler) {
 	return AE_BAD_VALUE;
 }
-
+//GOOD
 ACPI_STATUS AcpiOsWritePort(ACPI_IO_ADDRESS Address,UINT32 Value, UINT32 Width) {
 	switch(Width) {
 	case 8:
@@ -274,7 +280,7 @@ ACPI_STATUS AcpiOsWritePort(ACPI_IO_ADDRESS Address,UINT32 Value, UINT32 Width) 
 	}
 	return AE_OK;
 }
-
+//GOOD
 ACPI_STATUS AcpiOsReadPort(ACPI_IO_ADDRESS Address,UINT32 *Value, UINT32 Width) {
 	switch(Width) {
 	case 8:
@@ -289,19 +295,25 @@ ACPI_STATUS AcpiOsReadPort(ACPI_IO_ADDRESS Address,UINT32 *Value, UINT32 Width) 
 	}
 	return AE_OK;
 }
-
+//STUB
 ACPI_STATUS AcpiOsReadPciConfiguration(ACPI_PCI_ID *PciID, UINT32 Register, UINT64 *Value, UINT32 Width) {
 	return AE_ACCESS;
 }
-
+//STUB
 ACPI_STATUS AcpiOsWritePciConfiguration(ACPI_PCI_ID *PciID, UINT32 Register, UINT64 Value, UINT32 Width) {
 	return AE_ACCESS;
 }
-
+//GOOD
 ACPI_STATUS AcpiOsSignal(UINT32 Function, void *Info) {
+	if(Function==ACPI_SIGNAL_FATAL) {
+		ACPI_SIGNAL_FATAL_INFO *info=(ACPI_SIGNAL_FATAL_INFO *)Info;
+		Log(LOG_ERROR, "[ACPICA]", "Fatal Signal: type %d, code %d, argument %d",info->Type,info->Code,info->Argument);
+	} else if(Function==ACPI_SIGNAL_BREAKPOINT) {
+		Log(LOG_DEBUG, "[ACPICA]", "Breakpoint Signal: %s",(char *)Info);
+	}
 	return AE_OK;
 }
-
+//STUB
 UINT64 AcpiOsGetTimer() {
 	return 0;
 }
