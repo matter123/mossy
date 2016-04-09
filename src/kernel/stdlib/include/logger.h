@@ -15,6 +15,7 @@
 */
 
 #pragma once
+#include <stdarg.h>
 void logger_init();
 enum LogLevel {
 	LOG_DEBUG,
@@ -24,3 +25,4 @@ enum LogLevel {
 };
 void setLogLevel(LogLevel level);
 void Log(LogLevel level, const char *service, const char *fmt,...);
+void Logv(LogLevel level, const char *service, const char *fmt,va_list arg);
