@@ -4,6 +4,7 @@
 #include <cpuid.h>
 #include <hal/memmap.h>
 #include <sys/spinlock.h>
+#include <arch/int.h>
 static uint8_t *bitmap;
 static uintptr_t start;
 static uintptr_t len;
@@ -262,9 +263,19 @@ ACPI_CPU_FLAGS AcpiOsAcquireLock(ACPI_SPINLOCK Handle) {
 void AcpiOsReleaseLock(ACPI_SPINLOCK Handle, ACPI_CPU_FLAGS Flags) {
 	((spinlock *)Handle)->release();
 }
-//STUB
+static ACPI_OSD_HANDLER Handle=nullptr;
+static void Callback(cpu_state *cpu,void *sse_save,bool *in_use, void *context) {
+	if(Handle)Handle(context);
+}
+static def_interrupt callback{default_interrupt=&Callback};
+//GOOD
 ACPI_STATUS AcpiOsInstallInterruptHandler(UINT32 InterruptLevel, ACPI_OSD_HANDLER Handler, void *Context) {
-	return AE_BAD_VALUE;
+	if(!Handle) {
+		Handle=Handler;
+		callback.context=Context;
+		return AE_OK;
+	}
+	return AE_ALREADY_EXISTS;
 }
 //STUB
 ACPI_STATUS AcpiOsRemoveInterruptHandler(UINT32 InterruptLevel, ACPI_OSD_HANDLER Handler) {

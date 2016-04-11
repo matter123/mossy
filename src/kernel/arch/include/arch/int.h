@@ -44,7 +44,8 @@ struct cpu_state {
 	uint64_t rip, cs, rflags, rsp, ss;
 };
 struct def_interrupt {
-	bool (*default_interrupt)(cpu_state *,void *sse_save,bool *in_use);
+	void *context;
+	bool (*default_interrupt)(cpu_state *,void *sse_save,bool *in_use, void *context);
 	def_interrupt * next;
 };
 void install_JT1(int int_num,void *target);

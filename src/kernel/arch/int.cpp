@@ -146,7 +146,7 @@ void default_handler(cpu_state * cpu,void *sse,bool *use) {
 		if(resolved)return;
 		while(handle->next!=nullptr) {
 			handle=handle->next;
-			resolved = handle->default_interrupt(cpu,sse,use);
+			resolved = handle->default_interrupt(cpu,sse,use,handle->context);
 			if(resolved)return;
 		}
 	}
