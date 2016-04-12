@@ -29,6 +29,7 @@ char *strcpy(char *dest,const char *src);
 int   strcmp(const char *dest,const char *src);
 char *strncpy(char *dest,const char *src, size_t n);
 int   strncmp(const char *dest,const char *src, size_t n);
+char *strpbrk(char *str1, const char *str2);
 #ifdef __cplusplus
 }
 #endif

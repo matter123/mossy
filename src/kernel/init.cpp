@@ -21,7 +21,7 @@
 #include <sys/malloc.h>
 #include <hal/multiboot.h>
 #include <hal/memmap.h>
-#include <hal/memregion.h>
+#include <hal/commandline.h>
 #include <logger.h>
 #include <vga_text.h>
 #include <stdlib.h>
@@ -57,6 +57,7 @@ void init_exec(hal::multiboot_header *mboot) {
 	outb(PORT + 2, 0xC7);    // Enable FIFO, clear them, with 14-byte threshold
 	outb(PORT + 4, 0x0B);    // IRQs enabled, RTS/DSR set
 	init_mboot(mboot);
+	command_line_init();
 	logger_init();
 	hal::physmem.init();
 	hal::virtmem.init();

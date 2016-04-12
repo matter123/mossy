@@ -142,7 +142,7 @@ def_interrupt *handles[256];
 void default_handler(cpu_state * cpu,void *sse,bool *use) {
 	if(handles[cpu->int_num]!=nullptr) {
 		def_interrupt *handle=handles[cpu->int_num];
-		bool resolved = handle->default_interrupt(cpu,sse,use);
+		bool resolved = handle->default_interrupt(cpu,sse,use,handle->context);
 		if(resolved)return;
 		while(handle->next!=nullptr) {
 			handle=handle->next;

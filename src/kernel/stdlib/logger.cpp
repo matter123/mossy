@@ -1,5 +1,5 @@
 #include <logger.h>
-#include <hal/multiboot.h>
+#include <hal/commandline.h>
 #include <string.h>
 #include <numconv.h>
 #include <stdarg.h>
@@ -13,18 +13,8 @@ const char *levels[] {
 	"[ERROR]",
 };
 void logger_init() {
-	hal::multiboot_command *cmd=nullptr;
-	for(int i=0; i<hal::get_tag_count(); i++) {
-		hal::multiboot_tag *tag=hal::get_tag(i);
-		if(tag->type!=hal::t_cmd_line) {
-			continue;
-		}
-		cmd=reinterpret_cast<hal::multiboot_command *>(tag);
-		if(strlen(cmd->string)) {
-			int level=std::strtonum(cmd->string,1);
-			setLogLevel((LogLevel)level);
-		}
-	}
+	int level=std::strtonum(get_arg("LogLevel"),1);
+	setLogLevel((LogLevel)level);
 	Log(LOG_INFO,"[LOGGER]","Log level is %s",levels[curLogLevel]);
 }
 void setLogLevel(LogLevel level) {
