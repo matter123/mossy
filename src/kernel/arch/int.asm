@@ -15,11 +15,6 @@
 ALIGN 4096
 IDT:
 resb 256*16
-ALIGN 16
-sse_save:
-resb 512
-in_use:
-resb 4
 
 
 [section .data]
@@ -141,34 +136,37 @@ jmp .past
 	iretq ;dont drop off
 
 [GLOBAL def_handler]
+[EXTERN stack_size]
+[EXTERN sse_save_offset]
 def_handler:
 	pop rax
 	push_x64
 	;save sse registers
-	mov rax, [qword in_use]
-	test rax, rax
-	jnz .cont
-	mov rax, 1
-	mov [qword in_use], rax
-	mov rax, qword sse_save
+	mov rax, [stack_size]
+	not rax
+	and rax, rsp
+	add rax, [sse_save_offset]
 	fxsave [rax]
+
 	;call handler in JT2
-	.cont:
 	mov rax, [rsp + 23 * 8]
 	mov rcx, 8
 	mul rcx
 	mov rbx, qword jump_table2 ; load function call
 	add rax, rbx
 	mov rdi, rsp
-	mov rsi, sse_save
-	mov rdx, in_use
+	mov rsi, 0
+	mov rdx, 0
 	call [rax]
-	;restore sse registers
-	mov rax, qword sse_save
-	fxrstor [rax]
-	mov rax, 0
-	mov [qword in_use], rax
 	;return from interrupt here is where we would call get_next if so desired
+
+	;restore sse registers
+	mov rax, [stack_size]
+	not rax
+	and rax, rsp
+	add rax, [sse_save_offset]
+	fxrstor [rax]
+	;end decoration
 	pop_x64
 	add rsp, 24
 	iretq
@@ -201,7 +199,7 @@ EXCEPT_C  13, e0D
 EXCEPT_C  14, e0E
 EXCEPT_NC 15, e0F
 EXCEPT_NC 16, e10
-EXCEPT_NC 17, e11
+EXCEPT_C  17, e11
 EXCEPT_NC 18, e12
 EXCEPT_NC 19, e13
 EXCEPT_NC 20, e14
@@ -214,7 +212,7 @@ EXCEPT_NC 26, e1A
 EXCEPT_NC 27, e1B
 EXCEPT_NC 28, e1C
 EXCEPT_NC 29, e1D
-EXCEPT_NC 30, e1E
+EXCEPT_C  30, e1E
 EXCEPT_NC 31, e1F
 EXCEPT_NC 32, e20
 EXCEPT_NC 33, e21

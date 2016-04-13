@@ -31,3 +31,15 @@ namespace hal {
 	mem_regs *page_align(mem_regs *regs);
 	mem_regs *fill(mem_regs *regs);
 }
+
+#define find_memregion(reg,map,comp,service)                     \
+	do {                                                         \
+	for(int i=0;i< map.region_count();i++) {                     \
+		reg = map.get_region(i);                                 \
+		if(comp) {                                               \
+			break;                                               \
+		}                                                        \
+	}                                                            \
+	if(!reg||!comp) {                                            \
+		Log(LOG_ERROR,service,#comp " failed to find a region"); \
+	}}while(0)

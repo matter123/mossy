@@ -15,6 +15,31 @@
 */
 #pragma once
 #include <arch/int.h>
+struct thread_info {
+	uint64_t stack_guard_1;
+	uint32_t thread_id;
+	uint32_t process_id;
+	uint64_t block_on;
+	enum thread_state {
+		RUNNING,
+		WAITING,
+		BLOCKING,
+		SLEEPING,
+	} state;
+	int priority;
+	int ticks_left;
+	int sleep_ticks;
+	uint8_t sse_save[512] __attribute__((aligned(16)));
+	uint64_t stack_guard_2;
+};
+static_assert(sizeof(thread_info)<=1024,"thread info is too big");
+
+extern "C" const ptrdiff_t sse_save_offset;
+
 void init_scheduler();
+
 void yield();
+
 void add_task(cpu_state *);
+
+void setup_kernel_thread_info();

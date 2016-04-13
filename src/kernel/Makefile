@@ -22,6 +22,8 @@ SOBJECTS:=$(patsubst ./%, $(BIN_PATH)/%, $(SOBJECTS))
 HEADSRC:=$(shell find . -name '*.h'|grep include)
 HEADSYSROOT:=$(patsubst ./%, $(SYSROOT_PATH)/usr/include/kernel/%, $(HEADSRC))
 
+HPPHEADSRC:=$(shell find . -name '*.hpp'|grep include)
+HEADSYSROOT += $(patsubst ./%.hpp, $(SYSROOT_PATH)/usr/include/kernel/%, $(HPPHEADSRC))
 
 WFLAGSON=-Wall -Wextra -Werror=return-type -Wshadow -Wundef -Wdeprecated -Wredundant-decls -Werror=parentheses -pedantic
 WFLAGSOFF=-Wno-unused-parameter -Wno-sign-compare -Wno-implicit-exception-spec-mismatch
@@ -65,6 +67,11 @@ $(SYSROOT_PATH)/usr/include/kernel/%.h: ./%.h
 	@mkdir -p $(dir $@)
 	@cp $< $@
 	@echo $@ $<
+
+$(SYSROOT_PATH)/usr/include/kernel/%: ./%.hpp
+		@mkdir -p $(dir $@)
+		@cp $< $@
+		@echo $@ $<
 
 ../.clang_complete: $(HEADSYSROOT)
 	@echo --target=x86_64-elf > ../.clang_complete

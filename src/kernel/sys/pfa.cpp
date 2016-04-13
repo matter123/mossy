@@ -16,9 +16,20 @@
 #include <sys/pfa.h>
 #include <arch/paging.h>
 #include <hal/memmap.h>
+#include <hal/commandline.h>
+#include <numconv.h>
 #include <linker.h>
 static volatile uintptr_t *stack=reinterpret_cast<uintptr_t *>(K_DATA_END);
 static size_t count=0;
+
+void add_stack_region(hal::memmap *mem) {
+	uintptr_t maxram=std::strtonum(get_arg("MaxRam"),20*1024)*1024*1024;
+	uintptr_t usedspace=(maxram/0x1000)*4;
+	hal::mem_type type;
+	type.free_page_info=true;
+	mem->add_region(K_DATA_END, K_DATA_END+usedspace, type);
+}
+static hal::region_hook rhook(hal::virtmem, &add_stack_region);
 void pfa_init() {
 	for(int i=0;i<hal::physmem.region_count();i++) {
 		hal::mem_region *reg=hal::physmem.get_region(i);

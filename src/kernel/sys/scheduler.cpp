@@ -15,6 +15,9 @@
 */
 #include<sys/scheduler.h>
 #include<arch/int.h>
+#include <sys/threadstacks.h>
+constexpr ptrdiff_t sse_save_offset=offsetof(thread_info, sse_save);
+
 cpu_state *other;
 extern void *C0_handler;
 void yield() {
@@ -32,4 +35,13 @@ cpu_state *get_next(cpu_state *current) {
 	cpu_state *temp=other;
 	other=current;
 	return temp;
+}
+
+extern "C" uint64_t __stack_chk_guard;
+void setup_kernel_thread_info() {
+	uintptr_t rsp=0;
+	thread_info *info=(thread_info *)((uintptr_t)&rsp&~stack_size);
+	info->stack_guard_1=__stack_chk_guard;
+	info->stack_guard_2=__stack_chk_guard;
+	info->state=thread_info::RUNNING;
 }

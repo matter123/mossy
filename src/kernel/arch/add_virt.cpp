@@ -17,4 +17,4 @@ void add_virt(hal::memmap *mem) {
 	mem->add_region(0xFFFFFEDFC0000000,0xFFFFFEDFCFFFFFFF,types[1]); //256MB for acpi tables
 	mem->add_region(0,(1L<<47)-1,types[0]); //bit 48 is the kerenel/userpace bit
 }
-hal::region_hook rhook(hal::virtmem, &add_virt);
+static hal::region_hook rhook(hal::virtmem, &add_virt);

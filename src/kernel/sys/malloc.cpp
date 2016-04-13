@@ -109,7 +109,6 @@ void *malloc(size_t size) {
 	sorted_remove(cur);
 	cur->inuse=true;
 	cur->magic=0xDECAFF;
-	Log(LOG_INFO, "[HEAP  ]", "MALLOC next: %d",cur->linear_next->size);
 	uintptr_t addr=reinterpret_cast<uintptr_t>(cur);
 	addr+=sizeof(malloc_header);
 	return reinterpret_cast<void *>(addr);

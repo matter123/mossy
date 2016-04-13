@@ -40,7 +40,7 @@ namespace hal {
 		mem_type kmem;
 		kmem.kernel=true;
 		this->regs.regions[0].start=KERNEL_VMA+KERNEL_LMA;
-		this->regs.regions[0].end=K_STACK_END;
+		this->regs.regions[0].end=K_DATA_END;
 		this->regs.regions[0].type=kmem;
 		if(this==&physmem) {
 			this->regs.regions[0].start=KERNEL_LMA;

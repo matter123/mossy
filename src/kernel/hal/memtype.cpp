@@ -35,6 +35,7 @@ namespace hal {
 		this->userspace=rhs.userspace;
 		this->kthread_stacks=rhs.kthread_stacks;
 		this->paging_struct=rhs.paging_struct;
+		this->free_page_info=rhs.free_page_info;
 		this->resv_n=0;
 		this->resv_2=0;
 		this->resv_1=0;
@@ -56,6 +57,7 @@ namespace hal {
 		res|=(this->userspace<<11);
 		res|=(this->kthread_stacks<<12);
 		res|=(this->paging_struct<<13);
+		res|=(this->free_page_info<<14);
 		return res;
 	}
 
@@ -78,6 +80,7 @@ namespace hal {
 		this->userspace=other.userspace;
 		this->kthread_stacks=other.kthread_stacks;
 		this->paging_struct=other.paging_struct;
+		this->free_page_info=other.free_page_info;
 		this->resv_n=0;
 		this->resv_2=0;
 		this->resv_1=0;
@@ -86,14 +89,14 @@ namespace hal {
 		if(*this==other) {
 			return false;
 		}
-		if(this->no_exist|other.no_exist) {
-			return this->no_exist;
-		}
 		if(this->kernel^other.kernel) {
 			return this->kernel;
 		}
 		if(this->resv_mem^other.resv_mem) {
 			return this->resv_mem;
+		}
+		if(this->free_page_info^other.free_page_info) {
+			return this->free_page_info;
 		}
 		if(this->videobuffer^other.videobuffer) {
 			return this->videobuffer;
@@ -128,7 +131,7 @@ namespace hal {
 		if(this->userspace^other.userspace) {
 			return this->userspace;
 		}
-		return false;
+		return this->no_exist;
 	}
 
 	bool mem_type::can_adjust_start() const {

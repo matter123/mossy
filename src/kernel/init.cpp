@@ -18,6 +18,7 @@
 #include <arch/paging.h>
 #include <sys/pfa.h>
 #include <sys/scheduler.h>
+#include <sys/threadstacks.h>
 #include <sys/malloc.h>
 #include <hal/multiboot.h>
 #include <hal/memmap.h>
@@ -59,6 +60,8 @@ void init_exec(hal::multiboot_header *mboot) {
 	init_mboot(mboot);
 	command_line_init();
 	logger_init();
+	thread_stack_size_init();
+	setup_kernel_thread_info();
 	hal::physmem.init();
 	hal::virtmem.init();
 	install_interrupts();
@@ -67,6 +70,7 @@ void init_exec(hal::multiboot_header *mboot) {
 	pfa_init();
 	paging_init();
 	malloc_init();
+	thread_stacks_init();
 	AcpiInitializeSubsystem();
 	AcpiInitializeTables(nullptr, 0, true);
 	task = reinterpret_cast<cpu_state *>(&sys_stack2-sizeof(cpu_state));

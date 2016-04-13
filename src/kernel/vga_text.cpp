@@ -23,7 +23,7 @@ void putc(char c) {
 			return;
 		}
 	}
-	vga_mem[y*80+x++]=15<<8|c;
+	vga_mem[y*80+x++]=7<<8|c;
 }
 void puts(const char *s) {
 	while(*s) {
@@ -40,11 +40,11 @@ void puts(const char *s) {
 			y=0;
 			x=0;
 			for(int i=0;i<80;i++) {
-				vga_mem[0*80+i]=15<<8|' ';
+				vga_mem[0*80+i]=7<<8|' ';
 			}
 		}
 		write_serial(*s);
-		vga_mem[y*80+x++]=15<<8|*s++;
+		vga_mem[y*80+x++]=7<<8|*s++;
 	}
 }
 void printf(const char *fmt,...) {

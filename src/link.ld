@@ -41,9 +41,6 @@ SECTIONS
 		k_end = ALIGN(4096);
 		. += 128K;
 		k_data_end = .;
-		. += 96K;
-		k_stack_end = .;
-		. += 32K;
 	}
 	/DISCARD/ :
 	{

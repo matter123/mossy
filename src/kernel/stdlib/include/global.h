@@ -21,7 +21,8 @@ NORETURN void panic_fn(const char *message,const char *func,const char *file, in
 NORETURN void panic(const char *message);
 NORETURN void assertf(const char *message);
 #define PANIC(m) panic_fn(m,__func__,__FILE__,__LINE__)
-#define assert(a,b,m) do {if((a) != (b))assertf((m));}while(0);
+#define assert(a,b,m) do {if((a) != (b))assertf((m));}while(0)
+int constexpr string_length(const char *str) {return *str?1+string_length(str+1):0;}
 #ifdef __cplusplus
 }
 inline void *operator new(size_t, void *p)     { return p; }

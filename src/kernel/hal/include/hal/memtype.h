@@ -1,5 +1,5 @@
 /*
-	Copyright 2014 Matthew Fosdick
+	Copyright 2014-16 Matthew Fosdick
 	Licensed under the Apache License, Version 2.0 (the "License");
 	you may not use this file except in compliance with the License.
 	You may obtain a copy of the License at
@@ -32,6 +32,7 @@ namespace hal {
 			bool userspace:1;
 			bool kthread_stacks:1;
 			bool paging_struct:1;
+			bool free_page_info:1;
 			bool is_more_restrictive(mem_type other) const;
 			bool can_adjust_start() const;
 			bool can_shrink() const;
@@ -42,7 +43,7 @@ namespace hal {
 			mem_type(mem_type &other);
 			mem_type();
 		private:
-			uint resv_n:2;
+			uint resv_n:1;
 			uint16_t resv_2=0;
 			uint32_t resv_1=0;
 	} PACKED;
