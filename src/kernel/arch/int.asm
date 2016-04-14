@@ -142,10 +142,11 @@ def_handler:
 	pop rax
 	push_x64
 	;save sse registers
-	mov rax, [stack_size]
+	mov rax, [qword stack_size]
 	not rax
 	and rax, rsp
-	add rax, [sse_save_offset]
+	mov rbx, qword sse_save_offset
+	add rax, rbx
 	fxsave [rax]
 
 	;call handler in JT2
@@ -157,14 +158,16 @@ def_handler:
 	mov rdi, rsp
 	mov rsi, 0
 	mov rdx, 0
+	cld
 	call [rax]
 	;return from interrupt here is where we would call get_next if so desired
 
 	;restore sse registers
-	mov rax, [stack_size]
+	mov rax, [qword stack_size]
 	not rax
 	and rax, rsp
-	add rax, [sse_save_offset]
+	mov rbx, qword sse_save_offset
+	add rax, rbx
 	fxrstor [rax]
 	;end decoration
 	pop_x64
@@ -177,6 +180,7 @@ C0_handler:
 	pop rax
 	push_x64
 	mov rdi, rsp
+	cld
 	call get_next
 	mov rsp, rax
 	pop_x64

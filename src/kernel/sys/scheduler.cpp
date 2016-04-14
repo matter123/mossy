@@ -21,7 +21,11 @@ constexpr ptrdiff_t sse_save_offset=offsetof(thread_info, sse_save);
 cpu_state *other;
 extern void *C0_handler;
 void yield() {
-	asm("int $0xC0");
+	asm("xorq %%rax, %%rax\n\
+	    int $0xC0":::"rax");
+}
+void yield(uint32_t thread_id) {
+	asm("int $0xC0"::"a"(thread_id));
 }
 void add_task(cpu_state *task) {
 	other=task;

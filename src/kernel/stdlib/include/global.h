@@ -22,9 +22,9 @@ NORETURN void panic(const char *message);
 NORETURN void assertf(const char *message);
 #define PANIC(m) panic_fn(m,__func__,__FILE__,__LINE__)
 #define assert(a,b,m) do {if((a) != (b))assertf((m));}while(0)
-int constexpr string_length(const char *str) {return *str?1+string_length(str+1):0;}
 #ifdef __cplusplus
 }
+constexpr int static_string_length(const char *str) {return *str?1+static_string_length(str+1):0;}
 inline void *operator new(size_t, void *p)     { return p; }
 inline void *operator new[](size_t, void *p)   { return p; }
 inline void  operator delete  (void *, void *) { }

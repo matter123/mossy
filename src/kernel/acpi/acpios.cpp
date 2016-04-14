@@ -19,16 +19,7 @@ ACPI_STATUS AcpiOsInitialize() {
 		return AE_OK;
 	}
 	hal::mem_region *reg=nullptr;
-	for(int i=0;i<hal::virtmem.region_count();i++) {
-		reg=hal::virtmem.get_region(i);
-		if(reg->type.firmware) {
-			break;
-		}
-	}
-	if(!reg||!reg->type.firmware) {
-		Log(LOG_ERROR,"[ACPIOS]","no firmware region was found");
-		return AE_NO_MEMORY;
-	}
+	find_memregion(reg, hal::virtmem, reg->type.firmware, "[ACPIOS]");
 	start=reg->start;
 	len=reg->end-start;
 	uintptr_t bitmap_len=len/0x1000/8;

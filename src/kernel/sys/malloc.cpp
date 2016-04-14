@@ -153,15 +153,7 @@ void *calloc(size_t num,size_t size) {
 
 void malloc_init() {
 	hal::mem_region *reg=nullptr;
-	for(int i=0;i<hal::virtmem.region_count();i++) {
-		reg=hal::virtmem.get_region(i);
-		if(reg->type.heap) {
-			break;
-		}
-	}
-	if(!reg||!reg->type.heap) {
-		Log(LOG_ERROR,"[HEAP  ]","no heap region was found");
-	}
+	find_memregion(reg, hal::virtmem, reg->type.heap, "[HEAP  ]");
 	uintptr_t start=reg->start;
 	Log(LOG_DEBUG, "[HEAP  ]", "head addr: %.16p", start);
 	head=reinterpret_cast<malloc_header *>(start);
