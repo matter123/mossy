@@ -20,7 +20,7 @@ namespace hal {
 	struct region_hook{
 		region_hook* next;
 		void (*add_region_hook)(memmap *mmap);
-		region_hook(memmap &map, void (add_region_hook)(memmap *mmap));
+		region_hook(memmap &map, void (add_region_hook)(memmap *mmap))RUN_ONCE;
 	};
 	class memmap {
 		int add_count;

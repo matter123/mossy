@@ -44,7 +44,9 @@ cpu_state *get_next(cpu_state *current) {
 extern "C" uint64_t __stack_chk_guard;
 void setup_kernel_thread_info() {
 	uintptr_t rsp=0;
-	thread_info *info=(thread_info *)((uintptr_t)&rsp&~stack_size);
+	rsp=(uintptr_t)&rsp;
+	uintptr_t mask=~(stack_size-1);
+	thread_info *info=(thread_info *)(rsp&mask);
 	info->stack_guard_1=__stack_chk_guard;
 	info->stack_guard_2=__stack_chk_guard;
 	info->state=thread_info::RUNNING;

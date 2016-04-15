@@ -4,7 +4,7 @@
 #include <string.h>
 #include <ctype.h>
 
-static void parse(char *cmd);
+static void parse(char *cmd) RUN_ONCE;
 static char **args=nullptr;
 static int arg_count=0;
 

@@ -1,5 +1,6 @@
 #include <hal/memmap.h>
 #include <hal/memtype.h>
+RUN_ONCE
 void add_virt(hal::memmap *mem) {
 	Log(LOG_DEBUG,"[MEMMAP]","adding virtual memory regions");
 	hal::mem_type types[6]={};

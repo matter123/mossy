@@ -16,6 +16,10 @@ SECTIONS
 	}
 	. += kernel_vma;
 	k_start = .;
+	.init.text ALIGN(4096) : AT(ADDR(.init.text) - kernel_vma)
+	{
+		*(.init.text)
+	}
 	.text ALIGN(4096) : AT(ADDR(.text) - kernel_vma)
 	{
 		*(.text)

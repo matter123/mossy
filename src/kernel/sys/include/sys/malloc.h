@@ -16,4 +16,4 @@
 #pragma once
 #include <stdlib.h>
 
-void malloc_init();
+void malloc_init() RUN_ONCE;

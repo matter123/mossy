@@ -2,13 +2,14 @@
 #include <hal/memmap.h>
 #include <hal/commandline.h>
 #include <numconv.h>
-size_t stack_size;
+size_t stack_size = 0;
 
 void thread_stack_size_init() {
 	stack_size=std::strtonum(get_arg("StackSize"), 1);
 	if(stack_size&(stack_size-1)) {
 		Log(LOG_ERROR, "[THREAD]", "Stack size is not a POT");
 	}
+	Log(LOG_INFO, "[THREAD]", "hey");
 	stack_size*=0x1000;
 }
 

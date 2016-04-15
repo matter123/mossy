@@ -138,15 +138,19 @@ jmp .past
 [GLOBAL def_handler]
 [EXTERN stack_size]
 [EXTERN sse_save_offset]
+%macro sse_save_loc 0
+mov rax, [qword stack_size]
+imul rax, -1
+and rax, rsp
+mov rbx, qword sse_save_offset
+add rax, [rbx]
+%endmacro
 def_handler:
 	pop rax
 	push_x64
+	xchg bx, bx
 	;save sse registers
-	mov rax, [qword stack_size]
-	not rax
-	and rax, rsp
-	mov rbx, qword sse_save_offset
-	add rax, rbx
+	sse_save_loc
 	fxsave [rax]
 
 	;call handler in JT2
@@ -163,11 +167,7 @@ def_handler:
 	;return from interrupt here is where we would call get_next if so desired
 
 	;restore sse registers
-	mov rax, [qword stack_size]
-	not rax
-	and rax, rsp
-	mov rbx, qword sse_save_offset
-	add rax, rbx
+	sse_save_loc
 	fxrstor [rax]
 	;end decoration
 	pop_x64
@@ -179,10 +179,14 @@ def_handler:
 C0_handler:
 	pop rax
 	push_x64
+	sse_save_loc
+	fxsave [rax]
 	mov rdi, rsp
 	cld
 	call get_next
 	mov rsp, rax
+	sse_save_loc
+	fxrstor [rax]
 	pop_x64
 	add rsp, 24
 	iretq

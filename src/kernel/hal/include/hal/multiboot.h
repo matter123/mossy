@@ -86,7 +86,7 @@ namespace hal {
 		uint32_t num_color;
 		multiboot_palette palette[1];
 	} PACKED;
-	void init_mboot(multiboot_header *mboot);
+	void init_mboot(multiboot_header *mboot)RUN_ONCE;
 	//multiboot_header *get_header(); //not sure if relevant
 	int get_tag_count();
 	multiboot_tag *get_tag(int count);

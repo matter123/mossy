@@ -248,7 +248,7 @@ lidt:
 	ret
 [SECTION .bss]
 ALIGN 16
-resb 0x2000
+resb 0x4000
 [GLOBAL sys_stack]
 sys_stack:
 resb 0x2000

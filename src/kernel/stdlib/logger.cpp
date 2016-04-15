@@ -22,19 +22,10 @@ void setLogLevel(LogLevel level) {
 }
 
 void Log(LogLevel level,const char *service, const char *fmt,...) {
-	if(level<curLogLevel)return;
-	va_list list,l2;
+	va_list list;
 	va_start(list,fmt);
-	va_copy(l2,list);
-	int len=vsnprintf(nullptr,0,fmt,l2);
-	va_end(l2);
-	char* buf=(char *)__alloca(len+1);
-	vsnprintf(buf,len+1,fmt,list);
+	Logv(level, service, fmt, list);
 	va_end(list);
-	printf("%s %s %s\n",levels[level],service,buf);
-	if(level==LOG_ERROR) {
-		asm("hlt");
-	}
 }
 void Logv(LogLevel level,const char *service, const char *fmt,va_list list) {
 	if(level<curLogLevel)return;

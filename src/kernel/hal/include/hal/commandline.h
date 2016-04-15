@@ -16,6 +16,6 @@
 
 #pragma once
 #include <stdarg.h>
-void command_line_init();
+void command_line_init() RUN_ONCE;
 
 char *get_arg(const char * arguments);

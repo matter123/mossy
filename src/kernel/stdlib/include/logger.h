@@ -16,7 +16,7 @@
 
 #pragma once
 #include <stdarg.h>
-void logger_init();
+void logger_init() RUN_ONCE;
 enum LogLevel {
 	LOG_DEBUG,
 	LOG_INFO,

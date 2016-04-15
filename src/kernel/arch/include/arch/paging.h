@@ -14,8 +14,8 @@
 	limitations under the License.
 */
 #pragma once
-void pre_paging_init();
-void paging_init();
+void pre_paging_init() RUN_ONCE;
+void paging_init() RUN_ONCE;
 const uint PAGE_WRITE = 1<<1;
 const uint PAGE_USER  = 1<<2;
 const uint PAGE_WT    = 1<<3;
