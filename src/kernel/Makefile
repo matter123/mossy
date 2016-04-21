@@ -47,20 +47,24 @@ clean:
 	@-rm $(CXXOBJECTS) $(COBJECTS) $(SOBJECTS) 2> /dev/null
 
 $(KERNEL): $(CXXOBJECTS) $(COBJECTS) $(SOBJECTS)
+	@echo building $@
 	@mkdir -p $(dir $@)
-	$(CPP) $(LDFLAGS) -o $@ $^ -L $(SYSROOT_PATH)/usr/lib $(LIBS) $(LIBS) -lgcc
+	$(V)$(CPP) $(LDFLAGS) -o $@ $^ -L $(SYSROOT_PATH)/usr/lib $(LIBS) $(LIBS) -lgcc
 
 $(BIN_PATH)/%.cpp.o: ./%.cpp $(HEADSYSROOT)
+	@echo building $@
 	@mkdir -p $(dir $@)
-	$(CPP) $(CXXFLAGS) -o $@ -c $<
+	$(V)$(CPP) $(CXXFLAGS) -o $@ -c $<
 
 $(BIN_PATH)/%.c.o: ./%.c $(HEADSYSROOT)
+	@echo building $@
 	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) -o $@ -c $<
+	$(V)$(CC) $(CFLAGS) -o $@ -c $<
 
 $(BIN_PATH)/%.asm.o: ./%.asm
+	@echo building $@
 	@mkdir -p $(dir $@)
-	$(AS) $(ASFLAGS) -o $@ $<
+	$(V)$(AS) $(ASFLAGS) -o $@ $<
 
 .PRECIOUS: $(HEADSYSROOT)
 $(SYSROOT_PATH)/usr/include/kernel/%.h: ./%.h
@@ -69,9 +73,9 @@ $(SYSROOT_PATH)/usr/include/kernel/%.h: ./%.h
 	@echo $@ $<
 
 $(SYSROOT_PATH)/usr/include/kernel/%: ./%.hpp
-		@mkdir -p $(dir $@)
-		@cp $< $@
-		@echo $@ $<
+	@mkdir -p $(dir $@)
+	@cp $< $@
+	@echo $@ $<
 
 ../.clang_complete: $(HEADSYSROOT)
 	@echo --target=x86_64-elf > ../.clang_complete

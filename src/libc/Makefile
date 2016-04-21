@@ -44,33 +44,41 @@ clean:
 	@-rm $(LK_CXXOBJECTS) $(LK_COBJECTS) $(LK_SOBJECTS) $(LC_CXXOBJECTS) $(LC_COBJECTS) $(LC_SOBJECTS) 2> /dev/null
 
 $(LIBC): $(LC_CXXOBJECTS) $(LC_COBJECTS) $(LC_SOBJECTS)
+	@echo building $@
 	@mkdir -p $(dir $@)
-	$(AR) rcs $@ $^
+	$(V)$(AR) rcs $@ $^
 
 $(LIBK): $(LK_CXXOBJECTS) $(LK_COBJECTS) $(LK_SOBJECTS)
+	@echo building $@
 	@mkdir -p $(dir $@)
-	$(AR) rcs $@ $^
+	$(V)$(AR) rcs $@ $^
 
 $(LIBC_BIN_PATH)/%.cpp.o: ./%.cpp $(HEADSYSROOT)
+	@echo building $@
 	@mkdir -p $(dir $@)
-	$(CPP) -DLIBC $(CXXFLAGS) -o $@ -c $<
+	$(V)$(CPP) -DLIBC $(CXXFLAGS) -o $@ -c $<
 $(LIBK_BIN_PATH)/%.cpp.o: ./%.cpp $(HEADSYSROOT)
+	@echo building $@
 	@mkdir -p $(dir $@)
-	$(CPP) -DLIBK $(CXXFLAGS) -o $@ -c $<
+	$(V)$(CPP) -DLIBK $(CXXFLAGS) -o $@ -c $<
 
 $(LIBC_BIN_PATH)/%.c.o: ./%.c $(HEADSYSROOT)
+	@echo building $@
 	@mkdir -p $(dir $@)
-	$(CC) -DLIBC $(CFLAGS) -o $@ -c $<
+	$(V)$(CC) -DLIBC $(CFLAGS) -o $@ -c $<
 $(LIBK_BIN_PATH)/%.c.o: ./%.c $(HEADSYSROOT)
+	@echo building $@
 	@mkdir -p $(dir $@)
-	$(CC) -DLIBK $(CFLAGS) -o $@ -c $<
+	$(V)$(CC) -DLIBK $(CFLAGS) -o $@ -c $<
 
 $(LIBC_BIN_PATH)/%.asm.o: ./%.asm
+	@echo building $@
 	@mkdir -p $(dir $@)
-	$(AS) -dLIBC $(ASFLAGS) $< -o $@
+	$(V)$(AS) -dLIBC $(ASFLAGS) $< -o $@
 $(LIBK_BIN_PATH)/%.asm.o: ./%.asm
+	@echo building $@
 	@mkdir -p $(dir $@)
-	$(AS) -dLIBK $(ASFLAGS) $< -o $@
+	$(V)$(AS) -dLIBK $(ASFLAGS) $< -o $@
 
 .PRECIOUS: $(HEADSYSROOT)
 $(SYSROOT_PATH)/usr/include/libc/%.h: ./%.h

@@ -15,6 +15,7 @@
 */
 #include <arch/int.h>
 #include <string.h>
+#include <vga_text.h>
 extern "C" {
 	extern void *exc0; extern void *exc1; extern void *exc2; extern void *exc3;
 	extern void *exc4; extern void *exc5; extern void *exc6; extern void *exc7;
@@ -132,38 +133,37 @@ void install_JT2(int int_num,void *target) {
 	jump_table2[int_num]=(uintptr_t)target;
 }
 extern "C" int lidtr();
+extern "C" void exception_handler();
+
+void (*exceptions[32])(cpu_state *);
+interrupt_handler handlers[256-32][8];
+void error_log(cpu_state *s);
+void def_handler(cpu_state *s);
 void install_interrupts() {
 	for(int i=0;i<256;i++) {
 		set_entry(i,exc_arr[i],INT_INT_GATE,false);
+		if(i<32) {
+			install_JT1(i, reinterpret_cast<void *>(exception_handler));
+			install_JT2(i, reinterpret_cast<void *>(def_handler));
+			exceptions[i]=error_log;
+		}
 	}
 	lidtr();
 }
-def_interrupt *handles[256];
-void default_handler(cpu_state * cpu,void *sse,bool *use) {
-	if(handles[cpu->int_num]!=nullptr) {
-		def_interrupt *handle=handles[cpu->int_num];
-		bool resolved = handle->default_interrupt(cpu,sse,use,handle->context);
-		if(resolved)return;
-		while(handle->next!=nullptr) {
-			handle=handle->next;
-			resolved = handle->default_interrupt(cpu,sse,use,handle->context);
-			if(resolved)return;
-		}
+void def_handler(cpu_state *s) {
+	if(s->int_num<32) {
+		exceptions[s->int_num](s);
 	}
 }
-extern "C" void def_handler();
-void install_single_interrupt(int int_num,void (*handler)(cpu_state *,void *sse_save,bool *in_use)) {
-	install_JT1(int_num,(void *)def_handler);
-	install_JT2(int_num,(void *)handler);
-}
-void install_interrupt(int int_num,def_interrupt *new_handle) {
-	install_JT1(int_num,(void *)def_handler);
-	install_JT2(int_num,(void *)default_handler);
-	def_interrupt *handle = handles[int_num];
-	if(handle==nullptr) {
-		handles[int_num]=new_handle;
-		return;
-	}
-	while(handle->next!=nullptr)handle=handle->next;
-	handle->next=new_handle;
+void error_log(cpu_state *s) {
+	printf("%d(%s) err: %d rflags: %x cs: %x\n",s->int_num,s->dbg,s->err_code,s->rflags,s->cs);
+	printf("rip:%.16p rsp:%.16p\n",s->rip,s->rsp);
+	printf("rax:%.16p rbx:%.16p\n",s->rax,s->rbx);
+	printf("rcx:%.16p rdx:%.16p\n",s->rcx,s->rdx);
+	printf("rsi:%.16p rdi:%.16p\n",s->rsi,s->rdi);
+	printf("r8 :%.16p r9 :%.16p\n",s->r8, s->r9);
+	printf("r10:%.16p r11:%.16p\n",s->r10,s->r11);
+	printf("r12:%.16p r13:%.16p\n",s->r12,s->r13);
+	printf("r14:%.16p r15:%.16p\n",s->r14,s->r15);
+	while("true");
 }

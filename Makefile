@@ -6,14 +6,20 @@ build_info:
 
 -include build_info
 -include env_info
-
+export VERBOSE ?=0
+ifeq ($(VERBOSE), 1)
+	export V=
+else
+	export V=@
+endif
 clean:
 	$(MAKE) -C src/kernel clean
 	$(MAKE) -C src/libc clean
 	$(MAKE) -C src/libm clean
-	$(MAKE) -C src/libacpica clean
 	@-rm mossy.iso 2> /dev/null
-	@-rm .build_number
+
+cleanall: clean
+	$(MAKE) -C src/libacpica clean
 
 headers:
 	$(MAKE) -C src/kernel headers

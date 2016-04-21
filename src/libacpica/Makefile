@@ -41,20 +41,24 @@ clean:
 	@-rm $(CXXOBJECTS) $(COBJECTS) $(SOBJECTS) 2> /dev/null
 
 $(LIB): $(CXXOBJECTS) $(COBJECTS) $(SOBJECTS)
+	@echo building $@
 	@mkdir -p $(dir $@)
-	$(AR) rcs $@ $^
+	$(V)$(AR) rcs $@ $^
 
 $(LIB_BIN_PATH)/%.cpp.o: ./%.cpp $(HEADSYSROOT)
+	@echo building $@
 	@mkdir -p $(dir $@)
-	$(CPP) -D$(LIB_DEFINE) $(CXXFLAGS) -o $@ -c $<
+	$(V)$(CPP) -D$(LIB_DEFINE) $(CXXFLAGS) -o $@ -c $<
 
 $(LIB_BIN_PATH)/%.c.o: ./%.c $(HEADSYSROOT)
+	@echo building $@
 	@mkdir -p $(dir $@)
-	$(CC) -D$(LIB_DEFINE) $(CFLAGS) -o $@ -c $<
+	$(V)$(CC) -D$(LIB_DEFINE) $(CFLAGS) -o $@ -c $<
 
 $(LIB_BIN_PATH)/%.asm.o: ./%.asm
+	@echo building $@
 	@mkdir -p $(dir $@)
-	$(AS) -d$(LIB_DEFINE) $(ASFLAGS) $< -o $@
+	$(V)$(AS) -d$(LIB_DEFINE) $(ASFLAGS) $< -o $@
 
 .PRECIOUS: $(HEADSYSROOT)
 $(SYSROOT_PATH)/usr/include/$(LIB_NAME)/%.h: ./%.h

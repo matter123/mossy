@@ -16,15 +16,15 @@ ALIGN 4096
 IDT:
 resb 256*16
 
-
-[section .data]
 [GLOBAL jump_table]
 [GLOBAL jump_table2]
 [GLOBAL IDTR]
 jump_table:
-times 256 dq fail_fast
+resb 256*8
 jump_table2:
-times 256 dq fail_fast
+resb 256*8
+
+[section .data]
 IDTR:
 dw (256*16) - 1
 dq IDT
@@ -119,36 +119,24 @@ lidtr:
 	lidt [rax]
 	ret
 
-[GLOBAL fail_fast]
-fail_fast:
-hlt
-xchg bx, bx
-jmp .past
-	.flidtr:
-	dw 0
-	dq 0
-	.past:
-	mov rax, .flidtr ;load fake lidt
-	;lidt [rax]
-	xchg bx, bx ;magic break
-	mov bx, 0
-	div bx ;div by 0 - triple fault
-	iretq ;dont drop off
-
 [GLOBAL def_handler]
 [EXTERN stack_size]
-[EXTERN sse_save_offset]
-%macro sse_save_loc 0
+%macro thread_info 0
 mov rax, [qword stack_size]
 imul rax, -1
 and rax, rsp
+%endmacro
+
+[EXTERN sse_save_offset]
+%macro sse_save_loc 0
+thread_info
 mov rbx, qword sse_save_offset
 add rax, [rbx]
 %endmacro
-def_handler:
+
+exception_handler:
 	pop rax
 	push_x64
-	xchg bx, bx
 	;save sse registers
 	sse_save_loc
 	fxsave [rax]
@@ -164,7 +152,7 @@ def_handler:
 	mov rdx, 0
 	cld
 	call [rax]
-	;return from interrupt here is where we would call get_next if so desired
+	;exceptions should not cause a task switch
 
 	;restore sse registers
 	sse_save_loc
@@ -190,6 +178,7 @@ C0_handler:
 	pop_x64
 	add rsp, 24
 	iretq
+
 EXCEPT_NC 0,  e00
 EXCEPT_NC 1,  e01
 EXCEPT_NC 2,  e02

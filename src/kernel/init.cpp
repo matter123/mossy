@@ -35,18 +35,6 @@ void task_b() {
 	putc('b');
 	yield();
 }
-void foo(cpu_state *s, void *sse_save, bool *in_use) {
-	printf("%d(%s) err: %d rflags: %x cs: %x\n",s->int_num,s->dbg,s->err_code,s->rflags,s->cs);
-	printf("rip:%.16p rsp:%.16p\n",s->rip,s->rsp);
-	printf("rax:%.16p rbx:%.16p\n",s->rax,s->rbx);
-	printf("rcx:%.16p rdx:%.16p\n",s->rcx,s->rdx);
-	printf("rsi:%.16p rdi:%.16p\n",s->rsi,s->rdi);
-	printf("r8 :%.16p r9 :%.16p\n",s->r8, s->r9);
-	printf("r10:%.16p r11:%.16p\n",s->r10,s->r11);
-	printf("r12:%.16p r13:%.16p\n",s->r12,s->r13);
-	printf("r14:%.16p r15:%.16p\n",s->r14,s->r15);
-	while("true");
-}
 extern "C"
 void init_exec(hal::multiboot_header *mboot) {
 	#define PORT 0x3f8   /* COM1 */
@@ -65,7 +53,6 @@ void init_exec(hal::multiboot_header *mboot) {
 	hal::physmem.init();
 	hal::virtmem.init();
 	install_interrupts();
-	install_single_interrupt(0xD, &foo);
 	pre_paging_init();
 	pfa_init();
 	paging_init();
