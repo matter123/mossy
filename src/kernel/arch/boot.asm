@@ -76,6 +76,7 @@ ALIGN 4
 	dw (gdt_end-null_gdt)-1
 	dd null_gdt
 
+[GLOBAL zero_page]
 [SECTION .low_bss alloc noexec write nobits align=4096]
 low_bss_start:
 pml4:
@@ -85,6 +86,8 @@ resb 0x1000
 pd:
 resb 0x1000
 pt:
+resb 0x1000
+zero_page:
 resb 0x1000
 low_bss_end:
 LB_LEN equ (low_bss_end-low_bss_start)/4

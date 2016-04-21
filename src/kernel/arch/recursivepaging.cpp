@@ -2,79 +2,6 @@
 #include <arch/paging.h>
 #include <sys/pfa.h>
 #include <string.h>
-struct pte {
-	bool present :1;
-	bool read_write :1;
-	bool user :1;
-	bool write_through :1;
-	bool no_cache :1;
-	bool accessed :1;
-	bool dirty :1;
-	bool pat :1;
-	bool global :1;
-	int unused :3;
-	uint64_t addr :40;
-	int unused_1 :10;
-	bool nx :1;
-} PACKED;
-struct pde {
-	bool present :1;
-	bool read_write :1;
-	bool user :1;
-	bool write_through :1;
-	bool no_cache :1;
-	bool accessed :1;
-	bool ign :1;
-	int zero :2;
-	int unused :3;
-	uint64_t addr :40;
-	int unused_1 :10;
-	bool nx :1;
-} PACKED;
-struct pdpe {
-	bool present :1;
-	bool read_write :1;
-	bool user :1;
-	bool write_through :1;
-	bool no_cache :1;
-	bool accessed :1;
-	bool ign :1;
-	int zero :2;
-	int unused :3;
-	uint64_t addr :40;
-	int unused_1 :10;
-	bool nx :1;
-} PACKED;
-struct pml4e {
-	bool present :1;
-	bool read_write :1;
-	bool user :1;
-	bool write_through :1;
-	bool no_cache :1;
-	bool accessed :1;
-	bool ign :1;
-	int zero :2;
-	int unused :3;
-	uint64_t addr :40;
-	int unused_1 :10;
-	bool nx :1;
-} PACKED;
-union pt {
-	pte entries[512];
-	uint64_t entriesi[512];
-} PACKED;
-union pd {
-	pde entries[512];
-	uint64_t entriesi[512];
-} PACKED;
-union pdp {
-	pdpe entries[512];
-	uint64_t entriesi[512];
-} PACKED;
-union pml4 {
-	pml4e entries[512];
-	uint64_t entriesi[512];
-} PACKED;
 void invlpage(uintptr_t addr) {
 		asm volatile("invlpg (%0)" ::"r"(addr) : "memory");
 	}
@@ -155,13 +82,9 @@ uintptr_t recursive_paging::unmap(uintptr_t virt) {
 	pd   *PD   = (pd   *)(this->base+PDP_OFF(this->index)+PD_OFF(pml4i)+PT_OFF(pdpi));
 	pt   *PT   = (pt   *)(this->base+PDP_OFF(pml4i)+PD_OFF(pdpi)+PT_OFF(pdi));
 	if(!PML4->entries[pml4i].present)return 0x1;
-	//Log(LOG_DEBUG,"[PAGING]","L PML4:%.16p",PML4);
 	if(!PDP->entries[pdpi].present)return 0x1;
-	//Log(LOG_DEBUG,"[PAGING]","L PDP: %.16p",PDP);
 	if(!PD->entries[pdi].present)return 0x1;
-	//Log(LOG_DEBUG,"[PAGING]","L PD:  %.16p",PD);
 	if(!PT->entries[pti].present)return 0x1;
-	//Log(LOG_DEBUG,"[PAGING]","L PT:  %.16p",PT);
 	PT->entries[pti].present=false;
 	uintptr_t addr=PT->entriesi[pti]&0x0000FFFFFFFFF000;
 	invlpage((uintptr_t)virt);
@@ -193,4 +116,20 @@ uintptr_t recursive_paging::unmap(uintptr_t virt) {
 	add_free_page(PML4->entriesi[pml4i]&0x0000FFFFFFFFF000);
 	invlpage((uintptr_t)PDP);
 	return addr;
+}
+
+pte *recursive_paging::page_info(uintptr_t virt) {
+	virt&=~0xFFF;
+	uint pml4i=(virt>>39)&0x1FF;
+	uint pdpi=(virt>>30)&0x1FF;
+	uint pdi=(virt>>21)&0x1FF;
+	uint pti=(virt>>12)&0x1FF;
+	pml4 *PML4 = (pml4 *)(this->base+PDP_OFF(this->index)+PD_OFF(this->index)+PT_OFF(this->index));
+	pdp  *PDP  = (pdp  *)(this->base+PDP_OFF(this->index)+PD_OFF(this->index)+PT_OFF(pml4i));
+	pd   *PD   = (pd   *)(this->base+PDP_OFF(this->index)+PD_OFF(pml4i)+PT_OFF(pdpi));
+	pt   *PT   = (pt   *)(this->base+PDP_OFF(pml4i)+PD_OFF(pdpi)+PT_OFF(pdi));
+	if(!PML4->entries[pml4i].present)return nullptr;
+	if(!PDP->entries[pdpi].present)return nullptr;
+	if(!PD->entries[pdi].present)return nullptr;
+	return &PT->entries[pti];
 }
