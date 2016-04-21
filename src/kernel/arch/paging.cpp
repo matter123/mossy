@@ -21,9 +21,31 @@ void paging_init() {
 	install_single_interrupt(0xE, &paging_handler);
 	Log(LOG_INFO,"[PAGING]","paging initalized");
 }
+extern "C" uintptr_t zero_page;
 static void paging_handler(cpu_state *s,void *sse,bool *in_use) {
-	//Log(LOG_DEBUG,"[PAGING]","page fault virt addr:%.16p rip:%.16p",s->cr2,s->rip);
-	rp.map(get_page(),s->cr2,PAGE_WRITE|PAGE_EXEC);
+	pte *PT = rp.page_info(s->cr2);
+	//previously reserved page
+	if(!PT->read_write&&PT->flags==1) {
+		rp.map(get_page(),s->cr2,PAGE_WRITE);
+	} else if(s->cr2>>63) {
+		//if the last bit is set the fault was in kernel space, assume i'm lazy (malloc)
+		//check if it was a write and would have refaulted if a read only mapped
+		if(s->err_code&2) {
+			rp.map(get_page(),s->cr2,PAGE_WRITE);
+		} else {
+			//reserve a page by mapping the zero page
+			rp.map((uintptr_t)&zero_page,s->cr2,0);
+			PT->flags=1;
+		}
+	} else {
+		//this is a userspace page fault
+		if((s->cr2&~0xFFF)==0) {
+			//null pointer
+			PANIC("null pointer accsess");
+		}
+		//assume broken code
+		PANIC("not sure what to do atm");
+	}
 }
 void map(uintptr_t phys, uintptr_t virt, uint flags) {
 	rp.map(phys, virt, flags);
