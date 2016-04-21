@@ -30,14 +30,13 @@ multiboot_header:
 	dd  (MULTIBOOT_CHECKSUM)+1
 ALIGN 8
 	dw 1,0
-	dd 28
+	dd 32
 	dd 1
 	dd 3
 	dd 6
 	dd 7
 	dd 8
-
-	dd 0
+	dd 9
 
 	dw 6,0
 	dd 12
