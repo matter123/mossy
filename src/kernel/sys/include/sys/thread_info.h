@@ -14,14 +14,27 @@
 	limitations under the License.
 */
 #pragma once
-#include <sys/thread_info.h>
 #include <arch/int.h>
+struct thread_info {
+	uint64_t stack_guard_1;
+	uint32_t thread_id;
+	uint32_t process_id;
+	uint64_t block_on;
+	enum thread_state {
+		RUNNING,
+		WAITING,
+		BLOCKING,
+		SLEEPING,
+	} state;
+	int priority;
+	int ticks_left;
+	int sleep_ticks;
+	cpu_state *userspace,*kinterrupt;
+	uint8_t sse_save[512] __attribute__((aligned(16)));
+	uint64_t stack_guard_2;
+};
+static_assert(sizeof(thread_info)<=1024,"thread info is too big");
 
-void init_scheduler();
+extern "C" const ptrdiff_t sse_save_offset;
 
-void yield();
-void yield(uint32_t thread_id);
-
-void add_task(cpu_state *);
-
-void setup_kernel_thread_info();
+thread_info *get_current_thread_info();

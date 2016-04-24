@@ -254,23 +254,10 @@ ACPI_CPU_FLAGS AcpiOsAcquireLock(ACPI_SPINLOCK Handle) {
 void AcpiOsReleaseLock(ACPI_SPINLOCK Handle, ACPI_CPU_FLAGS Flags) {
 	((spinlock *)Handle)->release();
 }
-static ACPI_OSD_HANDLER Handle=nullptr;
-static bool Callback(cpu_state *cpu,void *sse_save,bool *in_use, void *context) {
-	if(Handle) {
-		Handle(context);
-		return true;
-	}
-	return false;
-}
-static def_interrupt callback{nullptr,Callback,nullptr};
 //GOOD
 ACPI_STATUS AcpiOsInstallInterruptHandler(UINT32 InterruptLevel, ACPI_OSD_HANDLER Handler, void *Context) {
-	if(!Handle) {
-		Handle=Handler;
-		callback.context=Context;
-		return AE_OK;
-	}
-	return AE_ALREADY_EXISTS;
+	install_handler(InterruptLevel,(void(*)(void *))Handler,Context);
+	return AE_OK;
 }
 //STUB
 ACPI_STATUS AcpiOsRemoveInterruptHandler(UINT32 InterruptLevel, ACPI_OSD_HANDLER Handler) {

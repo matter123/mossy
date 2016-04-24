@@ -36,7 +36,7 @@ void task_b() {
 	yield();
 }
 extern "C"
-void init_exec(hal::multiboot_header *mboot) {
+thread_info *init_exec(hal::multiboot_header *mboot) {
 	#define PORT 0x3f8   /* COM1 */
 	outb(PORT + 1, 0x00);    // Disable all interrupts
 	outb(PORT + 3, 0x80);    // Enable DLAB (set baud rate divisor)
@@ -49,7 +49,6 @@ void init_exec(hal::multiboot_header *mboot) {
 	command_line_init();
 	logger_init();
 	thread_stack_size_init();
-	setup_kernel_thread_info();
 	hal::physmem.init();
 	hal::virtmem.init();
 	install_interrupts();
@@ -58,6 +57,13 @@ void init_exec(hal::multiboot_header *mboot) {
 	paging_init();
 	malloc_init();
 	thread_stacks_init();
+	thread_info *info=get_next_stack();
+	return info;
+}
+extern "C"
+void exec() {
+	Log(LOG_DEBUG,"[INIT  ]","reached exec");
+	setup_kernel_thread_info();
 	AcpiInitializeSubsystem();
 	AcpiInitializeTables(nullptr, 0, true);
 	task = reinterpret_cast<cpu_state *>(&sys_stack2-sizeof(cpu_state));

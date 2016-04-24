@@ -68,6 +68,10 @@ namespace hal {
 		memmove((void *)old,this->regs.regions,sizeof(mem_region)*this->regs.tag_count);
 		this->regs.regions=reinterpret_cast<mem_region *>(old);
 		wksp_reset((pointer)old + sizeof(mem_region)*this->regs.tag_count);
+		for(size_t s=0;s<this->regs.tag_count;s++) {
+			hal::mem_region *r=&this->regs.regions[s];
+			Log(LOG_DEBUG, "[MEMMAP]", "%.16p  %.16p  %#.4X",r->start,r->end,r->type.to_u64());
+		}
 		return true;
 	}
 

@@ -32,8 +32,7 @@ dq IDT
 [section .text]
 ;global execption handlers need to call pop rax as first instruction
 %macro EXCEPT_C 2
-[GLOBAL exc%1]
-exc%1:
+ALIGN 64
 	;CPL change forces ss to be zero check later if an issue
 	push qword %1
 	;push qword %2
@@ -48,8 +47,7 @@ exc%1:
 %endmacro
 
 %macro EXCEPT_NC 2
-[GLOBAL exc%1]
-exc%1:
+ALIGN 64
 	push qword 0
 	push qword %1
 	;push qword %2
@@ -119,7 +117,6 @@ lidtr:
 	lidt [rax]
 	ret
 
-[GLOBAL def_handler]
 [EXTERN stack_size]
 %macro thread_info 0
 mov rax, [qword stack_size]
@@ -134,6 +131,7 @@ mov rbx, qword sse_save_offset
 add rax, [rbx]
 %endmacro
 
+[GLOBAL exception_handler]
 exception_handler:
 	pop rax
 	push_x64
@@ -162,6 +160,35 @@ exception_handler:
 	add rsp, 24
 	iretq
 
+[GLOBAL isr_handler]
+isr_handler:
+	pop rax
+	push_x64
+	;save sse registers
+	sse_save_loc
+	fxsave [rax]
+
+	;call handler in JT2
+	mov rax, [rsp + 23 * 8]
+	mov rcx, 8
+	mul rcx
+	mov rbx, qword jump_table2 ; load function call
+	add rax, rbx
+	mov rdi, rsp
+	mov rsi, 0
+	mov rdx, 0
+	cld
+	call [rax]
+	;check if task switch is needed
+
+	;restore sse registers
+	sse_save_loc
+	fxrstor [rax]
+	;end decoration
+	pop_x64
+	add rsp, 24
+	iretq
+
 [GLOBAL C0_handler]
 [EXTERN get_next]
 C0_handler:
@@ -178,7 +205,9 @@ C0_handler:
 	pop_x64
 	add rsp, 24
 	iretq
-
+[GLOBAL exc_arr]
+ALIGN 64
+exc_arr:
 EXCEPT_NC 0,  e00
 EXCEPT_NC 1,  e01
 EXCEPT_NC 2,  e02

@@ -13,15 +13,14 @@
 	See the License for the specific language governing permissions and
 	limitations under the License.
 */
-#pragma once
-#include <sys/thread_info.h>
-#include <arch/int.h>
+#include<sys/scheduler.h>
+#include<arch/int.h>
+#include <sys/threadstacks.h>
+constexpr ptrdiff_t sse_save_offset=offsetof(thread_info, sse_save);
 
-void init_scheduler();
-
-void yield();
-void yield(uint32_t thread_id);
-
-void add_task(cpu_state *);
-
-void setup_kernel_thread_info();
+thread_info *get_current_thread_info() {
+	uintptr_t rsp=0;
+	rsp=(uintptr_t)&rsp;
+	uintptr_t mask=~(stack_size-1);
+	return (thread_info *)(rsp&mask);
+}

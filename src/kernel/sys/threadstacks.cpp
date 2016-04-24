@@ -2,15 +2,17 @@
 #include <hal/memmap.h>
 #include <hal/commandline.h>
 #include <numconv.h>
-size_t stack_size = 0;
+#include <arch/paging.h>
+#include <sys/pfa.h>
+size_t stack_size = 0x1000;
+size_t s_size=0; //holds the actual stack size
 
 void thread_stack_size_init() {
-	stack_size=std::strtonum(get_arg("StackSize"), 1);
-	if(stack_size&(stack_size-1)) {
+	s_size=std::strtonum(get_arg("StackSize"), 1);
+	if(s_size&(s_size-1)) {
 		Log(LOG_ERROR, "[THREAD]", "Stack size is not a POT");
 	}
-	Log(LOG_INFO, "[THREAD]", "hey");
-	stack_size*=0x1000;
+	s_size*=0x1000;
 }
 
 static size_t total_stacks;
@@ -21,25 +23,31 @@ void thread_stacks_init() {
 	hal::mem_region *reg=nullptr;
 	find_memregion(reg,hal::virtmem,reg->type.kthread_stacks,"[THREAD]");
 	uint64_t total_length=(reg->end-reg->start)+1; //end will be 0xFFF, add one so we get mod%0x1000 == 0
-	total_stacks=total_length/stack_size;
+	total_stacks=total_length/s_size;
 	size_t reserve_space=total_stacks*sizeof(thread_info *);
-	reserve_space=(reserve_space|(stack_size-1))+1;
-	total_stacks-=(reserve_space/stack_size);
+	reserve_space=(reserve_space|(s_size-1))+1;
+	total_stacks-=(reserve_space/s_size);
 	stacks_start=uintptr_t(reg->start+reserve_space);
 	stack_stack=(thread_info **)reg->start;
 	for(size_t s=0;s<total_stacks;s++) {
-		*stack_stack=(thread_info *)(stacks_start+s*stack_size);
+		*stack_stack=(thread_info *)(stacks_start+s*s_size);
 		stack_stack++;
 		free_count++;
 	}
+	stack_size=s_size; //copy temporary into normal
 	Log(LOG_INFO,"[THREAD]","%d stacks(using %#X sized stacks)",free_count,stack_size);
 }
 thread_info *get_next_stack() {
 	if(free_count) {
 		stack_stack--;
 		free_count--;
-		return *stack_stack;
+		thread_info *info=*stack_stack;
+		for(size_t s=0;s<stack_size;s+=0x1000) {
+			map(get_page(), ((uintptr_t)info) + s, PAGE_WRITE);
+		}
+		return info;
 	}
+	Log(LOG_ERROR, "[THREAD]", "ran out of stacks");
 	return nullptr;
 }
 

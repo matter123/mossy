@@ -2,6 +2,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <cpuid.h>
+#include <string.h>
 volatile uint16_t *vga_mem=reinterpret_cast<uint16_t *>(0xB8000);
 #define PORT 0x3f8
 uint16_t x=0,y=0;
@@ -37,11 +38,10 @@ void puts(const char *s) {
 			}
 		}
 		if(y>25) {
-			y=0;
+			y=23;
 			x=0;
-			for(int i=0;i<80;i++) {
-				vga_mem[0*80+i]=7<<8|' ';
-			}
+            memmove((void *)vga_mem,(void*)(vga_mem + 2*80),23*80*2);
+            memset((void *)(vga_mem + 23*80),0,2*80*2);
 		}
 		write_serial(*s);
 		vga_mem[y*80+x++]=7<<8|*s++;

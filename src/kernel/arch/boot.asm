@@ -227,6 +227,8 @@ long_mode:
 	jmp load_kernel
 
 	[EXTERN init_exec]
+	[EXTERN exec]
+	[EXTERN stack_size]
 	[EXTERN __CTOR_LIST__]
 	load_kernel:
 	;when get good random use it hear to update __stack_chk_guard
@@ -241,6 +243,9 @@ long_mode:
 	mov rdi, rbx
 	add rdi, KERNEL_VMA
 	call init_exec
+	add rax, [stack_size]
+	mov rsp, rax
+	call exec
 	jmp $
 
 
@@ -249,8 +254,8 @@ lidt:
 	lidt [rdi]
 	ret
 [SECTION .bss]
-ALIGN 16
-resb 0x4000
+ALIGN 0x1000
+resb 0x1000
 [GLOBAL sys_stack]
 sys_stack:
 resb 0x2000

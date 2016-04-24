@@ -3,14 +3,14 @@
 #include <arch/int.h>
 #include <sys/pfa.h>
 recursive_paging rp;
-static void paging_handler(cpu_state *s,void *sse,bool *in_use);
-static void pre_paging_handler(cpu_state *s,void *sse,bool *in_use) {
+static void paging_handler(cpu_state *s);
+static void pre_paging_handler(cpu_state *s) {
 	Log(LOG_DEBUG,"[PAGING]","pre paging handler called");
 	paging_init();
 }
 void pre_paging_init() {
 	rp.init(510);
-	install_single_interrupt(0xE, &pre_paging_handler);
+	install_exception(0xE, &pre_paging_handler);
 	Log(LOG_INFO,"[PAGING]","pre paging initalized");
 }
 
@@ -18,11 +18,13 @@ static bool initalized=false;
 void paging_init() {
 	if(initalized)return;
 	initalized=true;
-	install_single_interrupt(0xE, &paging_handler);
+	install_exception(0xE, &paging_handler);
 	Log(LOG_INFO,"[PAGING]","paging initalized");
 }
 extern "C" uintptr_t zero_page;
-static void paging_handler(cpu_state *s,void *sse,bool *in_use) {
+static void paging_handler(cpu_state *s) {
+	rp.map(get_page(),s->cr2,PAGE_WRITE);
+	return;
 	pte *PT = rp.page_info(s->cr2);
 	//previously reserved page
 	if(!PT->read_write&&PT->flags==1) {
@@ -33,6 +35,7 @@ static void paging_handler(cpu_state *s,void *sse,bool *in_use) {
 		if(s->err_code&2) {
 			rp.map(get_page(),s->cr2,PAGE_WRITE);
 		} else {
+			Log(LOG_DEBUG,"[PAGING]", "reserving page");
 			//reserve a page by mapping the zero page
 			rp.map((uintptr_t)&zero_page,s->cr2,0);
 			PT->flags=1;

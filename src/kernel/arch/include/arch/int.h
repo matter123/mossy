@@ -49,6 +49,8 @@ struct interrupt_handler {
 };
 void install_JT1(int int_num,void *target);
 void install_JT2(int int_num,void *target);
+void install_handler(int int_num,void (*handler)(void *context),void *context);
+void install_exception(int int_num,void (*handler)(cpu_state *));
 //void install_single_interrupt(int int_num,void (*default_interrupt)(cpu_state *,void *sse_save,bool *in_use));
 //void install_interrupt(int int_num,def_interrupt *);
 void install_interrupts() RUN_ONCE;
