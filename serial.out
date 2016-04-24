@@ -1,0 +1,5 @@
+[INFO ] [LOGGER] Log level is [INFO ]
+[INFO ] [THREAD] hey
+[INFO ] [PAGING] pre paging initalized
+[INFO ] [PFA   ] end pfa stack addr: 0xFFFFFFFF80287890
+[INFO ] [PAGING] paging initalized

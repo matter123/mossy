@@ -99,7 +99,6 @@ void def_handler(cpu_state *s) {
 		if(s->cs&0x3) {
 			info->userspace=nullptr;
 		} else {
-			//in kernel space
 			if(info->kinterrupt!=s) {
 				Log(LOG_ERROR, "[INTRPT]", "interrupt returning from unexpected spot");
 			}

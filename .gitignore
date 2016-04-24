@@ -9,4 +9,5 @@ docs/html
 .build_number
 build_info
 *.out
+!serial.out
 .clang_complete
