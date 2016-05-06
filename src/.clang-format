@@ -1,0 +1,26 @@
+BasedOnStyle: LLVM
+ColumnLimit: 100
+BreakStringLiterals: false
+IndentWidth: 4
+TabWidth: 4
+UseTab: ForIndentation
+MaxEmptyLinesToKeep: 2
+BreakBeforeBraces: Attach
+AllowShortBlocksOnASingleLine: true
+AllowShortIfStatementsOnASingleLine: false
+AllowShortLoopsOnASingleLine: true
+AllowShortFunctionsOnASingleLine: Inline
+AllowShortBlocksOnASingleLine: true
+IndentCaseLabels: false
+CommentPragmas: .*Copyright.*
+AlignEscapedNewlinesLeft: true
+SpaceBeforeParens: Never
+IncludeCategories:
+  - Regex:           '^(<sys/)'
+    Priority:        1
+  - Regex:           '^(<hal/)'
+    Priority:        2
+  - Regex:           '^(<arch/)'
+    Priority:        3
+  - Regex:           '^<.*>'
+    Priority:        4

@@ -16,24 +16,26 @@
 #pragma once
 #include <hal/memregion.h>
 namespace hal {
-	class memmap;
-	struct region_hook{
-		region_hook* next;
-		void (*add_region_hook)(memmap *mmap);
-		region_hook(memmap &map, void (add_region_hook)(memmap *mmap))RUN_ONCE;
-	};
-	class memmap {
-		int add_count;
-		region_hook *next;
-	public:
-		mem_regs regs;
-		int region_count();
-		mem_region *get_region(int index);
-		void add_regions(int count);
-		bool add_region(uint64_t start, uint64_t end,mem_type type);
-		void add_region_hook(region_hook * rhook);
-		bool init();
-	};
-	extern memmap virtmem;
-	extern memmap physmem;
+class memmap;
+struct region_hook {
+	region_hook *next;
+	void (*add_region_hook)(memmap *mmap);
+	region_hook(memmap &map, void(add_region_hook)(memmap *mmap)) RUN_ONCE;
+};
+class memmap {
+	int add_count;
+	region_hook *next;
+
+  public:
+	mem_regs regs;
+	int region_count();
+	mem_region *get_region(int index);
+	void add_regions(int count);
+	bool add_region(uint64_t start, uint64_t end, mem_type type);
+	void add_region_hook(region_hook *rhook);
+	bool init();
+};
+extern memmap virtmem;
+extern memmap physmem;
+static_assert(sizeof(memmap) <= 0x1000, "decrease the number of regions");
 }

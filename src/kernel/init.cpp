@@ -13,38 +13,35 @@
 	See the License for the specific language governing permissions and
 	limitations under the License.
 */
-#include <acpi/acpi.h>
-#include <arch/int.h>
-#include <arch/paging.h>
+#include <sys/malloc.h>
 #include <sys/pfa.h>
 #include <sys/scheduler.h>
 #include <sys/threadstacks.h>
-#include <sys/malloc.h>
-#include <hal/multiboot.h>
-#include <hal/memmap.h>
 #include <hal/commandline.h>
-#include <logger.h>
-#include <vga_text.h>
-#include <stdlib.h>
+#include <hal/memmap.h>
+#include <hal/multiboot.h>
+#include <arch/int.h>
+#include <arch/paging.h>
+#include <acpi/acpi.h>
 #include <cpuid.h>
-cpu_state *task;
-extern pointer sys_stack2;
-void task_b() {
-	putc('B');
-	yield();
-	putc('b');
-	yield();
+#include <logger.h>
+#include <stdlib.h>
+#include <vga_text.h>
+void test_task(char *letter) {
+	while(true) {
+		puts(letter);
+		yield();
+	}
 }
-extern "C"
-thread_info *init_exec(hal::multiboot_header *mboot) {
-	#define PORT 0x3f8   /* COM1 */
-	outb(PORT + 1, 0x00);    // Disable all interrupts
-	outb(PORT + 3, 0x80);    // Enable DLAB (set baud rate divisor)
-	outb(PORT + 0, 0x03);    // Set divisor to 3 (lo byte) 38400 baud
-	outb(PORT + 1, 0x00);    //                  (hi byte)
-	outb(PORT + 3, 0x03);    // 8 bits, no parity, one stop bit
-	outb(PORT + 2, 0xC7);    // Enable FIFO, clear them, with 14-byte threshold
-	outb(PORT + 4, 0x0B);    // IRQs enabled, RTS/DSR set
+extern "C" thread_info *init_exec(hal::multiboot_header *mboot) {
+#define PORT 0x3f8        /* COM1 */
+	outb(PORT + 1, 0x00); // Disable all interrupts
+	outb(PORT + 3, 0x80); // Enable DLAB (set baud rate divisor)
+	outb(PORT + 0, 0x03); // Set divisor to 3 (lo byte) 38400 baud
+	outb(PORT + 1, 0x00); //                  (hi byte)
+	outb(PORT + 3, 0x03); // 8 bits, no parity, one stop bit
+	outb(PORT + 2, 0xC7); // Enable FIFO, clear them, with 14-byte threshold
+	outb(PORT + 4, 0x0B); // IRQs enabled, RTS/DSR set
 	init_mboot(mboot);
 	command_line_init();
 	logger_init();
@@ -57,27 +54,42 @@ thread_info *init_exec(hal::multiboot_header *mboot) {
 	paging_init();
 	malloc_init();
 	thread_stacks_init();
-	thread_info *info=get_next_stack();
+	thread_info *info = get_next_stack(); // get task for main thread to reside in
 	return info;
 }
-extern "C"
-void exec() {
-	Log(LOG_DEBUG,"[INIT  ]","reached exec");
+extern "C" void exec() {
+	Log(LOG_DEBUG, "[INIT  ]", "reached exec");
 	setup_kernel_thread_info();
 	AcpiInitializeSubsystem();
 	AcpiInitializeTables(nullptr, 0, true);
-	task = reinterpret_cast<cpu_state *>(&sys_stack2-sizeof(cpu_state));
-	task->rip=reinterpret_cast<uint64_t>(&task_b);
-	task->rsp=reinterpret_cast<uint64_t>(&sys_stack2);
-	task->rflags=0x200086;
-	task->cs=0x8;
-	task->ss=0x10;
 	init_scheduler();
-	add_task(task);
-	putc('A');
-	yield();
-	putc('a');
-	yield();
-	while(true);
+	add_task((void *)test_task, (void *)"A");
+	add_task((void *)test_task, (void *)"B");
+	add_task((void *)test_task, (void *)"C");
+	add_task((void *)test_task, (void *)"D");
+	add_task((void *)test_task, (void *)"E");
+	add_task((void *)test_task, (void *)"F");
+	add_task((void *)test_task, (void *)"G");
+	add_task((void *)test_task, (void *)"H");
+	add_task((void *)test_task, (void *)"I");
+	add_task((void *)test_task, (void *)"J");
+	add_task((void *)test_task, (void *)"K");
+	add_task((void *)test_task, (void *)"L");
+	add_task((void *)test_task, (void *)"M");
+	add_task((void *)test_task, (void *)"N");
+	add_task((void *)test_task, (void *)"O");
+	add_task((void *)test_task, (void *)"P");
+	add_task((void *)test_task, (void *)"Q");
+	add_task((void *)test_task, (void *)"R");
+	add_task((void *)test_task, (void *)"S");
+	add_task((void *)test_task, (void *)"T");
+	add_task((void *)test_task, (void *)"U");
+	add_task((void *)test_task, (void *)"V");
+	add_task((void *)test_task, (void *)"W");
+	add_task((void *)test_task, (void *)"X");
+	add_task((void *)test_task, (void *)"Y");
+	add_task((void *)test_task, (void *)"Z");
+	asm("xchg %bx, %bx");
+	while(true) yield();
 	panic("reached end");
 }

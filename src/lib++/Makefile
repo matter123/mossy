@@ -22,6 +22,9 @@ SOBJECTS:=$(patsubst ./%, $(LIB_BIN_PATH)/%, $(SOBJECTS))
 HEADSRC:=$(shell find . -name '*.h'|grep include)
 HEADSYSROOT:=$(patsubst ./%, $(SYSROOT_PATH)/usr/include/$(LIB_NAME)/%, $(HEADSRC))
 
+HPPHEADSRC:=$(shell find . -name '*.hpp'|grep include)
+HEADSYSROOT += $(patsubst ./%.hpp, $(SYSROOT_PATH)/usr/include/$(LIB_NAME)/%, $(HPPHEADSRC))
+
 WFLAGSON=-Wall -Wextra -Werror=return-type -Wshadow -Wundef -Wdeprecated -Wredundant-decls -Werror=parentheses
 WFLAGSOFF=-Wno-unused-parameter -Wno-sign-compare -Wno-implicit-exception-spec-mismatch
 FFLAGS=-ffreestanding -fstack-protector -fno-common
@@ -61,6 +64,11 @@ $(LIB_BIN_PATH)/%.asm.o: ./%.asm
 
 .PRECIOUS: $(HEADSYSROOT)
 $(SYSROOT_PATH)/usr/include/$(LIB_NAME)/%.h: ./%.h
+	@mkdir -p $(dir $@)
+	@cp $< $@
+	@echo $@ $<
+
+$(SYSROOT_PATH)/usr/include/$(LIB_NAME)/%: ./%.hpp
 	@mkdir -p $(dir $@)
 	@cp $< $@
 	@echo $@ $<

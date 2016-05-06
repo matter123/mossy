@@ -14,14 +14,3 @@
 	limitations under the License.
 */
 #pragma once
-#include <sys/thread_info.h>
-#include <arch/int.h>
-
-void init_scheduler();
-
-void yield();
-void yield(uint32_t thread_id);
-
-void add_task(void *func, void *context);
-
-void setup_kernel_thread_info();

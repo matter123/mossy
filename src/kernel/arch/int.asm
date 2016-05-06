@@ -201,6 +201,7 @@ C0_handler:
 	call get_next
 	mov rsp, rax
 	sse_save_loc
+	xchg bx, bx
 	fxrstor [rax]
 	pop_x64
 	add rsp, 24

@@ -14,14 +14,23 @@
 	limitations under the License.
 */
 #pragma once
-#include <sys/thread_info.h>
-#include <arch/int.h>
-
-void init_scheduler();
-
-void yield();
-void yield(uint32_t thread_id);
-
-void add_task(void *func, void *context);
-
-void setup_kernel_thread_info();
+#include <deque>
+namespace std {
+template <class T, class Container = std::deque<T>> class queue {
+	explicit queue(const Container &cont);
+	explicit queue(const Container &&cont = Container());
+	// queue(const queue &other);  //implicitly declared
+	// queue(const queue &&other);
+	~queue();
+	T &front();
+	const T &front() const;
+	void pop();
+	T &back();
+	const T &back() const;
+	void push(const T &value);
+	// void push(T &&value);
+	bool empty();
+	size_t size() const;
+	void swap(queue &other);
+};
+}

@@ -21,29 +21,30 @@ extern "C" {
 #if IN_LIBC
 NORETURN void abort();
 #endif
-#if IN_KERNEL //TODO: see if we want in userspace
-#define __alloca(size) __builtin_alloca (size)
+#if IN_KERNEL // TODO: see if we want in userspace
+#define abort() PANIC("abort")
+#define __alloca(size) __builtin_alloca(size)
 #endif
-long strtol(const char * str, char ** endptr,int base);
-unsigned long strtoul(const char * str, char ** endptr,int base);
+long strtol(const char *str, char **endptr, int base);
+unsigned long strtoul(const char *str, char **endptr, int base);
 int atoi(const char *str);
 long atol(const char *str);
 long long atoll(const char *str);
 float atof(const char *str);
 double atod(const char *str);
 
-char *itoa(int value,char *str, int base);
-char *utoa(unsigned int value,char *str, int base);
-char *ltoa(long value,char *str, int base);
-char *ultoa(unsigned long value,char *str, int base);
-char *lltoa(long long value,char *str, int base);
-char *ulltoa(unsigned long long value,char *str, int base);
-char *ftoa(float value,char *str, int base); //NO-IMP
-char *dtoa(double value,char *str, int base); //NO-IMP
+char *itoa(int value, char *str, int base);
+char *utoa(unsigned int value, char *str, int base);
+char *ltoa(long value, char *str, int base);
+char *ultoa(unsigned long value, char *str, int base);
+char *lltoa(long long value, char *str, int base);
+char *ulltoa(unsigned long long value, char *str, int base);
+char *ftoa(float value, char *str, int base);  // NO-IMP
+char *dtoa(double value, char *str, int base); // NO-IMP
 
 void *malloc(size_t size);
 void free(void *addr);
-void *realloc(void *addr,size_t size);
+void *realloc(void *addr, size_t size);
 void *calloc(size_t num, size_t size);
 #ifdef __cplusplus
 }
