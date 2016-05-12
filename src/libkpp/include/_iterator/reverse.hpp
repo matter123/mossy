@@ -115,7 +115,10 @@ reverse_iterator<Iterator> operator+(typename reverse_iterator<Iterator>::differ
 template <class Iterator>
 reverse_iterator<Iterator> operator-(typename reverse_iterator<Iterator>::difference_type n,
                                      const reverse_iterator<Iterator> &it) {
-	return reverse_iterator<Iterator>(it.current - n);
+	return reverse_iterator<Iterator>(it.current + n);
+}
+template <class Iterator> std::reverse_iterator<Iterator> make_reverse_iterator(Iterator i) {
+	return std::reverse_iterator<Iterator>(i);
 }
 }
 #endif

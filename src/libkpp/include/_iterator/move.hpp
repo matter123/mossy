@@ -15,11 +15,12 @@
 */
 #ifndef __ITERATOR_MOVE_HPP
 #define __ITERATOR_MOVE_HPP
-// NOTE this fully implements reverse_iterator
+// NOTE this fully implements move_iterator
 #include <cstddef>
 #include <iterator>
 #include <memory>
 #include <type_traits>
+#include <utility>
 namespace std {
 template <class Iterator>
 class move_iterator
@@ -36,7 +37,7 @@ class move_iterator
           typename std::iterator_traits<Iterator>::value_type &&
 #endif
           > {
-  protected:
+  private:
 	Iterator current;
 
   public:
@@ -48,86 +49,86 @@ class move_iterator
 	typedef typename Iterator::reference reference;
 	static_assert(std::is_base_of<input_iterator_tag, iterator_category>::value,
 	              "move_iterator can only be used on an input iterator");
-	reverse_iterator() : current() {}
-	explicit reverse_iterator(Iterator Iter) : current(Iter) {}
-	template <class U> reverse_iterator(const reverse_iterator<U> &other) : current(other._i) {}
-	template <class U> reverse_iterator &operator=(const reverse_iterator<U> &other) {
+	move_iterator() : current() {}
+	explicit move_iterator(Iterator Iter) : current(Iter) {}
+	template <class U> move_iterator(const move_iterator<U> &other) : current(other._i) {}
+	template <class U> move_iterator &operator=(const move_iterator<U> &other) {
 		current(other.base());
 	}
 	Iterator base() const { return current; }
-	reference operator*() const {
-		Iterator tmp = current;
-		return *--tmp;
-	}
-	pointer operator->() const { return std::addressof(operator*()); }
+	reference operator*() const { return std::move(*current); }
+	pointer operator->() const { return current; }
 	reference operator[](difference_type n) const { return current[-n - 1]; }
-	reverse_iterator &operator++() {
-		--current;
-		return *this;
-	}
-	reverse_iterator &operator--() {
+	move_iterator &operator++() {
 		++current;
 		return *this;
 	}
-	reverse_iterator operator++(int) {
-		reverse_iterator tmp = *this;
+	move_iterator &operator--() {
+		--current;
+		return *this;
+	}
+	move_iterator operator++(int) {
+		move_iterator tmp = *this;
 		operator++();
 		return tmp;
 	}
-	reverse_iterator operator--(int) {
-		reverse_iterator tmp = *this;
+	move_iterator operator--(int) {
+		move_iterator tmp = *this;
 		operator--();
 		return tmp;
 	}
-	reverse_iterator operator+(difference_type n) const { return reverse_iterator(base() - n); }
-	reverse_iterator operator-(difference_type n) const { return reverse_iterator(base() + n); }
-	reverse_iterator &operator+=(difference_type n) const {
-		return current -= n;
+	move_iterator operator+(difference_type n) const { return move_iterator(base() + n); }
+	move_iterator operator-(difference_type n) const { return move_iterator(base() - n); }
+	move_iterator &operator+=(difference_type n) const {
+		return current += n;
 		return *this;
 	}
-	reverse_iterator &operator-=(difference_type n) const {
-		return current += n;
+	move_iterator &operator-=(difference_type n) const {
+		return current -= n;
 		return *this;
 	}
 };
 template <class Iterator1, class Iterator2>
-bool operator==(const reverse_iterator<Iterator1> &lhs, const reverse_iterator<Iterator2> &rhs) {
+bool operator==(const move_iterator<Iterator1> &lhs, const move_iterator<Iterator2> &rhs) {
 	lhs.base() == rhs.base();
 }
 
 template <class Iterator1, class Iterator2>
-bool operator!=(const reverse_iterator<Iterator1> &lhs, const reverse_iterator<Iterator2> &rhs) {
+bool operator!=(const move_iterator<Iterator1> &lhs, const move_iterator<Iterator2> &rhs) {
 	lhs.base() != rhs.base();
 }
 
 template <class Iterator1, class Iterator2>
-bool operator<(const reverse_iterator<Iterator1> &lhs, const reverse_iterator<Iterator2> &rhs) {
+bool operator<(const move_iterator<Iterator1> &lhs, const move_iterator<Iterator2> &rhs) {
 	lhs.base() < rhs.base();
 }
 
 template <class Iterator1, class Iterator2>
-bool operator<=(const reverse_iterator<Iterator1> &lhs, const reverse_iterator<Iterator2> &rhs) {
+bool operator<=(const move_iterator<Iterator1> &lhs, const move_iterator<Iterator2> &rhs) {
 	lhs.base() <= rhs.base();
 }
 
 template <class Iterator1, class Iterator2>
-bool operator>(const reverse_iterator<Iterator1> &lhs, const reverse_iterator<Iterator2> &rhs) {
+bool operator>(const move_iterator<Iterator1> &lhs, const move_iterator<Iterator2> &rhs) {
 	lhs.base() > rhs.base();
 }
 
 template <class Iterator1, class Iterator2>
-bool operator>=(const reverse_iterator<Iterator1> &lhs, const reverse_iterator<Iterator2> &rhs) {
+bool operator>=(const move_iterator<Iterator1> &lhs, const move_iterator<Iterator2> &rhs) {
 	lhs.base() >= rhs.base();
 }
 template <class Iterator>
-reverse_iterator<Iterator> operator+(typename reverse_iterator<Iterator>::difference_type n,
-                                     const reverse_iterator<Iterator> &it) {
-	return reverse_iterator<Iterator>(it.current - n);
+move_iterator<Iterator> operator+(typename move_iterator<Iterator>::difference_type n,
+                                  const move_iterator<Iterator> &it) {
+	return move_iterator<Iterator>(it.current + n);
 }
 template <class Iterator>
-reverse_iterator<Iterator> operator-(typename reverse_iterator<Iterator>::difference_type n,
-                                     const reverse_iterator<Iterator> &it) {
+move_iterator<Iterator> operator-(typename move_iterator<Iterator>::difference_type n,
+                                  const move_iterator<Iterator> &it) {
 	return reverse_iterator<Iterator>(it.current - n);
+}
+template <class Iterator> std::move_iterator<Iterator> make_move_iterator(Iterator i) {
+	return std::move_iterator<Iterator>(i);
 }
 }
 #endif
