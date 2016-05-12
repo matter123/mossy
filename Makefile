@@ -15,7 +15,7 @@ endif
 clean:
 	$(MAKE) -C src/kernel clean
 	$(MAKE) -C src/libc clean
-	$(MAKE) -C src/libc++ clean
+	$(MAKE) -C src/libkpp clean
 	@-rm mossy.iso 2> /dev/null
 
 cleanall: clean
@@ -24,19 +24,19 @@ cleanall: clean
 headers:
 	$(MAKE) -C src/kernel headers
 	$(MAKE) -C src/libc headers
-	$(MAKE) -C src/lib++ headers
+	$(MAKE) -C src/libkpp headers
 	$(MAKE) -C src/libacpica headers
 
 sysroot/usr/lib/libk: libs
-sysroot/usr/lib/lib++: libs
+sysroot/usr/lib/libkpp: libs
 sysroot/usr/lib/libacpica: libs
 libs: headers
 	$(MAKE) -C src/libc
-	$(MAKE) -C src/lib++
+	$(MAKE) -C src/libkpp
 	$(MAKE) -C src/libacpica
 
 kernel: sysroot/boot/kernel
-sysroot/boot/kernel: sysroot/usr/lib/libk sysroot/usr/lib/lib++ sysroot/usr/lib/libacpica
+sysroot/boot/kernel: sysroot/usr/lib/libk sysroot/usr/lib/libkpp sysroot/usr/lib/libacpica
 	$(MAKE) -C src/kernel
 
 iso: mossy.iso

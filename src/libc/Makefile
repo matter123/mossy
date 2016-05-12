@@ -33,7 +33,7 @@ MFLAGS=-mcmodel=kernel -mno-red-zone
 INCLUDEPATHS=$(wildcard $(SYSROOT_PATH)/usr/include/*/include)
 IFLAGS=--sysroot=$(SYSROOT_PATH) $(addprefix -I, $(INCLUDEPATHS)) -include $(SYSROOT_PATH)/usr/include/kernel/stdlib/include/global.h
 CFLAGS=-O3 -std=c11 $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS) $(MFLAGS) $(IFLAGS)
-CXXFLAGS=-O3 -std=c++1y $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS) $(MFLAGS) $(IFLAGS) -fno-rtti -fno-exceptions -fdiagnostics-color=auto
+CXXFLAGS=-O3 -std=c++14 $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS) $(MFLAGS) $(IFLAGS) -fno-rtti -fno-exceptions -fdiagnostics-color=auto
 ASFLAGS=-felf64
 
 all: $(LIBC) $(LIBK)

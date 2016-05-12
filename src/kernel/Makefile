@@ -35,7 +35,7 @@ INCLUDEPATHS:=$(INCLUDEPATHS) $(wildcard $(SYSROOT_PATH)/usr/include/*/include)
 INCLUDEPATHS:=$(addprefix -I, $(INCLUDEPATHS))
 IFLAGS=--sysroot=$(SYSROOT_PATH) $(INCLUDEPATHS) -include $(SYSROOT_PATH)/usr/include/kernel/stdlib/include/global.h
 CFLAGS=-O3 -std=c11 $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS) $(MFLAGS) $(IFLAGS)
-CXXFLAGS=-O3 -std=c++1y $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS) $(MFLAGS) $(IFLAGS) -fno-rtti -fno-exceptions -fdiagnostics-color=auto
+CXXFLAGS=-O3 -std=c++14 $(DFLAGS) $(WFLAGSON) $(WFLAGSOFF) $(FFLAGS) $(MFLAGS) $(IFLAGS) -fno-rtti -fno-exceptions -fdiagnostics-color=auto
 LDFLAGS=-static -T../link.ld -nostdlib $(FFLAGS) -Wl,-z,max-page-size=0x1000 -mcmodel=kernel
 ASFLAGS ?=-felf64
 
@@ -78,7 +78,8 @@ $(SYSROOT_PATH)/usr/include/kernel/%: ./%.hpp
 	@echo $@ $<
 
 ../.clang_complete: $(HEADSYSROOT)
-	@echo --target=x86_64-elf > ../.clang_complete
+	@echo --target=x86_64-elf> ../.clang_complete
+	@echo -std=c++14 >> ../.clang_complete
 	@echo $(DFLAGS) | tr " " "\n" >> ../.clang_complete
 	@echo $(subst ../../,../,$(IFLAGS)) | tr " " "\n" >> ../.clang_complete
 	@echo -ffreestanding $(WFLAGSON) $(WFLAGSOFF) | tr " " "\n" >> ../.clang_complete

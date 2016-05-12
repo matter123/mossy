@@ -16,8 +16,8 @@ extern "C" {
 #define PRINTF_LIKE(arg_fmt, arg_chk) __attribute__((__format__(__printf__, arg_fmt, arg_chk)))
 #define RUN_ONCE __attribute((section(".init.text"), cold))
 
-typedef uint8_t *pointer;
-typedef const uint8_t *const_pointer;
+typedef uint8_t *pointer_t;
+typedef const uint8_t *const_pointer_t;
 typedef unsigned int uint;
 
 NORETURN void panic_fn(const char *message, const char *func, const char *file, int line);

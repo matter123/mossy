@@ -11,27 +11,27 @@
 	limitations under the License.
 */
 #include <linker.h>
-//workspace is for when you need memory pre heap, cannot de allocate so be careful
+// workspace is for when you need memory pre heap, cannot de allocate so be careful
 namespace hal {
-	static pointer wksp_ptr=(pointer) &k_end;
-	void *w_malloc(size_t s,size_t align=1) {
-		if(s>=sizeof(uintptr_t)) { //ensure alignment for large types
-			align=sizeof(uintptr_t);
-		}
-		if(align!=1 && (align&(align-1))==0) {
-			wksp_ptr=(pointer)(((uintptr_t)wksp_ptr&~(align-1))+align);
-		}
-		void *temp=wksp_ptr;
-		if(wksp_ptr+s>(pointer)&k_data_end) {
-			return reinterpret_cast<void *>(0);
-		}
-		wksp_ptr+=s;
-		return temp;
+static pointer_t wksp_ptr = (pointer_t)&k_end;
+void *w_malloc(size_t s, size_t align = 1) {
+	if(s >= sizeof(uintptr_t)) { // ensure alignment for large types
+		align = sizeof(uintptr_t);
 	}
-	void wksp_reset(void *reset) {
-		if(reset>&k_data_end) {
-			reset=&k_data_end;
-		}
-		wksp_ptr=(pointer)reset;
+	if(align != 1 && (align & (align - 1)) == 0) {
+		wksp_ptr = (pointer_t)(((uintptr_t)wksp_ptr & ~(align - 1)) + align);
 	}
+	void *temp = wksp_ptr;
+	if(wksp_ptr + s > (pointer_t)&k_data_end) {
+		return reinterpret_cast<void *>(0);
+	}
+	wksp_ptr += s;
+	return temp;
+}
+void wksp_reset(void *reset) {
+	if(reset > &k_data_end) {
+		reset = &k_data_end;
+	}
+	wksp_ptr = (pointer_t)reset;
+}
 }

@@ -23,15 +23,15 @@ struct region_hook {
 	region_hook(memmap &map, void(add_region_hook)(memmap *mmap)) RUN_ONCE;
 };
 class memmap {
-	int add_count;
 	region_hook *next;
+	bool done;
+	void fix();
 
   public:
 	mem_regs regs;
 	int region_count();
 	mem_region *get_region(int index);
-	void add_regions(int count);
-	bool add_region(uint64_t start, uint64_t end, mem_type type);
+	void add_region(uint64_t start, uint64_t end, mem_type type);
 	void add_region_hook(region_hook *rhook);
 	bool init();
 };

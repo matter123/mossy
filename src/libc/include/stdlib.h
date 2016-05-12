@@ -22,7 +22,9 @@ extern "C" {
 NORETURN void abort();
 #endif
 #if IN_KERNEL // TODO: see if we want in userspace
-#define abort() PANIC("abort")
+NORETURN inline void abort() {
+	PANIC("abort");
+}
 #define __alloca(size) __builtin_alloca(size)
 #endif
 long strtol(const char *str, char **endptr, int base);
@@ -46,6 +48,23 @@ void *malloc(size_t size);
 void free(void *addr);
 void *realloc(void *addr, size_t size);
 void *calloc(size_t num, size_t size);
+
+struct div_t {
+	int quot;
+	int rem;
+};
+struct ldiv_t {
+	long quot;
+	long rem;
+};
+struct lldiv_t {
+	long long quot;
+	long long rem;
+};
+struct imaxdiv_t {
+	intmax_t quot;
+	intmax_t rem;
+};
 #ifdef __cplusplus
 }
 #endif

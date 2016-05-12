@@ -25,7 +25,7 @@ struct mem_region {
 	void (*callback)(mem_region *);
 } PACKED;
 struct mem_regs {
-	mem_region regions[85];
+	mem_region regions[84];
 	uint64_t tag_count;
 };
 static_assert(sizeof(mem_regs) <= 0x1000, "decrease the number of regions");
