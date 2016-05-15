@@ -10,6 +10,7 @@ extern "C" {
 #define IN_KERNEL defined(KERNEL)
 #define IN_LIBK defined(LIBK)
 #define IN_LIBC defined(LIBC)
+#define IN_LIBKPP defined(LIBKPP)
 #define NORETURN __attribute__((noreturn))
 #define PACKED __attribute__((packed))
 #define BEFORE_INIT __attribute__((constructor))

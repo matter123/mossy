@@ -25,7 +25,7 @@ HEADSRC:=$(shell find . -name '*.h'|grep include)
 HEADSYSROOT:=$(patsubst ./%, $(SYSROOT_PATH)/usr/include/libc/%, $(HEADSRC))
 
 
-WFLAGSON=-Wall -Wextra -Werror=return-type -Wshadow -Wundef -Wdeprecated -Wredundant-decls -Werror=parentheses
+WFLAGSON=-Wall -Wextra -Wreturn-type -Werror=return-type -Wshadow -Wundef -Wdeprecated -Wredundant-decls -Werror=parentheses
 WFLAGSOFF=-Wno-unused-parameter -Wno-sign-compare -Wno-implicit-exception-spec-mismatch
 FFLAGS=-ffreestanding -fstack-protector -fno-common
 DFLAGS:=-DMOSSY $(BUILD_INFO)

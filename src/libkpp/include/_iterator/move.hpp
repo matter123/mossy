@@ -125,7 +125,7 @@ move_iterator<Iterator> operator+(typename move_iterator<Iterator>::difference_t
 template <class Iterator>
 move_iterator<Iterator> operator-(typename move_iterator<Iterator>::difference_type n,
                                   const move_iterator<Iterator> &it) {
-	return reverse_iterator<Iterator>(it.current - n);
+	return move_iterator<Iterator>(it.current - n);
 }
 template <class Iterator> std::move_iterator<Iterator> make_move_iterator(Iterator i) {
 	return std::move_iterator<Iterator>(i);

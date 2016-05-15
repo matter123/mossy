@@ -20,8 +20,7 @@ extern "C" {
 #include <stddef.h>
 #if IN_LIBC
 NORETURN void abort();
-#endif
-#if IN_KERNEL // TODO: see if we want in userspace
+#else
 NORETURN inline void abort() {
 	PANIC("abort");
 }
