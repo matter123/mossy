@@ -9,7 +9,7 @@ BreakBeforeBraces: Attach
 AllowShortBlocksOnASingleLine: true
 AllowShortIfStatementsOnASingleLine: false
 AllowShortLoopsOnASingleLine: true
-AllowShortFunctionsOnASingleLine: Inline
+AllowShortFunctionsOnASingleLine: true
 AllowShortBlocksOnASingleLine: true
 IndentCaseLabels: false
 CommentPragmas: .*Copyright.*

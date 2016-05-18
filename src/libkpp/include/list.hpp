@@ -16,6 +16,9 @@
 #ifndef __LIST_HPP
 #define __LIST_HPP
 /* NOTE: does not implement:
+    list(std::initalizer_list<T>)
+    operator=(std::initalizer_list<T>)
+    assign(std::initalizer_list<T>)
     merge
     splice
     remove
@@ -33,11 +36,15 @@ template <class T> class list {
 		U data;
 		node *prev;
 		node *next;
-		node(node<T> *p, node<T> *n) : prev(p), next(n) {}
-		node(U &&d, node<T> *p, node<T> *n) : prev(p), next(n) { data = std::move(d); }
+		const bool nullitem;
+		node(node<T> *p, node<T> *n) : prev(p), next(n), nullitem(p == n && p == nullptr) {}
+		node(U &&d, node<T> *p, node<T> *n) : prev(p), next(n), nullitem(false) {
+			data = std::move(d);
+		}
 	};
 	node<T> *_front;
 	node<T> *_back;
+	node<T> nullnode = node<T>(nullptr, nullptr);
 	size_t count;
 
   public:
@@ -52,8 +59,11 @@ template <class T> class list {
 		node<T> *current;
 
 	  public:
-		bool operator==(list_iterator rhs) { return this->current == rhs.current; }
-		bool operator!=(list_iterator rhs) { return !(*this == rhs); }
+		node<T> get() { return current; }
+		list_iterator() : current(nullptr) {}
+		list_iterator(node<T> node) { current = node; }
+		bool operator==(list_iterator rhs) const { return this->current == rhs.current; }
+		bool operator!=(list_iterator rhs) const { return !(*this == rhs); }
 		reference operator*() { return current->data; }
 		pointer operator->() { return std::addressof(current->data); }
 		list_iterator &operator++() {
@@ -71,8 +81,12 @@ template <class T> class list {
 		node<T> *current;
 
 	  public:
-		bool operator==(const_list_iterator rhs) { return this->current == rhs.current; }
-		bool operator!=(const_list_iterator rhs) { return !(*this == rhs); }
+		const node<T> get() const { return current; }
+		const_list_iterator() : current(nullptr) {}
+		const_list_iterator(node<T> node) { current = node; }
+		const_list_iterator(list_iterator i) : current(i.get()) {}
+		bool operator==(const_list_iterator rhs) const { return this->current == rhs.current; }
+		bool operator!=(const_list_iterator rhs) const { return !(*this == rhs); }
 		reference operator*() { return current->data; }
 		pointer operator->() { return std::addressof(current->data); }
 		const_list_iterator &operator++() {
@@ -89,115 +103,13 @@ template <class T> class list {
 	typedef std::reverse_iterator<iterator> reverse_iterator;
 	typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
-	explicit list() {
-		_front = new node<T>(nullptr, nullptr);
-		_back = _front;
-		count = 0;
-	}
-	explicit list(size_t c, const T &value) {
-		this->count = c;
-		_front = new node<T>(value, nullptr, nullptr);
-		c--;
-		node<T> *head = _front;
-		for(int i = 0; i < c; i++) {
-			head->next = new node<T>(value, head, nullptr);
-			head = head->next;
-		}
-		_back = head;
-		if(!_back->next) {
-			_back->next = new node<T>();
-			_back->next->prev = _back;
-		}
-	}
-	explicit list(size_t c) {
-		this->count = c;
-		_front = new node<T>();
-		c--;
-		node<T> *head = _front;
-		for(int i = 0; i < c; i++) {
-			head->next = new node<T>();
-			head->data();
-			head->next->prev = head;
-			head = head->next;
-		}
-		_back = head;
-		if(!_back->next) {
-			_back->next = new node<T>();
-			_back->next->prev = _back;
-		}
-	}
-	template <class InputIt> list(InputIt first, InputIt last) {
-		_front = new node<T>();
-		node<T> *head = _front;
-		for(; first < last; first++) {
-			head->next = new node<T>();
-			head->data = *first;
-			count++;
-			head->next->prev = head;
-			head = head->next;
-		}
-		_back = head;
-		if(!_back->next) {
-			_back->next = new node<T>();
-			_back->next->prev = _back;
-		}
-	}
-	list(const list &other) : list(other.cbegin(), other.cend()) {}
-	~list() {
-		node<T> *head = _front;
-		while(head != nullptr) {
-			node<T> temp = head;
-			head = head->next;
-			delete temp;
-		}
-	}
-	list &operator=(const list &other) {
-		clear();
-		auto head = _front;
-		for(auto i = other.begin(); i < other.end(); i++) {
-			head->data = *i;
-			head->next = new node<T>();
-			count++;
-			head->next->prev = head;
-			head = head->next;
-		}
-	}
-	list &operator=(list &&other) {
-		_front = other._front;
-		_back = other.back;
-		count = other.count;
-		other();
-	}
-	void assign(size_t c, const T &value) {
-		// set the first c nodes to value creating them if otherwise they would not exist
-		size_t left = c;
-		c = 0;
-		node<T> *head = _front;
-		while(left) {
-			head->data = value;
-			c++;
-			left--;
-			if(left && head->next == nullptr) {
-				head->next = new node<T>();
-				head->next->prev = head;
-			}
-			head = head->next;
-		}
-		if(c > count) {
-			_back = head;
-			count = c;
-		}
-		if(!_back->next) {
-			_back->next = new node<T>();
-			_back->next->prev = _back;
-		}
-	}
+	bool empty() { return !count; }
+	bool size() { return count; }
+	size_type max_size() { return SIZE_MAX / sizeof(node<T>); }
 	reference front() { return _front->data; }
 	const_reference front() const { return _front->data; }
-
 	reference back() { return _back->data; }
 	const_reference back() const { return _back->data; }
-
 	iterator begin() { return iterator(front()); }
 	const_iterator cbegin() { return const_iterator(front()); }
 	iterator end() { return iterator(_back->next); }
@@ -207,111 +119,185 @@ template <class T> class list {
 	reverse_iterator rend() { return reverse_iterator(begin()); }
 	const_reverse_iterator crend() { return const_reverse_iterator(cbegin()); }
 
-	bool empty() const { return _back == _front || count == 0; }
-
-	size_type size() const { return count; }
-	size_type max_size() const { return SIZE_MAX / sizeof(node<T>); }
-
-	void clear() {
-		node<T> *head = _front;
-		while(head != nullptr) {
-			node<T> temp = head;
-			head = head->next;
-			delete temp;
+  private:
+	node<T> &add_front() {
+		_front->prev = new node<T>(&nullnode, _front);
+		_front = _front->prev;
+		count++;
+		if(count == 1) {
+			_back = _front;
 		}
-		_front = _back = new node<T>();
+		return _front;
+	}
+	node<T> &add_back() {
+		_back->next = new node<T>(_back, &nullnode);
+		_back = _back->next;
+		count++;
+		if(count == 1) {
+			_front = _back;
+		}
+		return _back;
+	}
+	node<T> &add_before(iterator i) {
+		auto prev = i.get()->prev;
+		prev->next = new node<T>(prev, i.current);
+		i.get()->prev = prev->next;
+		count++;
+		return prev->next;
+	}
+	node<T> &add_after(iterator i) {
+		auto next = i.get()->next;
+		next->prev = new node<T>(i.current, next);
+		i.get()->next = next->prev;
+		count++;
+		return next->prev;
+	}
+
+  public:
+	void push_back(const T &value) { add_back()->data = value; }
+	void push_back(T &&value) { add_back()->data = std::move(value); }
+	void pop_back() {
+		_back = _back->prev;
+		count--;
+		delete _back->next;
+		_back->next = &nullnode;
+	}
+	template <class... Args> void emplace_back(Args &&... args) {
+		auto back = add_back();
+		back->data = new(std::addressof(back->data)) T(std::forward<Args>(args)...);
+	}
+
+	void push_front(const T &value) { add_front()->data = value; }
+	void push_front(T &&value) { add_front()->data = std::move(value); }
+	void pop_front() {
+		_front = _front->next;
+		count--;
+		delete _front->prev;
+		_front->prev = &nullnode;
+	}
+	template <class... Args> void emplace_front(Args &&... args) {
+		auto front = add_front();
+		front->data = new(std::addressof(front->data)) T(std::forward<Args>(args)...);
+	}
+	void clear() {
+		if(!count) {
+			return;
+		}
+		for(auto i = _front; i <= _back;) {
+			auto temp = i->next;
+			delete i;
+			i = temp;
+		}
 		count = 0;
 	}
 
-	void push_back(const T &value) {
-		_back->next->data = value;
-		_back = _back->next;
-		_back->next = new node<T>();
-		_back->next->prev = _back;
-		count++;
+	explicit list() : _front(&nullnode), _back(&nullnode), count(0) {}
+	list(size_type c, const T &value) {
+		for(size_t s = 0; s < c; s++) { push_back(value); }
 	}
-	void push_back(T &&value) {
-		_back->next->data = std::move(value);
-		_back = _back->next;
-		_back->next = new node<T>();
-		_back->next->prev = _back;
-		count++;
+	explicit list(size_type c) {
+		for(size_t s = 0; s < c; s++) { add_back(); }
 	}
-	template <class... Args> void emplace_back(Args &&... args) {
-		_back->next->data = new(std::addressof(_back->next->data)) T(std::forward<Args>(args)...);
-		_back = _back->next;
-		_back->next = new node<T>();
-		_back->next->prev = _back;
-		count++;
+	template <class InputIt> list(InputIt first, InputIt last) {
+		for(; first < last; first++) push_back(*first);
 	}
-	void pop_back() {
-		delete _back->next;
-		_back = _back->prev;
-		count--;
+	list(const list &other) : list(other.cbegin(), other.cend()) {}
+	list(list &&other) {
+		_front = other._front;
+		_back = other._back;
+		count = other.count;
+		other._front = &nullnode;
+		other._back = &nullnode;
+		other.count = 0;
+	}
+	~list() { clear(); }
+	list &operator=(const list &other) {
+		clear();
+		for(auto first = other.cbegin(); first < other.cend(); first++) push_back(*first);
+	};
+	list &operator=(list &&other) {
+		clear();
+		_front = other._front;
+		_back = other._back;
+		count = other.count;
+		other._front = &nullnode;
+		other._back = &nullnode;
+		other.count = 0;
 	}
 
-	void push_front(const T &value) {
-		_front->prev = new node<T>();
-		_front->prev->next = _front;
-		_front = _front->prev;
-		_front->data = value;
-		count++;
+	void assign(size_type c, const T &value) {
+		clear();
+		while(c) {
+			push_back(value);
+			c--;
+		}
 	}
-	void push_front(T &&value) {
-		_front->prev = new node<T>();
-		_front->prev->next = _front;
-		_front = _front->prev;
-		_front->data = std::move(value);
-		count++;
+	template <class InputIt> void assign(InputIt first, InputIt last) {
+		clear();
+		for(; first < last; first++) push_back(*first);
 	}
-	template <class... Args> void emplace_front(Args &&... args) {
-		_front->prev = new node<T>();
-		_front->prev->next = _front;
-		_front = _front->prev;
-		_front->data = new(std::addressof(_front->data)) T(std::forward<Args>(args)...);
-		count++;
+	iterator erase(const_iterator pos) {
+		auto ret = pos.get()->next;
+		pos.get()->prev->next = ret;
+		ret->prev = pos.get.prev();
+		delete pos.get();
+		count--;
+		return iterator(ret);
 	}
-	void pop_front() {
-		auto temp = _front;
-		_front = _front->next;
-		_front->prev = nullptr;
-		delete temp;
-	}
-	iterator insert(const_iterator pos, const T &value) {
-		auto prev = pos.current->prev;
-		prev->next = new node<T>();
-		prev->next->data = value;
-		prev->next->prev = prev;
-		prev->next->next = pos.current;
-		prev->next->next->prev = prev->next;
+	iterator erase(const_iterator first, const_iterator last) {
+		auto prev = first.get()->prev;
+		auto next = last.get();
+		prev->next = next;
+		next->prev = prev;
+		while(first < last) {
+			delete(first++).get();
+			count--;
+		}
+		return last;
 	}
 	void resize(size_type c) {
-		if(c > count) {
-			while(count != c) {
-				_back = _back->next;
-				_back->next = new node<T>();
-				_back->next->prev = _back;
-				count++;
-			}
-		} else if(c < count) {
-			while(count != c) { pop_back(); }
-		}
+		while(c > count) { add_back(); }
+		while(c < count) { pop_back(); }
 	}
 	void resize(size_type c, const value_type &value) {
-		if(c > count) {
-			while(count != c) { push_back(value); }
-		} else if(c < count) {
-			while(count != c) { pop_back(); }
-		}
-	}
-	void swap(list &other) {
-		auto tfront = other._front;
-		auto tback = other._back;
-		other._front = _front;
-		other._back = _back;
-		_front = tfront;
-		_back = tback;
+		while(c > count) { push_back(value); }
+		while(c < count) { pop_back(); }
 	}
 };
+template <class T> bool operator==(const list<T> &lhs, const list<T> &rhs) {
+	if(lhs.size() != rhs.size()) {
+		return false;
+	}
+	if(lhs.empty())
+		return true; // iterating over empty elements is not defined
+	for(auto it1 = lhs.begin(), it2 = rhs.begin(); it1 < lhs.end(); it1++, it2++) {
+		if(*it1 != *it2) {
+			return false;
+		}
+	}
+	return true;
+}
+
+template <class T> bool operator!=(const list<T> &lhs, const list<T> &rhs) { return !(lhs == rhs); }
+
+template <class T> bool operator<(const list<T> &lhs, const list<T> &rhs) {
+	if(rhs.empty())
+		return false;
+	if(lhs.empty())
+		return true;
+	return lexicographical_compare(lhs.cbegin(), lhs.cend(), rhs.cbegin(), rhs.cend());
+}
+
+template <class T> bool operator<=(const list<T> &lhs, const list<T> &rhs) { return !(lhs > rhs); }
+
+template <class T> bool operator>(const list<T> &lhs, const list<T> &rhs) {
+	if(lhs.empty())
+		return false;
+	if(rhs.empty())
+		return true;
+	return lexicographical_compare(rhs.cbegin(), rhs.cend(), lhs.cbegin(), lhs.cend());
+}
+
+template <class T> bool operator>=(const list<T> &lhs, const list<T> &rhs) { return !(lhs < rhs); }
 }
 #endif
