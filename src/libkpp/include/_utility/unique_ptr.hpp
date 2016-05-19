@@ -20,13 +20,20 @@
 #include <type_traits>
 #include <utility>
 namespace std {
-template <class T> class unique_ptr {
+template <class T, class Deleter = std::default_delete<T>> class unique_ptr {
+  public:
 	typedef T *pointer;
 	typedef T element_type;
+	typedef Deleter deleter_type;
+
+  private:
 	pointer elem;
+	deleter_type del;
 
   public:
 	pointer get() { return elem; }
+	Deleter &get_deleter() { return del; }
+	const Deleter &get_deleter() const { return del; }
 	pointer release() {
 		pointer temp(elem);
 		elem = nullptr;
@@ -35,19 +42,38 @@ template <class T> class unique_ptr {
 	void reset(pointer ptr = pointer()) {
 		pointer old(elem);
 		elem = ptr;
-		if(old != nullptr) {
-			delete old;
-		}
+		if(old != nullptr) { delete old; }
 	}
 	void swap(unique_ptr &other) {
 		pointer temp(elem);
+		Deleter deltemp(del);
 		elem = other.elem;
+		del = other.del;
 		other.elem = temp;
+		other.del = deltemp;
 	}
 	constexpr unique_ptr() : elem(nullptr) {}
 	constexpr unique_ptr(nullptr_t) : elem(nullptr){};
 	unique_ptr(pointer p) : elem(p){};
-	unique_ptr(unique_ptr &&u) : elem(u.release()){};
+	unique_ptr(pointer p,
+	           typename std::conditional<std::is_lvalue_reference<std::remove_const_t<Deleter>>::value, Deleter,
+	                                     typename std::add_lvalue_reference<const Deleter>::type>::type d) {
+		elem(p);
+		del = d;
+	}
+	unique_ptr(pointer p, typename std::conditional<std::is_lvalue_reference<std::remove_const_t<Deleter>>::value,
+	                                                typename std::add_rvalue_reference<Deleter>::type,
+	                                                typename std::add_rvalue_reference<Deleter>::type>::type d) {
+		elem(p);
+		del = std::move(d);
+	}
+	unique_ptr(unique_ptr &&u) : elem(u.release()) {
+		if(std::is_reference<Deleter>::value) {
+			del = u.get_deleter();
+		} else {
+			del = std::move(u.del);
+		}
+	};
 	~unique_ptr() { reset(); }
 	unique_ptr &operator=(unique_ptr &&rhs) {
 		reset(rhs.release());
@@ -77,17 +103,13 @@ template <class T> class unique_ptr<T[]> {
 	void reset(pointer ptr = pointer()) {
 		pointer old(elem);
 		elem = ptr;
-		if(old != nullptr) {
-			delete[] old;
-		}
+		if(old != nullptr) { delete[] old; }
 	}
 	template <class U> void reset(U) = delete;
 	void reset(std::nullptr_t) {
 		pointer old(elem);
 		elem = nullptr;
-		if(old != nullptr) {
-			delete[] old;
-		}
+		if(old != nullptr) { delete[] old; }
 	}
 	void swap(unique_ptr &other) {
 		pointer temp(elem);
@@ -135,42 +157,18 @@ template <class T1, class T2> bool operator>=(const unique_ptr<T1> &x, const uni
 template <class T1, class T2> bool operator>(const unique_ptr<T1> &x, const unique_ptr<T2> &y) {
 	return x.get() > y.get();
 }
-template <class T> bool operator==(const unique_ptr<T> &x, nullptr_t) {
-	return !x;
-}
-template <class T> bool operator==(nullptr_t, const unique_ptr<T> &x) {
-	return !x;
-}
-template <class T> bool operator!=(const unique_ptr<T> &x, nullptr_t) {
-	return !!x;
-}
-template <class T> bool operator!=(nullptr_t, const unique_ptr<T> &x) {
-	return !!x;
-}
-template <class T> bool operator<=(const unique_ptr<T> &x, nullptr_t) {
-	return x <= nullptr;
-}
-template <class T> bool operator<=(nullptr_t, const unique_ptr<T> &x) {
-	return nullptr <= x;
-}
-template <class T> bool operator>=(const unique_ptr<T> &x, nullptr_t) {
-	return x >= nullptr;
-}
-template <class T> bool operator>=(nullptr_t, const unique_ptr<T> &x) {
-	return nullptr >= x;
-}
-template <class T> bool operator<(const unique_ptr<T> &x, nullptr_t) {
-	return x < nullptr;
-}
-template <class T> bool operator<(nullptr_t, const unique_ptr<T> &x) {
-	return nullptr < x;
-}
-template <class T> bool operator>(const unique_ptr<T> &x, nullptr_t) {
-	return x > nullptr;
-}
-template <class T> bool operator>(nullptr_t, const unique_ptr<T> &x) {
-	return nullptr > x;
-}
+template <class T> bool operator==(const unique_ptr<T> &x, nullptr_t) { return !x; }
+template <class T> bool operator==(nullptr_t, const unique_ptr<T> &x) { return !x; }
+template <class T> bool operator!=(const unique_ptr<T> &x, nullptr_t) { return !!x; }
+template <class T> bool operator!=(nullptr_t, const unique_ptr<T> &x) { return !!x; }
+template <class T> bool operator<=(const unique_ptr<T> &x, nullptr_t) { return x <= nullptr; }
+template <class T> bool operator<=(nullptr_t, const unique_ptr<T> &x) { return nullptr <= x; }
+template <class T> bool operator>=(const unique_ptr<T> &x, nullptr_t) { return x >= nullptr; }
+template <class T> bool operator>=(nullptr_t, const unique_ptr<T> &x) { return nullptr >= x; }
+template <class T> bool operator<(const unique_ptr<T> &x, nullptr_t) { return x < nullptr; }
+template <class T> bool operator<(nullptr_t, const unique_ptr<T> &x) { return nullptr < x; }
+template <class T> bool operator>(const unique_ptr<T> &x, nullptr_t) { return x > nullptr; }
+template <class T> bool operator>(nullptr_t, const unique_ptr<T> &x) { return nullptr > x; }
 template <class T> struct hash<unique_ptr<T>> {
 	typedef typename hash<T>::result_type result_type;
 	typedef unique_ptr<T> argument_type;

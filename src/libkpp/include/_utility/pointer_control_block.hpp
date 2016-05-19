@@ -19,16 +19,20 @@
 #include <cstdlib>
 #include <type_traits>
 namespace std {
-template <class T> struct control_block {
+namespace details {
+
+template <class T, class Deleter = default_deleter<T>> struct control_block {
 #if __CPP17
 	typedef std::remove_extent_t<T> element_type;
 #else
 	typedef T element_type;
 #endif
 	element_type *pointer;
+	Deleter del;
 	std::size_t shared_count;
 	std::size_t weak_count;
-	control_block(element_type *ptr, std::size_t s_count, std::size_t w_count) {
+	control_block(element_type *ptr, std::size_t s_count, std::size_t w_count, Deleter &d = Deleter()) {
+		del = d;
 		pointer = ptr;
 		shared_count = s_count;
 		weak_count = w_count;
@@ -38,11 +42,11 @@ template <class T> struct control_block {
 	void grab() { shared_count++; }
 	void release() {
 		shared_count--;
-		if(!shared_count)
-			delete pointer;
+		if(!shared_count) del(pointer);
 	}
 	bool is_valid() { return shared_count; }
 	bool can_delete() { return !(shared_count || weak_count); }
 };
+}
 }
 #endif

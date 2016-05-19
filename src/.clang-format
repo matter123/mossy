@@ -1,5 +1,5 @@
 BasedOnStyle: LLVM
-ColumnLimit: 100
+ColumnLimit: 120
 BreakStringLiterals: false
 IndentWidth: 4
 TabWidth: 4
@@ -7,7 +7,7 @@ UseTab: ForIndentation
 MaxEmptyLinesToKeep: 2
 BreakBeforeBraces: Attach
 AllowShortBlocksOnASingleLine: true
-AllowShortIfStatementsOnASingleLine: false
+AllowShortIfStatementsOnASingleLine: true
 AllowShortLoopsOnASingleLine: true
 AllowShortFunctionsOnASingleLine: true
 AllowShortBlocksOnASingleLine: true

@@ -16,16 +16,18 @@
 #ifndef __SHARED_PTR_HPP
 #define __SHARED_PTR_HPP
 #include <_utility/pointer_control_block>
+#include <_utility/unique_ptr>
 #include <cstdlib>
 #include <type_traits>
 namespace std {
+template <class T> class weak_ptr;
 template <class T> class shared_ptr {
   public:
-	typedef typename std::control_block<T>::element_type element_type;
+	typedef typename details::control_block<T>::element_type element_type;
 
   private:
 	element_type *pointer;
-	control_block<T> *control;
+	details::control_block<T> *control;
 
   public:
 	constexpr shared_ptr() {
@@ -38,14 +40,56 @@ template <class T> class shared_ptr {
 	}
 	template <class Y> explicit shared_ptr(Y *ptr) {
 		pointer = ptr;
-		control = new control_block<T>(ptr, 1, 0);
+		control = new details::control_block<T>(ptr, 1, 0);
+		control->grab();
+	}
+	template <class Y, class Deleter> shared_ptr(Y *ptr, Deleter d) {
+		pointer = ptr;
+		control = new details::control_block<T>(ptr, 1, 0, d);
+		control->grab();
+	}
+	template <class Deleter> shared_ptr(std::nullptr_t ptr, Deleter d) {
+		pointer = ptr;
+		control = new details::control_block<T>(ptr, 1, 0, d);
 		control->grab();
 	}
 	template <class Y> shared_ptr(const shared_ptr<Y> &r, element_type *ptr) {
 		pointer = ptr;
 		control = r.control;
-		control->grab();
+		if(control) control->grab();
 	}
+	shared_ptr(const shared_ptr &r) {
+		pointer = r.pointer;
+		control = r.control;
+		if(control) control->grab();
+	}
+	template <class Y> shared_ptr(const shared_ptr<Y> &r) {
+		pointer = r.pointer;
+		control = r.control;
+		if(control) control->grab();
+	}
+	shared_ptr(shared_ptr &&r) {
+		pointer = r.pointer;
+		r.pointer = nullptr;
+		control = r.control;
+		r.control = nullptr;
+		// dont grab we are moving from
+	}
+	template <class Y> shared_ptr(shared_ptr<Y> &&r) {
+		pointer = r.pointer;
+		r.pointer = nullptr;
+		control = r.control;
+		r.control = nullptr;
+	}
+	template <class Y> explicit shared_ptr(const std::weak_ptr<Y> &r) {
+		pointer = r.pointer;
+		control = r.control;
+		if(control) {
+			if(!control->is_valid()) { abort(); }
+			control->grab();
+		}
+	}
+	template <class Y> shared_ptr(std::unique_ptr<Y, Deleter> &&r) {}
 };
 }
 #endif

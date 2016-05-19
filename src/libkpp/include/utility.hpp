@@ -15,20 +15,34 @@
 */
 #ifndef __UTILITY_HPP
 #define __UTILITY_HPP
+#include <_stdver.h>
 #include <type_traits>
 namespace std {
-template <class T>
-constexpr inline T &&forward(typename std::remove_reference<T>::type &t) noexcept {
+template <class T> constexpr inline T &&forward(typename std::remove_reference<T>::type &t) noexcept {
 	return static_cast<T &&>(t);
 }
 
-template <class T>
-constexpr inline T &&forward(typename std::remove_reference<T>::type &&t) noexcept {
+template <class T> constexpr inline T &&forward(typename std::remove_reference<T>::type &&t) noexcept {
 	static_assert(!std::is_lvalue_reference<T>::value, "Can not forward an rvalue as an lvalue.");
 	return static_cast<T &&>(t);
 }
 template <class T> constexpr typename std::remove_reference<T>::type &&move(T &&t) {
 	return static_cast<typename std::remove_reference<T>::type &&>(t);
 }
+template <class T> struct default_delete {
+	constexpr default_delete() = default;
+	template <class U> default_delete(const default_delete<U> &d);
+	void operator()(T *ptr) const { delete ptr; }
+};
+template <class T> struct default_delete<T[]> {
+	constexpr default_delete() = default;
+	template <class U> default_delete(const default_delete<U[]> &d);
+#if !(__CPP17)
+	void operator()(T *ptr) const { delete[] ptr; }
+	template <class U> void operator()(U *ptr) const = delete;
+#else
+	template <class U> void operator()(U *ptr) const { delete[] ptr; }
+#endif
+};
 }
 #endif
