@@ -42,7 +42,7 @@ template <class T, class Deleter = std::default_delete<T>> class unique_ptr {
 	void reset(pointer ptr = pointer()) {
 		pointer old(elem);
 		elem = ptr;
-		if(old != nullptr) { delete old; }
+		if(old != nullptr) { del(old); }
 	}
 	void swap(unique_ptr &other) {
 		pointer temp(elem);
@@ -73,14 +73,26 @@ template <class T, class Deleter = std::default_delete<T>> class unique_ptr {
 		} else {
 			del = std::move(u.del);
 		}
-	};
+	}
+	template <class U, class E> unique_ptr(unique_ptr<U, E> &&u) : elem(u.release()) {
+		if(std::is_reference<Deleter>::value) {
+			del = Deleter{u.get_deleter()};
+		} else {
+			del = Deleter{std::move(u.del)};
+		}
+	}
 	~unique_ptr() { reset(); }
 	unique_ptr &operator=(unique_ptr &&rhs) {
 		reset(rhs.release());
 		return *this;
 	}
-	template <class U> unique_ptr &operator=(unique_ptr<U> &&rhs) {
+	template <class U, class E> unique_ptr &operator=(unique_ptr<U, E> &&rhs) {
 		reset(rhs.release());
+		if(std::is_reference<Deleter>::value) {
+			del = Deleter{u.get_deleter()};
+		} else {
+			del = Deleter{std::move(u.del)};
+		}
 		return *this;
 	}
 	unique_ptr &operator=(nullptr_t) { reset(); }
@@ -88,13 +100,20 @@ template <class T, class Deleter = std::default_delete<T>> class unique_ptr {
 	typename std::add_lvalue_reference_t<T> operator*() const { return *elem; }
 	pointer operator->() const { return elem; }
 };
-template <class T> class unique_ptr<T[]> {
+template <class T, class Deleter> class unique_ptr<T[], Deleter> {
+  public:
 	typedef T *pointer;
 	typedef T element_type;
+	typedef Deleter deleter_type;
+
+  private:
 	pointer elem;
+	deleter_type del;
 
   public:
 	pointer get() { return elem; }
+	Deleter &get_deleter() { return del; }
+	const Deleter &get_deleter() const { return del; }
 	pointer release() {
 		pointer temp(elem);
 		elem = nullptr;
@@ -103,13 +122,13 @@ template <class T> class unique_ptr<T[]> {
 	void reset(pointer ptr = pointer()) {
 		pointer old(elem);
 		elem = ptr;
-		if(old != nullptr) { delete[] old; }
+		if(old != nullptr) { del(old); }
 	}
 	template <class U> void reset(U) = delete;
 	void reset(std::nullptr_t) {
 		pointer old(elem);
 		elem = nullptr;
-		if(old != nullptr) { delete[] old; }
+		if(old != nullptr) { del(old); }
 	}
 	void swap(unique_ptr &other) {
 		pointer temp(elem);
@@ -119,14 +138,44 @@ template <class T> class unique_ptr<T[]> {
 	constexpr unique_ptr() : elem(nullptr) {}
 	constexpr unique_ptr(nullptr_t) : elem(nullptr){};
 	unique_ptr(pointer p) : elem(p){};
-	unique_ptr(unique_ptr &&u) : elem(u.release()){};
+	unique_ptr(pointer p,
+	           typename std::conditional<std::is_lvalue_reference<std::remove_const_t<Deleter>>::value, Deleter,
+	                                     typename std::add_lvalue_reference<const Deleter>::type>::type d) {
+		elem(p);
+		del = d;
+	}
+	unique_ptr(pointer p, typename std::conditional<std::is_lvalue_reference<std::remove_const_t<Deleter>>::value,
+	                                                typename std::add_rvalue_reference<Deleter>::type,
+	                                                typename std::add_rvalue_reference<Deleter>::type>::type d) {
+		elem(p);
+		del = std::move(d);
+	}
+	unique_ptr(unique_ptr &&u) : elem(u.release()) {
+		if(std::is_reference<Deleter>::value) {
+			del = u.get_deleter();
+		} else {
+			del = std::move(u.del);
+		}
+	}
+	template <class U, class E> unique_ptr(unique_ptr<U, E> &&u) : elem(u.release()) {
+		if(std::is_reference<Deleter>::value) {
+			del = Deleter{u.get_deleter()};
+		} else {
+			del = Deleter{std::move(u.del)};
+		}
+	}
 	~unique_ptr() { reset(); }
 	unique_ptr &operator=(unique_ptr &&rhs) {
 		reset(rhs.release());
 		return *this;
 	}
-	template <class U> unique_ptr &operator=(unique_ptr<U> &&rhs) {
+	template <class U, class E> unique_ptr &operator=(unique_ptr<U, E> &&rhs) {
 		reset(rhs.release());
+		if(std::is_reference<Deleter>::value) {
+			del = Deleter{u.get_deleter()};
+		} else {
+			del = Deleter{std::move(u.del)};
+		}
 		return *this;
 	}
 	unique_ptr &operator=(nullptr_t) { reset(); }
