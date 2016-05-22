@@ -32,18 +32,133 @@ template <class T> class weak_ptr {
 	details::control_block<T> *control;
 
   public:
-	constexpr weak_ptr();
-	weak_ptr(const weak_ptr &r);
-	template <class Y> weak_ptr(const weak_ptr<Y> &r);
-	template <class Y> weak_ptr(const std::shared_ptr<Y> &r);
-	weak_ptr(weak_ptr &&r);
-	template <class Y> weak_ptr(weak_ptr<Y> &&r);
-	~weak_ptr();
-	weak_ptr &operator=(const weak_ptr &r);
-	template <class Y> weak_ptr &operator=(const weak_ptr<Y> &r);
-	template <class Y> weak_ptr &operator=(const shared_ptr<Y> &r);
-	weak_ptr &operator=(weak_ptr &&r);
-	template <class Y> weak_ptr &operator=(weak_ptr<Y> &&r);
+	constexpr weak_ptr() : pointer(nullptr), control(&details::nullptrctrl) {}
+	weak_ptr(const weak_ptr &r) : pointer(r.pointer), control(r.control) { control->grab_weak(); }
+	template <class Y> weak_ptr(const weak_ptr<Y> &r) : pointer(r.pointer), control(r.control) { control->grab_weak(); }
+	template <class Y> weak_ptr(const std::shared_ptr<Y> &r); // NOTE: NEED TO IMP
+	weak_ptr(weak_ptr &&r) : pointer(r.pointer), control(r.control) {
+		r.pointer = nullptr;
+		r.control = &details::nullptrctrl;
+	}
+	template <class Y> weak_ptr(weak_ptr<Y> &&r) : pointer(r.pointer), control(r.control) {
+		control->grab_weak();
+		r.reset();
+	}
+	~weak_ptr() { reset(); }
+	weak_ptr &operator=(const weak_ptr &r) {
+		pointer = r.pointer;
+		control = r.control;
+		control->grab_weak();
+	}
+	template <class Y> weak_ptr &operator=(const weak_ptr<Y> &r) {
+		pointer = r.pointer;
+		control = r.control;
+		control->grab_weak();
+	}
+	template <class Y> weak_ptr &operator=(const shared_ptr<Y> &r); // NOTE: NEED TO IMP
+	weak_ptr &operator=(weak_ptr &&r) {
+		pointer = r.pointer;
+		control = r.control;
+		control->grab_weak();
+		r.reset();
+	}
+	template <class Y> weak_ptr &operator=(weak_ptr<Y> &&r) {
+		pointer = r.pointer;
+		control = r.control;
+		control->grab_weak();
+		r.reset();
+	}
+	void reset() {
+		control.release_weak();
+		if(control->can_delete()) delete control;
+		control = &details::nullptrctrlelement_type * pointer;
+		Deleter del;
+		std::size_t shared_count;
+		std::size_t weak_count;
+		;
+	}
+	void swap(weak_ptr &r) {
+		auto tp = pointer;
+		auto tc = control;
+		pointer = r.pointer;
+		control = r.control;
+		r.pointer = tp;
+		r.control = tc;
+	}
+	long use_count() const { return control->shared_count; }
+	bool expired() const { return !control->is_valid(); }
+	std::shared_ptr<T> lock() const;                                      // NOTE: NEED TO IMP
+	template <class Y> bool owner_before(const weak_ptr<Y> &other) const; // NOTE: no idea what these do
+	template <class Y> bool owner_before(const std::shared_ptr<Y> &other) const;
+};
+
+template <class T> class shared_ptr {
+  public:
+	typedef typename details::control_block<T>::element_type element_type;
+
+  private:
+	element_type *pointer;
+	details::control_block<T> *control;
+
+  public:
+	constexpr weak_ptr() : pointer(nullptr), control(&details::nullptrctrl) {}
+	weak_ptr(const weak_ptr &r) : pointer(r.pointer), control(r.control) { control->grab_weak(); }
+	template <class Y> weak_ptr(const weak_ptr<Y> &r) : pointer(r.pointer), control(r.control) { control->grab_weak(); }
+	template <class Y> weak_ptr(const std::shared_ptr<Y> &r); // NOTE: NEED TO IMP
+	weak_ptr(weak_ptr &&r) : pointer(r.pointer), control(r.control) {
+		r.pointer = nullptr;
+		r.control = &details::nullptrctrl;
+	}
+	template <class Y> weak_ptr(weak_ptr<Y> &&r) : pointer(r.pointer), control(r.control) {
+		control->grab_weak();
+		r.reset();
+	}
+	~weak_ptr() { reset(); }
+	weak_ptr &operator=(const weak_ptr &r) {
+		pointer = r.pointer;
+		control = r.control;
+		control->grab_weak();
+	}
+	template <class Y> weak_ptr &operator=(const weak_ptr<Y> &r) {
+		pointer = r.pointer;
+		control = r.control;
+		control->grab_weak();
+	}
+	template <class Y> weak_ptr &operator=(const shared_ptr<Y> &r); // NOTE: NEED TO IMP
+	weak_ptr &operator=(weak_ptr &&r) {
+		pointer = r.pointer;
+		control = r.control;
+		control->grab_weak();
+		r.reset();
+	}
+	template <class Y> weak_ptr &operator=(weak_ptr<Y> &&r) {
+		pointer = r.pointer;
+		control = r.control;
+		control->grab_weak();
+		r.reset();
+	}
+	void reset() {
+		control.release_weak();
+		if(control->can_delete()) delete control;
+		control = &details::nullptrctrlelement_type * pointer;
+		Deleter del;
+		std::size_t shared_count;
+		std::size_t weak_count;
+		;
+	}
+	void swap(weak_ptr &r) {
+		auto tp = pointer;
+		auto tc = control;
+		pointer = r.pointer;
+		control = r.control;
+		r.pointer = tp;
+		r.control = tc;
+	}
+	long use_count() const { return control->shared_count; }
+	bool expired() const { return !control->is_valid(); }
+	std::shared_ptr<T> lock() const;                                      // NOTE: NEED TO IMP
+	template <class Y> bool owner_before(const weak_ptr<Y> &other) const; // NOTE: no idea what these do
+	template <class Y> bool owner_before(const std::shared_ptr<Y> &other) const;
 };
 }
 #endif

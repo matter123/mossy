@@ -31,22 +31,37 @@ template <class T, class Deleter = default_deleter<T>> struct control_block {
 	Deleter del;
 	std::size_t shared_count;
 	std::size_t weak_count;
-	control_block(element_type *ptr, std::size_t s_count, std::size_t w_count, Deleter &d = Deleter()) {
+	control_block(element_type *ptr Deleter &d = Deleter()) {
 		del = d;
 		pointer = ptr;
-		shared_count = s_count;
-		weak_count = w_count;
+		shared_count = 0;
+		weak_count = 0;
 	}
 	void grab_weak() { weak_count++; }
 	void release_weak() { weak_count--; }
 	void grab() { shared_count++; }
 	void release() {
 		shared_count--;
-		if(!shared_count) del(pointer);
+		if(!shared_count && pointer) del(pointer);
 	}
 	bool is_valid() { return shared_count; }
 	bool can_delete() { return !(shared_count || weak_count); }
 };
+template <class Deleter = default_deleter<nullptr_t>> struct control_block<nullptr_t> {
+	typedef nullptr_t element_type;
+	element_type *pointer = nullptr;
+	Deleter del{};
+	std::size_t shared_count = 0;
+	std::size_t weak_count = 0;
+	control_block(element_type *ptr Deleter &d = Deleter()) {}
+	void grab_weak() {}
+	void release_weak() {}
+	void grab() {}
+	void release() {}
+	bool is_valid() { return false; }
+	bool can_delete() { return false; }
+};
+control_block<nullptr_t> nullptrctrl(nullptr);
 }
 }
 #endif
