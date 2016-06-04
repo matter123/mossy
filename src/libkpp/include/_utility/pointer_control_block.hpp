@@ -18,10 +18,11 @@
 #include <_stdver.h>
 #include <cstdlib>
 #include <type_traits>
+#include <utility>
 namespace std {
 namespace details {
 
-template <class T, class Deleter = default_deleter<T>> struct control_block {
+template <class T, class Deleter = default_delete<T>> struct control_block {
 #if __CPP17
 	typedef std::remove_extent_t<T> element_type;
 #else
@@ -31,7 +32,7 @@ template <class T, class Deleter = default_deleter<T>> struct control_block {
 	Deleter del;
 	std::size_t shared_count;
 	std::size_t weak_count;
-	control_block(element_type *ptr Deleter &d = Deleter()) {
+	control_block(element_type *ptr, Deleter d = Deleter()) {
 		del = d;
 		pointer = ptr;
 		shared_count = 0;
@@ -47,13 +48,8 @@ template <class T, class Deleter = default_deleter<T>> struct control_block {
 	bool is_valid() { return shared_count; }
 	bool can_delete() { return !(shared_count || weak_count); }
 };
-template <class Deleter = default_deleter<nullptr_t>> struct control_block<nullptr_t> {
-	typedef nullptr_t element_type;
-	element_type *pointer = nullptr;
-	Deleter del{};
-	std::size_t shared_count = 0;
-	std::size_t weak_count = 0;
-	control_block(element_type *ptr Deleter &d = Deleter()) {}
+template <class Deleter = default_delete<nullptr_t>> struct null_control_block : control_block<nullptr_t, Deleter> {
+	null_control_block(nullptr_t *ptr, Deleter d = Deleter()) : control_block<nullptr_t, Deleter>(ptr, d) {}
 	void grab_weak() {}
 	void release_weak() {}
 	void grab() {}
@@ -61,7 +57,7 @@ template <class Deleter = default_deleter<nullptr_t>> struct control_block<nullp
 	bool is_valid() { return false; }
 	bool can_delete() { return false; }
 };
-control_block<nullptr_t> nullptrctrl(nullptr);
+null_control_block<> nullptrctrl(nullptr);
 }
 }
 #endif

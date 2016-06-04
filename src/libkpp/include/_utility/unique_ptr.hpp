@@ -89,9 +89,9 @@ template <class T, class Deleter = std::default_delete<T>> class unique_ptr {
 	template <class U, class E> unique_ptr &operator=(unique_ptr<U, E> &&rhs) {
 		reset(rhs.release());
 		if(std::is_reference<Deleter>::value) {
-			del = Deleter{u.get_deleter()};
+			del = Deleter{rhs.get_deleter()};
 		} else {
-			del = Deleter{std::move(u.del)};
+			del = Deleter{std::move(rhs.del)};
 		}
 		return *this;
 	}
@@ -172,9 +172,9 @@ template <class T, class Deleter> class unique_ptr<T[], Deleter> {
 	template <class U, class E> unique_ptr &operator=(unique_ptr<U, E> &&rhs) {
 		reset(rhs.release());
 		if(std::is_reference<Deleter>::value) {
-			del = Deleter{u.get_deleter()};
+			del = Deleter{rhs.get_deleter()};
 		} else {
-			del = Deleter{std::move(u.del)};
+			del = Deleter{std::move(rhs.del)};
 		}
 		return *this;
 	}

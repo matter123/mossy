@@ -69,13 +69,9 @@ template <class T> class weak_ptr {
 		r.reset();
 	}
 	void reset() {
-		control.release_weak();
+		control->release_weak();
 		if(control->can_delete()) delete control;
-		control = &details::nullptrctrlelement_type * pointer;
-		Deleter del;
-		std::size_t shared_count;
-		std::size_t weak_count;
-		;
+		control = &details::nullptrctrl;
 	}
 	void swap(weak_ptr &r) {
 		auto tp = pointer;
@@ -101,17 +97,18 @@ template <class T> class shared_ptr {
 	details::control_block<T> *control;
 
   public:
-	constexpr weak_ptr() : pointer(nullptr), control(&details::nullptrctrl) {}
-	weak_ptr(const weak_ptr &r) : pointer(r.pointer), control(r.control) { control->grab_weak(); }
-	template <class Y> weak_ptr(const weak_ptr<Y> &r) : pointer(r.pointer), control(r.control) { control->grab_weak(); }
-	template <class Y> weak_ptr(const std::shared_ptr<Y> &r); // NOTE: NEED TO IMP
-	weak_ptr(weak_ptr &&r) : pointer(r.pointer), control(r.control) {
-		r.pointer = nullptr;
-		r.control = &details::nullptrctrl;
+	constexpr shared_ptr() : pointer(nullptr), control(&details::nullptrctrl) {}
+	constexpr shared_ptr(nullptr_t) : pointer(nullptr), control(&details::nullptrctrl) {}
+	template <class Y> explicit shared_ptr(Y *ptr) : pointer(ptr), control(new details::control_block(ptr)) {
+		control->grab();
 	}
-	template <class Y> weak_ptr(weak_ptr<Y> &&r) : pointer(r.pointer), control(r.control) {
-		control->grab_weak();
-		r.reset();
+	template <class Y, class Deleter>
+	shared_ptr(Y *ptr, Deleter d) : pointer(ptr), control(new details::control_block(ptr, d)) {
+		control->grab();
+	}
+	template <class Deleter>
+	shared_ptr(std::nullptr_t ptr, Deleter d) : pointer(ptr), control(new details::control_block(ptr, d)) {
+		control->grab();
 	}
 	~weak_ptr() { reset(); }
 	weak_ptr &operator=(const weak_ptr &r) {
@@ -138,13 +135,9 @@ template <class T> class shared_ptr {
 		r.reset();
 	}
 	void reset() {
-		control.release_weak();
+		control->release_weak();
 		if(control->can_delete()) delete control;
 		control = &details::nullptrctrlelement_type * pointer;
-		Deleter del;
-		std::size_t shared_count;
-		std::size_t weak_count;
-		;
 	}
 	void swap(weak_ptr &r) {
 		auto tp = pointer;
