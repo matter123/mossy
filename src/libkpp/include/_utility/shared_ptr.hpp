@@ -20,16 +20,16 @@
 #include <cstdlib>
 #include <type_traits>
 namespace std {
-template <class T> class weak_ptr;
-template <class T> class shared_ptr;
+template <class T, class D = default_delete<nullptr_t>> class weak_ptr;
+template <class T, class D = default_delete<nullptr_t>> class shared_ptr;
 
-template <class T> class weak_ptr {
+template <class T, class D = default_delete<nullptr_t>> class weak_ptr {
   public:
 	typedef typename details::control_block<T>::element_type element_type;
 
   private:
 	element_type *pointer;
-	details::control_block<T> *control;
+	details::control_block<T, D> *control;
 
   public:
 	constexpr weak_ptr() : pointer(nullptr), control(&details::nullptrctrl) {}
@@ -88,7 +88,7 @@ template <class T> class weak_ptr {
 	template <class Y> bool owner_before(const std::shared_ptr<Y> &other) const;
 };
 
-template <class T> class shared_ptr {
+template <class T, class D = default_delete<nullptr_t>> class shared_ptr {
   public:
 	typedef typename details::control_block<T>::element_type element_type;
 
