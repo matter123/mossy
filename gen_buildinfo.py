@@ -11,18 +11,18 @@ status=subprocess.Popen(
     ["git", "status", "-b","--porcelain"], stdout=subprocess.PIPE).communicate()[0]\
     .decode('unicode_escape')
 branch=status.splitlines()[0].split(" ")[1].split("...")[0]
-todate=subprocess.call(["git", "diff-index","--cached","--quiet","HEAD","--"]) is 0
 
 compiler_info=subprocess.Popen(sys.argv[1]+" --version", shell=True, stdout=subprocess.PIPE)\
 	.communicate()[0].decode("unicode_escape").splitlines()[0].split(" ")
 compiler_ver=compiler_info[2]
 compiler=compiler_info[0]
 
-diff = None
+diff=subprocess.Popen(["git", "diff", "HEAD","--"], stdout=subprocess.PIPE).communicate()[0]
+todate = diff == b''
+
 if todate:
 	diff=subprocess.Popen(["git", "diff", "HEAD^..HEAD"], stdout=subprocess.PIPE).communicate()[0]
-else:
-	diff=subprocess.Popen(["git", "diff", "HEAD","--"], stdout=subprocess.PIPE).communicate()[0]
+
 
 name, formula = salt.make_salt(hashlib.sha1(diff).hexdigest())
 if not todate:
