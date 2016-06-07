@@ -57,7 +57,7 @@ template <class Deleter = default_delete<nullptr_t>> struct null_control_block :
 	bool is_valid() { return false; }
 	bool can_delete() { return false; }
 };
-null_control_block<> nullptrctrl(nullptr);
+template <class D> null_control_block<D> nullptrctrl(nullptr);
 }
 }
 #endif

@@ -14,6 +14,7 @@
 	limitations under the License.
 */
 #include <stdlib.h>
+const uint64_t __stack_chk_guard = 0xD5000AFF0DCD12D5;
 NORETURN void __stack_chk_fail() {
 #if IN_LIBC
 	abort();
