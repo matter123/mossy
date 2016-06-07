@@ -6,8 +6,9 @@ sysroot/usr/include/*
 !sysroot/usr/include/.keep_folder
 *.a
 docs/html
-.build_number
+.buildinfo
 build_info
+src/kernel/stdlib/buildinfo.cpp
 *.out
 !serial.out
 .clang_complete

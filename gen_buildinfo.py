@@ -1,11 +1,8 @@
-#format should look like:
-#export BUILD_INFO=-DUNIXTIME=0000000 ...
-import time
-import datetime
-import getpass
+import hashlib
 import subprocess
 import salt
 import sys
+
 
 #git info
 revision=subprocess.Popen(["git", "rev-parse", "HEAD"], stdout=subprocess.PIPE).communicate()[0]\
@@ -21,7 +18,13 @@ compiler_info=subprocess.Popen(sys.argv[1]+" --version", shell=True, stdout=subp
 compiler_ver=compiler_info[2]
 compiler=compiler_info[0]
 
-name, formula = salt.make_salt(revision)
+diff = None
+if todate:
+	diff=subprocess.Popen(["git", "diff", "HEAD^..HEAD"], stdout=subprocess.PIPE).communicate()[0]
+else:
+	diff=subprocess.Popen(["git", "diff", "HEAD","--"], stdout=subprocess.PIPE).communicate()[0]
+
+name, formula = salt.make_salt(hashlib.sha1(diff).hexdigest())
 if not todate:
 	name = name + " (dev)"
 

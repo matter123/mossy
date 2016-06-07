@@ -1,8 +1,8 @@
 #pragma GCC diagnostic ignored "-Wunused-variable"
-const char *BUILD_REV="02a5e71ff979ff4ac784375a7a7c5042eb612206";
+const char *BUILD_REV="fa544877348ef62f8fa74bf49834dce822873d4d";
 const char *BUILD_BRANCH="master";
-const bool  BUILD_DEV=true;
-const char *BUILD_NAME="Curium Carbide (dev)";
-const char *BUILD_FORMULA="Cm₄C₃";
+const bool  BUILD_DEV=false;
+const char *BUILD_NAME="Rutherfordium Dichromate";
+const char *BUILD_FORMULA="Rf(Cr₂O₇)₄";
 const char *COMPILER="clang";
 const char *COMPILER_VER="3.8.0";
