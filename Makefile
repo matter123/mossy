@@ -1,11 +1,13 @@
 all: run
 .PHONY: all headers libs kernel iso clean build_info run
 
-build_info:
-	python3 gen_buildinfo.py
-
--include build_info
 -include env_info
+
+build_info:
+	@python3 gen_buildinfo.py $(CPP)
+	@touch build_info
+-include build_info
+
 export VERBOSE ?=0
 ifeq ($(VERBOSE), 1)
 	export V=
