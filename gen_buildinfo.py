@@ -2,6 +2,7 @@ import hashlib
 import subprocess
 import salt
 import sys
+import os
 
 
 #git info
@@ -29,12 +30,13 @@ if not todate:
 	name = name + " (dev)"
 
 print("building "+name)
-
-with open('.buildinfo','r') as build:
-	if build.readline() == name:
-		sys.exit()
+if os.path.exists('.buildinfo'):
+	with open('.buildinfo','r+') as build:
+		if build.readline() == name:
+			sys.exit()
 
 with open('src/kernel/stdlib/buildinfo.cpp','w+') as bi:
+	bi.write("#pragma GCC push \"-Wunused-variable\"\n")
 	bi.write("#pragma GCC diagnostic ignored \"-Wunused-variable\"\n")
 	bi.write("const char *BUILD_REV=\""+revision+"\";\n")
 	bi.write("const char *BUILD_BRANCH=\""+branch+"\";\n")
@@ -43,6 +45,7 @@ with open('src/kernel/stdlib/buildinfo.cpp','w+') as bi:
 	bi.write("const char *BUILD_FORMULA=\""+formula+"\";\n")
 	bi.write("const char *COMPILER=\""+compiler+"\";\n")
 	bi.write("const char *COMPILER_VER=\""+compiler_ver+"\";\n")
+	bi.write("#pragma GCC pop \"-Wunused-variable\"\n")
 
 with open('.buildinfo','w+') as build:
 	build.write(name)
