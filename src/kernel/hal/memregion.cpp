@@ -21,17 +21,15 @@
 namespace hal {
 mem_regs *remove_invalid(mem_regs *regs) {
 	for(size_t s = 0; s < regs->tag_count; s++) {
-		if(regs->regions[s].end <= regs->regions[s].start || regs->regions[s].type.to_u64() != 0) {
-			memmove((void *)(regs->regions + s), (void *)(regs->regions + s + 1),
-			        regs->tag_count - s - 1);
+		if(regs->regions[s].end <= regs->regions[s].start || regs->regions[s].type.to_u64() == 0) {
+			memmove((void *)(regs->regions + s), (void *)(regs->regions + s + 1), regs->tag_count - s - 1);
 			regs->tag_count--;
 		}
 	}
 	return regs;
 }
 mem_regs *sort(mem_regs *regs) {
-	if(regs->tag_count <= 1)
-		return regs;
+	if(regs->tag_count <= 1) return regs;
 	mem_region temp;
 	bool has_swap;
 	do {
@@ -55,15 +53,83 @@ mem_regs *sort(mem_regs *regs) {
 	} while(has_swap);
 	return regs;
 }
+/*
+case 1
+0x1000-0x1FFF 0x100
+0x2000-0x2FFF 0x200
+---
+0x1000-0x1FFF 0x100
+0x2000-0x2FFF 0x200
+
+case 2(I)
+0x1000-0x27FF 0x200
+0x2000-0x2FFF 0x100
+---
+0x1000-0x27FF 0x200
+0x2800-0x2FFF 0x100
+
+case 2(II)
+0x1000-0x27FF 0x100
+0x2000-0x2FFF 0x200
+---
+0x1000-0x1FFF 0x100
+0x2000-0x2FFF 0x200
+
+case 3(I)
+0x1000-0x2FFF 0x200
+0x1400-0x27FF 0x100
+---
+0x1000-0x2FFF 0x200
+0x2FFF-0x2FFF 0x100
+
+case 3(II)
+0x1000-0x2FFF 0x100
+0x2000-0x27FF 0x200
+---
+0x1000-0x1FFF 0x100
+0x2000-0x27FF 0x200
+0x2800-0x2FFF 0x100
+ */
 mem_regs *split(mem_regs *regs) {
-	if(regs->tag_count <= 1)
-		return regs;
+	if(regs->tag_count <= 1) return regs;
+	for(int i = 1; i < regs->tag_count; i++) {
+		// case 1: no contested space
+		if(regs->regions[i - 1].end < regs->regions[i].start) { continue; }
+		// case 2: partially contested space
+		if(regs->regions[i - 1].end < regs->regions[i].end) {
+			// left has contested space
+			if(regs->regions[i - 1].type.is_more_restrictive(regs->regions[i].type)) {
+				regs->regions[i].start = regs->regions[i - 1].end + 1;
+				continue;
+			}
+			// right takes space
+			regs->regions[i - 1].end = regs->regions[i].start - 1;
+			continue;
+		}
+		// case 3: fully contested space
+		// case 3(i): no right area
+		if(regs->regions[i - 1].end == regs->regions[i].end) {
+			// case 3(ii): same size
+			if(regs->regions[i - 1].start == regs->regions[i].start) {
+				// prev gets contested space
+				if(regs->regions[i - 1].type.is_more_restrictive(regs->regions[i].type)) {
+					regs->regions[i].start = regs->regions[i].end;
+					continue;
+				}
+				// cur gets contested space
+				regs->regions[i - 1].end = regs->regions[i - 1].start;
+				continue;
+			}
+		}
+	}
+	return regs;
+}
+mem_regs *oldsplit(mem_regs *regs) {
+	if(regs->tag_count <= 1) return regs;
 	mem_region *t_regions = (mem_region *)w_malloc(sizeof(mem_region));
 	int ecount = 0;
 	for(int i = 1; i < regs->tag_count; i++) {
-		if(ecount == 0) {
-			memcpy(&t_regions[ecount++], &regs->regions[0], sizeof(mem_region));
-		}
+		if(ecount == 0) { memcpy(&t_regions[ecount++], &regs->regions[0], sizeof(mem_region)); }
 		// case 1
 		if(t_regions[ecount - 1].end < regs->regions[i].start) {
 			memcpy(&t_regions[ecount++], &regs->regions[i], sizeof(mem_region));
@@ -75,16 +141,12 @@ mem_regs *split(mem_regs *regs) {
 			if(t_regions[ecount - 1].type.is_more_restrictive(regs->regions[i].type)) {
 				memcpy(&t_regions[ecount++], &regs->regions[i], sizeof(mem_region));
 				t_regions[ecount - 1].start = t_regions[ecount - 2].end + 1;
-				if(t_regions[ecount - 1].end <= t_regions[ecount - 1].start) {
-					ecount--;
-				}
+				if(t_regions[ecount - 1].end <= t_regions[ecount - 1].start) { ecount--; }
 				continue;
 			}
 			// right takes conflict
 			t_regions[ecount - 1].end = regs->regions[i].start - 1;
-			if(t_regions[ecount - 1].end <= t_regions[ecount - 1].start) {
-				ecount--;
-			}
+			if(t_regions[ecount - 1].end <= t_regions[ecount - 1].start) { ecount--; }
 			memcpy(&t_regions[ecount++], &regs->regions[i], sizeof(mem_region));
 			continue;
 		}
@@ -116,13 +178,11 @@ mem_regs *page_align(mem_regs *regs) {
 				regs->regions[i].new_start &= START_MASK;
 			} else {
 				if(!regs->regions[i].type.can_shrink()) {
-					Log(LOG_ERROR, "[MEMMAP]",
-					    "region cannot shrink nor grow and start is not page aligned %d",
+					Log(LOG_ERROR, "[MEMMAP]", "region cannot shrink nor grow and start is not page aligned %d",
 					    regs->regions[i].type.to_u64());
 				}
 				if(!regs->regions[i].type.can_adjust_start()) {
-					Log(LOG_ERROR, "[MEMMAP]",
-					    "region cannot have start adjusted, but start is not page aligned %d",
+					Log(LOG_ERROR, "[MEMMAP]", "region cannot have start adjusted, but start is not page aligned %d",
 					    regs->regions[i].type.to_u64());
 				}
 				regs->regions[i].new_start &= START_MASK;
@@ -132,9 +192,7 @@ mem_regs *page_align(mem_regs *regs) {
 				regs->regions[i - 1].new_end = (regs->regions[i].new_start - 1);
 			}
 		}
-		if(regs->regions[i].new_end == 0x100000000) {
-			regs->regions[i].new_end -= 1;
-		}
+		if(regs->regions[i].new_end == 0x100000000) { regs->regions[i].new_end -= 1; }
 		if((regs->regions[i].new_end & 0xFFF) != 0xFFF) {
 			uintptr_t old_end = regs->regions[i].new_end;
 			if(regs->regions[i].type.can_grow()) {
@@ -156,13 +214,11 @@ mem_regs *page_align(mem_regs *regs) {
 }
 mem_type ne;
 mem_regs *fill(mem_regs *regs) {
-	if(regs->tag_count <= 1)
-		return regs;
+	if(regs->tag_count <= 1) return regs;
 	ne.no_exist = true;
 	for(int i = 1; i < regs->tag_count; i++) {
 		if((regs->regions[i].new_start - 1) > regs->regions[i - 1].new_end) {
-			memmove((void *)(regs->regions + i + 1), (void *)(regs->regions + i),
-			        regs->tag_count - i - 1);
+			memmove((void *)(regs->regions + i + 1), (void *)(regs->regions + i), regs->tag_count - i - 1);
 			regs->tag_count++;
 			regs->regions[i].new_start = regs->regions[i - 1].new_end + 1;
 			regs->regions[i].new_end = regs->regions[i + 1].new_start - 1;
