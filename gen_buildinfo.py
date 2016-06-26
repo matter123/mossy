@@ -36,16 +36,13 @@ if os.path.exists('.buildinfo'):
 			sys.exit()
 
 with open('src/kernel/stdlib/buildinfo.cpp','w+') as bi:
-	bi.write("#pragma GCC push \"-Wunused-variable\"\n")
-	bi.write("#pragma GCC diagnostic ignored \"-Wunused-variable\"\n")
-	bi.write("const char *BUILD_REV=\""+revision+"\";\n")
-	bi.write("const char *BUILD_BRANCH=\""+branch+"\";\n")
-	bi.write("const bool  BUILD_DEV="+str(not todate).lower()+";\n")
-	bi.write("const char *BUILD_NAME=\""+name+"\";\n")
-	bi.write("const char *BUILD_FORMULA=\""+formula+"\";\n")
-	bi.write("const char *COMPILER=\""+compiler+"\";\n")
-	bi.write("const char *COMPILER_VER=\""+compiler_ver+"\";\n")
-	bi.write("#pragma GCC pop \"-Wunused-variable\"\n")
+	bi.write("__attribute__ ((unused,used))\nconst char *BUILD_REV=\""+revision+"\";\n")
+	bi.write("__attribute__ ((unused,used))\nconst char *BUILD_BRANCH=\""+branch+"\";\n")
+	bi.write("__attribute__ ((unused,used))\nconst bool  BUILD_DEV="+str(not todate).lower()+";\n")
+	bi.write("__attribute__ ((unused,used))\nconst char *BUILD_NAME=\""+name+"\";\n")
+	bi.write("__attribute__ ((unused,used))\nconst char *BUILD_FORMULA=\""+formula+"\";\n")
+	bi.write("__attribute__ ((unused,used))\nconst char *COMPILER=\""+compiler+"\";\n")
+	bi.write("__attribute__ ((unused,used))\nconst char *COMPILER_VER=\""+compiler_ver+"\";\n")
 
 with open('.buildinfo','w+') as build:
 	build.write(name)

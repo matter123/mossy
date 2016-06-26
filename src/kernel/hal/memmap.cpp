@@ -65,21 +65,43 @@ void memmap::fix() {
 	// page align new regions
 	// remove any 0 sized entries
 	// fill remianing address space
+	this->regs = *update(&this->regs);
 	this->regs = *remove_invalid(&this->regs);
+	Log(LOG_DEBUG, "[MEMMAP]", "pre sort");
+	for(size_t s = 0; s < this->regs.tag_count; s++) {
+		hal::mem_region *r = &this->regs.regions[s];
+		Log(LOG_DEBUG, "[MEMMAP]", "%.16p  %.16p  %#.4X", r->new_start, r->new_end, r->type.to_u64());
+	}
 	this->regs = *sort(&this->regs);
+	Log(LOG_DEBUG, "[MEMMAP]", "pre split");
+	for(size_t s = 0; s < this->regs.tag_count; s++) {
+		hal::mem_region *r = &this->regs.regions[s];
+		Log(LOG_DEBUG, "[MEMMAP]", "%.16p  %.16p  %#.4X", r->new_start, r->new_end, r->type.to_u64());
+	}
 	this->regs = *split(&this->regs);
+	Log(LOG_DEBUG, "[MEMMAP]", "pre page align");
+	for(size_t s = 0; s < this->regs.tag_count; s++) {
+		hal::mem_region *r = &this->regs.regions[s];
+		Log(LOG_DEBUG, "[MEMMAP]", "%.16p  %.16p  %#.4X", r->new_start, r->new_end, r->type.to_u64());
+	}
 	this->regs = *page_align(&this->regs);
+	Log(LOG_DEBUG, "[MEMMAP]", "pre remove invalid");
+	for(size_t s = 0; s < this->regs.tag_count; s++) {
+		hal::mem_region *r = &this->regs.regions[s];
+		Log(LOG_DEBUG, "[MEMMAP]", "%.16p  %.16p  %#.4X", r->new_start, r->new_end, r->type.to_u64());
+	}
 	this->regs = *remove_invalid(&this->regs);
+	Log(LOG_DEBUG, "[MEMMAP]", "pre fill");
+	for(size_t s = 0; s < this->regs.tag_count; s++) {
+		hal::mem_region *r = &this->regs.regions[s];
+		Log(LOG_DEBUG, "[MEMMAP]", "%.16p  %.16p  %#.4X", r->new_start, r->new_end, r->type.to_u64());
+	}
 	this->regs = *fill(&this->regs);
 }
 
-int memmap::region_count() {
-	return this->regs.tag_count;
-}
+int memmap::region_count() { return this->regs.tag_count; }
 mem_region *memmap::get_region(int index) {
-	if(index < 0 || index >= this->regs.tag_count) {
-		return nullptr;
-	}
+	if(index < 0 || index >= this->regs.tag_count) { return nullptr; }
 	return &this->regs.regions[index];
 }
 void memmap::add_region_hook(region_hook *rhook) {
@@ -91,9 +113,7 @@ void memmap::add_region(uint64_t start, uint64_t end, mem_type type) {
 	this->regs.regions[this->regs.tag_count].end = end;
 	this->regs.regions[this->regs.tag_count].type = type;
 	this->regs.tag_count++;
-	if(done) {
-		fix();
-	}
+	if(done) { fix(); }
 }
 
 region_hook::region_hook(memmap &mmap, void (*rhook)(memmap *mem)) {
