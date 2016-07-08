@@ -36,6 +36,7 @@ bool memmap::init() {
 	}
 	// for the kernel
 	this->regs.tag_count = 1;
+	this->regs.regions = reinterpret_cast<mem_region *>(w_malloc(sizeof(mem_region), 16));
 	mem_type kmem;
 	kmem.kernel = true;
 	this->regs.regions[0].start = KERNEL_VMA + KERNEL_LMA;
@@ -50,53 +51,28 @@ bool memmap::init() {
 		current->add_region_hook(this);
 		current = current->next;
 	}
-	fix();
-	for(size_t s = 0; s < this->regs.tag_count; s++) {
-		hal::mem_region *r = &this->regs.regions[s];
-		Log(LOG_DEBUG, "[MEMMAP]", "%.16p  %.16p  %#.4X", r->start, r->end, r->type.to_u64());
-	}
-	done = true;
-	return true;
-}
-void memmap::fix() {
+	uintptr_t old = reinterpret_cast<uintptr_t>(this->regs.regions);
 	// preliminary sanity check
 	// make address ordered
 	// split in that have conflicts
 	// page align new regions
 	// remove any 0 sized entries
 	// fill remianing address space
-	this->regs = *update(&this->regs);
 	this->regs = *remove_invalid(&this->regs);
-	Log(LOG_DEBUG, "[MEMMAP]", "pre sort");
-	for(size_t s = 0; s < this->regs.tag_count; s++) {
-		hal::mem_region *r = &this->regs.regions[s];
-		Log(LOG_DEBUG, "[MEMMAP]", "%.16p  %.16p  %#.4X", r->new_start, r->new_end, r->type.to_u64());
-	}
 	this->regs = *sort(&this->regs);
-	Log(LOG_DEBUG, "[MEMMAP]", "pre split");
-	for(size_t s = 0; s < this->regs.tag_count; s++) {
-		hal::mem_region *r = &this->regs.regions[s];
-		Log(LOG_DEBUG, "[MEMMAP]", "%.16p  %.16p  %#.4X", r->new_start, r->new_end, r->type.to_u64());
-	}
 	this->regs = *split(&this->regs);
-	Log(LOG_DEBUG, "[MEMMAP]", "pre page align");
-	for(size_t s = 0; s < this->regs.tag_count; s++) {
-		hal::mem_region *r = &this->regs.regions[s];
-		Log(LOG_DEBUG, "[MEMMAP]", "%.16p  %.16p  %#.4X", r->new_start, r->new_end, r->type.to_u64());
-	}
 	this->regs = *page_align(&this->regs);
-	Log(LOG_DEBUG, "[MEMMAP]", "pre remove invalid");
-	for(size_t s = 0; s < this->regs.tag_count; s++) {
-		hal::mem_region *r = &this->regs.regions[s];
-		Log(LOG_DEBUG, "[MEMMAP]", "%.16p  %.16p  %#.4X", r->new_start, r->new_end, r->type.to_u64());
-	}
 	this->regs = *remove_invalid(&this->regs);
-	Log(LOG_DEBUG, "[MEMMAP]", "pre fill");
+	this->regs = *fill(&this->regs);
+	// reclaim space used by the fixiing
+	memmove((void *)old, this->regs.regions, sizeof(mem_region) * this->regs.tag_count);
+	this->regs.regions = reinterpret_cast<mem_region *>(old);
+	wksp_reset((pointer_t)old + sizeof(mem_region) * this->regs.tag_count);
 	for(size_t s = 0; s < this->regs.tag_count; s++) {
 		hal::mem_region *r = &this->regs.regions[s];
-		Log(LOG_DEBUG, "[MEMMAP]", "%.16p  %.16p  %#.4X", r->new_start, r->new_end, r->type.to_u64());
+		Log(LOG_DEBUG, "[MEMMAP]", "%.16p  %.16p  %#.4X", r->start, r->end, r->type.to_u64());
 	}
-	this->regs = *fill(&this->regs);
+	return true;
 }
 
 int memmap::region_count() { return this->regs.tag_count; }
@@ -108,12 +84,23 @@ void memmap::add_region_hook(region_hook *rhook) {
 	rhook->next = this->next;
 	this->next = rhook;
 }
-void memmap::add_region(uint64_t start, uint64_t end, mem_type type) {
-	this->regs.regions[this->regs.tag_count].start = start;
-	this->regs.regions[this->regs.tag_count].end = end;
-	this->regs.regions[this->regs.tag_count].type = type;
-	this->regs.tag_count++;
-	if(done) { fix(); }
+void memmap::add_regions(int count) {
+	size_t new_size = (this->regs.tag_count + count + this->add_count) * sizeof(mem_region);
+	void *space = w_malloc(new_size, 16);
+	memcpy(space, (void *)this->regs.regions, new_size);
+	this->regs.regions = reinterpret_cast<mem_region *>(space);
+	this->add_count += count;
+}
+bool memmap::add_region(uint64_t start, uint64_t end, mem_type type) {
+	if(this->add_count) {
+		this->regs.regions[this->regs.tag_count].start = start;
+		this->regs.regions[this->regs.tag_count].end = end;
+		this->regs.regions[this->regs.tag_count].type = type;
+		this->regs.tag_count++;
+		this->add_count--;
+		return true;
+	}
+	return false;
 }
 
 region_hook::region_hook(memmap &mmap, void (*rhook)(memmap *mem)) {
@@ -140,6 +127,7 @@ void add_phys_multiboot(memmap *mem) {
 	types[3].avil = true;
 	types[3].firmware = true;
 	types[4].save_on_hib = true;
+	mem->add_regions(tag_count);
 	// convert from multiboot_mmap_ent to mem_region
 	for(size_t s = 0; s < tag_count; s++) {
 		multiboot_mmap_ent ent = mmap_tag->entries[s];

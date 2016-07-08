@@ -15,6 +15,7 @@
 */
 #include <sys/scheduler.h>
 #include <sys/threadstacks.h>
+#include <hal/hal.h>
 #include <arch/int.h>
 #include <string.h>
 thread_info *ringbuffer[64];
@@ -25,20 +26,24 @@ extern "C" uint64_t __stack_chk_guard;
 
 uint32_t next_task_id = 0;
 
-uint32_t get_next_task_id() {
-	return __sync_add_and_fetch(&next_task_id, 1);
-}
-uint8_t fpu_control[16];
-bool fpu_ctrl_saved = false;
-void yield() {
-	asm("xorq %%rax, %%rax\n\
-	    int $0xC0"
-	    :
-	    :
-	    : "rax");
-}
+void idle_thread() { asm("hlt"); }
+
+uint32_t get_next_task_id() { return __sync_add_and_fetch(&next_task_id, 1); }
+// uint8_t fpu_control[16];
+bool initalized = false;
 void yield(uint32_t thread_id) {
-	asm("int $0xC0" ::"a"(thread_id));
+	if(initalized) asm("int $0xC0" ::"a"(thread_id));
+}
+void yield() { yield(0); }
+void wait(uintptr_t object) {
+	get_current_thread_info()->block_on = object;
+	if(initalized) yield();
+}
+void release(uintptr_t object) {
+	if(initalized) {
+		enter_critical();
+		asm("int $0xC3" ::"a"(object));
+	}
 }
 void add_task(void *func, void *context) {
 	thread_info *info = get_next_stack();
@@ -51,9 +56,11 @@ void add_task(void *func, void *context) {
 	task->rip = reinterpret_cast<uint64_t>(func);
 	task->rsp = reinterpret_cast<uint64_t>(top);
 	task->rdi = reinterpret_cast<uint64_t>(context);
-	task->rflags = 0x200086;
+	task->rflags = 0x200286;
 	task->cs = 0x8;
 	task->ss = 0x10;
+	task->fs = 0x10;
+	task->gs = 0x10;
 	info->kinterrupt = task;
 	asm volatile(" fxsave %0; " ::"m"(info->sse_save));
 	ringbuffer[rear_idx++ % 64] = info;
@@ -61,6 +68,7 @@ void add_task(void *func, void *context) {
 }
 void init_scheduler() {
 	install_JT1(0xC0, &C0_handler);
+	initalized = true;
 }
 extern "C" cpu_state *get_next(cpu_state *current) {
 	thread_info *info = get_current_thread_info();
@@ -79,8 +87,10 @@ extern "C" cpu_state *get_next(cpu_state *current) {
 		// do idle
 		PANIC("ready queue is empty");
 	} else {
-		info = ringbuffer[front_idx++ % 64];
-		front_idx %= 64;
+		do {
+			info = ringbuffer[front_idx++ % 64];
+			front_idx %= 64;
+		} while(info->state != thread_info::WAITING);
 		cpu_state *temp = info->kinterrupt;
 		info->kinterrupt = 0;
 		info->state = thread_info::RUNNING;

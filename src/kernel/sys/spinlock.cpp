@@ -1,17 +1,16 @@
-#include <sys/spinlock.h>
+#include <sys/sync.h>
+#include <memory>
 #include <stdlib.h>
 spinlock::spinlock() {
-	lock=(int volatile *)malloc(sizeof(int));
+	this->l = 0;
+	this->lock = std::addressof(this->l);
 }
 void spinlock::aquire() {
-	while(!__sync_bool_compare_and_swap(this->lock,0,1)) {
-		 asm volatile ("pause");
+	while(!__sync_bool_compare_and_swap(this->lock, 0, 1)) {
+		// P6 can accidently mark as memory error and slow down, adding pause fixes this
+		asm volatile("pause");
 	}
 }
-void spinlock::release() {
-	__sync_lock_release(this->lock);
-}
+void spinlock::release() { __sync_lock_release(this->lock); }
 
-bool spinlock::check() {
-	return *lock!=0;
-}
+bool spinlock::check() { return this->l == 0; }

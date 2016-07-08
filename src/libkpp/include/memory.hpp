@@ -17,7 +17,8 @@
 #define __MEMORY_HPP
 #include <cstddef>
 
-#include <_utility/unique_ptr>
+#include <_memory/shared_ptr>
+#include <_memory/unique_ptr>
 namespace std {
 template <class T> T *addressof(T &arg) {
 	return reinterpret_cast<T *>(&const_cast<char &>(reinterpret_cast<const volatile char &>(arg)));

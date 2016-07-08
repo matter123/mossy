@@ -21,6 +21,7 @@
 #include <hal/memmap.h>
 #include <hal/multiboot.h>
 #include <arch/int.h>
+#include <arch/lapic.h>
 #include <arch/paging.h>
 #include <acpi/acpi.h>
 #include <cpuid.h>
@@ -30,7 +31,7 @@
 void test_task(char *letter) {
 	while(true) {
 		puts(letter);
-		yield();
+		// yield();
 	}
 }
 extern "C" thread_info *init_exec(hal::multiboot_header *mboot) {
@@ -57,11 +58,14 @@ extern "C" thread_info *init_exec(hal::multiboot_header *mboot) {
 	thread_info *info = get_next_stack(); // get task for main thread to reside in
 	return info;
 }
+extern void *C1_handler;
 extern "C" void exec() {
 	Log(LOG_DEBUG, "[INIT  ]", "reached exec");
 	setup_kernel_thread_info();
-	AcpiInitializeSubsystem();
+	// AcpiInitializeSubsystem();
+	AcpiOsInitialize();
 	AcpiInitializeTables(nullptr, 0, true);
+	initalize_lapic();
 	init_scheduler();
 	add_task((void *)test_task, (void *)"A");
 	add_task((void *)test_task, (void *)"B");
@@ -89,7 +93,10 @@ extern "C" void exec() {
 	add_task((void *)test_task, (void *)"X");
 	add_task((void *)test_task, (void *)"Y");
 	add_task((void *)test_task, (void *)"Z");
+	install_JT1(0xC1, &C1_handler);
+	set_lapic_timer(LAPIC_TIMER_MODE_PERIODIC, LAPIC_TIMER_DIVIDE_16_VALUE, 0xC1, 32 * 128);
+	asm("sti");
 	asm("xchg %bx, %bx");
-	while(true) yield();
+	while(true) Log(LOG_INFO, "[INIT  ]", "idle task!");
 	panic("reached end");
 }

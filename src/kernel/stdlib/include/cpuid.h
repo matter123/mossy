@@ -22,9 +22,7 @@ __attribute__((unused)) static inline void cpuid(int code, uint32_t *a, uint32_t
 /** issue a complete request, storing general registers output as a string
  */
 __attribute__((unused)) static inline int cpuid_string(int code, uint32_t where[4]) {
-	asm volatile("cpuid"
-	             : "=a"(*where), "=b"(*(where + 1)), "=c"(*(where + 2)), "=d"(*(where + 3))
-	             : "a"(code));
+	asm volatile("cpuid" : "=a"(*where), "=b"(*(where + 1)), "=c"(*(where + 2)), "=d"(*(where + 3)) : "a"(code));
 	return (int)where[0];
 }
 
@@ -53,4 +51,10 @@ __attribute__((unused)) static inline uint32_t ind(uint16_t port) {
 	uint32_t ret;
 	asm volatile("inl %1, %0" : "=a"(ret) : "Nd"(port));
 	return ret;
+}
+__attribute__((unused)) static inline void wrmsr(uint32_t msr, uint32_t lo, uint32_t hi) {
+	asm volatile("wrmsr" : : "a"(lo), "d"(hi), "c"(msr));
+}
+__attribute__((unused)) static inline void rdmsr(uint32_t msr, uint32_t *lo, uint32_t *hi) {
+	asm volatile("rdmsr" : "=a"(*lo), "=d"(*hi) : "c"(msr));
 }

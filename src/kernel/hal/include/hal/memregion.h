@@ -18,18 +18,13 @@
 namespace hal {
 struct mem_region {
 	uint64_t start;
-	uint64_t new_start;
 	uint64_t end;
-	uint64_t new_end;
 	mem_type type;
-	void (*callback)(mem_region *);
-} PACKED;
+};
 struct mem_regs {
-	mem_region regions[84];
+	mem_region *regions;
 	uint64_t tag_count;
 };
-static_assert(sizeof(mem_regs) <= 0x1000, "decrease the number of regions");
-mem_regs *update(mem_regs *regs, bool dir = true);
 mem_regs *remove_invalid(mem_regs *regs);
 mem_regs *sort(mem_regs *regs);
 mem_regs *split(mem_regs *regs);

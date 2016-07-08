@@ -14,6 +14,8 @@
 	limitations under the License.
 */
 #pragma once
+#include <sys/sync.h>
+extern remutex vga_mutex;
 void putc(char c);
 void puts(const char *s);
-void printf(const char *fmt,...);
+void printf(const char *fmt, ...);

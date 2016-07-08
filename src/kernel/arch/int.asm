@@ -201,10 +201,30 @@ C0_handler:
 	call get_next
 	mov rsp, rax
 	sse_save_loc
-	xchg bx, bx
 	fxrstor [rax]
 	pop_x64
 	add rsp, 24
+	iretq
+
+[GLOBAL C1_handler]
+[EXTERN lapic_eoi]
+C1_handler:
+	pop rax
+	push_x64
+	sse_save_loc
+	fxsave [rax]
+	cld
+	mov rdi, rsp
+	call get_next
+	mov rsp, rax
+	sse_save_loc
+	fxrstor [rax]
+	pop_x64
+	add rsp, 24
+	push rax
+	mov rax, 0xFFFFFEDFBFF000B0
+	mov dword [rax], 0
+	pop rax
 	iretq
 [GLOBAL exc_arr]
 ALIGN 64

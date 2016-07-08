@@ -19,4 +19,16 @@ void idle();
 void halt();
 void enable_interrupts();
 void disable_interrupts();
+
+#define enter_critical()           \
+	do {                           \
+		hal::disable_interrupts(); \
+		__sync_synchronize();      \
+	} while(0)
+
+#define leave_critical()          \
+	do {                          \
+		__sync_synchronize();     \
+		hal::enable_interrupts(); \
+	} while(0)
 }
