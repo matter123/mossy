@@ -34,6 +34,11 @@ template <class T> struct default_delete {
 	template <class U> default_delete(const default_delete<U> &d);
 	void operator()(T *ptr) const { delete ptr; }
 };
+template <> struct default_delete<nullptr_t *> {
+	constexpr default_delete() = default;
+	template <class U> default_delete(const default_delete<U> &d);
+	void operator()(nullptr_t *ptr) const {}
+};
 template <class T> struct default_delete<T[]> {
 	constexpr default_delete() = default;
 	template <class U> default_delete(const default_delete<U[]> &d);

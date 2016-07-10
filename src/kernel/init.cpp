@@ -18,6 +18,7 @@
 #include <sys/scheduler.h>
 #include <sys/threadstacks.h>
 #include <hal/commandline.h>
+#include <hal/hal.h>
 #include <hal/memmap.h>
 #include <hal/multiboot.h>
 #include <arch/int.h>
@@ -26,6 +27,7 @@
 #include <acpi/acpi.h>
 #include <cpuid.h>
 #include <logger.h>
+#include <memory>
 #include <stdlib.h>
 #include <vga_text.h>
 void test_task(char *letter) {
@@ -59,6 +61,23 @@ extern "C" thread_info *init_exec(hal::multiboot_header *mboot) {
 	return info;
 }
 extern void *C1_handler;
+
+void shared_ptr_test() {
+	class test {
+	  public:
+		test() { printf("%s\n", "test constructed"); }
+		~test() { printf("%s\n", "test deconstructed"); }
+		void print() {
+			static int num = 0;
+			printf("test print: %d\n", num++);
+		}
+	};
+	std::shared_ptr<test> test_ptr(new test());
+	test_ptr->print();
+	(*test_ptr).print();
+	// should fall out of scope now
+}
+
 extern "C" void exec() {
 	Log(LOG_DEBUG, "[INIT  ]", "reached exec");
 	setup_kernel_thread_info();
@@ -67,36 +86,8 @@ extern "C" void exec() {
 	AcpiInitializeTables(nullptr, 0, true);
 	initalize_lapic();
 	init_scheduler();
-	add_task((void *)test_task, (void *)"A");
-	add_task((void *)test_task, (void *)"B");
-	add_task((void *)test_task, (void *)"C");
-	add_task((void *)test_task, (void *)"D");
-	add_task((void *)test_task, (void *)"E");
-	add_task((void *)test_task, (void *)"F");
-	add_task((void *)test_task, (void *)"G");
-	add_task((void *)test_task, (void *)"H");
-	add_task((void *)test_task, (void *)"I");
-	add_task((void *)test_task, (void *)"J");
-	add_task((void *)test_task, (void *)"K");
-	add_task((void *)test_task, (void *)"L");
-	add_task((void *)test_task, (void *)"M");
-	add_task((void *)test_task, (void *)"N");
-	add_task((void *)test_task, (void *)"O");
-	add_task((void *)test_task, (void *)"P");
-	add_task((void *)test_task, (void *)"Q");
-	add_task((void *)test_task, (void *)"R");
-	add_task((void *)test_task, (void *)"S");
-	add_task((void *)test_task, (void *)"T");
-	add_task((void *)test_task, (void *)"U");
-	add_task((void *)test_task, (void *)"V");
-	add_task((void *)test_task, (void *)"W");
-	add_task((void *)test_task, (void *)"X");
-	add_task((void *)test_task, (void *)"Y");
-	add_task((void *)test_task, (void *)"Z");
 	install_JT1(0xC1, &C1_handler);
 	set_lapic_timer(LAPIC_TIMER_MODE_PERIODIC, LAPIC_TIMER_DIVIDE_16_VALUE, 0xC1, 32 * 128);
-	asm("sti");
-	asm("xchg %bx, %bx");
-	while(true) Log(LOG_INFO, "[INIT  ]", "idle task!");
-	panic("reached end");
+	hal::enable_interrupts();
+	Log(LOG_ERROR, "[INIT  ]", "reached end");
 }

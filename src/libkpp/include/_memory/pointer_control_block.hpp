@@ -41,21 +41,25 @@ template <class T, class Deleter = default_delete<T>> struct control_block {
 	void grab_weak() { weak_count++; }
 	void release_weak() { weak_count--; }
 	void grab() { shared_count++; }
-	void release() {
+	virtual void release() {
 		shared_count--;
+
 		if(!shared_count && pointer) del(pointer);
 	}
 	bool is_valid() { return shared_count; }
 	bool can_delete() { return !(shared_count || weak_count); }
+	virtual ~control_block() {}
 };
-template <class Deleter = default_delete<nullptr_t>> struct null_control_block : control_block<nullptr_t, Deleter> {
-	null_control_block(nullptr_t *ptr, Deleter d = Deleter()) : control_block<nullptr_t, Deleter>(ptr, d) {}
+template <class Deleter = default_delete<nullptr_t>>
+struct null_control_block : control_block<decltype(nullptr), Deleter> {
+	null_control_block(nullptr_t ptr, Deleter d = Deleter()) : control_block<nullptr_t, Deleter>(nullptr, d) {}
 	void grab_weak() {}
 	void release_weak() {}
 	void grab() {}
-	void release() {}
+	virtual void release() {}
 	bool is_valid() { return false; }
 	bool can_delete() { return false; }
+	virtual ~null_control_block() {}
 };
 template <class D> null_control_block<D> nullptrctrl(nullptr);
 }
