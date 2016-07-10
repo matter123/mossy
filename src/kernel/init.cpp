@@ -89,5 +89,6 @@ extern "C" void exec() {
 	install_JT1(0xC1, &C1_handler);
 	set_lapic_timer(LAPIC_TIMER_MODE_PERIODIC, LAPIC_TIMER_DIVIDE_16_VALUE, 0xC1, 32 * 128);
 	hal::enable_interrupts();
+	shared_ptr_test();
 	Log(LOG_ERROR, "[INIT  ]", "reached end");
 }
