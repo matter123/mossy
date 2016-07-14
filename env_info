@@ -1,3 +1,5 @@
 export CC:=clang --target=x86_64-elf
 export CPP:=clang++ --target=x86_64-elf
+#export CC:=/usr/bin/../lib/clang/ccc-analyzer
+#export CPP:=/usr/bin/../lib/clang/c++-analyzer
 export AS:=nasm

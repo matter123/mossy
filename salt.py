@@ -102,7 +102,7 @@ cations = [
 anions = [
     ('Hydride', 	'H',	1),
     ('Fluoride', 	'F',	1),
-    ('Cgloride', 	'Cl',	1),
+    ('Chloride', 	'Cl',	1),
     ('Bromide', 	'Br',	1),
     ('Iodide',	 	'I',	1),
     ('Oxide',	 	'O',	2),

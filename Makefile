@@ -33,6 +33,8 @@ sysroot/usr/lib/libk: libs
 sysroot/usr/lib/libkpp: libs
 sysroot/usr/lib/libacpica: libs
 libs: headers
+	@echo $(CC)
+	@echo $(CPP)
 	$(MAKE) -C src/libc
 	$(MAKE) -C src/libkpp
 	$(MAKE) -C src/libacpica
