@@ -38,9 +38,7 @@ template <class T> class list {
 		node *next;
 		const bool nullitem;
 		node(node<T> *p, node<T> *n) : prev(p), next(n), nullitem(p == n && p == nullptr) {}
-		node(U &&d, node<T> *p, node<T> *n) : prev(p), next(n), nullitem(false) {
-			data = std::move(d);
-		}
+		node(U &&d, node<T> *p, node<T> *n) : prev(p), next(n), nullitem(false) { data = std::move(d); }
 	};
 	node<T> *_front;
 	node<T> *_back;
@@ -111,31 +109,31 @@ template <class T> class list {
 	reference back() { return _back->data; }
 	const_reference back() const { return _back->data; }
 	iterator begin() { return iterator(front()); }
-	const_iterator cbegin() { return const_iterator(front()); }
+	const_iterator begin() const { return const_iterator(front()); }
+	const_iterator cbegin() const { return const_iterator(front()); }
 	iterator end() { return iterator(_back->next); }
-	const_iterator cend() { return const_iterator(_back->next); }
+	const_iterator end() const { return const_iterator(_back->next); }
+	const_iterator cend() const { return const_iterator(_back->next); }
 	reverse_iterator rbegin() { return reverse_iterator(end()); }
-	const_reverse_iterator crbegin() { return const_reverse_iterator(cend()); }
+	const_reverse_iterator rbegin() const { return reverse_iterator(end()); }
+	const_reverse_iterator crbegin() const { return const_reverse_iterator(cend()); }
 	reverse_iterator rend() { return reverse_iterator(begin()); }
-	const_reverse_iterator crend() { return const_reverse_iterator(cbegin()); }
+	const_reverse_iterator rend() const { return const_reverse_iterator(cbegin()); }
+	const_reverse_iterator crend() const { return const_reverse_iterator(cbegin()); }
 
   private:
 	node<T> &add_front() {
 		_front->prev = new node<T>(&nullnode, _front);
 		_front = _front->prev;
 		count++;
-		if(count == 1) {
-			_back = _front;
-		}
+		if(count == 1) { _back = _front; }
 		return _front;
 	}
 	node<T> &add_back() {
 		_back->next = new node<T>(_back, &nullnode);
 		_back = _back->next;
 		count++;
-		if(count == 1) {
-			_front = _back;
-		}
+		if(count == 1) { _front = _back; }
 		return _back;
 	}
 	node<T> &add_before(iterator i) {
@@ -180,9 +178,7 @@ template <class T> class list {
 		front->data = new(std::addressof(front->data)) T(std::forward<Args>(args)...);
 	}
 	void clear() {
-		if(!count) {
-			return;
-		}
+		if(!count) { return; }
 		for(auto i = _front; i <= _back;) {
 			auto temp = i->next;
 			delete i;
@@ -265,15 +261,10 @@ template <class T> class list {
 	}
 };
 template <class T> bool operator==(const list<T> &lhs, const list<T> &rhs) {
-	if(lhs.size() != rhs.size()) {
-		return false;
-	}
-	if(lhs.empty())
-		return true; // iterating over empty elements is not defined
+	if(lhs.size() != rhs.size()) { return false; }
+	if(lhs.empty()) return true; // iterating over empty elements is not defined
 	for(auto it1 = lhs.begin(), it2 = rhs.begin(); it1 < lhs.end(); it1++, it2++) {
-		if(*it1 != *it2) {
-			return false;
-		}
+		if(*it1 != *it2) { return false; }
 	}
 	return true;
 }
@@ -281,20 +272,16 @@ template <class T> bool operator==(const list<T> &lhs, const list<T> &rhs) {
 template <class T> bool operator!=(const list<T> &lhs, const list<T> &rhs) { return !(lhs == rhs); }
 
 template <class T> bool operator<(const list<T> &lhs, const list<T> &rhs) {
-	if(rhs.empty())
-		return false;
-	if(lhs.empty())
-		return true;
+	if(rhs.empty()) return false;
+	if(lhs.empty()) return true;
 	return lexicographical_compare(lhs.cbegin(), lhs.cend(), rhs.cbegin(), rhs.cend());
 }
 
 template <class T> bool operator<=(const list<T> &lhs, const list<T> &rhs) { return !(lhs > rhs); }
 
 template <class T> bool operator>(const list<T> &lhs, const list<T> &rhs) {
-	if(lhs.empty())
-		return false;
-	if(rhs.empty())
-		return true;
+	if(lhs.empty()) return false;
+	if(rhs.empty()) return true;
 	return lexicographical_compare(rhs.cbegin(), rhs.cend(), lhs.cbegin(), lhs.cend());
 }
 

@@ -13,15 +13,15 @@
 	See the License for the specific language governing permissions and
 	limitations under the License.
 */
-#ifndef __VECTOR_HPP
-#define __VECTOR_HPP
+#ifndef __VECTOR_INTEGRAL_HPP
+#define __VECTOR_INTEGRAL_HPP
 #include <algorithm>
 #include <cstddef>
 #include <iterator>
 #include <type_traits>
+#include <vector>
 namespace std {
-template <class T, bool integral = std::is_integral<T>::value> class vector {
-  public:
+template <class T> class vector<T, true> {
 	typedef T value_type;
 	typedef std::size_t size_type;
 	typedef std::ptrdiff_t difference_type;
@@ -31,7 +31,7 @@ template <class T, bool integral = std::is_integral<T>::value> class vector {
 	typedef const value_type *const_pointer;
 	typedef class vector_iterator : std::iterator<random_access_iterator_tag, T> {
 	  private:
-		char *copy;
+		T *copy;
 		size_type index;
 
 	  public:
@@ -49,9 +49,9 @@ template <class T, bool integral = std::is_integral<T>::value> class vector {
 		}
 		vector_iterator operator-(difference_type n) { return vector_iterator(*this) -= n; }
 		difference_type operator-(vector_iterator b) { return this->index - b.index; }
-		reference operator[](difference_type n) { return *reinterpret_cast<T *>(&copy[n * sizeT]); }
-		reference operator*() { return *reinterpret_cast<T *>(&copy[index * sizeT]); }
-		pointer operator->() { return reinterpret_cast<T *>(&copy[index * sizeT]); }
+		reference operator[](difference_type n) { return copy[n]; }
+		reference operator*() { return copy[index]; }
+		pointer operator->() { return copy[index]; }
 		bool operator<(vector_iterator b) { return b - *this > 0; }
 		bool operator>(vector_iterator b) { return b < *this; }
 		bool operator<=(vector_iterator b) { return !(*this > b); }
@@ -68,7 +68,7 @@ template <class T, bool integral = std::is_integral<T>::value> class vector {
 	} iterator;
 	typedef class const_vector_iterator : std::iterator<random_access_iterator_tag, T> {
 	  private:
-		char *copy;
+		T *copy;
 		size_type index;
 
 	  public:
@@ -86,9 +86,9 @@ template <class T, bool integral = std::is_integral<T>::value> class vector {
 		}
 		const_vector_iterator operator-(difference_type n) { return array_iterator(*this) -= n; }
 		difference_type operator-(vector_iterator b) { return this->index - b.index; }
-		const_reference operator[](difference_type n) { return *reinterpret_cast<T *>(&copy[n * sizeT]); }
-		const_reference operator*() { return *reinterpret_cast<T *>(&copy[index * sizeT]); }
-		const_pointer operator->() { return reinterpret_cast<T *>(&copy[index * sizeT]); }
+		const_reference operator[](difference_type n) { return copy[n]; }
+		const_reference operator*() { return copy[index]; }
+		const_pointer operator->() { return copy[index]; }
 		bool operator<(vector_iterator b) { return b - *this > 0; }
 		bool operator>(vector_iterator b) { return b < *this; }
 		bool operator<=(vector_iterator b) { return !(*this > b); }
@@ -107,16 +107,12 @@ template <class T, bool integral = std::is_integral<T>::value> class vector {
 	typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
   private:
-	char *_data;
+	T *_data;
 	size_type _capacity;
 	size_type _size;
-	static const size_type sizeT = sizeof(T);
-	reference get_item(size_type pos) { return *reinterpret_cast<T *>(&_data[pos * sizeT]); }
-	const_reference get_item(size_type pos) const { return *reinterpret_cast<T *>(&_data[pos * sizeT]); }
-	void *get_addr(size_type pos, char *d) const { return (void *)((uintptr_t)d * sizeT * pos); }
 	void resize_cap(size_type new_cap) {
-		char *new_data(new char[sizeT * new_cap]);
-		for(size_type i = 0; i < _size; i++) { new(get_addr(i, _data)) T(std::move(get_item(i))); }
+		T *new_data = new T[new_cap];
+		memcpy(new_data, _data, sizeof(T) * _size);
 		_capacity = new_cap;
 		_data = new_data;
 		delete[] _data;
@@ -124,14 +120,14 @@ template <class T, bool integral = std::is_integral<T>::value> class vector {
 
   public:
 	// element access
-	reference at(size_type pos) { return get_item(pos); }
-	const_reference at(size_type pos) const { return get_item(pos); }
-	reference operator[](size_type pos) { return get_item(pos); }
-	const_reference operator[](size_type pos) const { return get_item(pos); }
-	reference front() { return get_item(0); }
-	const_reference front() const { return get_item(0); }
-	reference back() { return get_item(_size - 1); }
-	const_reference back() const { return get_item(_size - 1); }
+	reference at(size_type pos) { return _data[pos]; }
+	const_reference at(size_type pos) const { return _data[pos]; }
+	reference operator[](size_type pos) { return _data[pos]; }
+	const_reference operator[](size_type pos) const { return _data[pos]; }
+	reference front() { return _data[0]; }
+	const_reference front() const { return _data[0]; }
+	reference back() { return _data[_size - 1]; }
+	const_reference back() const { return _data[_size - 1]; }
 	T *data() { return &front(); }
 	const T *data() const { return &front(); }
 
@@ -148,26 +144,26 @@ template <class T, bool integral = std::is_integral<T>::value> class vector {
 
 	// modifiers
 	void clear() {
-		for(size_type i = 0; i < _size; i++) { get_item(i).~T(); }
+		memset(_data, 0, _capacity * sizeof(T));
 		_size = 0;
 	}
 	iterator insert(const_iterator pos, const T &value) {
 		if(_size >= _capacity) { resize_cap((size_type)(_capacity * 1.5f)); }
-		for(int i = _size - 1; i >= pos.index; i--) { get_item(i + 1) = std::move(get_item(i)); }
-		get_item(pos.index) = value;
+		memmove(&_data[pos.index + 1], &_data[pos.index], (_size - pos.index + 1) * sizeof(T));
+		_data[pos.index] = value;
 		++_size;
 	}
 	iterator insert(const_iterator pos, T &&value) {
 		if(_size >= _capacity) { resize_cap((size_type)(_capacity * 1.5f)); }
-		for(int i = _size - 1; i >= pos.index; i--) { get_item(i + 1) = std::move(get_item(i)); }
-		get_item(pos.index) = std::move(value);
+		memmove(&_data[pos.index + 1], &_data[pos.index], (_size - pos.index + 1) * sizeof(T));
+		_data[pos.index] = std::move(value);
 		++_size;
 	}
 	iterator insert(const_iterator pos, size_type count, const T &value) {
 		while(_size - 1 + count >= _capacity) { resize_cap((size_type)(_capacity * 1.5f)); }
-		for(int i = _size - 1; i >= pos.index; i--) { get_item(i + count) = std::move(get_item(i)); }
+		memmove(&_data[pos.index + 1], &_data[pos.index], (_size - pos.index + 1) * sizeof(T));
 		while(count--) {
-			get_item(pos.index) = value;
+			_data[pos.index] = value;
 			++pos;
 			++_size;
 		}
@@ -184,34 +180,34 @@ template <class T, bool integral = std::is_integral<T>::value> class vector {
 	}
 	template <class... Args> iterator emplace(const_iterator pos, Args &&... args) {
 		if(_size >= _capacity) { resize_cap((size_type)(_capacity * 1.5f)); }
-		for(int i = _size - 1; i >= pos.index; i--) { get_item(i + 1) = std::move(get_item(i)); }
-		new(get_addr(pos.index, _data)) T(std::forward<Args>(args)...);
+		memmove(&_data[pos.index + 1], &_data[pos.index], _size - pos.index + 1 * sizeof(T));
+		new(&_data[pos.index]) T(std::forward<Args>(args)...);
 	}
 	iterator erase(const_iterator pos) {
-		get_item(pos.index).~T();
-		for(int i = pos.index; i < _size; i++) { get_item(i) = std::move(get_item(i + i)); }
+		memmove(&_data[pos.index], &_data[pos.index + 1], (_size - pos.index) * sizeof(T));
 		--_size;
-		get_item(_size).~T();
+		_data[_size] = 0;
 	}
 	iterator erase(const_iterator first, const_iterator last) { assert(true, false, "not implemented"); }
 	void push_back(const T &value) {
 		if(_size >= _capacity) { resize_cap((size_type)(_capacity * 1.5f)); }
-		new(get_addr(_size, _data)) T(value);
+		_data[_size] = value;
 		++_size;
 	}
 	template <class... Args> void emplace_back(Args &&... args) {
 		if(_size >= _capacity) { resize_cap((size_type)(_capacity * 1.5f)); }
-		new(get_addr(_size, _data)) T(std::forward<Args>(args)...);
+		new(&_data[_size]) T(std::forward<Args>(args)...);
 		++_size;
 	}
 	void pop_back() {
-		get_item(_size - 1).~T();
+		_data[_size - 1] = 0;
 		--_size;
 	}
 	void resize(size_type count) {
-		while(count > _size) {
-			if(_size >= _capacity) { resize_cap((size_type)(_capacity * 1.5f)); }
-			new(get_addr(_size, _data)) T();
+		if(count > _size) {
+			if(_size + count >= _capacity) { resize_cap(std::max((size_type)(_capacity * 1.5f), _size + count)); }
+			memset(&_data[_size], 0, sizeof(T) * count);
+			_data[_size] = 0;
 			++_size;
 		}
 		while(count < _size) { pop_back(); }
@@ -221,7 +217,7 @@ template <class T, bool integral = std::is_integral<T>::value> class vector {
 		while(count < _size) { pop_back(); }
 	}
 	void swap(vector &other) {
-		char *d = _data;
+		T *d = _data;
 		size_type s = _size, c = _capacity;
 		_size = other.size;
 		_capacity = other._capacity;
@@ -230,54 +226,6 @@ template <class T, bool integral = std::is_integral<T>::value> class vector {
 		other._capacity = c;
 		other._size = s;
 	}
-
-	// constructors
-	explicit vector() : _size(0), _capacity(16), _data(new char[sizeT * _capacity]) {}
-	explicit vector(size_type count, const T &value)
-	    : _size(count), _capacity(count), _data(new char[sizeT * _capacity]) {
-		for(size_type i = 0; i < _size; i++) { new(get_addr(i, _data)) T(value); }
-	}
-	explicit vector(size_type count)
-	    : _size(count), _capacity(max(count, (size_type)16)), _data(new char[sizeT * _capacity]) {
-		for(size_type i = 0; i < _size; i++) { new(get_addr(i, _data)) T(); }
-	}
-	template <class InputIt,
-	          std::enable_if_t<std::is_base_of<std::input_iterator_tag,
-	                                           typename std::iterator_traits<InputIt>::iterator_category>::value,
-	                           int> = 0>
-	vector(InputIt first, InputIt last) : _size(0), _capacity(16), _data(new char[sizeT * _capacity]) {
-		for(; first < last; first++) push_back(*first);
-	}
-	vector(const vector &other) : _size(other._size), _capacity(other._capacity), _data(new char[sizeT * _capacity]) {
-		for(size_type i = 0; i < _size; i++) { new(get_addr(i, _data)) T(other[i]); }
-	}
-	vector(const vector &&other) : _size(other._size), _capacity(other._capacity), _data(other._data) {
-		// reset the other
-		other._size = 0;
-		other._capacity = 16;
-		other._data = new char[sizeT * other._capacity];
-	}
-
-	// deconstructor
-	~vector() {
-		clear();
-		delete[] _data;
-	}
-
-	// iterators
-	iterator begin() { return iterator(*this, 0); }
-	const_iterator begin() const { return const_iterator(*this, 0); }
-	const_iterator cbegin() const { return const_iterator(*this, 0); }
-	iterator end() { return iterator(*this, _size); }
-	const_iterator end() const { return const_iterator(*this, _size); }
-	const_iterator cend() const { return const_iterator(*this, _size); }
-	reverse_iterator rbegin() { return reverse_iterator(end()); }
-	const_reverse_iterator rbegin() const { return reverse_iterator(end()); }
-	const_reverse_iterator crbegin() const { return const_reverse_iterator(cend()); }
-	reverse_iterator rend() { return reverse_iterator(begin()); }
-	const_reverse_iterator rend() const { return const_reverse_iterator(cbegin()); }
-	const_reverse_iterator crend() const { return const_reverse_iterator(cbegin()); }
 };
 }
-#include <_vector/_integral>
 #endif
