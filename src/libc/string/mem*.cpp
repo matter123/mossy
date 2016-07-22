@@ -26,9 +26,7 @@ int memcmp(const void *mem1, const void *mem2, size_t num) {
 	const_pointer_t p1 = (const_pointer_t)mem1;
 	const_pointer_t p2 = (const_pointer_t)mem2;
 	while(num--) {
-		if(*p1 != *p2) {
-			return *p1 - *p2;
-		}
+		if(*p1 != *p2) { return *p1 - *p2; }
 		p1++;
 		p2++;
 	}
@@ -42,8 +40,7 @@ void *memset(void *dest, int value, size_t size) {
 void *memmove(void *dest, const void *src, size_t size) {
 	pointer_t pdest = (pointer_t)dest;
 	const_pointer_t psrc = (const_pointer_t)src;
-	if(dest == src)
-		return dest;
+	if(dest == src) return dest;
 	if(pdest < psrc) {
 		while(size--) *pdest++ = *psrc++;
 	} else {
@@ -51,4 +48,9 @@ void *memmove(void *dest, const void *src, size_t size) {
 		size--;
 	}
 	return dest;
+}
+void *memset16(uint16_t *ptr, uint16_t value, size_t num) {
+	uint16_t *ret = ptr;
+	while(num--) { *ptr++ = value; }
+	return ret;
 }

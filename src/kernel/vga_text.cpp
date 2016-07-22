@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <vga_text.h>
-volatile uint16_t *vga_mem = reinterpret_cast<uint16_t *>(0xB8000);
+static volatile uint16_t *vga_mem = reinterpret_cast<uint16_t *>(0xB8000);
 #define PORT 0x3f8
 uint16_t x = 0, y = 0;
 remutex vga_mutex;

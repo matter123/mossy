@@ -20,15 +20,16 @@ extern "C" {
 #endif
 size_t strlen(const char *);
 size_t strnlen(const char *, int maxlen);
-void *memset(void *dest,int value,size_t size);
-int   memcmp(const void *mem1,const void *mem2,size_t num);
-void *memcpy(void *dest,const void *src,size_t size);
-void *memmove(void *dest,const void *src,size_t size);
-char *strcat(char *dest,const char *src);
-char *strcpy(char *dest,const char *src);
-int   strcmp(const char *dest,const char *src);
-char *strncpy(char *dest,const char *src, size_t n);
-int   strncmp(const char *dest,const char *src, size_t n);
+void *memset(void *dest, int value, size_t size);
+void *memset16(uint16_t *dest, uint16_t value, size_t size);
+int memcmp(const void *mem1, const void *mem2, size_t num);
+void *memcpy(void *dest, const void *src, size_t size);
+void *memmove(void *dest, const void *src, size_t size);
+char *strcat(char *dest, const char *src);
+char *strcpy(char *dest, const char *src);
+int strcmp(const char *dest, const char *src);
+char *strncpy(char *dest, const char *src, size_t n);
+int strncmp(const char *dest, const char *src, size_t n);
 char *strpbrk(char *str1, const char *str2);
 #ifdef __cplusplus
 }
