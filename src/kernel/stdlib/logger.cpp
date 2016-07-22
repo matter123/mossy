@@ -8,11 +8,11 @@
 #include <vga_text.h>
 static int curLogLevel = 1;
 const char *levels[]{
-    "[DEBUG]", "[INFO ]", "[WARN ]", "[ERROR]",
+    "[DEBUG]", "[DEBUG]", "[INFO ]", "[WARN ]", "[ERROR]",
 };
 void logger_init() {
 	int level = std::strtonum(get_arg("LogLevel"), 1);
-	setLogLevel((LogLevel)level);
+	setLogLevel((LogLevel)(level + 1));
 	Log(LOG_INFO, "[LOGGER]", "Log level is %s", levels[curLogLevel]);
 }
 void setLogLevel(LogLevel level) { curLogLevel = (int)level; }

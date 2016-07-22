@@ -18,11 +18,12 @@
 #include <stdarg.h>
 void logger_init() RUN_ONCE;
 enum LogLevel {
+	LOG_SERIAL,
 	LOG_DEBUG,
 	LOG_INFO,
 	LOG_WARNING,
 	LOG_ERROR,
 };
 void setLogLevel(LogLevel level);
-void Log(LogLevel level, const char *service, const char *fmt,...);
-void Logv(LogLevel level, const char *service, const char *fmt,va_list arg);
+void Log(LogLevel level, const char *service, const char *fmt, ...);
+void Logv(LogLevel level, const char *service, const char *fmt, va_list arg);

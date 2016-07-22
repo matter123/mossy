@@ -13,5 +13,6 @@
 	See the License for the specific language governing permissions and
 	limitations under the License.
 */
-#pragma once
-// bar
+#ifndef __cplusplus
+#error test framework requires c++, to test a C file create a c++ test file to go along with the C file
+#endif

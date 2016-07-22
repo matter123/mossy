@@ -1,4 +1,4 @@
-#include <sys/spinlock.h>
+#include <sys/sync.h>
 #include <sys/thread_info.h>
 #include <hal/memmap.h>
 #include <arch/int.h>
@@ -173,7 +173,7 @@ BOOLEAN AcpiOsReadable(void *memory, ACPI_SIZE length) {
 // HALF STUB
 BOOLEAN AcpiOsWritable(void *memory, ACPI_SIZE length) { return AcpiOsReadable(memory, length); }
 // GOOD
-ACPI_THREAD_ID AcpiOsGetThreadId() { return /*get_current_thread_info()->thread_id*/ 0; }
+ACPI_THREAD_ID AcpiOsGetThreadId() { return get_current_thread_info()->thread_id; }
 // STUB
 ACPI_STATUS AcpiOsExecute(ACPI_EXECUTE_TYPE Type, ACPI_OSD_EXEC_CALLBACK Function, void *Context) {
 	PANIC("can not execute");
@@ -194,20 +194,30 @@ void AcpiOsPrintf(const char *fmt, ...) {
 	AcpiOsVprintf(fmt, list);
 	va_end(list);
 }
+// STUB
+void AcpiOsVprintf(const char *fmt, va_list vlist) { Logv(LOG_SERIAL, "[ACPICA]", fmt, vlist); }
 // GOOD
-void AcpiOsVprintf(const char *fmt, va_list vlist) { /*Logv(LOG_DEBUG, "[ACPICA]", fmt, vlist);*/
-}
-// STUB
 ACPI_STATUS AcpiOsCreateSemaphore(UINT32 MaxUnits, UINT32 InitalUnits, ACPI_SEMAPHORE *OutHandle) {
-	OutHandle = nullptr;
-	return AE_NO_MEMORY;
+	semaphore *s = new semaphore(MaxUnits);
+	while(InitalUnits--) { s->aquire(); }
+	*OutHandle = (ACPI_SEMAPHORE)s;
+	return AE_OK;
 }
-// STUB
-ACPI_STATUS AcpiOsDeleteSemaphore(ACPI_SEMAPHORE Handle) { return AE_BAD_VALUE; }
-// STUB
-ACPI_STATUS AcpiOsWaitSemaphore(ACPI_SEMAPHORE Handle, UINT32 Units, UINT16 Timeout) { return AE_BAD_VALUE; }
-// STUB
-ACPI_STATUS AcpiOsSignalSemaphore(ACPI_SEMAPHORE Handle, UINT32 Units) { return AE_BAD_VALUE; }
+// GOOD
+ACPI_STATUS AcpiOsDeleteSemaphore(ACPI_SEMAPHORE Handle) {
+	delete(semaphore *)Handle;
+	return AE_OK;
+}
+// HALF STUB
+ACPI_STATUS AcpiOsWaitSemaphore(ACPI_SEMAPHORE Handle, UINT32 Units, UINT16 Timeout) {
+	while(Units--) { ((semaphore *)Handle)->aquire(); }
+	return AE_OK;
+}
+// GOOD
+ACPI_STATUS AcpiOsSignalSemaphore(ACPI_SEMAPHORE Handle, UINT32 Units) {
+	while(Units--) { ((semaphore *)Handle)->release(); }
+	return AE_OK;
+}
 // GOOD
 ACPI_STATUS AcpiOsCreateLock(ACPI_SPINLOCK *OutHandle) {
 	spinlock *spin = new spinlock();
