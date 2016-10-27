@@ -29,6 +29,7 @@
 #include <logger.h>
 #include <memory>
 #include <stdlib.h>
+#include <tty.h>
 #include <vga_text.h>
 void test_task(char *letter) {
 	while(true) {
@@ -89,6 +90,11 @@ extern "C" void exec() {
 	install_JT1(0xC1, &C1_handler);
 	set_lapic_timer(LAPIC_TIMER_MODE_PERIODIC, LAPIC_TIMER_DIVIDE_16_VALUE, 0xC1, 32 * 128);
 	hal::enable_interrupts();
-	shared_ptr_test();
+	// tty_puts(CSI_SGR(SGR_FOREGROUND SGR_COLOR_RED) "A" CSI_SGR(SGR_FOREGROUND SGR_COLOR_BLUE) "N" CSI_SGR(
+	//    SGR_FOREGROUND SGR_COLOR_GREEN) "S" CSI_SGR(SGR_FOREGROUND SGR_COLOR_YELLOW) "I" CSI_SGR(SGR_RESET) "
+	//    codes!");
+	tty::puts("\x1b[31mA\x1b[32mN\x1b[1;33mS\x1b[34mI\x1b[m codes!");
+	while(true)
+		;
 	Log(LOG_ERROR, "[INIT  ]", "reached end");
 }
