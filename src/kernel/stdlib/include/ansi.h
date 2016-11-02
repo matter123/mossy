@@ -15,9 +15,9 @@
 */
 #ifndef ANSI_H
 #define ANSI_H
-
-char *parse_csi(char *);
-char *parse_escape(char *);
+#include <stdio/page.h>
+const char *parse_csi(stdlib::page *p, const char *);
+const char *parse_escape(stdlib::page *p, const char *);
 
 #define SGR_RESET "0"
 #define SGR_BOLD "1"

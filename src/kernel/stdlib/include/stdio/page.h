@@ -13,30 +13,45 @@
 	See the License for the specific language governing permissions and
 	limitations under the License.
 */
-#ifndef TTY_H
-#define TTY_H
+#ifndef STDLIB_STDIO_ANSI_H
+#define STDLIB_STDIO_ANSI_H
+#include <tty.h>
 namespace stdlib {
-void putc(char c);
-void puts(char *s);
-void clear_line(int line);
-void clear();
-void flush();
-extern uint8_t default_forground, default_background;
-struct state_t {
-	bool bold;
-	bool inverse;
-	bool conceal;
-	bool cursor_visable;
+class page {
+	uint16_t page_data[25][80];
+	struct attr_t {
+		bool bold;
+		bool inverse;
+		bool conceal;
+		uint8_t background = default_background;
+		uint8_t foreground = default_forground;
+		uint16_t getattr();
+	} attributes;
 	int cur_x = 1, cur_y = 1;
 	int save_x, save_y;
-	unsigned int scroll_pos = 0;
-	uint8_t background = default_background;
-	uint8_t foreground = default_forground;
-	uint16_t getattr();
+	bool newline(bool force = false);
+	page *_prev, *_next;
+
+  public:
+	page();
+	page(page &p);
+
+	bool bold();
+	void bold(bool bold);
+	bool inverse();
+	void inverse(bool inverse);
+	bool conceal();
+	void conceal(bool conceal);
+	const uint16_t *data();
+	page &prev();
+	page &next();
 	void move_cur(int x = 0, int y = 0);
 	void move_cur_relative(int x = 0, int y = 0);
-	void show_cursor(bool show = true);
+	void save_cur();
+	void load_cur();
+	bool can_write();
+	int write(const char c);
+	int write(const char *s);
 };
-extern state_t state;
 }
 #endif
